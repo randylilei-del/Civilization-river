@@ -251,6 +251,16 @@ a.wk::after { content: '↗'; font-size: .72em; color: var(--muted); margin-left
 #panel .p-gl .cap { color: var(--muted); font-size: 11px; margin-top: 1px; }
 #panel .p-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; margin: 0 0 12px; }
 #panel .fact .today { display: block; margin-top: 2px; font-style: normal; font-size: 10.5px; line-height: 1.35; color: var(--muted); }
+#panel .p-vid { margin: 0 0 12px; }
+#panel .vid-play {
+  display: block; width: 100%; font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer;
+  color: var(--surface); background: var(--ink); border: 0; border-radius: 8px; padding: 9px 12px; text-align: left;
+}
+#panel .vid-play:hover { opacity: .85; }
+#panel .vid-frame { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 8px; overflow: hidden; background: var(--wash); }
+#panel .vid-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+#panel .vid-search { display: inline-block; margin-top: 6px; font-size: 11.5px; color: var(--muted); text-decoration: none; }
+#panel .vid-search:hover { color: var(--ink-2); text-decoration: underline; }
 #panel .fact { background: var(--wash); border-radius: 7px; padding: 6px 9px; }
 #panel .fact span { display: block; color: var(--muted); font-size: 11px; }
 #panel .fact b { font-weight: 600; font-size: 12px; }
@@ -1495,6 +1505,20 @@ const CHRONO_X = {
  [1619, ['萨尔浒之战','Sarhu'], ['明军四路分进十余万,五日内被各个击破;辽东攻守易势,再未夺回。','Four Ming columns, over 100,000 men, destroyed one by one in five days — the initiative in the northeast never came back.']],
  [1637, ['《天工开物》','Exploitation of the Works of Nature'], ['宋应星记下一百三十项工艺,从种稻到炼铁。','Song Yingxing records 130 crafts, from rice to iron.']] ],
 };
+/* ---------- 纪录片:人工策展 ----------
+   键 = CIVS.n。b = B 站 BV 号,y = YouTube 视频 ID(可选),t = 片名[zh,en]。
+   b 与 y 至少给一个;两个都有时,中文界面用 B 站、英文界面用 YouTube。
+
+   ⚠ 这张表**只能填人工核实过的链接**。不要凭印象生成 BV 号或 YouTube ID:
+   编出来的要么是死链,要么指向完全无关的内容——这个页面的用户是小孩,
+   后者比没有更糟。没有条目的文明只显示"搜纪录片"按钮,不显示播放器。
+
+   加法:确认视频确实在讲这个文明、时长与画质过得去之后,照下面的样子加一行。
+   B 站 BV 号在视频链接里 bilibili.com/video/BV1xx411c7mu 的 BV 开头那段。 */
+const VIDEO = {
+  // '唐': { b:'BV1xxxxxxxxx', t:['大唐帝国','The Tang Empire'] },
+  // '古埃及': { b:'BV1xxxxxxxxx', y:'xxxxxxxxxxx', t:['古埃及文明','Ancient Egypt'] },
+};
 /* ---------- 地理底图:河流 / 山脉 / 沙漠 ----------
    地理常常比政治更能解释文明为什么在这里起、又为什么停在那里。
    坐标为手写粗略折线/多边形,精度约 ±1~2°——地图 332px 宽通常覆盖 60~120 经度
@@ -2497,6 +2521,27 @@ function todayHTML(c) {
   });
   return `<i class="today">${T('今 ', 'now ')}${parts.join(' · ')}</i>`;
 }
+/* 纪录片区块。**不点就不产生任何外部请求**——iframe 是点击后才插进去的,
+   所以页面本体、离线缓存、Artifact 的 CSP 全不受影响;看视频本来就要联网。
+   没策展到的文明只给一个搜索按钮:中文搜 B 站、英文搜 YouTube,零维护。 */
+function videoHTML(c) {
+  const v = VIDEO[c.n];
+  const term = LANG === 'zh' ? (WIKI_NAME[c.n] || c.n) : ((EN.civ[c.n] && (EN.civ[c.n].w || EN.civ[c.n].n)) || c.n);
+  const q = encodeURIComponent(LANG === 'zh' ? term + ' 纪录片' : term + ' documentary');
+  const search = LANG === 'zh'
+    ? `https://search.bilibili.com/all?keyword=${q}`
+    : `https://www.youtube.com/results?search_query=${q}`;
+  let btn = '';
+  if (v && (v.b || v.y)) {
+    const useY = LANG !== 'zh' && v.y;
+    const src = useY
+      ? `https://www.youtube-nocookie.com/embed/${v.y}?rel=0`
+      : `https://player.bilibili.com/player.html?bvid=${v.b}&autoplay=0&danmaku=0`;
+    btn = `<button class="vid-play" data-src="${src}">▶ ${v.t ? v.t[LANG === 'zh' ? 0 : 1] : T('看纪录片','Watch')}</button>`;
+  }
+  return `<div class="p-vid">${btn}
+    <a class="vid-search" href="${search}" target="_blank" rel="noopener noreferrer">${T('在 B 站搜纪录片 ↗','Search documentaries on YouTube ↗')}</a></div>`;
+}
 function openCiv(c) {
   cur = { type: 'civ', obj: c };
   const f = cF(c);
@@ -2513,6 +2558,7 @@ function openCiv(c) {
     ${mapHTML(c)}
     ${facts}
     <div class="p-body">${cD(c)}</div>
+    ${videoHTML(c)}
     ${ch.length ? `<div class="p-tl"><h3>${T('大事记(曲线上的小圆点)','Key moments (dots on the curve)')}</h3>${ch.map(([y, t2, d2]) =>
       `<div class="tl-item"><span class="tl-y">${fmtY(y)}</span><div><b>${wkA(t2, stripParen(t2))}</b>${d2 ? `<p>${d2}</p>` : ''}</div></div>`).join('')}</div>` : ''}
     ${evs.length ? `<div class="p-evs"><h3>${T('同期波及本区域的事件','Contemporary cross-regional events')}</h3>${evs.map(e =>
@@ -2689,6 +2735,14 @@ traceSel.addEventListener('change', () => {
 });
 panel.addEventListener('click', e => {
   if (e.target.classList.contains('p-close')) panel.classList.remove('open');
+  /* 点了才插 iframe:在此之前这个页面对外零请求 */
+  const pl = e.target.closest && e.target.closest('.vid-play');
+  if (pl) {
+    const box = pl.parentElement;
+    box.insertAdjacentHTML('afterbegin',
+      `<div class="vid-frame"><iframe src="${pl.dataset.src}" allowfullscreen scrolling="no" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" title="${T('纪录片','Documentary')}"></iframe></div>`);
+    pl.remove();
+  }
 });
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') panel.classList.remove('open');
