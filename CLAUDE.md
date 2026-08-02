@@ -22,9 +22,16 @@ docs/CHANGELOG.md     # 版本史
 
 1. 只改 `index.html`
 2. 语法检查:`sed -n '/<script>/,/<\/script>/p' index.html | sed '1d;$d' > /tmp/c.js && node --check /tmp/c.js`
-3. 渲染验证:Playwright 打开 file:// 截图,确认无 pageerror、无布局破坏(深浅色都看)
-4. commit + push → Vercel 自动部署
-5. 同步:Ray 的 Plans 库 `learning/world-history-viz.md` 记录方案级变更
+3. 数据校验:`node tools/audit.js`(自包含,无依赖;查中英条目数对齐、大事记越界与排序、GL 区间合法性、孤儿键等;退出码非 0 即有问题)
+4. 渲染验证:浏览器打开确认无 pageerror、无布局破坏(深浅色 × 中英都看)
+   - 本机**没装 Playwright**,用 claude-in-chrome MCP 工具;`file://` 会被扩展拒绝,先起本地服务器:
+     `python3 -m http.server 8777 --bind 127.0.0.1 --directory "<项目路径>"`(用后台任务方式起,`nohup ... &` 写法会被权限拦)
+   - 深色模式没有页面按钮,靠 `prefers-color-scheme`;验证时用 JS 强开:`document.documentElement.setAttribute('data-theme','dark')`
+   - 改了数据表就跑全量扫描,比抽查几张卡可靠得多:
+     `for (const lang of ['zh','en']) { document.querySelector('[data-l='+lang+']').click(); for (const c of CIVS) openCiv(c) }`
+     每次检查 `panel.innerHTML` 是否出现 undefined/NaN/[object
+5. commit + push → Vercel 自动部署
+6. 同步:Ray 的 Plans 库 `learning/world-history-viz.md` 记录方案级变更
 
 ## 铁律
 
