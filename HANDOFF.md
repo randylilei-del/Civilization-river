@@ -10,7 +10,7 @@
 
 接手时先 `git status` 核实。截至本次会话结束:
 
-- **v13、v14 都已 commit**;v13 的 push 被本机权限拦下,由 Ray 手动执行,**接手时先确认 origin/main 到哪个 commit**
+- **v13、v14 已 commit 并 push**(origin/main = `690ee00`,2026-08-02 由 Ray 手动推送)
 - 数据规模:103 个文明 · 741 条大事记 · 145 段鼎盛区间(覆盖 97/103)· 22 个交流事件 · 10 条传播轨迹
 - 功能全景见 docs/CHANGELOG.md(v0-v14);设计理由见 docs/DESIGN.md;改数据前必读 docs/DATA.md
 - 仓库实名是大写 C 的 `Civilization-river`(小写链接自动重定向)
@@ -48,7 +48,7 @@
 
 ## 阻塞项 / 等用户决定
 
-1. **push 要 Ray 手动跑** —— `git push` 在本机被权限策略拦下(试了两种写法都被拒),Claude 推不了。Ray 在输入框打 `! cd "<项目路径>" && git push origin main`
+1. **push 必须 Ray 手动跑** —— `git push` 在本机被权限策略拦下(试了两种写法都被拒),Claude 推不了。Ray 在输入框打 `! cd "<项目路径>" && git push origin main`。**这是每次都会遇到的,别再试着自己推**;commit 可以正常做
 2. **GL 标签压在色条上的兜底分支触发率 41%**(渲染器 `glHTML`,当标签在色条左右都放不下时落到 `tx=2`,压在色条上,靠 surface 描边晕圈保可读)。**这是 v11/v12 就有的老行为,不是 v13 引入的**,但 v13 把 GL 段数翻倍,等于把它放大了。DESIGN.md 的铁律明确说"文本永远用 ink 色 + surface 描边晕圈",所以没有擅自改渲染器。Ray 若觉得难看,可选:加宽面板(现 330px)/ 缩短标题 / 允许标签换行。
 
 ## 关键上下文
