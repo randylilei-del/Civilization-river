@@ -259,8 +259,16 @@ a.wk::after { content: '↗'; font-size: .72em; color: var(--muted); margin-left
 #panel .vid-play:hover { opacity: .85; }
 #panel .vid-frame { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 8px; overflow: hidden; background: var(--wash); }
 #panel .vid-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-#panel .vid-search { display: inline-block; margin-top: 6px; font-size: 11.5px; color: var(--muted); text-decoration: none; }
-#panel .vid-search:hover { color: var(--ink-2); text-decoration: underline; }
+/* 原先是 11.5px 的灰色小字,跟在叙述后面——Ray 在手机上根本没找到。
+   做成整行的按钮:同一层级的"可点的东西"要长得像可点的东西。 */
+#panel .vid-search {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  margin-top: 8px; padding: 9px 12px; font-size: 12.5px; font-weight: 600;
+  color: var(--ink); background: var(--wash); border: 1px solid var(--border);
+  border-radius: 8px; text-decoration: none;
+}
+#panel .vid-search span { font-weight: 400; font-size: 11.5px; color: var(--muted); }
+#panel .vid-search:hover { border-color: var(--muted); background: var(--surface); }
 #panel .fact { background: var(--wash); border-radius: 7px; padding: 6px 9px; }
 #panel .fact span { display: block; color: var(--muted); font-size: 11px; }
 #panel .fact b { font-weight: 600; font-size: 12px; }
@@ -2540,7 +2548,7 @@ function videoHTML(c) {
     btn = `<button class="vid-play" data-src="${src}">▶ ${v.t ? v.t[LANG === 'zh' ? 0 : 1] : T('看纪录片','Watch')}</button>`;
   }
   return `<div class="p-vid">${btn}
-    <a class="vid-search" href="${search}" target="_blank" rel="noopener noreferrer">${T('在 B 站搜纪录片 ↗','Search documentaries on YouTube ↗')}</a></div>`;
+    <a class="vid-search" href="${search}" target="_blank" rel="noopener noreferrer">${T('🎬 找纪录片看','🎬 Find a documentary')}<span>${T('B 站 ↗','YouTube ↗')}</span></a></div>`;
 }
 function openCiv(c) {
   cur = { type: 'civ', obj: c };
@@ -2557,8 +2565,8 @@ function openCiv(c) {
     ${glHTML(c)}
     ${mapHTML(c)}
     ${facts}
-    <div class="p-body">${cD(c)}</div>
     ${videoHTML(c)}
+    <div class="p-body">${cD(c)}</div>
     ${ch.length ? `<div class="p-tl"><h3>${T('大事记(曲线上的小圆点)','Key moments (dots on the curve)')}</h3>${ch.map(([y, t2, d2]) =>
       `<div class="tl-item"><span class="tl-y">${fmtY(y)}</span><div><b>${wkA(t2, stripParen(t2))}</b>${d2 ? `<p>${d2}</p>` : ''}</div></div>`).join('')}</div>` : ''}
     ${evs.length ? `<div class="p-evs"><h3>${T('同期波及本区域的事件','Contemporary cross-regional events')}</h3>${evs.map(e =>
