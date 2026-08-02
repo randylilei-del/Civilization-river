@@ -157,7 +157,8 @@ body.pb-on { padding-bottom: var(--pb-h, 122px); }
 #playbar .pb-civ { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
 #playbar .pb-civ i { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
 #playbar #pbFeed { display: flex; flex-direction: column; gap: 2px; min-height: 30px; }
-#playbar .pb-item { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; animation: pbIn .35s ease both; }
+#playbar .pb-item { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#playbar .pb-item.new { animation: pbIn .35s ease both; }
 #playbar .pb-item b { font-weight: 600; }
 #playbar .pb-item.dim { color: var(--muted); }
 @keyframes pbIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
@@ -2542,7 +2543,7 @@ document.getElementById('zoomOut').addEventListener('click', zoomReset);
    竖线只更新自身的 x,不重建图表(buildChart 每帧跑一次会卡);底部信息带按
    ~8fps 刷新就够了,人眼跟不上更快的文字变化。
    扫过的"大事"= 文明兴起/灭亡 + 跨地区交流事件,按用户选择,不含 844 条大事记。 */
-const PB = { on:false, px:0, raf:0, last:0, tick:0, feed:[], fired:null, line:null };
+const PB = { on:false, px:0, raf:0, last:0, tick:0, clock:0, feed:[], fired:null, line:null, feedAt:0 };
 const pbEl = id => document.getElementById(id);
 /* 信息带高度随内容(文明标签换行)变化,详情卡要据此让位。
    本来用 ResizeObserver,但它和 rAF 一样在隐藏标签页里不派发回调,无法验证;
@@ -2555,12 +2556,13 @@ function pbCivsAt(y) {
   const live = CIVS.filter(c => y >= c.k[0][0] && y <= c.k[c.k.length-1][0] && interp(c.k, y) > .06);
   const byLane = new Map();
   for (const c of live) { if (!byLane.has(c.l)) byLane.set(c.l, []); byLane.get(c.l).push(c); }
-  const out = [];
+  const pick = [];
   for (const l of LANES) {
-    const cs = (byLane.get(l.id) || []).sort((a, b) => interp(b.k, y) - interp(a.k, y)).slice(0, 2);
-    for (const c of cs) out.push(c);
+    /* 按影响力挑出每条泳道的前二,但**输出顺序按 CIVS 原序**:若按影响力排,
+       两个文明此消彼长时会不停互换位置,列表一直在动,看着就是在闪。 */
+    for (const c of (byLane.get(l.id) || []).sort((a, b) => interp(b.k, y) - interp(a.k, y)).slice(0, 2)) pick.push(c);
   }
-  return out.slice(0, 12);
+  return pick.sort((a, b) => CIVS.indexOf(a) - CIVS.indexOf(b)).slice(0, 12);
 }
 function pbBtn() {
   const b = pbEl('playBtn');
@@ -2576,6 +2578,7 @@ function pbToggle() {
 }
 function pbBegin() {
   PB.feed = []; PB.fired = new Set(); PB.tick = 0; PB.px = 0;
+  pbSigC = ''; pbSigF = ''; PB.feedAt = 0; PB.clock = 0;   // 不清签名的话,第二次播放开头不会重绘
   pbEl('playbar').hidden = false;
   document.body.classList.add('pb-on');
   pbEl('pbFeed').innerHTML = '';
@@ -2598,14 +2601,16 @@ function pbStop() {
   PB.line = null; PB.px = 0;
   pbBtn();
 }
-/* 整段约 75 秒扫完可视范围;时间轴是非线性的,所以按像素匀速——上古几百年一晃而过,
-   近代一年一年慢慢走,正好与信息密度相称。 */
+/* 整段约 95 秒扫完;时间轴是非线性的,所以按像素匀速——上古几百年一晃而过,
+   近代一年一年慢慢走,正好与信息密度相称。原为 75 秒,Ray 反馈底部文字太快
+   读不过来,连同下面的去重与 0.9 秒停留一起放缓。 */
 function pbFrame(ts) {
   if (!PB.on) return;
   if (!PB.last) PB.last = ts;
   const dt = Math.min(80, ts - PB.last); PB.last = ts;
+  PB.clock += dt;   /* 累计的是"播放时长"而非墙上时钟:暂停时不该继续消耗停留时间 */
   const prevY = yearAt(PB.px);
-  PB.px += INNER_W / 75000 * dt;
+  PB.px += INNER_W / 95000 * dt;
   if (PB.px >= INNER_W) {
     PB.px = INNER_W;
     if (PB.line) PB.line.setAttribute('x', PB.px);
@@ -2641,18 +2646,37 @@ function pbCollect(y, prevY) {
   PB.feed.push(...batch);
   if (PB.feed.length > 40) PB.feed = PB.feed.slice(-40);
 }
+/* 每 120ms 无条件重写 innerHTML 会把元素整个重建,挂在上面的淡入动画就跟着
+   重播——一秒闪八次,根本读不了。所以先比对内容签名,真变了才动 DOM;
+   动画也只给最新那一条(.new),旧的两条保持静止。 */
+let pbSigC = '', pbSigF = '';
 function pbUpdate(y, prevY) {
   pbCollect(y, prevY);
   pbEl('pbYear').textContent = fmtY(Math.round(y));
   const era = ERAS.find(e => y >= e.a && y <= e.b);
-  pbEl('pbEra').textContent = era ? (LANG === 'zh' ? era.n : EN.eras[ERAS.indexOf(era)]) : '';
-  pbEl('pbCivs').innerHTML = pbCivsAt(y).map(c =>
-    `<span class="pb-civ"><i style="background:${fill(c)}"></i>${cN(c)}</span>`).join('');
+  const eraTxt = era ? (LANG === 'zh' ? era.n : EN.eras[ERAS.indexOf(era)]) : '';
+  if (pbEl('pbEra').textContent !== eraTxt) pbEl('pbEra').textContent = eraTxt;
+
+  const civs = pbCivsAt(y);
+  const sigC = civs.map(c => c.n).join('|');
+  if (sigC !== pbSigC) {
+    pbSigC = sigC;
+    pbEl('pbCivs').innerHTML = civs.map(c =>
+      `<span class="pb-civ"><i style="background:${fill(c)}"></i>${cN(c)}</span>`).join('');
+  }
+
+  /* 光去重还不够:密集期每秒仍会变两次,三行字根本读不完。给每次换行至少 0.9 秒
+     停留。因为渲染的永远是 feed 的最后三条,跳过中间状态不会积累延迟——只是
+     那些 0.9 秒内就被顶掉的条目不再露面,而它们本来也来不及读。 */
   const recent = PB.feed.slice(-3).reverse();
-  pbEl('pbFeed').innerHTML = recent.map((f, i) =>
-    `<div class="pb-item${i ? ' dim' : ''}"><b style="color:${f.col}">${f.t}</b> ${f.ev ? '' : f.d} <span style="color:var(--muted)">${fmtY(f.y)}</span></div>`).join('')
-    || `<div class="pb-item dim">—</div>`;
-  pbMeasure();
+  const sigF = recent.map(f => f.y + f.t).join('|');
+  if (sigF !== pbSigF && PB.clock - PB.feedAt >= 900) {
+    pbSigF = sigF; PB.feedAt = PB.clock;
+    pbEl('pbFeed').innerHTML = recent.map((f, i) =>
+      `<div class="pb-item${i ? ' dim' : ' new'}"><b style="color:${f.col}">${f.t}</b> ${f.ev ? '' : f.d} <span style="color:var(--muted)">${fmtY(f.y)}</span></div>`).join('')
+      || `<div class="pb-item dim">—</div>`;
+    pbMeasure();
+  }
 }
 pbEl('playBtn').addEventListener('click', pbToggle);
 pbEl('pbStop').addEventListener('click', pbStop);
