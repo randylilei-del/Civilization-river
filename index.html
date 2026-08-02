@@ -169,15 +169,23 @@ svg.no-ev .evg { display: none; }
 #tip .t-hint { color: var(--muted); font-size: 11px; margin-top: 5px; border-top: 1px solid var(--grid); padding-top: 4px; }
 
 #panel {
-  position: fixed; z-index: 20; top: 16px; right: 16px; bottom: 16px; width: 372px;
+  position: fixed; z-index: 20; top: 16px; right: 16px; bottom: 16px;
+  width: clamp(400px, 32vw, 540px);
   background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
   box-shadow: 0 10px 40px rgba(0,0,0,.22); padding: 18px 20px; overflow-y: auto;
   transform: translateX(112%); transition: transform .25s ease; font-size: 13px;
 }
 #panel.open { transform: none; }
+/* 卡片里的曲线/区间条/地图都按 330 的内部坐标系画,靠 viewBox 缩放到面板实际宽度。
+   这样面板一放大,图和字一起变大,不用改任何绘制代码里的尺寸计算。 */
+#panel .p-spark svg, #panel .p-gl svg, #panel .p-map svg { width: 100%; height: auto; display: block; }
 @media (prefers-reduced-motion: reduce) { #panel { transition: none; } }
+/* iPad 这类中等屏:372px 的窄条缩在最右边很憋屈,放到接近整屏 */
+@media (max-width: 1279px) {
+  #panel { width: min(78vw, 760px); font-size: 14px; }
+}
 @media (max-width: 720px) {
-  #panel { left: 8px; right: 8px; width: auto; top: auto; bottom: 8px; max-height: 62vh; transform: translateY(115%); }
+  #panel { left: 8px; right: 8px; width: auto; top: auto; bottom: 8px; max-height: 88vh; transform: translateY(115%); }
   #panel.open { transform: none; }
 }
 #panel .p-head { display: flex; align-items: center; gap: 8px; }
@@ -2286,20 +2294,31 @@ function glHTML(c) {
   const gl = GL[c.n] || c.gl; if (!gl || !gl.length) return '';
   const y0 = c.k[0][0], y1 = c.k[c.k.length-1][0];
   const li = LANG === 'zh' ? 0 : 1;
-  const W = 330, rowH = 15, Hg = gl.length * rowH + 4;
-  let s = `<svg width="${W}" height="${Hg}" viewBox="0 0 ${W} ${Hg}" aria-label="${T('领域鼎盛区间','Golden-age spans')}">`;
-  gl.forEach((g2, i) => {
+  const W = 330;
+  /* 先给每段定标签位置:右边放得下就放右,否则试左;两边都放不下的,单独占一行放到
+     色条上方。旧做法是压在色条上、靠描边晕圈硬读——占满宽的区间(约四成)都会这样,
+     在 iPad 上看就是"被紫条挡住了"。宁可多占一行,也不要叠着。 */
+  const rows = gl.map(g2 => {
     const xa = Math.max(0, (g2.a - y0) / (y1 - y0) * W);
     const xb = Math.min(W, (g2.b - y0) / (y1 - y0) * W);
-    const y = i * rowH + 2;
-    const kk = GL_KIND[g2.k];
-    s += `<rect x="${xa.toFixed(1)}" y="${y}" width="${Math.max(6, xb - xa).toFixed(1)}" height="9" rx="4.5" fill="${kk.c}" opacity=".72"/>`;
-    const label = `${kk.n[li]} · ${g2.t[li]}`;
+    const label = `${GL_KIND[g2.k].n[li]} · ${g2.t[li]}`;
     const est = label.length * (LANG === 'zh' ? 10 : 5.6) + 12;
-    let tx = xb + 5, anchor = '';
-    if (tx + est > W) { if (xa - 5 - est >= 0) { tx = xa - 5; anchor = ' text-anchor="end"'; } else tx = 2; }
-    s += `<text x="${tx.toFixed(1)}" y="${y + 8}"${anchor} font-size="9.5" fill="var(--ink-2)" stroke="var(--surface)" stroke-width="2.5" paint-order="stroke">${label}</text>`;
+    let place = 'right', tx = xb + 5;
+    if (tx + est > W) {
+      if (xa - 5 - est >= 0) { place = 'left'; tx = xa - 5; }
+      else { place = 'above'; tx = Math.max(2, Math.min(xa, W - est)); }
+    }
+    return { g2, xa, xb, label, place, tx, h: place === 'above' ? 25 : 15 };
   });
+  const Hg = rows.reduce((a, r) => a + r.h, 0) + 4;
+  let s = `<svg width="${W}" height="${Hg}" viewBox="0 0 ${W} ${Hg}" aria-label="${T('领域鼎盛区间','Golden-age spans')}">`;
+  let y = 2;
+  for (const r of rows) {
+    const by = r.place === 'above' ? y + 13 : y;
+    s += `<rect x="${r.xa.toFixed(1)}" y="${by}" width="${Math.max(6, r.xb - r.xa).toFixed(1)}" height="9" rx="4.5" fill="${GL_KIND[r.g2.k].c}" opacity=".72"/>`;
+    s += `<text x="${r.tx.toFixed(1)}" y="${y + 8}"${r.place === 'left' ? ' text-anchor="end"' : ''} font-size="9.5" fill="var(--ink-2)" stroke="var(--surface)" stroke-width="2.5" paint-order="stroke">${r.label}</text>`;
+    y += r.h;
+  }
   s += '</svg>';
   return `<div class="p-gl">${s}<div class="cap">${T('领域鼎盛区间(与曲线同一时间轴)','Golden-age spans (same time axis as the curve)')}</div></div>`;
 }
