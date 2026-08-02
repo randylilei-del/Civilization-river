@@ -253,9 +253,11 @@ a.wk::after { content: '↗'; font-size: .72em; color: var(--muted); margin-left
 #panel .fact .today { display: block; margin-top: 2px; font-style: normal; font-size: 10.5px; line-height: 1.35; color: var(--muted); }
 #panel .p-vid { margin: 0 0 12px; }
 #panel .vid-play {
-  display: block; width: 100%; font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer;
+  display: flex; align-items: center; justify-content: space-between; gap: 8px; box-sizing: border-box;
+  width: 100%; font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; text-decoration: none;
   color: var(--surface); background: var(--ink); border: 0; border-radius: 8px; padding: 9px 12px; text-align: left;
 }
+#panel .vid-play span { font-weight: 400; font-size: 11.5px; opacity: .7; }
 #panel .vid-play:hover { opacity: .85; }
 #panel .vid-frame { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 8px; overflow: hidden; background: var(--wash); }
 #panel .vid-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
@@ -1515,7 +1517,11 @@ const CHRONO_X = {
 };
 /* ---------- 纪录片:人工策展 ----------
    键 = CIVS.n。b = B 站 BV 号,y = YouTube 视频 ID(可选),t = 片名[zh,en]。
-   b 与 y 至少给一个;两个都有时,中文界面用 B 站、英文界面用 YouTube。
+
+   ⚠ **B 站不能页内嵌播**:player.bilibili.com 对大量视频已不再放行(2026-08 实测
+   BV1SV411K7eW,直接以顶层页面打开也只出"你感兴趣的视频都在B站"的兜底图,
+   video 元素 readyState 恒为 0、无错误码)。所以 b 一律渲染成新标签页跳原片,
+   只有 y(YouTube)走页内嵌播放。中文界面优先 B 站、英文优先 YouTube。
 
    ⚠ 这张表**只能填人工核实过的链接**。不要凭印象生成 BV 号或 YouTube ID:
    编出来的要么是死链,要么指向完全无关的内容——这个页面的用户是小孩,
@@ -1524,7 +1530,8 @@ const CHRONO_X = {
    加法:确认视频确实在讲这个文明、时长与画质过得去之后,照下面的样子加一行。
    B 站 BV 号在视频链接里 bilibili.com/video/BV1xx411c7mu 的 BV 开头那段。 */
 const VIDEO = {
-  // '唐': { b:'BV1xxxxxxxxx', t:['大唐帝国','The Tang Empire'] },
+  // 已核实:短链 b23.tv/pGp8G31 解析得 BV1SV411K7eW,标题与 UP 主"一分钟讲史"当场确认
+  '西汉': { b:'BV1SV411K7eW', t:['一口气看完西汉 210 年','Western Han in one sitting'] },
   // '古埃及': { b:'BV1xxxxxxxxx', y:'xxxxxxxxxxx', t:['古埃及文明','Ancient Egypt'] },
 };
 /* ---------- 地理底图:河流 / 山脉 / 沙漠 ----------
@@ -2539,13 +2546,17 @@ function videoHTML(c) {
   const search = LANG === 'zh'
     ? `https://search.bilibili.com/all?keyword=${q}`
     : `https://www.youtube.com/results?search_query=${q}`;
+  /* B 站的外链播放器(player.bilibili.com)对大量视频已不再放行:实测直接以顶层
+     页面打开也只出"你感兴趣的视频都在B站"的兜底图,video 元素 readyState 恒为 0。
+     所以 B 站一律新标签页跳原片,只有 YouTube 走页内嵌播放。 */
   let btn = '';
-  if (v && (v.b || v.y)) {
-    const useY = LANG !== 'zh' && v.y;
-    const src = useY
-      ? `https://www.youtube-nocookie.com/embed/${v.y}?rel=0`
-      : `https://player.bilibili.com/player.html?bvid=${v.b}&autoplay=0&danmaku=0`;
-    btn = `<button class="vid-play" data-src="${src}">▶ ${v.t ? v.t[LANG === 'zh' ? 0 : 1] : T('看纪录片','Watch')}</button>`;
+  const title = v && v.t ? v.t[LANG === 'zh' ? 0 : 1] : T('看纪录片', 'Watch');
+  if (v && v.y && (LANG !== 'zh' || !v.b)) {
+    btn = `<button class="vid-play" data-src="https://www.youtube-nocookie.com/embed/${v.y}?rel=0">▶ ${title}</button>`;
+  } else if (v && v.b) {
+    btn = `<a class="vid-play" href="https://www.bilibili.com/video/${v.b}" target="_blank" rel="noopener noreferrer">▶ ${title}<span>${T('B 站 ↗','Bilibili ↗')}</span></a>`;
+  } else if (v && v.y) {
+    btn = `<button class="vid-play" data-src="https://www.youtube-nocookie.com/embed/${v.y}?rel=0">▶ ${title}</button>`;
   }
   return `<div class="p-vid">${btn}
     <a class="vid-search" href="${search}" target="_blank" rel="noopener noreferrer">${T('🎬 找纪录片看','🎬 Find a documentary')}<span>${T('B 站 ↗','YouTube ↗')}</span></a></div>`;
