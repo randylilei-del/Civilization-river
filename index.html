@@ -126,6 +126,43 @@ h1 { font-size: 24px; margin: 0 0 2px; letter-spacing: .01em; }
   background: var(--surface); color: var(--ink); border: 1px solid var(--muted); border-radius: 999px;
   box-shadow: 0 2px 8px rgba(0,0,0,.12);
 }
+.playbtn { cursor: pointer; font: inherit; font-size: 12px; color: var(--ink); }
+.playbtn.on { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+/* 时光穿梭:底部信息带。三段固定布局,内容再多也不会把年份挤走 */
+/* 必须显式写:display:grid 的优先级高于浏览器默认的 [hidden]{display:none},
+   不加这一条,信息带从页面加载起就一直挂在屏幕底部,hidden 属性形同虚设。 */
+#playbar[hidden] { display: none; }
+#playbar {
+  position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 25;
+  display: grid; grid-template-columns: auto minmax(0,1.15fr) minmax(0,1fr) auto; gap: 14px; align-items: center;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0,0,0,.20); padding: 10px 14px; font-size: 12px;
+}
+/* 播放时底部被信息带占掉一条,详情卡和页面都往上让。让位量不能写死:
+   文明标签会换行,带高随内容变(实测 60~110px 都有),用 ResizeObserver 量出来喂 --pb-h。 */
+body.pb-on #panel { bottom: var(--pb-h, 122px); }
+body.pb-on { padding-bottom: var(--pb-h, 122px); }
+#playbar .pb-year { display: flex; flex-direction: column; line-height: 1.15; min-width: 92px; }
+#playbar .pb-year b { font-size: 21px; font-variant-numeric: tabular-nums; }
+#playbar .pb-year span { color: var(--muted); font-size: 11px; }
+#playbar .pb-lab { display: block; color: var(--muted); font-size: 10.5px; margin-bottom: 3px; }
+#playbar #pbCivs { display: flex; flex-wrap: wrap; gap: 4px 6px; }
+#playbar .pb-civ { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+#playbar .pb-civ i { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+#playbar #pbFeed { display: flex; flex-direction: column; gap: 2px; min-height: 30px; }
+#playbar .pb-item { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; animation: pbIn .35s ease both; }
+#playbar .pb-item b { font-weight: 600; }
+#playbar .pb-item.dim { color: var(--muted); }
+@keyframes pbIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { #playbar .pb-item { animation: none; } }
+#playbar #pbStop {
+  font: inherit; font-size: 15px; line-height: 1; cursor: pointer; padding: 5px 9px;
+  background: var(--wash); color: var(--muted); border: 1px solid var(--border); border-radius: 8px;
+}
+@media (max-width: 860px) {
+  #playbar { grid-template-columns: auto 1fr auto; gap: 10px; }
+  #playbar .pb-feed { grid-column: 1 / -1; }
+}
 svg.tr .band { opacity: .13; }
 svg.tr .evg { opacity: .2; }
 .trstop { cursor: pointer; }
@@ -243,6 +280,7 @@ td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; ma
 <div class="controls">
   <div class="chips" id="chips"></div>
   <label class="ctl"><input type="checkbox" id="ck-ev" checked> <span id="evLbl">交流事件</span></label>
+  <button id="playBtn" class="ctl playbtn">▶ 时光穿梭</button>
   <select id="traceSel"></select>
   <div class="lang" id="langSw"><button data-l="zh" class="on">中</button><button data-l="en">EN</button></div>
 </div>
@@ -257,6 +295,13 @@ td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; ma
 
 <div id="tip"></div>
 <aside id="panel" aria-label="详情面板"></aside>
+
+<div id="playbar" hidden aria-live="polite">
+  <div class="pb-year"><b id="pbYear">—</b><span id="pbEra"></span></div>
+  <div class="pb-now"><span class="pb-lab" id="pbNowLab">此刻在场</span><div id="pbCivs"></div></div>
+  <div class="pb-feed"><span class="pb-lab" id="pbFeedLab">最近发生</span><div id="pbFeed"></div></div>
+  <button id="pbStop" aria-label="停止">×</button>
+</div>
 
 <details class="tbl">
   <summary id="tblSum">数据表视图(全部文明)</summary>
@@ -2034,7 +2079,11 @@ function zoomTicks() {
   for (let t = Math.ceil(VIEW.t0 / step) * step; t <= VIEW.t1; t += step) out.push(t === 0 ? 1 : t);
   return out;
 }
+/* 用 var 而非 const:buildChart 在初始化时就会跑,那时下面的 PB 还在暂时性死区里,
+   直接引用会 ReferenceError(连 typeof 都救不了)。var 提升后是 undefined,安全。 */
+var pbCleanup;
 function buildChart() {
+  if (pbCleanup) pbCleanup();
   const XS = Array.from({length: NS}, (_, i) => i * STEP);
   const YRS = XS.map(yearAt);
   const stacks = {};
@@ -2481,6 +2530,127 @@ scrollerEl.addEventListener('click', e => {
   if (g) openEvent(EVENTS[+g.dataset.ev]);
 });
 document.getElementById('zoomOut').addEventListener('click', zoomReset);
+
+/* ---------- 时光穿梭:一条竖线从左扫到右,底部实时报此刻的世界 ----------
+   竖线只更新自身的 x,不重建图表(buildChart 每帧跑一次会卡);底部信息带按
+   ~8fps 刷新就够了,人眼跟不上更快的文字变化。
+   扫过的"大事"= 文明兴起/灭亡 + 跨地区交流事件,按用户选择,不含 844 条大事记。 */
+const PB = { on:false, px:0, raf:0, last:0, tick:0, feed:[], fired:null, line:null };
+const pbEl = id => document.getElementById(id);
+/* 信息带高度随内容(文明标签换行)变化,详情卡要据此让位。
+   本来用 ResizeObserver,但它和 rAF 一样在隐藏标签页里不派发回调,无法验证;
+   反正 pbUpdate 已经节流到 ~8fps,直接量一下更简单,也不依赖任何时序。 */
+function pbMeasure() {
+  const h = pbEl('playbar').getBoundingClientRect().height;
+  if (h > 0) document.body.style.setProperty('--pb-h', Math.round(h + 22) + 'px');
+}
+function pbCivsAt(y) {
+  const live = CIVS.filter(c => y >= c.k[0][0] && y <= c.k[c.k.length-1][0] && interp(c.k, y) > .06);
+  const byLane = new Map();
+  for (const c of live) { if (!byLane.has(c.l)) byLane.set(c.l, []); byLane.get(c.l).push(c); }
+  const out = [];
+  for (const l of LANES) {
+    const cs = (byLane.get(l.id) || []).sort((a, b) => interp(b.k, y) - interp(a.k, y)).slice(0, 2);
+    for (const c of cs) out.push(c);
+  }
+  return out.slice(0, 12);
+}
+function pbBtn() {
+  const b = pbEl('playBtn');
+  b.classList.toggle('on', PB.on);
+  b.textContent = PB.on ? T('⏸ 暂停', '⏸ Pause') : T('▶ 时光穿梭', '▶ Time travel');
+}
+/* 按钮是「播放/暂停」,暂停保留进度;× 才是彻底停止。
+   扫到头时只暂停不隐藏,好让人看清最后的世界;此时再按播放则从头来过。 */
+function pbToggle() {
+  if (PB.on) { PB.on = false; cancelAnimationFrame(PB.raf); pbBtn(); return; }
+  if (!PB.line || PB.px >= INNER_W) pbBegin();
+  PB.on = true; PB.last = 0; PB.raf = requestAnimationFrame(pbFrame); pbBtn();
+}
+function pbBegin() {
+  PB.feed = []; PB.fired = new Set(); PB.tick = 0; PB.px = 0;
+  pbEl('playbar').hidden = false;
+  document.body.classList.add('pb-on');
+  pbEl('pbFeed').innerHTML = '';
+  if (!PB.line) {
+    PB.line = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    PB.line.id = 'pbLine';
+    PB.line.setAttribute('y', 0); PB.line.setAttribute('width', 2);
+    PB.line.setAttribute('fill', 'var(--ink)'); PB.line.setAttribute('opacity', '.55');
+  }
+  PB.line.setAttribute('height', H); PB.line.setAttribute('x', 0);
+  chart.appendChild(PB.line);
+  pbUpdate(yearAt(0), -9999);
+}
+function pbStop() {
+  PB.on = false;
+  cancelAnimationFrame(PB.raf);
+  pbEl('playbar').hidden = true;
+  document.body.classList.remove('pb-on');
+  const l = chart && chart.querySelector('#pbLine'); if (l) l.remove();
+  PB.line = null; PB.px = 0;
+  pbBtn();
+}
+/* 整段约 75 秒扫完可视范围;时间轴是非线性的,所以按像素匀速——上古几百年一晃而过,
+   近代一年一年慢慢走,正好与信息密度相称。 */
+function pbFrame(ts) {
+  if (!PB.on) return;
+  if (!PB.last) PB.last = ts;
+  const dt = Math.min(80, ts - PB.last); PB.last = ts;
+  const prevY = yearAt(PB.px);
+  PB.px += INNER_W / 75000 * dt;
+  if (PB.px >= INNER_W) {
+    PB.px = INNER_W;
+    if (PB.line) PB.line.setAttribute('x', PB.px);
+    pbUpdate(yearAt(PB.px), prevY);
+    PB.on = false; pbBtn(); return;
+  }
+  if (PB.line) PB.line.setAttribute('x', PB.px.toFixed(1));
+  /* 让竖线保持在视野中央偏左,图表跟着走 */
+  const sw = scrollerEl.clientWidth;
+  const want = PB.px - sw * 0.42;
+  if (Math.abs(scrollerEl.scrollLeft - want) > 2) scrollerEl.scrollLeft = want;
+  PB.tick += dt;
+  if (PB.tick >= 120) { PB.tick = 0; pbUpdate(yearAt(PB.px), prevY); }
+  else pbCollect(yearAt(PB.px), prevY);
+  PB.raf = requestAnimationFrame(pbFrame);
+}
+function pbCollect(y, prevY) {
+  if (y <= prevY) return;
+  const batch = [];
+  for (const c of CIVS) {
+    const a = c.k[0][0], b = c.k[c.k.length - 1][0];
+    if (a > prevY && a <= y && !PB.fired.has('a' + c.n))
+      { PB.fired.add('a' + c.n); batch.push({ y: a, t: cN(c), d: T('兴起', 'rises'), col: fill(c) }); }
+    if (b > prevY && b <= y && b < 2020 && !PB.fired.has('b' + c.n))
+      { PB.fired.add('b' + c.n); batch.push({ y: b, t: cN(c), d: T('落幕', 'ends'), col: fill(c) }); }
+  }
+  for (const e of EVENTS) {
+    if (e.y > prevY && e.y <= y && !PB.fired.has('e' + e.y + e.n))
+      { PB.fired.add('e' + e.y + e.n); batch.push({ y: e.y, t: evTitle(e), d: EV_GLYPH[e.t] + ' ' + evType(e.t), col: 'var(--ink-2)', ev: 1 }); }
+  }
+  /* 同一批里文明兴亡与交流事件是分两个循环收的,不排序的话显示出来年份会乱跳 */
+  batch.sort((p, q) => p.y - q.y);
+  PB.feed.push(...batch);
+  if (PB.feed.length > 40) PB.feed = PB.feed.slice(-40);
+}
+function pbUpdate(y, prevY) {
+  pbCollect(y, prevY);
+  pbEl('pbYear').textContent = fmtY(Math.round(y));
+  const era = ERAS.find(e => y >= e.a && y <= e.b);
+  pbEl('pbEra').textContent = era ? (LANG === 'zh' ? era.n : EN.eras[ERAS.indexOf(era)]) : '';
+  pbEl('pbCivs').innerHTML = pbCivsAt(y).map(c =>
+    `<span class="pb-civ"><i style="background:${fill(c)}"></i>${cN(c)}</span>`).join('');
+  const recent = PB.feed.slice(-3).reverse();
+  pbEl('pbFeed').innerHTML = recent.map((f, i) =>
+    `<div class="pb-item${i ? ' dim' : ''}"><b style="color:${f.col}">${f.t}</b> ${f.ev ? '' : f.d} <span style="color:var(--muted)">${fmtY(f.y)}</span></div>`).join('')
+    || `<div class="pb-item dim">—</div>`;
+  pbMeasure();
+}
+pbEl('playBtn').addEventListener('click', pbToggle);
+pbEl('pbStop').addEventListener('click', pbStop);
+/* 缩放/切语言/切图例都会重建图表 SVG,竖线挂在旧 SVG 上会变成孤儿——直接停掉 */
+pbCleanup = () => { if (PB.line) pbStop(); };
 const traceSel = document.getElementById('traceSel');
 traceSel.addEventListener('change', () => {
   curTrace = traceSel.value === '' ? null : +traceSel.value;
@@ -2516,6 +2686,9 @@ function applyLang() {
     '<p>· 时间轴为非线性:史前与上古压缩,近 500 年放大。点击文明圈图例可高亮该文明圈在所有区域的分布(如 1500 年后蓝色涌入美洲,13 世纪绿色横扫欧亚)。</p><p>· 影响力厚度为主观示意估计,用于呈现兴衰节奏与同期对比,非精确度量。数据手工编写,难免疏漏,欢迎指正。</p>',
     '<p>· The time axis is nonlinear: antiquity is compressed, the last 500 years expanded. Click a sphere in the legend to highlight it across all regions (blue flooding the Americas after 1500, green sweeping Eurasia in the 13th century).</p><p>· Band thickness is a subjective, illustrative estimate — for rhythm and comparison, not precise measurement. Hand-curated data; corrections welcome.</p>');
   document.getElementById('zoomOut').textContent = T('⤺ 全景', '⤺ Full view');
+  document.getElementById('playBtn').textContent = PB.on ? T('⏸ 暂停', '⏸ Pause') : T('▶ 时光穿梭', '▶ Time travel');
+  document.getElementById('pbNowLab').textContent = T('此刻在场', 'On stage now');
+  document.getElementById('pbFeedLab').textContent = T('最近发生', 'Recently');
   traceSel.innerHTML = `<option value="">${T('传播追踪:关', 'Trace: off')}</option>` +
     TRACES.map((tr, i) => `<option value="${i}"${curTrace === i ? ' selected' : ''}>${tr.n[LANG === 'zh' ? 0 : 1]}</option>`).join('');
   renderLanes(); renderChips(); renderTable(); buildChart();

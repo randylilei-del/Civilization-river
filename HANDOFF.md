@@ -6,18 +6,18 @@
 
 从史前到现代的世界文明兴衰交互可视化,单文件 PWA。最终用户是 Ray 本人 + 他 7 岁的儿子(iPad 使用)。当前阶段:已上线,内容深化与实机体验打磨。
 
-## 项目状态:v20,已上线 https://civilization-river.vercel.app
+## 项目状态:v21,已上线 https://civilization-river.vercel.app
 
 接手时先 `git status` 核实。截至本次会话结束:
 
-- **v13~v19 已 push 并上线**;v20 已 commit 待 push(push 后 Vercel 自动重新部署)
+- **v13~v19 已 push 并上线**;v20、v21 已 commit 待 push(push 后 Vercel 自动重新部署)
 - 数据规模:115 个文明 · 844 条大事记 · 163 段鼎盛区间(覆盖 107/115)· 156 条古地名今址 · 63 条地理要素(河流/山脉/沙漠) · 22 个交流事件 · 10 条传播轨迹
-- 功能全景见 docs/CHANGELOG.md(v0-v20);设计理由见 docs/DESIGN.md;改数据前必读 docs/DATA.md
+- 功能全景见 docs/CHANGELOG.md(v0-v21);设计理由见 docs/DESIGN.md;改数据前必读 docs/DATA.md
 - 仓库实名是大写 C 的 `Civilization-river`(小写链接自动重定向)
 
-## 已完成(本次会话 v13 → v20)
+## 已完成(本次会话 v13 → v21)
 
-全部改在 `index.html` + `docs/` + 新增 `tools/audit.js`,十个 commit。
+全部改在 `index.html` + `docs/` + 新增 `tools/audit.js`,十一个 commit。
 
 **v15** 中亚断流补齐:新增 9 个色带(粟特、柔然、嚈哒、萨曼、喀喇汗、花剌子模、西辽、哈萨克汗国、布哈拉三汗国),草原·中亚泳道自 -800 起全线连续。文明 103→112
 
@@ -28,6 +28,10 @@
 **v18** 全站断流补齐:v16 扫出的五处空场全部处理。新增 3 色带(百乘王朝、查文文化、刚果王国)+ 延长 3 色带(印度河文明至 -1300、古希腊至 -1100、中世纪诸王朝至 540)。文明 112→115
 
 **v19** 地理底图:版图图加河流/山脉/沙漠三层(手写内嵌,+9KB);河名只标穿过本文明版图的(点在多边形内判定);建立地图标签优先级与避让,顺带修掉同期文明标签叠字的老毛病(重叠 13→1、出界 0)
+
+**v20** iPad 实机反馈:鼎盛区间标签不再压在色条上(放不下就单独占一行放上方,压条率 41%→0%);面板加宽(iPad 上 760px),卡片内 SVG 按 viewBox 缩放
+
+**v21** 时光穿梭:竖线扫过时间轴(约 75 秒),图表跟随滚动,底部信息带实时报"此刻在场的文明 + 最近发生的事"。**踩到一个会直接翻车的坑**:`display:grid` 盖过了浏览器默认的 `[hidden]{display:none}`,信息带从加载起就一直挂在屏幕底部——必须显式写 `#playbar[hidden]{display:none}`
 
 **v13**
 1. 8 处校对修正:勾践卧薪尝胆 -496→-494;二里头宫城 -1900→-1700;4 条色带起点前移以覆盖越界大事记(西葡 1420→1415、英国 1600→1585、希腊化 -330→-331、拉美 1820→1810);文艺复兴意大利 1494 条目排序;DATA.md 修正"k 首尾必须为 0"的错误表述
@@ -57,6 +61,9 @@
 - **Playwright 渲染验证跑不了**:本机没装 playwright(node、npx、python 三种都查过),`~/.cache/ms-playwright` 也不存在。**替代方案已验证可用**:用 claude-in-chrome MCP 工具。
 - **`file://` 被 Chrome 扩展拒绝**(报 "Can't interact with browser-internal or unparseable URLs")。**解法**:起本地静态服务器 `python3 -m http.server 8777 --bind 127.0.0.1 --directory "<项目路径>"`(要用 Bash 工具的 `run_in_background`,`nohup ... &` 写法会被权限拦),然后访问 `http://127.0.0.1:8777/index.html`。
 - **深色模式没有页面上的切换按钮**,靠 `prefers-color-scheme`;验证时用 JS 打开:`document.documentElement.setAttribute('data-theme','dark')`。
+- **claude-in-chrome 的标签页是 hidden 的,`requestAnimationFrame` 与 `ResizeObserver` 回调完全不派发**(实测 1 秒 0 帧)。测动画类功能不能靠"点播放然后 sleep",要**阻断 rAF 自调度、手动喂合成时间戳**:
+  `const real=window.requestAnimationFrame; window.requestAnimationFrame=()=>0; let ts=0; for(...){ts+=16.7; pbFrame(ts);} window.requestAnimationFrame=real;`
+  测试脚本里也别 `await new Promise(r=>requestAnimationFrame(r))`——会直接把 CDP 调用挂死到超时。v21 因此把 ResizeObserver 换成了直接量尺寸。
 
 ## 阻塞项 / 等用户决定
 
