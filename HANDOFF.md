@@ -6,7 +6,7 @@
 
 - 功能全景见 docs/CHANGELOG.md(v0-v11);设计理由见 docs/DESIGN.md;改数据前必读 docs/DATA.md
 - 代码已推送 GitHub(main 分支,注意仓库实名是大写 C 的 `Civilization-river`,小写链接自动重定向)
-- Ray 已在 Mac 完成本地 clone(cc projects/07 civilization-river)
+- Ray 本地文件夹定为 **`cc projects/17-civilization-river`**(1-16 已被占用;早先误按 07 clone 的文件夹待删,见 Plans 待办)
 
 ## 待办(按优先级)
 
