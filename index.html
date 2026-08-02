@@ -183,6 +183,8 @@ svg.tr .evg { opacity: .2; }
 .chart-card {
   position: relative; background: var(--surface);
   border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
+  /* 多层阴影:近处一层锐、远处一层柔,图表卡从页面上"浮"出来 */
+  box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 8px 28px rgba(0,0,0,.09);
 }
 .scroller { overflow-x: auto; overflow-y: hidden; }
 svg { display: block; }
@@ -195,7 +197,11 @@ svg { display: block; }
   letter-spacing: .04em; white-space: nowrap;
 }
 
-.band { cursor: pointer; transition: opacity .18s; }
+.band { cursor: pointer; transition: opacity .18s, filter .18s; }
+/* hover 抬升:色带浮起来一点,像从纸面上被捏起 */
+.band:hover { filter: drop-shadow(0 3px 5px rgba(0,0,0,.35)); }
+.sheen { transition: opacity .18s; }
+svg.hl .sheen, svg.tr .sheen { opacity: .1; }
 .evg { cursor: pointer; }
 svg.hl .band { opacity: .14; }
 svg.hl .band.hit { opacity: 1; }
@@ -221,7 +227,7 @@ svg.no-ev .evg { display: none; }
   position: fixed; z-index: 20; top: 16px; right: 16px; bottom: 16px;
   width: clamp(400px, 32vw, 540px);
   background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0,0,0,.22); padding: 18px 20px; overflow-y: auto;
+  box-shadow: 0 2px 6px rgba(0,0,0,.12), 0 18px 60px rgba(0,0,0,.28); padding: 18px 20px; overflow-y: auto;
   transform: translateX(112%); transition: transform .25s ease; font-size: 13px;
 }
 #panel.open { transform: none; }
@@ -250,6 +256,20 @@ a.wk:hover { text-decoration-style: solid; }
 a.wk::after { content: '↗'; font-size: .72em; color: var(--muted); margin-left: 1.5px; vertical-align: super; }
 #panel .p-spark { margin: 4px 0 10px; }
 #panel .p-map { margin: 2px 0 12px; }
+/* 地图沙盘:perspective 容器 + preserve-3d 舞台,四层 svg 各自 translateZ。
+   祖先链上不能出现 border-radius+overflow / filter / opacity<1,会压平 3D。 */
+#panel .m3d { perspective: 700px; touch-action: none; }
+#panel .m3d-stage {
+  position: relative; width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  transform: rotateX(32deg) rotateZ(-8deg) scale(.94);
+  transition: transform .3s ease;
+}
+#panel .m3d-stage svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+#panel .m3d-relief { transform: translateZ(8px); pointer-events: none; }
+#panel .m3d-terr { transform: translateZ(14px); pointer-events: none; }
+#panel .m3d-label { transform: translateZ(20px); }
+@media (prefers-reduced-motion: reduce) { #panel .m3d-stage { transition: none; } }
 #panel .p-map .cap { color: var(--muted); font-size: 11px; margin-top: 3px; }
 #panel .cap span.peer-go { cursor: pointer; text-decoration: underline dotted; color: var(--ink-2); }
 #panel .cap span.peer-go:hover { color: var(--ink); }
@@ -2276,6 +2296,8 @@ function buildChart() {
   }
   let svg = [];
   svg.push(`<svg id="chart" width="${INNER_W}" height="${H}" viewBox="0 0 ${INNER_W} ${H}" role="img" aria-label="世界文明兴衰图">`);
+  /* 绸带高光:每条色带按自身包围盒(objectBoundingBox)上亮下暗,做出圆润的立体截面 */
+  svg.push(`<defs><linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".32"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset=".72" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".16"/></linearGradient></defs>`);
   svg.push(`<defs><marker id="arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0.5L7.5,4L0,7.5Z" fill="var(--ink-2)"/></marker></defs>`);
   svg.push(`<rect x="0" y="0" width="${INNER_W}" height="46" fill="transparent" style="touch-action:none"/>`);
   ERAS.forEach((e, i) => {
@@ -2305,6 +2327,7 @@ function buildChart() {
     for (let i = a+1; i <= b; i++) d += `L${XS[i]},${st.tops[j][i].toFixed(1)}`;
     for (let i = b; i >= a; i--) d += `L${XS[i]},${st.bots[j][i].toFixed(1)}`;
     svg.push(`<path class="band" data-ci="${ci}" data-sphere="${c.s}" d="${d}Z" fill="${fill(c)}" stroke="var(--surface)" stroke-width="2" stroke-linejoin="round"/>`);
+    svg.push(`<path class="sheen" d="${d}Z" fill="url(#sheen)" pointer-events="none"/>`);
     let mi = a; for (let i = a; i <= b; i++) if (p[i] > p[mi]) mi = i;
     const th = st.bots[j][mi] - st.tops[j][mi];
     if (th >= 13 && (XS[b]-XS[a]) >= 52)
@@ -2597,12 +2620,20 @@ function mapHTML(c) {
   const line = pts => 'M' + pts.map(p => sx(p[0]).toFixed(1) + ',' + sy(p[1]).toFixed(1)).join('L');
   /* 只画与视野相交的地理要素;全在视野外的直接跳过,省得画一堆被裁掉的路径 */
   const inView = pts => pts.some(([x, y]) => x >= minx && x <= maxx && y >= miny && y <= maxy);
-  let s = `<svg width="${W}" height="${Hm}" viewBox="0 0 ${W} ${Hm}" aria-label="版图示意图" style="background:var(--wash);border-radius:8px">`;
-  for (const r of LAND) s += `<path d="${path(r)}" fill="color-mix(in oklab, var(--ink) 8%, var(--surface))"/>`;
-  for (const d of DESERTS) if (inView(d.p)) s += `<path d="${path(d.p)}" fill="var(--geo-desert)" opacity=".55"/>`;
-  for (const m of RANGES) if (inView(m.p)) s += `<path d="${path(m.p)}" fill="var(--geo-range)" opacity=".5"/>`;
-  for (const r of RIVERS) if (inView(r.p)) s += `<path d="${line(r.p)}" fill="none" stroke="var(--geo-river)" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/>`;
-  for (const poly of g.p) s += `<path d="${path(poly)}" fill="${fill(c)}" opacity=".5" stroke="${fill(c)}" stroke-width="1.2" stroke-linejoin="round"/>`;
+  /* 沙盘分四层,各是一个绝对定位的 svg,倾斜时靠 translateZ 产生视差高度:
+     base(海陆/沙漠/河流/河名,贴地) → relief(山脉,+8px) → terr(版图,+14px,
+     保持原有的"版图压在山上"的 z 序) → label(同期文明与本名,+20px)。
+     注意:这套 3D 的祖先元素不能有 border-radius+overflow、filter、opacity<1,
+     任何一个都会把 preserve-3d 压平(Safari 尤其),圆角背景只能画在 base 自己身上。 */
+  const svgo = cls => `<svg class="${cls}" viewBox="0 0 ${W} ${Hm}" aria-hidden="true">`;
+  let base = svgo('m3d-base') + `<rect x="0" y="0" width="${W}" height="${Hm}" rx="8" fill="var(--wash)"/>`;
+  let relief = svgo('m3d-relief'), terr = svgo('m3d-terr'), label = svgo('m3d-label');
+  for (const r of LAND) base += `<path d="${path(r)}" fill="color-mix(in oklab, var(--ink) 8%, var(--surface))"/>`;
+  for (const d of DESERTS) if (inView(d.p)) base += `<path d="${path(d.p)}" fill="var(--geo-desert)" opacity=".55"/>`;
+  for (const m of RANGES) if (inView(m.p)) relief += `<path d="${path(m.p)}" fill="var(--geo-range)" opacity=".62"/>`;
+  for (const r of RIVERS) if (inView(r.p)) base += `<path d="${line(r.p)}" fill="none" stroke="var(--geo-river)" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/>`;
+  for (const poly of g.p) terr += `<path d="${path(poly)}" fill="${fill(c)}" opacity=".5" stroke="${fill(c)}" stroke-width="1.2" stroke-linejoin="round"/>`;
+  let s = '';
   /* 河名只给真正穿过本文明版图的那几条。必须用「点在多边形内」判定,不能图省事
      用外接矩形:版图多是狭长或不规则的,矩形会把邻居的河也框进来——西汉会标上
      恒河与伊洛瓦底江,罗马会标上第聂伯河与维斯瓦河,都不是它们的河。
@@ -2641,7 +2672,7 @@ function mapHTML(c) {
     if (hit.length < 2) continue;
     const [lx, ly] = hit[Math.floor(hit.length / 2)];
     if (lx < minx || lx > maxx || ly < miny || ly > maxy) continue;
-    const label = r.n[LANG === 'zh' ? 0 : 1], half = label.length * rw / 2;
+    const rname = r.n[LANG === 'zh' ? 0 : 1], half = rname.length * rw / 2;
     const px = sx(lx);
     let py2 = sy(ly) - 3;
     /* 固定下移一个量是不够的:两河流域相距仅 2 经度,原始间距本身就落在碰撞区内,
@@ -2651,21 +2682,22 @@ function mapHTML(c) {
     if (cl.length) { py2 = Math.max(...cl.map(q => q[1])) + 11; cl = clashes(); }
     if (cl.length || py2 > Hm - 2 || py2 < 8) continue;
     placed.push([px, py2, half]);
-    s += `<text x="${px.toFixed(1)}" y="${py2.toFixed(1)}" text-anchor="middle" font-size="8.5" fill="var(--geo-river)" stroke="var(--surface)" stroke-width="2.2" paint-order="stroke">${label}</text>`;
+    base += `<text x="${px.toFixed(1)}" y="${py2.toFixed(1)}" text-anchor="middle" font-size="8.5" fill="var(--geo-river)" stroke="var(--surface)" stroke-width="2.2" paint-order="stroke">${rname}</text>`;
   }
   /* 同期文明可点跳转:整组包在 <g> 里挂 data-goto,透明大圆保证触屏点得中。
      看罗马时点"帕提亚·萨珊"直接跳过去——详情卡从查询终点变成漫游节点。 */
   for (const { o, cx, cy, flip, ly } of visPeers) {
-    s += `<g class="peer-go" data-goto="${o.n}" style="cursor:pointer">`;
-    s += `<circle cx="${sx(cx).toFixed(1)}" cy="${sy(cy).toFixed(1)}" r="12" fill="transparent"/>`;
-    s += `<circle cx="${sx(cx).toFixed(1)}" cy="${sy(cy).toFixed(1)}" r="3.2" fill="${fill(o)}" stroke="var(--surface)" stroke-width="1.2"/>`;
-    s += `<text x="${(sx(cx) + (flip ? -5 : 5)).toFixed(1)}" y="${ly.toFixed(1)}"${flip ? ' text-anchor="end"' : ''} font-size="9" fill="var(--ink)" stroke="var(--surface)" stroke-width="2.5" paint-order="stroke" text-decoration="underline dotted">${cN(o)}</text>`;
-    s += `</g>`;
+    label += `<g class="peer-go" data-goto="${o.n}" style="cursor:pointer">`;
+    label += `<circle cx="${sx(cx).toFixed(1)}" cy="${sy(cy).toFixed(1)}" r="12" fill="transparent"/>`;
+    label += `<circle cx="${sx(cx).toFixed(1)}" cy="${sy(cy).toFixed(1)}" r="3.2" fill="${fill(o)}" stroke="var(--surface)" stroke-width="1.2"/>`;
+    label += `<text x="${(sx(cx) + (flip ? -5 : 5)).toFixed(1)}" y="${ly.toFixed(1)}"${flip ? ' text-anchor="end"' : ''} font-size="9" fill="var(--ink)" stroke="var(--surface)" stroke-width="2.5" paint-order="stroke" text-decoration="underline dotted">${cN(o)}</text>`;
+    label += `</g>`;
   }
-  s += `<text x="${sx(g.c[0]).toFixed(1)}" y="${(sy(g.c[1]) - 4).toFixed(1)}" text-anchor="middle" font-size="10" font-weight="700" fill="var(--ink)" stroke="var(--surface)" stroke-width="3" paint-order="stroke">${cN(c)}</text>`;
-  s += '</svg>';
+  label += `<text x="${sx(g.c[0]).toFixed(1)}" y="${(sy(g.c[1]) - 4).toFixed(1)}" text-anchor="middle" font-size="10" font-weight="700" fill="var(--ink)" stroke="var(--surface)" stroke-width="3" paint-order="stroke">${cN(c)}</text>`;
+  /* 姿态用全局 M3D 内联,跨卡片保持:调好角度后逛别的文明,沙盘还是那个角度 */
+  s = `<div class="m3d" style="aspect-ratio:${W}/${Hm}"><div class="m3d-stage" style="transform:rotateX(${M3D.rx}deg) rotateZ(${M3D.rz}deg) scale(.94)">${base}</svg>${relief}</svg>${terr}</svg>${label}</svg></div></div>`;
   const far = farPeers.length ? `${T(' · 视野外同期:',' · off-map: ')}${farPeers.map(o => `<span class="peer-go" data-goto="${o.n}">${cN(o)}</span>`).join(T('、',', '))}` : '';
-  return `<div class="p-map">${s}<div class="cap">${T('约 ','c. ')}${fmtY(py)}${T(' 年前后 · 版图为粗略示意 · 圆点为同期主要文明',' · rough territorial sketch · dots = major contemporaries')}${far}</div></div>`;
+  return `<div class="p-map">${s}<div class="cap">${T('🏔 拖动倾斜旋转 · 双击回平面 · 约 ','🏔 drag to tilt · double-tap to flatten · c. ')}${fmtY(py)}${T(' 年前后 · 版图为粗略示意 · 圆点为同期主要文明',' · rough territorial sketch · dots = major contemporaries')}${far}</div></div>`;
 }
 let cur = null;
 /* 把"中心"里的古地名换算成今天的位置。始终按中文原文查 PLACE(中英共用一套键),
@@ -2914,11 +2946,47 @@ traceSel.addEventListener('change', () => {
   curTrace = traceSel.value === '' ? null : +traceSel.value;
   buildChart();
 });
+/* 地图沙盘拖拽:竖拖=俯仰(rotateX 0~55°),横拖=旋转(rotateZ ±40°)。
+   状态存全局(面板每次重建,监听只能挂委托);拖动超过 6px 就吞掉随后的
+   click,免得转个地图误触了同期文明跳转。双击在沙盘/平面间切换。 */
+const M3D = { rx: 32, rz: -8, drag: null, moved: false };
+function m3dApply(stage, anim) {
+  stage.style.transition = anim ? '' : 'none';
+  stage.style.transform = `rotateX(${M3D.rx}deg) rotateZ(${M3D.rz}deg) scale(.94)`;
+}
+panel.addEventListener('pointerdown', e => {
+  const box = e.target.closest && e.target.closest('.m3d');
+  if (!box) return;
+  const stage = box.querySelector('.m3d-stage');
+  M3D.drag = { x: e.clientX, y: e.clientY, rx: M3D.rx, rz: M3D.rz, stage };
+  M3D.moved = false;
+});
+document.addEventListener('pointermove', e => {
+  if (!M3D.drag) return;
+  const dx = e.clientX - M3D.drag.x, dy = e.clientY - M3D.drag.y;
+  if (Math.abs(dx) + Math.abs(dy) > 6) M3D.moved = true;
+  M3D.rx = Math.max(0, Math.min(55, M3D.drag.rx + dy * 0.35));
+  M3D.rz = Math.max(-40, Math.min(40, M3D.drag.rz - dx * 0.25));
+  m3dApply(M3D.drag.stage, false);
+});
+document.addEventListener('pointerup', () => {
+  if (!M3D.drag) return;
+  M3D.drag = null;
+  setTimeout(() => M3D.moved = false, 80);
+});
+panel.addEventListener('dblclick', e => {
+  const box = e.target.closest && e.target.closest('.m3d');
+  if (!box) return;
+  const flat = M3D.rx === 0 && M3D.rz === 0;
+  M3D.rx = flat ? 32 : 0; M3D.rz = flat ? -8 : 0;
+  m3dApply(box.querySelector('.m3d-stage'), true);
+});
 panel.addEventListener('click', e => {
   if (e.target.classList.contains('p-close')) panel.classList.remove('open');
   /* 卡内漫游:点同期文明(地图圆点/视野外列表)跳到那个文明的卡片 */
   const go = e.target.closest && e.target.closest('[data-goto]');
   if (go) {
+    if (M3D.moved && go.closest('.m3d')) return;   // 刚拖完沙盘,不当作点击
     const c = CIVS.find(x => x.n === go.dataset.goto);
     if (c) { openCiv(c); panel.scrollTop = 0; return; }
   }
