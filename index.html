@@ -187,6 +187,7 @@ a.wk::after { content: '↗'; font-size: .72em; color: var(--muted); margin-left
 #panel .p-gl { margin: -4px 0 10px; }
 #panel .p-gl .cap { color: var(--muted); font-size: 11px; margin-top: 1px; }
 #panel .p-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; margin: 0 0 12px; }
+#panel .fact .today { display: block; margin-top: 2px; font-style: normal; font-size: 10.5px; line-height: 1.35; color: var(--muted); }
 #panel .fact { background: var(--wash); border-radius: 7px; padding: 6px 9px; }
 #panel .fact span { display: block; color: var(--muted); font-size: 11px; }
 #panel .fact b { font-weight: 600; font-size: 12px; }
@@ -604,7 +605,7 @@ const CIVS = [
   f:{ '鼎盛':'阿斯基亚·穆罕默德(1493—1528)', '中心':'加奥', '成就':'行省与常备军制' },
   d:'继马里而起的西非最大帝国,行省与常备军制齐备;1591年摩洛哥远征军带着火枪穿越撒哈拉,冷兵器的桑海一战而溃——旧世界军事革命最残酷的注脚之一。' },
 { l:'af', s:'west', v:0, n:'欧洲殖民非洲', k:[[1650,0],[1800,.15],[1884,.4],[1914,.7],[1957,.5],[1975,0]], b:'三角贸易三百年后,柏林会议用直尺瓜分全洲。',
-  f:{ '转折':'1884年柏林会议', '关键词':'三角贸易、直尺边界' },
+  f:{ '转折':'1884年柏林会议', '中心':'开普敦、阿尔及尔、达喀尔', '关键词':'三角贸易、直尺边界' },
   d:'三角贸易三百年掠走上千万人口之后,1884年柏林会议用直尺瓜分全洲,仅埃塞俄比亚与利比里亚幸免;殖民统治不足百年,但它重划的边界、语言与经济结构,至今仍是非洲诸多冲突的底层原因。' },
 { l:'af', s:'africa', v:0, n:'现代非洲', k:[[1957,0],[1994,.35],[2025,.45]], b:'去殖民化后五十余国;世界上人口最年轻的大陆。',
   f:{ '转折':'1960"非洲年"', '中心':'拉各斯、内罗毕、约翰内斯堡' },
@@ -1350,6 +1351,105 @@ const CHRONO_X = {
  [2007, ['M-Pesa 手机支付','M-Pesa launches'], ['肯尼亚跳过银行卡,直接进入移动支付。','Kenya skips the bank card entirely.']],
  [2011, ['南苏丹独立','South Sudan independent'], ['非洲最年轻的国家。','Africa\'s youngest state.']] ],
 };
+/* ---------- 古地名 → 今属何处 ----------
+   键 = CIVS[].f['中心'] 里出现的中文地名原文(精确匹配,含括号)。
+   四项 [国zh, 国en, 今名zh, 今名en] = 今天仍有对应城市;渲染成「国:今名」。
+   两项 [国zh, 国en]                = 遗址或泛指的区域,没有对得上的今日城市;只渲染国名。
+   中英两种语言都查这张表(键始终用中文),所以不会出现两边对不上的情况。
+   渲染时按国家归并(见 todayHTML),所以「长安、洛阳」出来是「今 中国:西安、洛阳」而不是两遍中国。 */
+const PLACE = {
+/* 欧洲 */
+'克诺索斯':['希腊·克里特岛','Crete, Greece'], '迈锡尼':['希腊','Greece'],
+'雅典':['希腊','Greece','雅典','Athens'], '斯巴达':['希腊','Greece','斯巴达','Sparta'],
+'罗马城':['意大利','Italy','罗马','Rome'], '罗马':['意大利','Italy','罗马','Rome'],
+'佛罗伦萨':['意大利','Italy','佛罗伦萨','Florence'], '威尼斯':['意大利','Italy','威尼斯','Venice'],
+'君士坦丁堡':['土耳其','Turkey','伊斯坦布尔','Istanbul'], '伊斯坦布尔':['土耳其','Turkey','伊斯坦布尔','Istanbul'],
+'里斯本':['葡萄牙','Portugal','里斯本','Lisbon'], '马德里':['西班牙','Spain','马德里','Madrid'],
+'阿姆斯特丹':['荷兰','Netherlands','阿姆斯特丹','Amsterdam'], '巴黎':['法国','France','巴黎','Paris'],
+'伦敦':['英国','United Kingdom','伦敦','London'], '柏林':['德国','Germany','柏林','Berlin'],
+'莫斯科':['俄罗斯','Russia','莫斯科','Moscow'], '圣彼得堡':['俄罗斯','Russia','圣彼得堡','St. Petersburg'],
+/* 中东·北非 */
+'乌鲁克':['伊拉克','Iraq'], '乌尔':['伊拉克','Iraq'], '阿卡德':['伊拉克(遗址未确认)','Iraq (site unidentified)'],
+'巴比伦':['伊拉克','Iraq','希拉近郊','near Hillah'], '泰西封':['伊拉克','Iraq'], '尼尼微':['伊拉克','Iraq','摩苏尔','Mosul'],
+'巴格达':['伊拉克','Iraq','巴格达','Baghdad'],
+'孟菲斯':['埃及','Egypt','开罗近郊','near Cairo'], '底比斯':['埃及','Egypt','卢克索','Luxor'],
+'亚历山大里亚':['埃及','Egypt','亚历山大','Alexandria'], '开罗':['埃及','Egypt','开罗','Cairo'],
+'哈图沙':['土耳其','Turkey','博阿兹卡莱','Bogazkale'], '安条克':['土耳其','Turkey','安塔基亚','Antakya'],
+'推罗':['黎巴嫩','Lebanon','苏尔','Tyre'], '西顿':['黎巴嫩','Lebanon','赛达','Saida'],
+'迦太基城':['突尼斯','Tunisia','突尼斯城郊','a suburb of Tunis'],
+'波斯波利斯':['伊朗','Iran'], '苏萨':['伊朗','Iran'],
+'大不里士':['伊朗','Iran','大不里士','Tabriz'], '伊斯法罕':['伊朗','Iran','伊斯法罕','Isfahan'],
+'德黑兰':['伊朗','Iran','德黑兰','Tehran'], '大马士革':['叙利亚','Syria','大马士革','Damascus'],
+'利雅得':['沙特阿拉伯','Saudi Arabia','利雅得','Riyadh'],
+/* 草原·中亚 */
+'黑海北岸草原':['乌克兰与俄罗斯南部','southern Ukraine and Russia'], '潘诺尼亚':['匈牙利','Hungary'],
+'漠北单于庭':['蒙古国','Mongolia'], '漠北':['蒙古国','Mongolia'], '鄂尔浑河谷':['蒙古国','Mongolia'],
+'哈拉巴拉嘎斯':['蒙古国','Mongolia'], '哈拉和林':['蒙古国','Mongolia'],
+'撒马尔罕':['乌兹别克斯坦','Uzbekistan','撒马尔罕','Samarkand'], '布哈拉':['乌兹别克斯坦','Uzbekistan','布哈拉','Bukhara'],
+'希瓦':['乌兹别克斯坦','Uzbekistan','希瓦','Khiva'], '浩罕':['乌兹别克斯坦','Uzbekistan','浩罕','Kokand'],
+'塔什干':['乌兹别克斯坦','Uzbekistan','塔什干','Tashkent'],
+'巴克特里亚(今阿富汗北部)':['阿富汗','Afghanistan'],
+'喀什噶尔':['中国','China','喀什','Kashgar'],
+'八剌沙衮':['吉尔吉斯斯坦','Kyrgyzstan','布拉纳遗址','the Burana site'],
+'虎思斡耳朵':['吉尔吉斯斯坦','Kyrgyzstan','托克马克附近','near Tokmok'],
+'玉龙杰赤':['土库曼斯坦','Turkmenistan','库尼亚-乌尔根奇','Konye-Urgench'],
+'突厥斯坦城':['哈萨克斯坦','Kazakhstan','突厥斯坦','Turkistan'], '阿斯塔纳':['哈萨克斯坦','Kazakhstan','阿斯塔纳','Astana'],
+'伊犁河谷':['中国新疆与哈萨克斯坦','Xinjiang and Kazakhstan'],
+/* 南亚 */
+'哈拉帕':['巴基斯坦','Pakistan'], '摩亨佐-达罗':['巴基斯坦','Pakistan'],
+'白沙瓦':['巴基斯坦','Pakistan','白沙瓦','Peshawar'],
+'印度河—恒河平原':['巴基斯坦与印度北部','Pakistan and northern India'], '德干诸都':['印度中南部','south-central India'],
+'华氏城':['印度','India','巴特那','Patna'], '卡瑙杰':['印度','India','格瑙杰','Kannauj'],
+'坦贾武尔':['印度','India','坦贾武尔','Thanjavur'], '德里':['印度','India','德里','Delhi'],
+'阿格拉':['印度','India','阿格拉','Agra'], '加尔各答':['印度','India','加尔各答','Kolkata'],
+'新德里':['印度','India','新德里','New Delhi'], '孟买':['印度','India','孟买','Mumbai'],
+'班加罗尔':['印度','India','班加罗尔','Bengaluru'],
+/* 东南亚 */
+'俄厄(湄公河三角洲)':['越南','Vietnam'], '升龙(河内)':['越南','Vietnam','河内','Hanoi'],
+'河内':['越南','Vietnam','河内','Hanoi'], '西贡':['越南','Vietnam','胡志明市','Ho Chi Minh City'],
+'巨港':['印度尼西亚','Indonesia','巨港','Palembang'], '爪哇东部':['印度尼西亚','Indonesia'],
+'雅加达':['印度尼西亚','Indonesia','雅加达','Jakarta'], '巴达维亚(雅加达)':['印度尼西亚','Indonesia','雅加达','Jakarta'],
+'吴哥':['柬埔寨','Cambodia','暹粒近郊','near Siem Reap'], '马六甲':['马来西亚','Malaysia','马六甲','Malacca'],
+'新加坡':['新加坡','Singapore'], '阿瑜陀耶':['泰国','Thailand','大城府','Ayutthaya'],
+'曼谷':['泰国','Thailand','曼谷','Bangkok'], '马尼拉':['菲律宾','Philippines','马尼拉','Manila'],
+/* 东亚 */
+'二里头(洛阳盆地)':['中国','China'], '殷(安阳)':['中国','China','安阳','Anyang'],
+'镐京':['中国','China','西安','Xi\'an'], '洛邑':['中国','China','洛阳','Luoyang'],
+'洛邑与列国都城':['中国黄河中下游','the middle and lower Yellow River, China'],
+'咸阳':['中国','China','咸阳(西安近郊)','Xianyang, near Xi\'an'], '长安':['中国','China','西安','Xi\'an'],
+'洛阳':['中国','China','洛阳','Luoyang'], '成都':['中国','China','成都','Chengdu'],
+'建业':['中国','China','南京','Nanjing'], '建康':['中国','China','南京','Nanjing'],
+'北方诸都':['中国北方','northern China'], '南方诸都':['中国南方','southern China'],
+'平城':['中国','China','大同','Datong'], '大兴(长安)':['中国','China','西安','Xi\'an'],
+'开封':['中国','China','开封','Kaifeng'], '临安(杭州)':['中国','China','杭州','Hangzhou'],
+'上京':['中国内蒙古','Inner Mongolia, China'], '南京(北京)':['中国','China','北京','Beijing'],
+'兴庆(银川)':['中国','China','银川','Yinchuan'], '中都(北京)':['中国','China','北京','Beijing'],
+'大都(北京)':['中国','China','北京','Beijing'], '北京':['中国','China','北京','Beijing'],
+'南京':['中国','China','南京','Nanjing'], '上海':['中国','China','上海','Shanghai'],
+'深圳':['中国','China','深圳','Shenzhen'], '重庆(战时)':['中国','China','重庆','Chongqing'],
+'庆州':['韩国','South Korea','庆州','Gyeongju'], '汉阳':['韩国','South Korea','首尔','Seoul'],
+'首尔':['韩国','South Korea','首尔','Seoul'], '开京':['朝鲜','North Korea','开城','Kaesong'],
+'京都':['日本','Japan','京都','Kyoto'], '江户/东京':['日本','Japan','东京','Tokyo'],
+/* 撒南非洲 */
+'纳帕塔':['苏丹','Sudan'], '麦罗埃':['苏丹','Sudan'], '昆比萨莱':['毛里塔尼亚','Mauritania'],
+'尼亚尼':['几内亚','Guinea'], '基尔瓦':['坦桑尼亚','Tanzania','基尔瓦基西瓦尼岛','Kilwa Kisiwani'], '大津巴布韦城':['津巴布韦','Zimbabwe'],
+'阿克苏姆':['埃塞俄比亚','Ethiopia','阿克苏姆','Aksum'],
+'廷巴克图':['马里','Mali','廷巴克图','Timbuktu'], '加奥':['马里','Mali','加奥','Gao'],
+'桑给巴尔':['坦桑尼亚','Tanzania','桑给巴尔','Zanzibar'], '蒙巴萨':['肯尼亚','Kenya','蒙巴萨','Mombasa'],
+'内罗毕':['肯尼亚','Kenya','内罗毕','Nairobi'], '拉各斯':['尼日利亚','Nigeria','拉各斯','Lagos'],
+'约翰内斯堡':['南非','South Africa','约翰内斯堡','Johannesburg'], '开普敦':['南非','South Africa','开普敦','Cape Town'],
+'阿尔及尔':['阿尔及利亚','Algeria','阿尔及尔','Algiers'], '达喀尔':['塞内加尔','Senegal','达喀尔','Dakar'],
+/* 美洲 */
+'圣洛伦索':['墨西哥','Mexico'], '拉文塔':['墨西哥','Mexico'], '帕伦克':['墨西哥','Mexico'], '奇琴伊察':['墨西哥','Mexico'],
+'特奥蒂瓦坎':['墨西哥','Mexico','墨西哥城近郊','near Mexico City'],
+'墨西哥城':['墨西哥','Mexico','墨西哥城','Mexico City'], '特诺奇蒂特兰':['墨西哥','Mexico','墨西哥城','Mexico City'],
+'蒂卡尔':['危地马拉','Guatemala'], '瓦里':['秘鲁','Peru'],
+'库斯科':['秘鲁','Peru','库斯科','Cusco'], '利马':['秘鲁','Peru','利马','Lima'],
+'的喀喀湖畔':['玻利维亚与秘鲁','Bolivia and Peru'],
+'华盛顿':['美国','United States','华盛顿','Washington DC'], '纽约':['美国','United States','纽约','New York'],
+'硅谷':['美国加州','California, USA'],
+'圣保罗':['巴西','Brazil','圣保罗','Sao Paulo'], '布宜诺斯艾利斯':['阿根廷','Argentina','布宜诺斯艾利斯','Buenos Aires'],
+};
 /* ---------- English dictionary ---------- */
 const EN = {
 lanes: { eu:'Europe', me:'Middle East & N. Africa', st:'Steppe & C. Asia', sa:'South Asia', se:'Southeast Asia', ea:'East Asia', af:'Sub-Saharan Africa', am:'Americas' },
@@ -1482,7 +1582,7 @@ civ: {
 '大津巴布韦': { n:'Great Zimbabwe', b:'The stone city of the south; gold and cattle.', d:'Dry-stone walls without mortar form sub-Saharan Africa\'s largest ancient structure, a kingdom of gold and cattle trading to the Swahili coast. Colonial Europeans refused to believe Africans built it; today it names the nation.', f:{ 'Center':'Great Zimbabwe', 'Legacy':'Largest ancient structure in southern Africa' } },
 '马里帝国': { n:'Mali Empire', b:'Mansa Musa\'s gold; Timbuktu\'s manuscripts.', d:'Mansa Musa\'s pilgrimage scattered so much gold that Cairo\'s price sagged for years — often called the richest man ever; Timbuktu\'s colleges and hundreds of thousands of manuscripts prove sub-Saharan Africa was never "a continent without writing."', f:{ 'Peak':'Mansa Musa (1312–1337)', 'Center':'Niani, Timbuktu', 'Figures':'Sundiata, Mansa Musa', 'Legacy':'Timbuktu scholarship' } },
 '桑海帝国': { n:'Songhai Empire', b:'West Africa\'s largest empire, felled by muskets.', d:'Successor to Mali and West Africa\'s largest empire, with provinces and a standing army; in 1591 a Moroccan force crossed the Sahara with firearms and broke it in one battle — a brutal footnote to the military revolution.', f:{ 'Peak':'Askia Muhammad (1493–1528)', 'Center':'Gao', 'Legacy':'Provincial administration' } },
-'欧洲殖民非洲': { n:'Colonial Africa', w:'Scramble for Africa', b:'Three slave-trade centuries, then the ruler-drawn carve-up.', d:'After three centuries of the slave trade took over ten million people, the 1884 Berlin Conference carved the continent with rulers — only Ethiopia and Liberia escaped. Under a century of rule redrew borders, languages and economies whose fault lines still run today.', f:{ 'Turning point':'Berlin Conference 1884', 'Keywords':'Triangular trade, ruler borders' } },
+'欧洲殖民非洲': { n:'Colonial Africa', w:'Scramble for Africa', b:'Three slave-trade centuries, then the ruler-drawn carve-up.', d:'After three centuries of the slave trade took over ten million people, the 1884 Berlin Conference carved the continent with rulers — only Ethiopia and Liberia escaped. Under a century of rule redrew borders, languages and economies whose fault lines still run today.', f:{ 'Turning point':'Berlin Conference 1884', 'Center':'Cape Town, Algiers, Dakar', 'Keywords':'Triangular trade, ruler borders' } },
 '现代非洲': { n:'Modern Africa', w:'Africa', b:'Fifty-plus states; the world\'s youngest continent.', d:'Ghana led in 1957 and seventeen states followed in 1960 alone; after Cold War proxy wars and adjustment pains, several of this century\'s fastest growers are African. Median age under 20 — the next demographic dividend lives here.', f:{ 'Turning point':'"Year of Africa" 1960', 'Center':'Lagos, Nairobi, Johannesburg' } },
 '奥尔梅克': { n:'Olmec', b:'Mesoamerica\'s mother culture; the colossal heads.', d:'Out of jungle swamps rose the "mother civilization": ten-ton basalt heads carved for no one knows whom; calendar, ballgame and feathered-serpent belief all start here, inherited wholesale by Maya and Aztec.', f:{ 'Center':'San Lorenzo, La Venta', 'Legacy':'Colossal heads, calendar origins' } },
 '玛雅': { n:'Maya', w:'Maya civilization', b:'Script, zero and precise calendars — without metal or the wheel.', d:'Without metal tools or the wheel they measured the year more precisely than the Julian calendar and invented zero independently; dozens of city-states rose and fell until the 9th-century classic collapse — still unexplained. The Maya never vanished: millions of descendants speak Mayan today.', f:{ 'Peak':'Classic (250–900)', 'Center':'Tikal, Palenque, Chichén Itzá', 'Legacy':'The Americas\' only full script, zero' } },
@@ -2082,11 +2182,32 @@ function mapHTML(c) {
   return `<div class="p-map">${s}<div class="cap">${T('约 ','c. ')}${fmtY(py)}${T(' 年前后 · 版图为粗略示意 · 圆点为同期主要文明',' · rough territorial sketch · dots = major contemporaries')}${far}</div></div>`;
 }
 let cur = null;
+/* 把"中心"里的古地名换算成今天的位置。始终按中文原文查 PLACE(中英共用一套键),
+   多个地点落在同一处时去重,一个都查不到就整行不出。 */
+function todayHTML(c) {
+  const src = c.f && c.f['中心']; if (!src) return '';
+  const li = LANG === 'zh' ? 0 : 1;
+  const order = [], byCountry = new Map();
+  src.split(/[、,;；→]/).map(s => s.trim()).filter(Boolean).forEach(p => {
+    const t = PLACE[p]; if (!t) return;
+    const country = t[li];
+    if (!byCountry.has(country)) { byCountry.set(country, []); order.push(country); }
+    const city = t[2] ? t[2 + li] : null;      // 两项条目是遗址/泛指区域,没有今日城市
+    const arr = byCountry.get(country);
+    if (city && !arr.includes(city)) arr.push(city);
+  });
+  if (!order.length) return '';
+  const parts = order.map(k => {
+    const cities = byCountry.get(k);
+    return cities.length ? `${k}${T('：', ': ')}${cities.join(T('、', ', '))}` : k;
+  });
+  return `<i class="today">${T('今 ', 'now ')}${parts.join(' · ')}</i>`;
+}
 function openCiv(c) {
   cur = { type: 'civ', obj: c };
   const f = cF(c);
   const facts = f ? `<div class="p-facts">${Object.entries(f).map(([k, v]) =>
-    `<div class="fact"><span>${k}</span><b>${(k === '人物' || k === 'Figures') ? linkNames(v) : v}</b></div>`).join('')}</div>` : '';
+    `<div class="fact"><span>${k}</span><b>${(k === '人物' || k === 'Figures') ? linkNames(v) : v}</b>${(k === '中心' || k === 'Center') ? todayHTML(c) : ''}</div>`).join('')}</div>` : '';
   const evs = EVENTS.filter(e => e.ls.includes(c.l) && e.y >= c.k[0][0] - 30 && e.y <= c.k[c.k.length-1][0] + 30);
   const ch = chronoOf(c);
   panel.innerHTML = `

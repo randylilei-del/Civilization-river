@@ -22,12 +22,12 @@ const body = script.slice(start, end).split('\n').filter(l => !l.startsWith('con
 
 const ctx = {};
 vm.createContext(ctx);
-const PICK = '({LANES,SPHERES,CIVS,EVENTS,GEO,CHRONO,GL,CHRONO_X,EN,TRACES,ERAS})';
+const PICK = '({LANES,SPHERES,CIVS,EVENTS,GEO,CHRONO,GL,CHRONO_X,EN,TRACES,ERAS,PLACE})';
 let D;
 try { vm.runInContext(body, ctx); D = vm.runInContext(PICK, ctx); } catch (e) {
   console.error('数据段解析失败:', e.message); process.exit(1);
 }
-const { LANES, CIVS, EVENTS, GEO, CHRONO, GL, CHRONO_X, EN, TRACES } = D;
+const { LANES, CIVS, EVENTS, GEO, CHRONO, GL, CHRONO_X, EN, TRACES, PLACE } = D;
 
 const P = [];
 const KINDS = ['econ', 'art', 'tech', 'thought'];
@@ -74,6 +74,28 @@ CIVS.forEach(c => {
 const names = new Set(CIVS.map(c => c.n));
 [['GEO', GEO], ['CHRONO', CHRONO], ['GL', GL], ['CHRONO_X', CHRONO_X], ['EN.chrono', EN.chrono || {}], ['EN.civ', EN.civ]]
   .forEach(([k, o]) => Object.keys(o).filter(n => !names.has(n)).forEach(n => P.push(`[孤儿键 ${k}] ${n}`)));
+
+// PLACE:"中心"里出现的每个古地名都要能换算出今属何处,否则该文明的卡片上就少一行
+const SPLIT = /[、,;；→]/;
+const placeUsed = new Set();
+CIVS.forEach(c => {
+  const v = c.f && c.f['中心']; if (!v) { P.push(`[缺"中心"字段] ${c.n}`); return; }
+  v.split(SPLIT).map(s => s.trim()).filter(Boolean).forEach(p => {
+    if (PLACE[p]) placeUsed.add(p); else P.push(`[PLACE 缺古地名] "${p}" ← ${c.n}`);
+  });
+  // 中英"中心"的地点数必须一致,否则英文卡片会漏掉某个都城
+  const en = EN.civ[c.n] && EN.civ[c.n].f && (EN.civ[c.n].f['Center'] || EN.civ[c.n].f['Centre']);
+  if (en) {
+    const nz = v.split(SPLIT).filter(s => s.trim()).length, ne = en.split(SPLIT).filter(s => s.trim()).length;
+    if (nz !== ne) P.push(`[中心中英地点数不等] ${c.n}: zh=${nz} en=${ne}`);
+  }
+});
+Object.keys(PLACE).forEach(k => {
+  if (!placeUsed.has(k)) P.push(`[PLACE 孤儿条目] "${k}" 没有任何文明引用(多半是写法对不上)`);
+  const t = PLACE[k];
+  if (!Array.isArray(t) || (t.length !== 2 && t.length !== 4)) P.push(`[PLACE 格式错] "${k}" 应为 2 项或 4 项`);
+  else if (t.some(x => !x)) P.push(`[PLACE 有空值] "${k}"`);
+});
 
 if (EN.events && EN.events.length !== EVENTS.length) P.push(`[事件中英数量不等] zh=${EVENTS.length} en=${EN.events.length}`);
 const laneIds = new Set(LANES.map(l => l.id));
