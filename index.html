@@ -126,8 +126,15 @@ h1 { font-size: 24px; margin: 0 0 2px; letter-spacing: .01em; }
   background: var(--surface); color: var(--ink); border: 1px solid var(--muted); border-radius: 999px;
   box-shadow: 0 2px 8px rgba(0,0,0,.12);
 }
-.playbtn { cursor: pointer; font: inherit; font-size: 12px; color: var(--ink); }
-.playbtn.on { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+/* 排在控件区第一位:手机上 8 个文明圈标签会先换好几行,按钮放后面要往下扒才看得见。
+   样式也做成实心胶囊——原先用浏览器默认按钮样式,混在一堆标签里不像能点的东西。 */
+.playbtn {
+  cursor: pointer; font: inherit; font-size: 12px; font-weight: 600; white-space: nowrap;
+  color: var(--surface); background: var(--ink); border: 1px solid var(--ink);
+  border-radius: 999px; padding: 4px 14px;
+}
+.playbtn:hover { opacity: .85; }
+.playbtn.on { color: var(--ink); background: var(--surface); border-color: var(--ink-2); }
 /* 时光穿梭:底部信息带。三段固定布局,内容再多也不会把年份挤走 */
 /* 必须显式写:display:grid 的优先级高于浏览器默认的 [hidden]{display:none},
    不加这一条,信息带从页面加载起就一直挂在屏幕底部,hidden 属性形同虚设。 */
@@ -278,9 +285,9 @@ td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; ma
 </header>
 
 <div class="controls">
+  <button id="playBtn" class="playbtn">▶ 时光穿梭</button>
   <div class="chips" id="chips"></div>
   <label class="ctl"><input type="checkbox" id="ck-ev" checked> <span id="evLbl">交流事件</span></label>
-  <button id="playBtn" class="ctl playbtn">▶ 时光穿梭</button>
   <select id="traceSel"></select>
   <div class="lang" id="langSw"><button data-l="zh" class="on">中</button><button data-l="en">EN</button></div>
 </div>
