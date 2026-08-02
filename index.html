@@ -173,7 +173,11 @@ body.pb-on { padding-bottom: var(--pb-h, 122px); }
 }
 svg.tr .band { opacity: .13; }
 svg.tr .evg { opacity: .2; }
-.trstop { cursor: pointer; }
+.trstop { cursor: pointer; animation: trIn .45s ease both; }
+.trpath { stroke-dasharray: 1; stroke-dashoffset: 1; animation: trFlow .55s ease-out forwards; }
+@keyframes trIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes trFlow { to { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) { .trstop, .trpath { animation: none; stroke-dashoffset: 0; } }
 
 .chart-wrap { position: relative; max-width: 1200px; margin: 0 auto 8px; padding: 0 20px; }
 .chart-card {
@@ -247,6 +251,8 @@ a.wk::after { content: '↗'; font-size: .72em; color: var(--muted); margin-left
 #panel .p-spark { margin: 4px 0 10px; }
 #panel .p-map { margin: 2px 0 12px; }
 #panel .p-map .cap { color: var(--muted); font-size: 11px; margin-top: 3px; }
+#panel .cap span.peer-go { cursor: pointer; text-decoration: underline dotted; color: var(--ink-2); }
+#panel .cap span.peer-go:hover { color: var(--ink); }
 #panel .p-gl { margin: -4px 0 10px; }
 #panel .p-gl .cap { color: var(--muted); font-size: 11px; margin-top: 1px; }
 #panel .p-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; margin: 0 0 12px; }
@@ -2240,16 +2246,18 @@ function buildChart() {
     const tr = TRACES[curTrace];
     const li = LANG === 'zh' ? 0 : 1;
     const pts = tr.stops.map(s => ({ x: X(s.y), y: laneTop(laneIdx[s.l]) + LANE_H / 2, s }));
+    /* 逐站点亮:站点按序淡入,连线用 dashoffset 从上游"流"向下游——"技术在走"
+       的感觉正是这层想讲的。延迟按站点序号排,分叉(p 指上游)也跟着上游的节奏。 */
     tr.stops.forEach((s, i) => {
       if (i === 0) return;
       const a = pts[s.p != null ? s.p : i - 1], b = pts[i];
       if (Math.max(a.x, b.x) < 0 || Math.min(a.x, b.x) > INNER_W) return;
       const mx = (a.x + b.x) / 2;
-      svg.push(`<path class="trpath" d="M${a.x.toFixed(1)},${a.y.toFixed(1)} C${mx.toFixed(1)},${a.y.toFixed(1)} ${mx.toFixed(1)},${b.y.toFixed(1)} ${(b.x-6).toFixed(1)},${b.y.toFixed(1)}" fill="none" stroke="var(--ink-2)" stroke-width="1.8" opacity=".85" marker-end="url(#arr)"/>`);
+      svg.push(`<path class="trpath" style="animation-delay:${(i * .28).toFixed(2)}s" d="M${a.x.toFixed(1)},${a.y.toFixed(1)} C${mx.toFixed(1)},${a.y.toFixed(1)} ${mx.toFixed(1)},${b.y.toFixed(1)} ${(b.x-6).toFixed(1)},${b.y.toFixed(1)}" fill="none" stroke="var(--ink-2)" stroke-width="1.8" opacity=".85" marker-end="url(#arr)" pathLength="1"/>`);
     });
     pts.forEach((p, i) => {
       if (p.x < -20 || p.x > INNER_W + 20) return;
-      svg.push(`<g class="trstop" data-ti="${i}">
+      svg.push(`<g class="trstop" data-ti="${i}" style="animation-delay:${(i * .28).toFixed(2)}s">
         <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="15" fill="transparent"/>
         <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="5" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.8"/>
         <text class="blabel" x="${p.x.toFixed(1)}" y="${(p.y - 11).toFixed(1)}" text-anchor="middle" font-size="10.5">${fmtY(p.s.y)} · ${p.s.t[li]}</text>
@@ -2316,6 +2324,16 @@ function civSpan(c) { return `${fmtY(c.k[0][0])} — ${fmtY(c.k[c.k.length-1][0]
 const scrollerEl = document.getElementById('scroller');
 let drag = null, justDragged = false;
 scrollerEl.addEventListener('pointermove', e => {
+  if (PB.scrub) {
+    const rect = chart.getBoundingClientRect();
+    const prev = yearAt(PB.px);
+    PB.px = Math.max(0, Math.min(INNER_W, e.clientX - rect.left));
+    if (PB.line) PB.line.setAttribute('x', PB.px.toFixed(1));
+    /* 拖拽时绕过 0.9s 停留节流(feedAt 清零),手指要的是即时反馈 */
+    PB.feedAt = -9999;
+    pbUpdate(yearAt(PB.px), prev);
+    return;
+  }
   if (drag) {
     const rect = chart.getBoundingClientRect();
     drag.x1 = Math.max(0, Math.min(INNER_W, e.clientX - rect.left));
@@ -2358,6 +2376,18 @@ scrollerEl.addEventListener('pointermove', e => {
 scrollerEl.addEventListener('pointerdown', e => {
   const rect = chart.getBoundingClientRect();
   const y = e.clientY - rect.top;
+  /* 时光穿梭的竖线可以直接拖:按点落在竖线 ±22px 内(全高度)就进入拖拽。
+     拖动即暂停(手在控制,机器让位),底部信息带跟着实时更新;优先级高于
+     顶部时间轴的拖选缩放。 */
+  if (PB.line) {
+    const x = e.clientX - rect.left;
+    if (Math.abs(x - PB.px) < 22) {
+      PB.scrub = true;
+      if (PB.on) { PB.on = false; cancelAnimationFrame(PB.raf); pbBtn(); }
+      scrollerEl.setPointerCapture && scrollerEl.setPointerCapture(e.pointerId);
+      return;
+    }
+  }
   if (y > 4 && y <= 46) {
     const x0 = e.clientX - rect.left;
     drag = { x0, x1: x0 };
@@ -2365,6 +2395,7 @@ scrollerEl.addEventListener('pointerdown', e => {
   }
 });
 scrollerEl.addEventListener('pointerup', () => {
+  if (PB.scrub) { PB.scrub = false; return; }
   if (!drag) return;
   const a = Math.min(drag.x0, drag.x1), b = Math.max(drag.x0, drag.x1);
   const wasDrag = b - a > 8;
@@ -2540,13 +2571,18 @@ function mapHTML(c) {
     placed.push([px, py2, half]);
     s += `<text x="${px.toFixed(1)}" y="${py2.toFixed(1)}" text-anchor="middle" font-size="8.5" fill="var(--geo-river)" stroke="var(--surface)" stroke-width="2.2" paint-order="stroke">${label}</text>`;
   }
+  /* 同期文明可点跳转:整组包在 <g> 里挂 data-goto,透明大圆保证触屏点得中。
+     看罗马时点"帕提亚·萨珊"直接跳过去——详情卡从查询终点变成漫游节点。 */
   for (const { o, cx, cy, flip, ly } of visPeers) {
+    s += `<g class="peer-go" data-goto="${o.n}" style="cursor:pointer">`;
+    s += `<circle cx="${sx(cx).toFixed(1)}" cy="${sy(cy).toFixed(1)}" r="12" fill="transparent"/>`;
     s += `<circle cx="${sx(cx).toFixed(1)}" cy="${sy(cy).toFixed(1)}" r="3.2" fill="${fill(o)}" stroke="var(--surface)" stroke-width="1.2"/>`;
-    s += `<text x="${(sx(cx) + (flip ? -5 : 5)).toFixed(1)}" y="${ly.toFixed(1)}"${flip ? ' text-anchor="end"' : ''} font-size="9" fill="var(--ink)" stroke="var(--surface)" stroke-width="2.5" paint-order="stroke">${cN(o)}</text>`;
+    s += `<text x="${(sx(cx) + (flip ? -5 : 5)).toFixed(1)}" y="${ly.toFixed(1)}"${flip ? ' text-anchor="end"' : ''} font-size="9" fill="var(--ink)" stroke="var(--surface)" stroke-width="2.5" paint-order="stroke" text-decoration="underline dotted">${cN(o)}</text>`;
+    s += `</g>`;
   }
   s += `<text x="${sx(g.c[0]).toFixed(1)}" y="${(sy(g.c[1]) - 4).toFixed(1)}" text-anchor="middle" font-size="10" font-weight="700" fill="var(--ink)" stroke="var(--surface)" stroke-width="3" paint-order="stroke">${cN(c)}</text>`;
   s += '</svg>';
-  const far = farPeers.length ? `${T(' · 视野外同期:',' · off-map: ')}${farPeers.map(cN).join(T('、',', '))}` : '';
+  const far = farPeers.length ? `${T(' · 视野外同期:',' · off-map: ')}${farPeers.map(o => `<span class="peer-go" data-goto="${o.n}">${cN(o)}</span>`).join(T('、',', '))}` : '';
   return `<div class="p-map">${s}<div class="cap">${T('约 ','c. ')}${fmtY(py)}${T(' 年前后 · 版图为粗略示意 · 圆点为同期主要文明',' · rough territorial sketch · dots = major contemporaries')}${far}</div></div>`;
 }
 let cur = null;
@@ -2645,7 +2681,7 @@ document.getElementById('zoomOut').addEventListener('click', zoomReset);
    竖线只更新自身的 x,不重建图表(buildChart 每帧跑一次会卡);底部信息带按
    ~8fps 刷新就够了,人眼跟不上更快的文字变化。
    扫过的"大事"= 文明兴起/灭亡 + 跨地区交流事件,按用户选择,不含 844 条大事记。 */
-const PB = { on:false, px:0, raf:0, last:0, tick:0, clock:0, feed:[], fired:null, line:null, feedAt:0 };
+const PB = { on:false, px:0, raf:0, last:0, tick:0, clock:0, feed:[], fired:null, line:null, feedAt:0, scrub:false };
 const pbEl = id => document.getElementById(id);
 /* 信息带高度随内容(文明标签换行)变化,详情卡要据此让位。
    本来用 ResizeObserver,但它和 rAF 一样在隐藏标签页里不派发回调,无法验证;
@@ -2730,18 +2766,25 @@ function pbFrame(ts) {
   PB.raf = requestAnimationFrame(pbFrame);
 }
 function pbCollect(y, prevY) {
-  if (y <= prevY) return;
+  /* 往回拖时撤销"未来"的条目:从 feed 里丢掉、从 fired 里删键,
+     这样再往前拖会重新触发,行为完全对称 */
+  if (y < prevY) {
+    const cut = PB.feed.filter(f => f.y > y);
+    if (cut.length) { cut.forEach(f => PB.fired.delete(f.k)); PB.feed = PB.feed.filter(f => f.y <= y); }
+    return;
+  }
+  if (y === prevY) return;
   const batch = [];
   for (const c of CIVS) {
     const a = c.k[0][0], b = c.k[c.k.length - 1][0];
     if (a > prevY && a <= y && !PB.fired.has('a' + c.n))
-      { PB.fired.add('a' + c.n); batch.push({ y: a, t: cN(c), d: T('兴起', 'rises'), col: fill(c) }); }
+      { PB.fired.add('a' + c.n); batch.push({ y: a, t: cN(c), d: T('兴起', 'rises'), col: fill(c), k: 'a' + c.n }); }
     if (b > prevY && b <= y && b < 2020 && !PB.fired.has('b' + c.n))
-      { PB.fired.add('b' + c.n); batch.push({ y: b, t: cN(c), d: T('落幕', 'ends'), col: fill(c) }); }
+      { PB.fired.add('b' + c.n); batch.push({ y: b, t: cN(c), d: T('落幕', 'ends'), col: fill(c), k: 'b' + c.n }); }
   }
   for (const e of EVENTS) {
     if (e.y > prevY && e.y <= y && !PB.fired.has('e' + e.y + e.n))
-      { PB.fired.add('e' + e.y + e.n); batch.push({ y: e.y, t: evTitle(e), d: EV_GLYPH[e.t] + ' ' + evType(e.t), col: 'var(--ink-2)', ev: 1 }); }
+      { PB.fired.add('e' + e.y + e.n); batch.push({ y: e.y, t: evTitle(e), d: EV_GLYPH[e.t] + ' ' + evType(e.t), col: 'var(--ink-2)', ev: 1, k: 'e' + e.y + e.n }); }
   }
   /* 同一批里文明兴亡与交流事件是分两个循环收的,不排序的话显示出来年份会乱跳 */
   batch.sort((p, q) => p.y - q.y);
@@ -2791,6 +2834,12 @@ traceSel.addEventListener('change', () => {
 });
 panel.addEventListener('click', e => {
   if (e.target.classList.contains('p-close')) panel.classList.remove('open');
+  /* 卡内漫游:点同期文明(地图圆点/视野外列表)跳到那个文明的卡片 */
+  const go = e.target.closest && e.target.closest('[data-goto]');
+  if (go) {
+    const c = CIVS.find(x => x.n === go.dataset.goto);
+    if (c) { openCiv(c); panel.scrollTop = 0; return; }
+  }
   /* 点了才插 iframe:在此之前这个页面对外零请求 */
   const pl = e.target.closest && e.target.closest('.vid-play');
   if (pl) {
