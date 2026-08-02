@@ -251,7 +251,7 @@ a.wk::after { content: '↗'; font-size: .72em; color: var(--muted); margin-left
 #panel .p-gl .cap { color: var(--muted); font-size: 11px; margin-top: 1px; }
 #panel .p-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; margin: 0 0 12px; }
 #panel .fact .today { display: block; margin-top: 2px; font-style: normal; font-size: 10.5px; line-height: 1.35; color: var(--muted); }
-#panel .p-vid { margin: 0 0 12px; }
+#panel .p-vid { margin: 0 0 12px; display: flex; flex-direction: column; gap: 5px; }
 #panel .vid-play {
   display: flex; align-items: center; justify-content: space-between; gap: 8px; box-sizing: border-box;
   width: 100%; font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; text-decoration: none;
@@ -1516,7 +1516,8 @@ const CHRONO_X = {
  [1637, ['《天工开物》','Exploitation of the Works of Nature'], ['宋应星记下一百三十项工艺,从种稻到炼铁。','Song Yingxing records 130 crafts, from rice to iron.']] ],
 };
 /* ---------- 纪录片:人工策展 ----------
-   键 = CIVS.n。b = B 站 BV 号,y = YouTube 视频 ID(可选),t = 片名[zh,en]。
+   键 = CIVS.n,值 = 数组(一个文明可配多部,按阶段拆)。
+   每项:b = B 站 BV 号,y = YouTube 视频 ID(可选),t = 片名[zh,en]。
 
    ⚠ **B 站不能页内嵌播**:player.bilibili.com 对大量视频已不再放行(2026-08 实测
    BV1SV411K7eW,直接以顶层页面打开也只出"你感兴趣的视频都在B站"的兜底图,
@@ -1530,9 +1531,18 @@ const CHRONO_X = {
    加法:确认视频确实在讲这个文明、时长与画质过得去之后,照下面的样子加一行。
    B 站 BV 号在视频链接里 bilibili.com/video/BV1xx411c7mu 的 BV 开头那段。 */
 const VIDEO = {
-  // 已核实:短链 b23.tv/pGp8G31 解析得 BV1SV411K7eW,标题与 UP 主"一分钟讲史"当场确认
-  '西汉': { b:'BV1SV411K7eW', t:['一口气看完西汉 210 年','Western Han in one sitting'] },
-  // '古埃及': { b:'BV1xxxxxxxxx', y:'xxxxxxxxxxx', t:['古埃及文明','Ancient Egypt'] },
+  // 一分钟讲史。短链 b23.tv/pGp8G31 解析得,标题与 UP 主当场核实
+  '西汉': [ { b:'BV1SV411K7eW', t:['一口气看完西汉 210 年','Western Han in one sitting'] } ],
+  // 以下均为 UP 主「安州牧」(UID 7481602,255 万粉、2023 百大),标题逐条核实。
+  // 唐的跨度 618—907 太长,他没有单个视频通讲,故按三个阶段各给一个入口。
+  '唐': [
+    { b:'BV1na4y1V7so', t:['大唐创业:晋阳起兵到玄武门','The founding of Tang'] },
+    { b:'BV1cE9mYyEgG', t:['从初唐走向盛唐:八年四场政变','Four coups in eight years'] },
+    { b:'BV1QP4iz6EDA', t:['安史之乱:盛世掘墓人','An Lushan: the gravedigger'] },
+  ],
+  '隋': [ { b:'BV1cB4y1E7vU', t:['一口气看懂隋朝的兴盛与衰亡','The rise and fall of Sui'] } ],
+  '南北朝': [ { b:'BV1w3411v7jd', t:['一口气看完 170 年的乱世南北朝','170 years of division'] } ],
+  '东晋·十六国': [ { b:'BV1N7411M7wA', t:['两晋十六国:后三国时代 174 年','Jin and the Sixteen Kingdoms'] } ],
 };
 /* ---------- 地理底图:河流 / 山脉 / 沙漠 ----------
    地理常常比政治更能解释文明为什么在这里起、又为什么停在那里。
@@ -2549,15 +2559,17 @@ function videoHTML(c) {
   /* B 站的外链播放器(player.bilibili.com)对大量视频已不再放行:实测直接以顶层
      页面打开也只出"你感兴趣的视频都在B站"的兜底图,video 元素 readyState 恒为 0。
      所以 B 站一律新标签页跳原片,只有 YouTube 走页内嵌播放。 */
-  let btn = '';
-  const title = v && v.t ? v.t[LANG === 'zh' ? 0 : 1] : T('看纪录片', 'Watch');
-  if (v && v.y && (LANG !== 'zh' || !v.b)) {
-    btn = `<button class="vid-play" data-src="https://www.youtube-nocookie.com/embed/${v.y}?rel=0">▶ ${title}</button>`;
-  } else if (v && v.b) {
-    btn = `<a class="vid-play" href="https://www.bilibili.com/video/${v.b}" target="_blank" rel="noopener noreferrer">▶ ${title}<span>${T('B 站 ↗','Bilibili ↗')}</span></a>`;
-  } else if (v && v.y) {
-    btn = `<button class="vid-play" data-src="https://www.youtube-nocookie.com/embed/${v.y}?rel=0">▶ ${title}</button>`;
-  }
+  /* 一个文明可以配多部:唐横跨 618—907,一部片子讲不完,按阶段各给一个入口 */
+  const btn = (Array.isArray(v) ? v : v ? [v] : []).map(one => {
+    const title = one.t ? one.t[LANG === 'zh' ? 0 : 1] : T('看纪录片', 'Watch');
+    if (one.y && (LANG !== 'zh' || !one.b))
+      return `<button class="vid-play" data-src="https://www.youtube-nocookie.com/embed/${one.y}?rel=0">▶ ${title}</button>`;
+    if (one.b)
+      return `<a class="vid-play" href="https://www.bilibili.com/video/${one.b}" target="_blank" rel="noopener noreferrer">▶ ${title}<span>${T('B 站 ↗','Bilibili ↗')}</span></a>`;
+    if (one.y)
+      return `<button class="vid-play" data-src="https://www.youtube-nocookie.com/embed/${one.y}?rel=0">▶ ${title}</button>`;
+    return '';
+  }).join('');
   return `<div class="p-vid">${btn}
     <a class="vid-search" href="${search}" target="_blank" rel="noopener noreferrer">${T('🎬 找纪录片看','🎬 Find a documentary')}<span>${T('B 站 ↗','YouTube ↗')}</span></a></div>`;
 }
