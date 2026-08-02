@@ -634,6 +634,7 @@ const EVENTS = [
 { y:1914, ls:['eu','me','af','am','ea'], t:'war', n:'第一次世界大战', d:'欧洲列强自相残杀,四大帝国解体,美国初次登上世界舞台中心。' },
 { y:1939, ls:['eu','ea','se','me','af','am','st','sa'], t:'war', n:'第二次世界大战', d:'人类史上规模最大的战争;战后美苏两极格局与联合国体系成形。' },
 { y:1947, ls:['am','eu','ea','sa','se','af'], t:'culture', n:'冷战与去殖民化', d:'两大阵营对峙四十余年;亚非数十国相继独立,殖民时代落幕。' },
+{ y:1517, ls:['eu'], t:'culture', n:'宗教改革', d:'路德九十五条论纲引发新旧教分裂;印刷术让神学争论首次成为大众事件,百年宗教战争随之而来。' },
 ];
 const EV_GLYPH = { war:'⚔', trade:'⇄', culture:'✦', tech:'⚙', plague:'☠', migration:'➤' };
 const EV_NAME = { war:'战争·征服', trade:'贸易', culture:'思想·宗教', tech:'技术', plague:'瘟疫', migration:'迁徙' };
@@ -850,6 +851,126 @@ const CHRONO = {
 '美国': [[1776,'独立宣言'],[1787,'费城制宪','成文宪法首创'],[1803,'路易斯安那购地','国土倍增'],[1865,'内战结束','废奴与再统一'],[1869,'横贯大陆铁路'],[1917,'参加一战','登上世界舞台'],[1929,'大萧条'],[1945,'登顶','布雷顿森林与联合国'],[1969,'登月'],[1991,'冷战胜出']],
 '拉丁美洲诸国': [[1810,'独立浪潮','玻利瓦尔与圣马丁'],[1888,'巴西废奴','美洲最后废奴国'],[1910,'墨西哥革命'],[1959,'古巴革命'],[1982,'债务危机','"失去的十年"']],
 };
+/* ---------- 鼎盛区间(按文明名索引;中国各朝的 gl 内联在 CIVS 中) ---------- */
+const GL = {
+'古希腊': [
+ { a:-470, b:-320, k:'thought', t:['哲学黄金期','Golden age of philosophy'], d:['苏格拉底、柏拉图、亚里士多德三代师承。','Socrates, Plato, Aristotle - three generations.'] },
+ { a:-480, b:-400, k:'art', t:['悲剧与帕特农','Tragedy & the Parthenon'], d:['三大悲剧家与雅典卫城同代。','The great tragedians and the Acropolis in one lifetime.'] } ],
+'罗马': [
+ { a:-27, b:180, k:'econ', t:['罗马和平','Pax Romana'], d:['地中海贸易一体化,两百年繁荣。','Two centuries of integrated Mediterranean trade.'] },
+ { a:-100, b:150, k:'tech', t:['工程时代','Engineering age'], d:['道路、引水渠、混凝土穹顶。','Roads, aqueducts, concrete domes.'] },
+ { a:100, b:235, k:'thought', t:['法学家时代','The great jurists'], d:['罗马法体系成形,泽被后世大陆法。','Roman law systematized - the root of civil law.'] } ],
+'拜占庭': [
+ { a:528, b:565, k:'thought', t:['查士丁尼法典','Justinian codification'], d:['罗马法大全,欧洲法学的底本。','The Corpus Juris, foundation of European law.'] },
+ { a:867, b:1056, k:'art', t:['马其顿文艺复兴','Macedonian Renaissance'], d:['圣像艺术与古典学问复兴。','Icons and classical learning revive.'] } ],
+'阿拉伯哈里发': [
+ { a:780, b:900, k:'thought', t:['翻译运动','Translation movement'], d:['希腊波斯印度典籍尽入阿拉伯语。','Greek, Persian and Indian learning rendered into Arabic.'] },
+ { a:800, b:1000, k:'tech', t:['代数与天文','Algebra & astronomy'], d:['花剌子米的代数,天文台与星表。','Al-Khwarizmi, observatories, star tables.'] },
+ { a:750, b:950, k:'econ', t:['两洋枢纽','Hub of two seas'], d:['印度洋与地中海贸易在巴格达汇流。','Indian Ocean and Mediterranean trade meet at Baghdad.'] } ],
+'奥斯曼帝国': [
+ { a:1450, b:1600, k:'econ', t:['三洲商路','Tri-continental trade'], d:['东西商路税关尽在其手。','The tolls of East-West trade in one hand.'] },
+ { a:1520, b:1600, k:'art', t:['希南建筑时代','Age of Sinan'], d:['苏莱曼尼耶清真寺群,奥斯曼美学定型。','The Suleymaniye and the classical Ottoman style.'] } ],
+'波斯(阿契美尼德)': [ { a:-520, b:-400, k:'econ', t:['御道与贡赋','Royal Road economy'], d:['二十行省贡赋与驿传体系。','Tribute and post-roads across twenty satrapies.'] } ],
+'古埃及': [
+ { a:-2600, b:-2400, k:'tech', t:['金字塔工程','Pyramid engineering'], d:['吉萨群像:古代最大工程。','Giza, antiquity\'s greatest works.'] },
+ { a:-1550, b:-1150, k:'art', t:['神庙时代','Temple age'], d:['卡纳克、卢克索与帝王谷。','Karnak, Luxor, the Valley of the Kings.'] } ],
+'苏美尔·阿卡德': [ { a:-3300, b:-2900, k:'tech', t:['文字与历法','Writing & calendar'], d:['楔形文字、六十进制、阴历。','Cuneiform, base-60, the lunar calendar.'] } ],
+'笈多王朝': [
+ { a:380, b:500, k:'tech', t:['零与天文','Zero & astronomy'], d:['阿耶波多:地球自转与位值记数。','Aryabhata: rotation of the earth, place-value numerals.'] },
+ { a:380, b:470, k:'art', t:['梵语古典','Sanskrit classics'], d:['迦梨陀娑的戏剧与长诗。','Kalidasa\'s dramas and epics.'] } ],
+'莫卧儿帝国': [
+ { a:1560, b:1660, k:'art', t:['泰姬陵与细密画','Taj & miniatures'], d:['印度-波斯美学的合流。','Indo-Persian aesthetics converge.'] },
+ { a:1580, b:1700, k:'econ', t:['棉纺织出口','Cotton exports'], d:['印度棉布行销全球。','Indian cottons clothe the world.'] } ],
+'文艺复兴意大利': [
+ { a:1400, b:1500, k:'econ', t:['银行与商业','Banking & commerce'], d:['美第奇银行与复式记账。','The Medici bank and double-entry books.'] },
+ { a:1480, b:1530, k:'art', t:['盛期文艺复兴','High Renaissance'], d:['达芬奇、米开朗基罗、拉斐尔同城竞技。','Leonardo, Michelangelo and Raphael in rivalry.'] } ],
+'西班牙·葡萄牙': [
+ { a:1545, b:1640, k:'econ', t:['白银世纪','The silver century'], d:['波托西白银撑起第一个全球贸易循环。','Potosi silver powers the first global loop.'] },
+ { a:1580, b:1660, k:'art', t:['黄金世纪','Siglo de Oro'], d:['塞万提斯与委拉斯开兹的时代。','The age of Cervantes and Velazquez.'] } ],
+'荷兰': [
+ { a:1600, b:1670, k:'econ', t:['黄金时代','Golden Age'], d:['人均财富冠绝欧洲的商业共和国。','The richest people in Europe.'] },
+ { a:1630, b:1670, k:'art', t:['伦勃朗与维米尔','Rembrandt & Vermeer'], d:['市民肖像与光影的巅峰。','Burgher portraits, mastery of light.'] } ],
+'法兰西': [
+ { a:1720, b:1789, k:'thought', t:['启蒙运动','The Enlightenment'], d:['伏尔泰、卢梭、百科全书派。','Voltaire, Rousseau, the Encyclopedistes.'] },
+ { a:1860, b:1910, k:'art', t:['印象派时代','Impressionist era'], d:['巴黎是世界艺术之都。','Paris, capital of art.'] } ],
+'大英帝国·英国': [
+ { a:1687, b:1727, k:'thought', t:['牛顿时代','Age of Newton'], d:['《原理》奠定经典物理。','The Principia founds classical physics.'] },
+ { a:1770, b:1850, k:'tech', t:['工业革命','Industrial Revolution'], d:['蒸汽、铁路、工厂制。','Steam, rail, the factory system.'] },
+ { a:1815, b:1914, k:'econ', t:['全球贸易金融','Global trade & finance'], d:['英镑与伦敦城是世界结算中枢。','Sterling and the City clear the world\'s trade.'] } ],
+'美国': [
+ { a:1876, b:1915, k:'tech', t:['发明时代','Age of invention'], d:['电灯、电话、汽车、飞机接连问世。','Light, telephone, car, airplane.'] },
+ { a:1945, b:1973, k:'econ', t:['战后繁荣','Postwar boom'], d:['中产时代与布雷顿森林体系。','The middle-class era under Bretton Woods.'] },
+ { a:1970, b:2025, k:'tech', t:['信息革命','Information revolution'], d:['从芯片到互联网到 AI。','Chips to Internet to AI.'] } ],
+'日本': [
+ { a:1760, b:1850, k:'art', t:['浮世绘','Ukiyo-e'], d:['北斋广重,后来震动欧洲画坛。','Hokusai and Hiroshige, later shaking Europe.'] },
+ { a:1955, b:1990, k:'econ', t:['经济奇迹','Economic miracle'], d:['从废墟到世界第二。','Ruins to the world\'s second economy.'] },
+ { a:1980, b:2025, k:'art', t:['动漫与游戏','Anime & games'], d:['全球流行文化的重要一极。','A pole of global pop culture.'] } ],
+'俄罗斯·苏联': [
+ { a:1820, b:1880, k:'art', t:['文学黄金时代','Literary golden age'], d:['普希金到托尔斯泰、陀思妥耶夫斯基。','Pushkin to Tolstoy and Dostoevsky.'] },
+ { a:1957, b:1975, k:'tech', t:['太空竞赛','Space race'], d:['卫星与加加林先拔头筹。','Sputnik and Gagarin lead first.'] } ],
+'玛雅': [ { a:250, b:900, k:'tech', t:['历法与天文','Calendar & astronomy'], d:['长纪历精于儒略历。','The Long Count outdoes the Julian year.'] } ],
+'印加': [ { a:1440, b:1530, k:'tech', t:['道路与农业工程','Roads & terraces'], d:['四万公里驿道与高山梯田。','40,000 km of roads, mountain terraces.'] } ],
+'高棉·吴哥': [ { a:1110, b:1220, k:'art', t:['吴哥建筑巅峰','Angkor at its height'], d:['吴哥窟与巴戎寺。','Angkor Wat and the Bayon.'] } ],
+};
+/* ---------- 补充大事记(双语内联,渲染时按年并入排序) ---------- */
+const CHRONO_X = {
+'古希腊': [
+ [-490, ['马拉松之战','Marathon'], ['雅典重装步兵初挫波斯。','Athens checks Persia.']],
+ [-399, ['苏格拉底之死','Death of Socrates'], ['一杯毒芹,哲学的殉道时刻。','The hemlock cup.']],
+ [-387, ['柏拉图学园','The Academy'], ['西方高等教育的原点。','The West\'s first academy.']] ],
+'罗马': [
+ [-44, ['凯撒遇刺','Caesar assassinated'], ['三月十五,共和的落幕开场。','The Ides of March.']],
+ [79, ['维苏威火山','Vesuvius erupts'], ['庞贝定格于火山灰下。','Pompeii frozen in ash.']],
+ [80, ['斗兽场落成','Colosseum opens'], ['五万人的娱乐机器。','An arena for fifty thousand.']],
+ [165, ['安东尼瘟疫','Antonine plague'], ['疫病动摇盛世根基。','Plague shakes the golden age.']],
+ [330, ['君士坦丁堡奠基','Constantinople founded'], ['帝国重心东移。','The center moves east.']] ],
+'拜占庭': [
+ [537, ['圣索菲亚落成','Hagia Sophia completed'], ['"所罗门,我胜过了你"。','"Solomon, I have outdone thee."']],
+ [717, ['希腊火守城','Greek fire saves the city'], ['阿拉伯围攻再度失败。','The Arab siege broken.']],
+ [1018, ['征服保加利亚','Bulgaria conquered'], ['巴西尔二世,帝国中兴顶点。','Basil II at the second peak.']] ],
+'阿拉伯哈里发': [
+ [632, ['先知逝世','Death of the Prophet'], ['继承之争埋下逊尼什叶分野。','The succession question begins.']],
+ [680, ['卡尔巴拉','Karbala'], ['侯赛因殉难,什叶认同定型。','Husayn\'s martyrdom shapes Shia identity.']],
+ [909, ['法蒂玛王朝','Fatimids rise'], ['什叶派哈里发立于北非。','A Shia caliphate in North Africa.']] ],
+'奥斯曼帝国': [
+ [1389, ['科索沃之战','Kosovo'], ['巴尔干门户洞开。','The Balkans open.']],
+ [1520, ['苏莱曼即位','Suleiman enthroned'], ['立法者与大帝。','The Lawgiver.']],
+ [1774, ['库楚克开纳吉和约','Kucuk Kaynarca'], ['对俄败局开启衰退世纪。','Defeat by Russia opens the long decline.']] ],
+'古埃及': [
+ [-1353, ['阿肯那顿改革','Akhenaten\'s revolution'], ['一神实验昙花一现。','A monotheist experiment.']],
+ [-1279, ['拉美西斯二世即位','Ramesses II'], ['六十七年盛世与巨像。','Sixty-seven years of colossi.']],
+ [-196, ['罗塞塔石碑','Rosetta Stone'], ['两千年后开启象形文字之锁。','The key that later unlocked hieroglyphs.']] ],
+'大英帝国·英国': [
+ [1600, ['东印度公司成立','East India Company'], ['一家公司的帝国序章。','A company\'s imperial prologue.']],
+ [1687, ['牛顿《原理》','Newton\'s Principia'], ['经典物理奠基。','Classical physics founded.']],
+ [1825, ['第一条铁路','First railway'], ['斯托克顿-达灵顿线通车。','Stockton-Darlington opens.']],
+ [1859, ['《物种起源》','On the Origin of Species'], ['达尔文改写生命观。','Darwin rewrites life.']],
+ [1940, ['不列颠之战','Battle of Britain'], ['"最光辉的时刻"。','"Their finest hour."']] ],
+'法兰西': [
+ [1661, ['凡尔赛动工','Versailles begun'], ['绝对王权的舞台。','Absolutism\'s stage.']],
+ [1889, ['埃菲尔铁塔','Eiffel Tower'], ['工业时代的巴黎地标。','Industrial Paris\'s landmark.']],
+ [1944, ['巴黎解放','Paris liberated']],
+ [1968, ['五月风暴','May 1968'], ['战后社会的转折点。','The postwar turning point.']] ],
+'美国': [
+ [1848, ['加州淘金热','Gold Rush'], ['百万人西进。','A million head west.']],
+ [1863, ['解放宣言','Emancipation Proclamation']],
+ [1908, ['T型车','Model T'], ['流水线时代开始。','The assembly-line age.']],
+ [1941, ['珍珠港','Pearl Harbor'], ['孤立主义终结。','Isolationism ends.']],
+ [1963, ['《我有一个梦想》','"I Have a Dream"'], ['民权运动的高点。','The civil-rights high tide.']],
+ [2008, ['金融危机','Financial crisis'], ['大衰退波及全球。','The Great Recession.']] ],
+'日本': [
+ [710, ['奈良建都','Nara founded'], ['仿长安的平城京。','A capital modeled on Chang\'an.']],
+ [1008, ['《源氏物语》','Tale of Genji'], ['世界最早长篇小说之一。','Among the world\'s first novels.']],
+ [1467, ['应仁之乱','Onin War'], ['战国时代开幕。','The Warring States begin.']],
+ [1590, ['丰臣统一','Hideyoshi unifies']],
+ [1964, ['东京奥运','Tokyo Olympics'], ['战后复兴的成人礼。','Postwar recovery confirmed.']] ],
+'俄罗斯·苏联': [
+ [1547, ['伊凡雷帝称沙皇','Ivan the Terrible crowned Tsar']],
+ [1825, ['十二月党人起义','Decembrist revolt']],
+ [1869, ['《战争与和平》','War and Peace'], ['文学黄金时代的丰碑。','The golden age\'s monument.']],
+ [1961, ['加加林上天','Gagarin in orbit'], ['人类首次进入太空。','First human in space.']] ],
+'西班牙·葡萄牙': [ [1605, ['《堂吉诃德》','Don Quixote'], ['近代小说的开山。','The first modern novel.']] ],
+};
 /* ---------- English dictionary ---------- */
 const EN = {
 lanes: { eu:'Europe', me:'Middle East & N. Africa', st:'Steppe & C. Asia', sa:'South Asia', se:'Southeast Asia', ea:'East Asia', af:'Sub-Saharan Africa', am:'Americas' },
@@ -878,6 +999,7 @@ events: [
 ['World War I','Europe devours itself; four empires fall and America steps onto the world stage.'],
 ['World War II','The largest war in history; a bipolar order and the UN system follow.'],
 ['Cold War & Decolonization','Two blocs face off for four decades; dozens of Asian and African nations win independence.'],
+['The Reformation','Luther\'s theses split the church; print makes theology a mass event, and a century of religious war follows.'],
 ],
 civ: {
 '米诺斯·迈锡尼': { n:'Minoan–Mycenaean', b:'Bronze Age palace civilizations of the Aegean, undone by the great collapse.', d:'Crete built Europe\'s first palace civilization, trading with Egypt and the Levant; mainland Mycenae inherited and conquered it — the world behind the Trojan legends. The systemic collapse around 1200 BCE buried it for three millennia until archaeology recovered it.', f:{ 'Peak':'c. 1450 BCE', 'Center':'Knossos, Mycenae', 'Legacy':'Linear A/B, palace economy' } },
@@ -1203,8 +1325,11 @@ const lName = id => LANG === 'zh' ? LANES[laneIdx[id]].name : EN.lanes[id];
 const evTitle = ev => LANG === 'zh' ? ev.n : (EN.events[EVENTS.indexOf(ev)] || [ev.n])[0];
 const evDesc = ev => LANG === 'zh' ? ev.d : (EN.events[EVENTS.indexOf(ev)] || [])[1] || ev.d;
 const evType = t2 => LANG === 'zh' ? EV_NAME[t2] : EN.evtype[t2];
-const chronoOf = c => { const z = CHRONO[c.n] || []; if (LANG === 'zh') return z;
-  const e = EN.chrono[c.n] || []; return z.map((it, i) => [it[0], (e[i] && e[i][0]) || it[1], (e[i] && e[i][1]) || '']); };
+const chronoOf = c => { const z = CHRONO[c.n] || []; const e = EN.chrono[c.n] || [];
+  const li = LANG === 'zh' ? 0 : 1;
+  const base = LANG === 'zh' ? z : z.map((it, i) => [it[0], (e[i] && e[i][0]) || it[1], (e[i] && e[i][1]) || '']);
+  const extra = (CHRONO_X[c.n] || []).map(it => [it[0], it[1][li], it[2] ? it[2][li] : '']);
+  return base.concat(extra).sort((a, b) => a[0] - b[0]); };
 const laneTop = i => TOP + i * LANE_H;
 const laneIdx = Object.fromEntries(LANES.map((l,i) => [l.id, i]));
 const UNIT = 46, MAXSTACK = LANE_H - 12;
@@ -1472,7 +1597,7 @@ function sparkSVG(c) {
     pts += `${(i / N * W).toFixed(1)},${(Hs - 8 - p / maxP * (Hs - 14)).toFixed(1)} `;
   }
   let dots = '';
-  const ch = CHRONO[c.n];
+  const ch = chronoOf(c);
   if (ch) for (const [yy] of ch) {
     if (yy <= y0 || yy >= y1) continue;
     const xx = (yy - y0) / (y1 - y0) * W;
@@ -1494,7 +1619,7 @@ const GL_KIND = {
   thought: { c:'var(--c-africa)',  n:['思想','Thought'] },
 };
 function glHTML(c) {
-  const gl = c.gl; if (!gl || !gl.length) return '';
+  const gl = GL[c.n] || c.gl; if (!gl || !gl.length) return '';
   const y0 = c.k[0][0], y1 = c.k[c.k.length-1][0];
   const li = LANG === 'zh' ? 0 : 1;
   const W = 330, rowH = 15, Hg = gl.length * rowH + 4;
