@@ -1,0 +1,26 @@
+# 数据模型与增改指南
+
+全部数据在 index.html 的 <script> 内,均为常量表。改动后务必:语法检查 → 截图验证 → 双语同步。
+
+## 表清单
+
+| 表 | 结构 | 说明 |
+|---|---|---|
+| `LANES` | {id, name} | 泳道,按经度自东向西;新泳道按经度插位 |
+| `SPHERES` | {name, v(CSS变量名)} | 文明圈;新增需配色 + 色盲校验 |
+| `CIVS` | {l, s, v, n, k, b, f, d, gl?} | 文明主表。l=泳道 s=文明圈 v=色深0/1/2 k=[[年,影响力]]关键帧(首尾必须为0) b=一句话 f=速览{鼎盛/中心/人物/成就} d=叙述 gl=鼎盛区间(可选) |
+| `gl` 子表 | {a, b, k, t:[zh,en], d:[zh,en]} | k∈econ/art/tech/thought;t/d 自带双语 |
+| `EVENTS` | {y, ls, t, n, d} | 交流事件;ls=涉及泳道 t∈war/trade/culture/tech/plague/migration |
+| `TRACES` | {n:[zh,en], stops:[{y,l,t:[..],d:[..],p?}]} | 传播轨迹;stops 按年排序,p=上游节点索引(默认前一个) |
+| `GEO` | {'文明名': {p:[[[lon,lat]..]..], c:[lon,lat]}} | 鼎盛期示意版图(可多多边形)+ 核心点;键=CIVS.n |
+| `CHRONO` | {'文明名': [[年,标题,一句话]..]} | 大事记(中文) |
+| `EN` | lanes/spheres/eras/evtype/events/civ/chrono | 英文字典;events/chrono 按索引与中文对齐,**数量必须一致** |
+| `WIKI_NAME` / `EN.civ[n].w` | 消歧义映射 | 中文歧义名(明→明朝)/英文歧义名(Ming→Ming dynasty) |
+| `LAND` | 压缩海岸线环 | 生成自 world-atlas land-110m,勿手改 |
+
+## 常见操作
+
+- **加一个文明**:CIVS 加条目(k 首尾 0,影响力峰值参考同泳道对比)→ GEO 加版图 → CHRONO 加大事记 → EN.civ + EN.chrono 加英文 → 歧义名进 WIKI_NAME
+- **加传播轨迹**:TRACES 加条目即可(选择器自动出现),节点 t/d 双语内联
+- **调影响力曲线**:只改 k;注意同泳道同期堆叠总和(超限会自动压缩,峰值别全 1.0)
+- **拆分色带**(参考 v10 中国拆分):新条目替换旧条目;GEO/CHRONO/EN 同步换键;旧键残留无害但建议清理
