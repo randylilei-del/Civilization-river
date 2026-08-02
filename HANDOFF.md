@@ -6,11 +6,11 @@
 
 从史前到现代的世界文明兴衰交互可视化,单文件 PWA。最终用户是 Ray 本人 + 他 7 岁的儿子(iPad 使用)。当前阶段:已上线,内容深化与实机体验打磨。
 
-## 项目状态:v22,已上线 https://civilization-river.vercel.app
+## 项目状态:v22+,已上线 https://civilization-river.vercel.app
 
 接手时先 `git status` 核实。截至本次会话结束:
 
-- **v13~v21 全部已 push 并上线**(origin/main = `38886bd`,2026-08-02);线上已远程验证:230 次渲染零异常、鼎盛区间压条 0/326、时光穿梭可用
+- **v13~v22 及后续视频收录均已 push**(接手时 `git fetch` 后以 origin/main 实际为准);线上远程验证过:230 次渲染零异常、鼎盛区间压条 0/326、时光穿梭可用。VIDEO 已收录 14 个文明 18 条(中国主要朝代 + 罗马/阿拉伯/蒙古英文片源),全部经 B 站 API / YouTube oEmbed 程序化核实
 - 数据规模:115 个文明 · 844 条大事记 · 163 段鼎盛区间(覆盖 107/115)· 156 条古地名今址 · 63 条地理要素(河流/山脉/沙漠) · 22 个交流事件 · 10 条传播轨迹
 - 功能全景见 docs/CHANGELOG.md(v0-v22);设计理由见 docs/DESIGN.md;改数据前必读 docs/DATA.md
 - 仓库实名是大写 C 的 `Civilization-river`(小写链接自动重定向)

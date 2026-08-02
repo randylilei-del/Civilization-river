@@ -22,12 +22,12 @@ const body = script.slice(start, end).split('\n').filter(l => !l.startsWith('con
 
 const ctx = {};
 vm.createContext(ctx);
-const PICK = '({LANES,SPHERES,CIVS,EVENTS,GEO,CHRONO,GL,CHRONO_X,EN,TRACES,ERAS,PLACE})';
+const PICK = '({LANES,SPHERES,CIVS,EVENTS,GEO,CHRONO,GL,CHRONO_X,EN,TRACES,ERAS,PLACE,VIDEO})';
 let D;
 try { vm.runInContext(body, ctx); D = vm.runInContext(PICK, ctx); } catch (e) {
   console.error('数据段解析失败:', e.message); process.exit(1);
 }
-const { LANES, CIVS, EVENTS, GEO, CHRONO, GL, CHRONO_X, EN, TRACES, PLACE } = D;
+const { LANES, CIVS, EVENTS, GEO, CHRONO, GL, CHRONO_X, EN, TRACES, PLACE, VIDEO } = D;
 
 const P = [];
 const KINDS = ['econ', 'art', 'tech', 'thought'];
@@ -96,6 +96,18 @@ Object.keys(PLACE).forEach(k => {
   if (!Array.isArray(t) || (t.length !== 2 && t.length !== 4)) P.push(`[PLACE 格式错] "${k}" 应为 2 项或 4 项`);
   else if (t.some(x => !x)) P.push(`[PLACE 有空值] "${k}"`);
 });
+
+// VIDEO:键必须是现有文明,每条要有 b 或 y,格式合法,标题双语
+for (const [k, arr] of Object.entries(VIDEO || {})) {
+  if (!names.has(k)) P.push(`[VIDEO 孤儿键] ${k}`);
+  if (!Array.isArray(arr)) { P.push(`[VIDEO 非数组] ${k}`); continue; }
+  arr.forEach((v, i) => {
+    if (!v.b && !v.y) P.push(`[VIDEO 无 b 也无 y] ${k}#${i}`);
+    if (v.b && !/^BV[0-9A-Za-z]{10}$/.test(v.b)) P.push(`[VIDEO BV 格式可疑] ${k} "${v.b}"`);
+    if (v.y && !/^[\w-]{11}$/.test(v.y)) P.push(`[VIDEO YouTube ID 格式可疑] ${k} "${v.y}"`);
+    if (!Array.isArray(v.t) || v.t.length !== 2 || !v.t[0] || !v.t[1]) P.push(`[VIDEO 标题非双语] ${k}#${i}`);
+  });
+}
 
 if (EN.events && EN.events.length !== EVENTS.length) P.push(`[事件中英数量不等] zh=${EVENTS.length} en=${EN.events.length}`);
 const laneIds = new Set(LANES.map(l => l.id));
