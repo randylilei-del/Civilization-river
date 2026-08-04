@@ -22,12 +22,12 @@ const body = script.slice(start, end).split('\n').filter(l => !l.startsWith('con
 
 const ctx = {};
 vm.createContext(ctx);
-const PICK = '({LANES,SPHERES,CIVS,EVENTS,GEO,CHRONO,GL,CHRONO_X,EN,TRACES,ERAS,PLACE,VIDEO})';
+const PICK = '({LANES,SPHERES,CIVS,EVENTS,GEO,CHRONO,GL,CHRONO_X,EN,TRACES,ERAS,PLACE,VIDEO,PEOPLE,PGLYPH,PGNAME})';
 let D;
 try { vm.runInContext(body, ctx); D = vm.runInContext(PICK, ctx); } catch (e) {
   console.error('数据段解析失败:', e.message); process.exit(1);
 }
-const { LANES, CIVS, EVENTS, GEO, CHRONO, GL, CHRONO_X, EN, TRACES, PLACE, VIDEO } = D;
+const { LANES, CIVS, EVENTS, GEO, CHRONO, GL, CHRONO_X, EN, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME } = D;
 
 const P = [];
 const KINDS = ['econ', 'art', 'tech', 'thought'];
@@ -108,6 +108,38 @@ for (const [k, arr] of Object.entries(VIDEO || {})) {
     if (!Array.isArray(v.t) || v.t.length !== 2 || !v.t[0] || !v.t[1]) P.push(`[VIDEO 标题非双语] ${k}#${i}`);
   });
 }
+
+// 人物:中英「人物」必须逐个对齐——linkNames 靠位置把英文名换回中文键,错位就会张冠李戴
+const bi = (v, n) => Array.isArray(v) && v.length === 2 && v[0] && v[1] ? '' : n;
+CIVS.forEach(c => {
+  const z = c.f && c.f['人物']; if (!z) return;
+  const ef = EN.civ[c.n] && EN.civ[c.n].f;
+  const e = ef && (ef['Figures'] || ef['People']);
+  if (!e) { P.push(`[缺英文 Figures] ${c.n}`); return; }
+  const nz = z.split(SPLIT).filter(s => s.trim()).length, ne = e.split(SPLIT).filter(s => s.trim()).length;
+  if (nz !== ne) P.push(`[人物中英条数不等] ${c.n}: zh=${nz}(${z}) en=${ne}(${e})`);
+});
+// PEOPLE 本身:键必须真的出现在某文明的「人物」里,否则这张卡永远弹不出来
+const figIndex = new Map();
+CIVS.forEach(c => (c.f && c.f['人物'] || '').split(SPLIT).map(s => s.trim().replace(/[(（].*/, '')).filter(Boolean)
+  .forEach(nm => { if (!figIndex.has(nm)) figIndex.set(nm, []); figIndex.get(nm).push(c.n); }));
+for (const [k, p] of Object.entries(PEOPLE || {})) {
+  const where = figIndex.get(k);
+  if (!where) { P.push(`[PEOPLE 弹不出来] "${k}" 不在任何文明的「人物」字段里`); continue; }
+  if (!names.has(p.c)) P.push(`[PEOPLE 文明名不存在] ${k} → ${p.c}`);
+  else if (!where.includes(p.c)) P.push(`[PEOPLE 归属对不上] ${k} 标为 ${p.c},但只出现在 ${where.join('/')} 的人物里`);
+  if (!PGLYPH[p.g]) P.push(`[PEOPLE 类别非法] ${k} "${p.g}" 应为 ${Object.keys(PGLYPH).join('/')}`);
+  P.push(...[bi(p.n, `[PEOPLE 姓名非双语] ${k}`), bi(p.t, `[PEOPLE 身份句非双语] ${k}`), bi(p.s, `[PEOPLE「所以」非双语] ${k}`)].filter(Boolean));
+  if (!Array.isArray(p.a) || !p.a.length) P.push(`[PEOPLE 缺「三件事」] ${k}`);
+  else p.a.forEach((x, i) => P.push(...[bi(x, `[PEOPLE「三件事」非双语] ${k}#${i}`)].filter(Boolean)));
+  if (!Array.isArray(p.y) || p.y.length !== 2 || p.y.some(n => typeof n !== 'number')) P.push(`[PEOPLE 生卒非法] ${k}`);
+  else if (p.y[0] >= p.y[1]) P.push(`[PEOPLE 生年不早于卒年] ${k} ${p.y[0]}~${p.y[1]}`);
+  if (p.r) {
+    if (!Array.isArray(p.r) || p.r.length !== 2 || p.r[0] >= p.r[1]) P.push(`[PEOPLE 在位区间非法] ${k}`);
+    else if (p.r[0] < p.y[0] || p.r[1] > p.y[1]) P.push(`[PEOPLE 在位超出生卒] ${k} 在位 ${p.r[0]}~${p.r[1]} 生卒 ${p.y[0]}~${p.y[1]}`);
+  }
+}
+Object.keys(PGLYPH).forEach(g => { if (!PGNAME[g]) P.push(`[PGNAME 缺类别名] ${g}`); });
 
 if (EN.events && EN.events.length !== EVENTS.length) P.push(`[事件中英数量不等] zh=${EVENTS.length} en=${EN.events.length}`);
 const laneIds = new Set(LANES.map(l => l.id));

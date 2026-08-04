@@ -254,6 +254,47 @@ svg.no-ev .evg { display: none; }
 a.wk { color: inherit; text-decoration: underline dotted var(--muted); text-underline-offset: 2.5px; }
 a.wk:hover { text-decoration-style: solid; }
 a.wk::after { content: '↗'; font-size: .72em; color: var(--muted); margin-left: 1.5px; vertical-align: super; }
+/* 站内弹卡的人名:浅底小片、无 ↗——与 a.wk 的"要跳走"形成对比,一眼分得开 */
+.pn {
+  cursor: pointer; padding: 1px 5px; border-radius: 5px;
+  background: color-mix(in oklab, var(--ink) 7%, transparent);
+  box-shadow: inset 0 -1px 0 color-mix(in oklab, var(--ink) 22%, transparent);
+}
+.pn:hover, .pn:focus-visible { background: color-mix(in oklab, var(--ink) 15%, transparent); outline: none; }
+
+/* ---------- 人物卡 ---------- */
+#pcard { position: fixed; inset: 0; z-index: 40; display: flex; align-items: center; justify-content: center; padding: 20px; }
+/* display:flex 会盖掉 [hidden],必须显式写回来——v21 的 playbar 就栽在这上面 */
+#pcard[hidden] { display: none; }
+#pcard .pc-back { position: absolute; inset: 0; background: rgba(0,0,0,.42); animation: pcFade .18s ease; }
+#pcard .pc-box {
+  position: relative; max-width: 460px; width: 100%; max-height: 84vh; overflow-y: auto;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+  padding: 16px 18px 14px; font-size: 13.5px; line-height: 1.62;
+  box-shadow: 0 4px 12px rgba(0,0,0,.18), 0 24px 70px rgba(0,0,0,.34);
+  animation: pcIn .2s cubic-bezier(.2,.9,.3,1.1);
+}
+@keyframes pcFade { from { opacity: 0 } }
+@keyframes pcIn { from { opacity: 0; transform: translateY(12px) scale(.97) } }
+@media (prefers-reduced-motion: reduce) { #pcard .pc-box, #pcard .pc-back { animation: none } }
+#pcard .pc-head { display: flex; align-items: flex-start; gap: 10px; }
+#pcard .pc-g { font-size: 26px; line-height: 1.15; flex: none; }
+#pcard h3 { margin: 0; font-size: 18px; letter-spacing: .01em; }
+#pcard .pc-sub { color: var(--muted); font-size: 11.5px; margin-top: 2px; font-variant-numeric: tabular-nums; }
+#pcard .pc-x {
+  margin-left: auto; flex: none; background: none; border: 1px solid var(--border); color: var(--muted);
+  border-radius: 7px; width: 26px; height: 26px; cursor: pointer; font-size: 15px; line-height: 1;
+}
+#pcard .pc-x:hover { color: var(--ink); border-color: var(--muted); }
+#pcard .pc-t { margin: 11px 0 0; font-weight: 600; }
+#pcard .pc-a { margin: 9px 0 0; padding: 0; list-style: none; }
+#pcard .pc-a li { position: relative; padding-left: 17px; margin-top: 5px; }
+#pcard .pc-a li::before { content: ''; position: absolute; left: 3px; top: .62em; width: 6px; height: 6px; border-radius: 50%; background: var(--pc-col); }
+#pcard .pc-s { margin: 11px 0 0; padding: 9px 11px; border-radius: 8px; background: var(--wash); border-left: 3px solid var(--pc-col); }
+#pcard .pc-s b { color: var(--pc-col); margin-right: 4px; }
+#pcard .pc-foot { display: flex; align-items: center; gap: 14px; margin-top: 13px; padding-top: 10px; border-top: 1px solid var(--border); font-size: 12px; }
+#pcard .pc-civ { cursor: pointer; color: var(--ink-2); text-decoration: underline dotted; }
+#pcard .pc-civ:hover { color: var(--ink); }
 #panel .p-spark { margin: 4px 0 10px; }
 #panel .p-map { margin: 2px 0 12px; }
 #panel .p-map .cap { color: var(--muted); font-size: 11px; margin-top: 3px; }
@@ -284,7 +325,9 @@ a.wk::after { content: '↗'; font-size: .72em; color: var(--muted); margin-left
 #panel .vid-search span { font-weight: 400; font-size: 11.5px; color: var(--muted); }
 #panel .vid-search:hover { border-color: var(--muted); background: var(--surface); }
 #panel .fact { background: var(--wash); border-radius: 7px; padding: 6px 9px; }
-#panel .fact span { display: block; color: var(--muted); font-size: 11px; }
+/* 只管格子自己的标题 span(「人物」「中心」…),不能波及值里的 .pn 人名片——
+   写成后代选择器会把人名也变成 block,三个名字各占一行、顿号单独一行 */
+#panel .fact > span { display: block; color: var(--muted); font-size: 11px; }
 #panel .fact b { font-weight: 600; font-size: 12px; }
 #panel .p-body { color: var(--ink-2); font-size: 13px; }
 #panel .p-tl { margin-top: 13px; border-top: 1px solid var(--grid); padding-top: 10px; }
@@ -335,6 +378,8 @@ td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; ma
 
 <div id="tip"></div>
 <aside id="panel" aria-label="详情面板"></aside>
+<!-- 人物卡:独立于 #panel 的一层,所以弹出/关闭都不动文明卡的滚动位置 -->
+<div id="pcard" hidden><div class="pc-back"></div><div class="pc-box" role="dialog" aria-modal="true" aria-label="人物"></div></div>
 
 <div id="playbar" hidden aria-live="polite">
   <div class="pb-year"><b id="pbYear">—</b><span id="pbEra"></span></div>
@@ -1948,7 +1993,7 @@ civ: {
 '西晋': { n:'Western Jin', w:'Jin dynasty (266–420)', b:'Brief reunification, then princes\' wars and the fall of Luoyang.', d:'The Sima clan reunified the realm, then armed its princes: sixteen years of internecine war invited the Xiongnu in. Luoyang fell in 311 — the "Yongjia catastrophe" — and the northern gentry fled south en masse.', f:{ 'Peak':'Taikang era (280–289)', 'Center':'Luoyang', 'Figures':'Sima Yan', 'Legacy':'A reunification that failed' } },
 '东晋·十六国': { n:'E. Jin & 16 Kingdoms', w:'Sixteen Kingdoms', b:'The north churns; the south holds at the Fei River.', d:'Sixteen short-lived northern regimes churned while the émigré court held the south; at the Fei River in 383, eighty thousand beat a claimed million and preserved the southern line. Wang Xizhi\'s Orchid Pavilion and Faxian\'s pilgrimage both belong to this turbulent age.', f:{ 'Center':'Jiankang; northern capitals', 'Figures':'Wang Dao, Xie An, Wang Xizhi, Fu Jian', 'Legacy':'The Yangtze south developed; calligraphy\'s peak' } },
 '南北朝': { n:'N. & S. Dynasties', w:'Northern and Southern dynasties', b:'Southern letters, northern reforms; the grotto-Buddha age.', d:'Four southern courts cultivated letters while the Xianbei north moved to Luoyang and sinicized wholesale; the equal-field and garrison-militia systems — two pillars of Sui-Tang — were cast in the north. The Yungang and Longmen Buddhas rose above the wars.', f:{ 'Center':'Jiankang; Pingcheng → Luoyang', 'Figures':'Emperor Xiaowen, Emperor Wu of Liang', 'Legacy':'Grotto Buddhas, equal-field system' } },
-'隋': { n:'Sui', w:'Sui dynasty', b:'Reunification, the Grand Canal, the examination system.', d:'Wendi ended three centuries of division and created the ministries and examinations; Yangdi cut the Grand Canal, welding China\'s south to its north. Three failed Korean wars bled the people; like Qin, Sui died in two reigns — and like Qin, its systems lived on.', f:{ 'Peak':'Kaihuang era', 'Center':'Daxing (Chang\'an)', 'Figures':'Emperors Wen and Yang', 'Legacy':'Grand Canal, examinations' } },
+'隋': { n:'Sui', w:'Sui dynasty', b:'Reunification, the Grand Canal, the examination system.', d:'Wendi ended three centuries of division and created the ministries and examinations; Yangdi cut the Grand Canal, welding China\'s south to its north. Three failed Korean wars bled the people; like Qin, Sui died in two reigns — and like Qin, its systems lived on.', f:{ 'Peak':'Kaihuang era', 'Center':'Daxing (Chang\'an)', 'Figures':'Emperor Wen, Emperor Yang', 'Legacy':'Grand Canal, examinations' } },
 '唐': { n:'Tang', w:'Tang dynasty', b:'The open empire at its height; Chang\'an, capital of the world.', d:'Taizong was hailed Heavenly Khagan; million-strong Chang\'an thronged with Sogdian merchants, Japanese envoys and pilgrim monks. An Lushan\'s revolt halved the splendor, warlords and eunuchs finished it — but the examinations, the law codes and Tang poetry had already shaped all East Asia.', f:{ 'Peak':'Kaiyuan era (713–741)', 'Center':'Chang\'an, Luoyang', 'Figures':'Taizong, Wu Zetian, Li Bai, Du Fu', 'Legacy':'Heavenly Khagan order, Tang poetry' } },
 '五代十国': { n:'Five Dynasties', w:'Five Dynasties and Ten Kingdoms period', b:'Five northern regimes, ten southern states, one fatal land cession.', d:'Five dynasties cycled through the north in seventy years while ten states split the south; in 936 Shi Jingtang ceded the Sixteen Prefectures to the Khitan, leaving the plain defenseless for four hundred years. The south, meanwhile, quietly prospered.', f:{ 'Center':'Kaifeng; southern capitals', 'Figures':'Chai Rong (Zhou Shizong)', 'Legacy':'The southern economy matures' } },
 '北宋': { n:'Northern Song', w:'Song dynasty', b:'The commercial revolution: paper money, movable type, the Qingming scroll.', d:'A cup of wine dissolved the generals\' commands and civil officials ruled; peace was bought from Liao and Xia while the economy hit a premodern world peak — the first paper money, night markets without curfew, Shen Kuo\'s science. Jingkang ended it overnight.', f:{ 'Peak':'Renzong era (mid-11th c.)', 'Center':'Kaifeng', 'Figures':'Zhao Kuangyin, Wang Anshi, Su Shi, Shen Kuo', 'Legacy':'Paper money, movable type, firearms' } },
@@ -2111,6 +2156,160 @@ const ERAS = [
   { a:1500, b:1900, n:'近代' },
   { a:1900, b:2025, n:'现代' },
 ];
+/* ---------- 人物卡 ----------
+   点文明卡里的人名弹出站内小卡,不再直接跳维基——7 岁用户点进维基那种密度的
+   页面基本等于流程断掉,而且回不来。维基出口保留在卡片底部,想深入的人还能走。
+
+   写作格式统一为「一句话身份 + 他做了三件事 + 所以」:三件事对小孩最好读,
+   「所以」那句负责把人挂回文明兴衰的因果链(阿克巴废人头税↔奥朗则布恢复,
+   正好是一对反例),否则人物卡就成了一堆孤立的百科词条。
+
+   键 = 中文人名(与 PLACE 同策略,中英共用一套中文键);英文界面靠**位置**
+   对齐取键,所以 EN.civ[n].f.Figures 必须与中文「人物」逐个对齐——audit 会查。
+   g=类别 y=[生,卒] r=[在位起,止](可选) c=所属文明 n=[中,英]
+   t=一句话身份 a=三件事 s=「所以」 w=维基消歧义(可选)
+   年份负数=公元前。生卒不确切的用约值,在 t 或 a 里说明。 */
+const PGLYPH = { king:'👑', war:'⚔️', mind:'📜', sci:'⚙️', art:'🎨', faith:'☸️', sail:'🧭' };
+const PGNAME = { king:['帝王','Ruler'], war:['征战','Conqueror'], mind:['思想','Thinker'],
+  sci:['科学','Scientist'], art:['艺术','Artist'], faith:['宗教','Faith'], sail:['航海','Navigator'] };
+const PEOPLE = {
+'阿克巴': { g:'king', y:[1542,1605], r:[1556,1605], c:'莫卧儿帝国', n:['阿克巴','Akbar'],
+  t:['13 岁被推上王位的少年皇帝,一辈子不识字——书都是别人念给他听的。',
+     'Put on the throne at 13, and never learned to read — everything was read aloud to him.'],
+  a:[['废掉向非穆斯林征收的人头税(吉兹亚)','Abolished the jizya, the tax on non-Muslims'],
+     ['盖了一座辩论厅,请印度教、耆那教、祆教、基督教的学者来吵架,自己坐着听',
+      'Built a debating hall and sat listening to Hindu, Jain, Zoroastrian and Christian scholars argue'],
+     ['娶拉杰普特王公的女儿,再让这些王公当自己的将军','Married Rajput princesses — and made those Rajput princes his generals']],
+  s:['一个穆斯林皇帝统治着人口大多数是印度教徒的国家,而且统治得住。他的曾孙奥朗则布把这些全废了,帝国就散了。',
+     'A Muslim emperor ruling a mostly Hindu population — and making it stick. His great-grandson Aurangzeb undid all of it, and the empire came apart.'] },
+'沙贾汗': { g:'king', y:[1592,1666], r:[1628,1658], c:'莫卧儿帝国', n:['沙贾汗','Shah Jahan'],
+  t:['莫卧儿最会花钱的皇帝,留下了世界上最有名的一座坟。',
+     'The Mughal who spent the most — and left behind the most famous tomb in the world.'],
+  a:[['为难产去世的妻子慕塔芝·玛哈建泰姬陵,白色大理石,修了 22 年',
+      'Built the Taj Mahal for his wife Mumtaz Mahal, who died in childbirth — white marble, 22 years'],
+     ['把都城从阿格拉迁到德里,建红堡','Moved the capital from Agra to Delhi and built the Red Fort'],
+     ['打造孔雀宝座,镶满宝石——后来被波斯人抢走了','Commissioned the jewelled Peacock Throne — later carried off by the Persians']],
+  s:['1658 年他病倒,儿子奥朗则布杀掉兄弟、把父亲关进阿格拉堡,一关八年到死。据说从囚室的窗口正好能望见泰姬陵。',
+     'In 1658 he fell ill; his son Aurangzeb killed his brothers and locked his father in Agra Fort for eight years, until he died. From that window, they say, you can see the Taj Mahal.'] },
+'奥朗则布': { g:'king', y:[1618,1707], r:[1658,1707], c:'莫卧儿帝国', n:['奥朗则布','Aurangzeb'],
+  t:['把帝国版图推到最大的那个皇帝,也是把帝国掏空的那个。',
+     'The emperor who pushed the empire to its greatest extent — and hollowed it out doing so.'],
+  a:[['杀掉三个兄弟、囚禁父亲,才坐上王位','Killed three brothers and imprisoned his father to take the throne'],
+     ['1679 年恢复阿克巴废掉的人头税,拆毁部分印度教神庙','Reimposed the jizya in 1679 — the tax Akbar had abolished — and demolished some Hindu temples'],
+     ['南下吞并德干的比贾布尔和戈尔康达,又跟马拉塔人打了 27 年','Annexed Bijapur and Golconda in the Deccan, then fought the Marathas for 27 years']],
+  s:['版图最大的那一刻,也是最虚的那一刻:德干战争把国库打空,他一死,50 年内帝国就只剩个名字。',
+     'The empire was never bigger and never weaker: the Deccan wars drained the treasury, and within 50 years of his death it was an empire in name only.'] },
+'秦始皇': { g:'king', y:[-259,-210], r:[-221,-210], c:'秦', n:['秦始皇','Qin Shi Huang'], w:'秦始皇',
+  t:['第一个把"中国"这块地方捏成一个国家的人,也是第一个自称"皇帝"的人。',
+     'The first man to weld China into a single state — and the first to call himself "emperor".'],
+  a:[['前 221 年灭掉最后一个对手,十年之内吞并六国','Swallowed the last of his six rivals in 221 BCE, after ten years of war'],
+     ['书同文、车同轨、统一度量衡——写法、车轮宽度、斤两尺寸全国一个标准',
+      'One script, one axle width, one set of weights and measures for the whole country'],
+     ['废掉分封,全国设郡县,官员由中央任免,不能世袭','Scrapped hereditary fiefs for centrally appointed commanderies and counties']],
+  s:['秦朝只撑了 15 年就亡了,但郡县制和统一的文字往后用了两千年——中国后来每次分裂都还能拼回来,底子是他打的。',
+     'The Qin lasted only 15 years, but its centralised counties and unified script lasted two thousand. Every later Chinese reunification was building on his template.'] },
+'武则天': { g:'king', y:[624,705], r:[690,705], c:'唐', n:['武则天','Wu Zetian'],
+  t:['中国历史上唯一一个自己当皇帝的女人。',
+     'The only woman in Chinese history to rule as emperor in her own name.'],
+  a:[['690 年称帝,改国号为"周",是唯一一个自己坐上龙椅的女性','Took the throne in 690 and renamed the dynasty "Zhou"'],
+     ['大办科举、开殿试,提拔寒门出身的官员(狄仁杰就是她用的)',
+      'Expanded the civil-service exams, invented the palace examination, and promoted men of humble birth — Di Renjie among them'],
+     ['养了一批酷吏搞告密和罗织,清洗掉大批旧贵族','Kept a corps of cruel officials running informer networks that wiped out much of the old aristocracy']],
+  s:['她要跟门阀世家斗,就只能大量提拔没有背景的人。科举从她这里才真正变成寒门向上的通道——这个副作用比她做皇帝本身影响更久。',
+     'To fight the great clans she had to promote men with no pedigree. That is when the examination system really became a ladder for the low-born — an accident that outlasted her reign.'] },
+'王安石': { g:'mind', y:[1021,1086], c:'北宋', n:['王安石','Wang Anshi'],
+  t:['中国历史上规模最大的一次经济改革,是他一个人推起来的。',
+     'The largest economic reform in Chinese history was pushed through by one man.'],
+  a:[['青苗法:青黄不接时官府低息借粮给农民,免得他们被高利贷吃掉',
+      'The Green Sprouts loans: the state lent grain cheaply at the hungry season so farmers would not fall to loan sharks'],
+     ['募役法:老百姓交钱免服劳役,官府拿钱雇人干','Hired-service: pay a tax instead of doing corvée labour, and the state hires workers'],
+     ['保甲法:农村按户编队,农闲练兵,想省下养常备军的钱','Baojia militia: villages organised into units drilling in the off-season, to cut the cost of a standing army']],
+  s:['司马光、苏轼这些人拼死反对,说官府放贷等于跟民争利。1076 年他罢相,死后新法基本废光,但北宋的党争从此再没停过——旧党新党斗了五十年,金兵来的时候还在斗。',
+     'Sima Guang and Su Shi fought him to the end, arguing that a state that lends money is a state competing with its own people. He fell in 1076 and the laws were largely repealed — but the factional war he started ran for fifty years, and was still running when the Jurchen armies arrived.'] },
+'成吉思汗': { g:'war', y:[1162,1227], r:[1206,1227], c:'蒙古帝国', n:['成吉思汗','Genghis Khan'],
+  t:['本名铁木真。他把互相仇杀了几百年的草原部落,拧成了一部战争机器。',
+     'Born Temüjin. He took steppe tribes that had been killing each other for centuries and forged them into one war machine.'],
+  a:[['打散原来的部落,按十进制重编成千户——你的长官不再是你的族长',
+      'Broke up the tribes and re-sorted everyone into units of a thousand — your commander was no longer your clansman'],
+     ['借畏兀儿字母造出蒙古文字,让命令可以写下来传出去','Adapted the Uyghur alphabet to write Mongol, so orders could travel in writing'],
+     ['铺设驿站,信使换马不换人,一天能跑三四百里','Built the yam relay stations: couriers changed horses, not riders, and covered hundreds of li a day']],
+  s:['他一辈子没读过书,却明白一件事:草原打不赢定居帝国,不是因为人少,是因为散。他孙子那一代,帝国从朝鲜一直连到匈牙利。',
+     'He never learned to read, but he understood one thing: the steppe lost to settled empires not for lack of men but for lack of unity. By his grandsons\' generation the empire ran from Korea to Hungary.'] },
+'郑和': { g:'sail', y:[1371,1433], c:'明', n:['郑和','Zheng He'],
+  t:['云南出身的回族太监,本姓马,率领过当时世界上最大的船队。',
+     'A Muslim eunuch from Yunnan, born Ma — and commander of the largest fleet in the world.'],
+  a:[['1405—1433 年七下西洋,船两百多艘、人两万七千余','Seven voyages between 1405 and 1433, with over 200 ships and 27,000 men'],
+     ['最远到过东非的麻林(今肯尼亚)和红海边的吉达','Reached Malindi on the East African coast and Jeddah on the Red Sea'],
+     ['带回长颈鹿当"麒麟"献给皇帝,朝野轰动','Brought back a giraffe, presented at court as the mythical qilin']],
+  s:['比哥伦布早 87 年,船队规模大几十倍。但明朝主动停了——航海图被封存,造船技术失传,海洋从此让给了后来的葡萄牙人。',
+     'Eighty-seven years before Columbus, with a fleet dozens of times larger. Then the Ming simply stopped: the charts were shelved, the shipbuilding skills lost, and the ocean left to the Portuguese.'] },
+'凯撒': { g:'war', y:[-100,-44], c:'罗马', n:['凯撒','Julius Caesar'], w:'尤利乌斯·凯撒',
+  t:['他没当成皇帝,但他一死,罗马共和国也就没了。',
+     'He never became emperor — but when he died, the Roman Republic died with him.'],
+  a:[['前 58—前 50 年征服高卢(今天的法国一带),打了八年','Conquered Gaul — roughly modern France — over eight years from 58 BCE'],
+     ['前 49 年带兵渡过卢比孔河,这是违法的,等于向元老院宣战',
+      'Crossed the Rubicon with his army in 49 BCE — illegal, and a declaration of war on the Senate'],
+     ['改历法,一年 365 天加闰年,这套儒略历用了一千六百年','Reformed the calendar: 365 days plus a leap year — the Julian calendar lasted 1,600 years']],
+  s:['前 44 年 3 月 15 日他在元老院被刺死,凶手想救共和国,结果换来的是他养子屋大维的独裁。"凯撒"这个名字后来变成了"皇帝"的意思——德语 Kaiser、俄语沙皇,都是它。',
+     'Stabbed in the Senate on 15 March 44 BCE by men trying to save the Republic; what they got was the dictatorship of his heir Octavian. His name became the word for emperor — German Kaiser, Russian Tsar.'] },
+'奥古斯都': { g:'king', y:[-63,14], r:[-27,14], c:'罗马', n:['奥古斯都','Augustus'],
+  t:['凯撒的养子屋大维。他学乖了:壳子留着,权力全拿走。',
+     'Caesar\'s heir Octavian. He learned the lesson: keep the shell, take all the power.'],
+  a:[['前 31 年阿克提乌姆海战击败安东尼与克娄巴特拉,天下无对手',
+      'Destroyed Antony and Cleopatra at Actium in 31 BCE, leaving no rival standing'],
+     ['前 27 年元老院授他"奥古斯都"尊号,但他坚持只自称"第一公民"',
+      'Took the title Augustus in 27 BCE — but insisted he was merely princeps, "first citizen"'],
+     ['元老院、执政官、选举全保留,照常开会,只是人事和军队都归他',
+      'Kept the Senate, the consuls and the elections running — while controlling appointments and the army']],
+  s:['凯撒明着要权被刺死,他暗着拿权活到 76 岁。这套"看起来还是共和国"的办法让罗马又稳了两百年——史称罗马和平。',
+     'Caesar grabbed openly and was killed; Augustus took quietly and lived to 76. That pretence of a surviving Republic bought Rome two centuries of peace.'] },
+'拉美西斯二世': { g:'king', y:[-1303,-1213], r:[-1279,-1213], c:'古埃及', n:['拉美西斯二世','Ramesses II'],
+  t:['在位 66 年,活了 90 多岁,埃及最爱给自己立雕像的法老。',
+     'Sixty-six years on the throne, over ninety years alive, and no pharaoh ever built himself more statues.'],
+  a:[['前 1274 年卡叠什战役跟赫梯人打了个平手,回国后把它宣传成大胜,刻满了神庙墙壁',
+      'Fought the Hittites to a draw at Kadesh in 1274 BCE — then carved it on temple walls as a triumph'],
+     ['前 1259 年跟赫梯签和约,这是人类现存最早的国际和平条约',
+      'Signed a treaty with the Hittites in 1259 BCE — the earliest surviving international peace treaty'],
+     ['在阿布辛贝的悬崖上凿出四座 20 米高的自己','Carved four twenty-metre statues of himself into the cliff at Abu Simbel']],
+  s:['他签的那份和约有一份复制品挂在纽约的联合国总部。三千年前打不动了就坐下来谈,这件事本身比谁赢了那场仗重要得多。',
+     'A copy of that treaty hangs at UN headquarters in New York. That two exhausted powers sat down instead of fighting on matters far more than who won the battle.'] },
+'克娄巴特拉': { g:'king', y:[-69,-30], r:[-51,-30], c:'古埃及', n:['克娄巴特拉','Cleopatra VII'],
+  t:['埃及最后一位法老,但她其实是希腊人——托勒密王朝是亚历山大部将的后代。',
+     'Egypt\'s last pharaoh — and a Greek: the Ptolemies descended from one of Alexander\'s generals.'],
+  a:[['托勒密王室统治埃及近三百年,她是头一个肯学埃及语的','Her family had ruled Egypt for nearly 300 years; she was the first of them to bother learning Egyptian'],
+     ['先跟凯撒结盟并生下一子,凯撒死后改跟安东尼结盟','Allied with Caesar and bore his son; after his murder, allied with Antony'],
+     ['前 31 年阿克提乌姆战败,次年自杀','Lost at Actium in 31 BCE and killed herself the next year']],
+  s:['她一死,三千年的法老埃及就结束了,变成罗马的一个粮仓省份。她不是"被美色误国"的那种角色——她是在两个罗马巨头之间下注,赌输了。',
+     'With her death, three thousand years of pharaonic Egypt ended and the country became a Roman grain province. She was not a seductress who lost a kingdom; she was a ruler betting on Roman strongmen, who backed the loser.'] },
+'阿育王': { g:'king', y:[-304,-232], r:[-268,-232], c:'孔雀王朝', n:['阿育王','Ashoka'],
+  t:['他打赢了一场仗,然后决定再也不打仗了。',
+     'He won a war, and then decided never to fight another.'],
+  a:[['前 261 年征服羯陵伽,据他自己的敕令记载死伤流离数十万','Conquered Kalinga in 261 BCE — by his own edicts, with hundreds of thousands dead or displaced'],
+     ['战后皈依佛教,在全国的岩壁和石柱上刻下敕令,讲的不是武功而是宽容与不杀生',
+      'Turned to Buddhism and had edicts carved on rocks and pillars across India — not of conquest, but of tolerance and non-violence'],
+     ['派传教团去斯里兰卡、中亚和希腊化诸国','Sent missions to Sri Lanka, Central Asia and the Hellenistic kingdoms']],
+  s:['佛教本来只是恒河流域的一个地方教派,是他把它送出了印度。今天印度国旗中间的法轮和国徽上的四头狮子,都是从他的石柱上照搬的。',
+     'Buddhism was a local Ganges sect until he exported it. India\'s flag carries his wheel, and its state emblem his four lions — both copied straight off his pillars.'] },
+'亚里士多德': { g:'mind', y:[-384,-322], c:'古希腊', n:['亚里士多德','Aristotle'],
+  t:['柏拉图的学生,亚历山大大帝的老师。他发明的是"分门别类地研究一切"这件事本身。',
+     'Plato\'s student and Alexander\'s tutor. What he really invented was the idea of studying everything, systematically.'],
+  a:[['把推理写成规则(三段论),逻辑学从此是一门学问','Turned reasoning into rules — the syllogism — and made logic a subject'],
+     ['解剖、观察、给几百种动物分类,是最早认真做生物学的人','Dissected, observed and classified hundreds of animals — the first serious biologist'],
+     ['写《诗学》《政治学》《伦理学》,连"悲剧该怎么写""国家有几种"都要分类',
+      'Wrote the Poetics, Politics and Ethics — classifying even how tragedies should be built and how many kinds of state there are']],
+  s:['欧洲中世纪一千年里,提到"那位哲学家"不用加名字,所有人都知道说的是他。这既是荣耀也是麻烦——他错的地方(比如重的物体落得快)也被信了一千多年。',
+     'For a thousand medieval years, "the Philosopher" needed no name. That was an honour and a trap: his mistakes — heavier things fall faster — were believed just as long.'] },
+'花剌子米': { g:'sci', y:[780,850], c:'阿拉伯哈里发', n:['花剌子米','al-Khwarizmi'],
+  t:['你今天说的"代数"和"算法",两个词都是从他身上来的。',
+     'Two words you use today — algebra and algorithm — both come from this one man.'],
+  a:[['在巴格达的智慧宫写《还原与对消计算书》,书名里的 al-jabr 就是 algebra(代数)',
+      'At Baghdad\'s House of Wisdom he wrote the Kitab al-jabr — and al-jabr became "algebra"'],
+     ['写书介绍印度传来的十个数字(包括零),让它经由阿拉伯世界传进欧洲',
+      'Wrote the book that carried the Indian numerals — zero included — through the Arab world into Europe'],
+     ['他名字的拉丁写法 Algoritmi,后来变成了 algorithm(算法)','His name latinised as Algoritmi, which became "algorithm"']],
+  s:['他没有发明零,也没有发明代数的全部——但他是把印度的数字、希腊的几何和两河的计算传统缝在一起的那个人。翻译运动的价值就在这儿:不是搬运,是接驳。',
+     'He invented neither zero nor all of algebra — but he was the man who stitched Indian numerals, Greek geometry and Mesopotamian calculation into one thing. That was the point of the translation movement: not carrying, but connecting.'] },
+};
 /* ---------- 传播轨迹:stops 按年代排序,p=上游节点索引(默认前一个) ---------- */
 const TRACES = [
 { n:['青铜技术','Bronze metallurgy'], stops:[
@@ -2506,8 +2705,20 @@ const WIKI_NAME = { '明':'明朝', '清':'清朝', '元':'元朝', '商':'商�
 const wiki = t => (LANG === 'zh' ? 'https://zh.wikipedia.org' : 'https://en.wikipedia.org') + '/w/index.php?search=' + encodeURIComponent(t);
 const wkA = (text, term) => `<a class="wk" href="${wiki(term || text)}" target="_blank" rel="noopener">${text}</a>`;
 const stripParen = s => s.replace(/（[^）]*）|\([^)]*\)/g, '').trim();
-const linkNames = s => s.split(/[、,;；]/).map(x => x.trim()).filter(Boolean)
-  .map(x => wkA(x, stripParen(x))).join(T('、', ', '));
+/* 人名渲染:配了 PEOPLE 的弹站内卡片,没配的照旧跳维基。
+   PEOPLE 统一用中文名索引(同 PLACE 的做法),英文界面靠**位置**换回中文键——
+   所以 EN 的 Figures 必须与中文「人物」逐个对齐,audit 会查这一条。
+   两种人名视觉上必须能分开:站内卡片是浅底小片、无箭头,外链保持 wk 的 ↗。 */
+const NSPLIT = /[、,;；]/;
+const linkNames = (s, c) => {
+  const zh = ((c.f && c.f['人物']) || '').split(NSPLIT).map(x => x.trim()).filter(Boolean);
+  return s.split(NSPLIT).map(x => x.trim()).filter(Boolean).map((x, i) => {
+    const key = stripParen(zh[i] || '');
+    return PEOPLE[key]
+      ? `<span class="pn" data-person="${key}" role="button" tabindex="0">${x}</span>`
+      : wkA(x, stripParen(x));
+  }).join(T('、', ', '));
+};
 
 /* ---------- 详情面板 ---------- */
 const panel = document.getElementById('panel');
@@ -2729,7 +2940,7 @@ function openCiv(c) {
   cur = { type: 'civ', obj: c };
   const f = cF(c);
   const facts = f ? `<div class="p-facts">${Object.entries(f).map(([k, v]) =>
-    `<div class="fact"><span>${k}</span><b>${(k === '人物' || k === 'Figures') ? linkNames(v) : v}</b>${(k === '中心' || k === 'Center') ? todayHTML(c) : ''}</div>`).join('')}</div>` : '';
+    `<div class="fact"><span>${k}</span><b>${(k === '人物' || k === 'Figures') ? linkNames(v, c) : v}</b>${(k === '中心' || k === 'Center') ? todayHTML(c) : ''}</div>`).join('')}</div>` : '';
   const evs = EVENTS.filter(e => e.ls.includes(c.l) && e.y >= c.k[0][0] - 30 && e.y <= c.k[c.k.length-1][0] + 30);
   const ch = chronoOf(c);
   panel.innerHTML = `
@@ -2923,8 +3134,50 @@ traceSel.addEventListener('change', () => {
   curTrace = traceSel.value === '' ? null : +traceSel.value;
   buildChart();
 });
+/* ---------- 人物卡 ----------
+   独立于 #panel 的一层,所以弹出和关闭都不碰文明卡的 DOM 与滚动位置——
+   "点了人名就回不来"正是这个功能要解决的问题,自己就不能再制造一次。 */
+const pcard = document.getElementById('pcard');
+const pcBox = pcard.querySelector('.pc-box');
+function openPerson(key) {
+  const p = PEOPLE[key]; if (!p) return;
+  const civ = CIVS.find(c => c.n === p.c);
+  const li = LANG === 'zh' ? 0 : 1;
+  const meta = `${civ ? cN(civ) : p.c} · ${PGNAME[p.g][li]} · ${fmtY(p.y[0])}—${fmtY(p.y[1])}`
+    + (p.r ? ` · ${T('在位 ', 'r. ')}${fmtY(p.r[0])}—${fmtY(p.r[1])}` : '');
+  /* 强调色随所属文明走,人物卡与文明卡在视觉上是同一族 */
+  pcBox.style.setProperty('--pc-col', civ ? fill(civ) : 'var(--ink-2)');
+  pcBox.innerHTML = `
+    <div class="pc-head"><span class="pc-g">${PGLYPH[p.g]}</span>
+      <div><h3>${p.n[li]}</h3><div class="pc-sub">${meta}</div></div>
+      <button class="pc-x" aria-label="${T('关闭', 'Close')}">×</button></div>
+    <p class="pc-t">${p.t[li]}</p>
+    <ul class="pc-a">${p.a.map(x => `<li>${x[li]}</li>`).join('')}</ul>
+    <p class="pc-s"><b>${T('所以', 'So')}</b>${p.s[li]}</p>
+    <div class="pc-foot">${civ ? `<span class="pc-civ" data-pgo="${civ.n}">↩ ${cN(civ)}</span>` : ''}${wkA(T('维基百科', 'Wikipedia'), LANG === 'zh' ? (p.w || p.n[0]) : p.n[1])}</div>`;
+  pcard.hidden = false;
+  pcBox.scrollTop = 0;
+  const x = pcBox.querySelector('.pc-x'); if (x) x.focus();
+}
+const closePerson = () => { pcard.hidden = true; };
+pcard.addEventListener('click', e => {
+  if (e.target.classList.contains('pc-back') || e.target.classList.contains('pc-x')) { closePerson(); return; }
+  /* 从人物卡跳去他所属的文明:关掉小卡,文明卡换内容 */
+  const go = e.target.closest && e.target.closest('[data-pgo]');
+  if (go) {
+    const c = CIVS.find(x => x.n === go.dataset.pgo);
+    if (c) { closePerson(); openCiv(c); panel.scrollTop = 0; }
+  }
+});
+/* 人名可用键盘触发(role=button + tabindex=0),空格要 preventDefault 否则页面滚动 */
+panel.addEventListener('keydown', e => {
+  const pn = e.target.closest && e.target.closest('.pn');
+  if (pn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openPerson(pn.dataset.person); }
+});
 panel.addEventListener('click', e => {
   if (e.target.classList.contains('p-close')) panel.classList.remove('open');
+  const pn = e.target.closest && e.target.closest('.pn');
+  if (pn) { openPerson(pn.dataset.person); return; }
   /* 卡内漫游:点同期文明(地图圆点/视野外列表)跳到那个文明的卡片 */
   const go = e.target.closest && e.target.closest('[data-goto]');
   if (go) {
@@ -2941,7 +3194,10 @@ panel.addEventListener('click', e => {
   }
 });
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') panel.classList.remove('open');
+  /* Esc 逐层退:先关人物卡,文明卡留着——两层一起关会让人丢失位置 */
+  if (e.key !== 'Escape') return;
+  if (!pcard.hidden) { closePerson(); return; }
+  panel.classList.remove('open');
 });
 
 /* ---------- 数据表 ---------- */
