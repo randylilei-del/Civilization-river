@@ -134,6 +134,9 @@ for (const [k, p] of Object.entries(PEOPLE || {})) {
   else p.a.forEach((x, i) => P.push(...[bi(x, `[PEOPLE「三件事」非双语] ${k}#${i}`)].filter(Boolean)));
   if (!Array.isArray(p.y) || p.y.length !== 2 || p.y.some(n => typeof n !== 'number')) P.push(`[PEOPLE 生卒非法] ${k}`);
   else if (p.y[0] >= p.y[1]) P.push(`[PEOPLE 生年不早于卒年] ${k} ${p.y[0]}~${p.y[1]}`);
+  if (p.yk && !['r', 'a'].includes(p.yk)) P.push(`[PEOPLE yk 非法] ${k} "${p.yk}" 应为 r(在位)/a(活跃)`);
+  // yk 已经声明 y 不是生卒了,再给 r 就自相矛盾(会渲染出"在位 X · 在位 Y")
+  if (p.yk && p.r) P.push(`[PEOPLE yk 与 r 并存] ${k} y 已声明为${p.yk === 'r' ? '在位' : '活跃'}年代,不应再给 r`);
   if (p.r) {
     if (!Array.isArray(p.r) || p.r.length !== 2 || p.r[0] >= p.r[1]) P.push(`[PEOPLE 在位区间非法] ${k}`);
     else if (p.r[0] < p.y[0] || p.r[1] > p.y[1]) P.push(`[PEOPLE 在位超出生卒] ${k} 在位 ${p.r[0]}~${p.r[1]} 生卒 ${p.y[0]}~${p.y[1]}`);
