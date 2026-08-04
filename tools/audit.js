@@ -129,7 +129,7 @@ for (const [k, p] of Object.entries(PEOPLE || {})) {
   if (!names.has(p.c)) P.push(`[PEOPLE 文明名不存在] ${k} → ${p.c}`);
   else if (!where.includes(p.c)) P.push(`[PEOPLE 归属对不上] ${k} 标为 ${p.c},但只出现在 ${where.join('/')} 的人物里`);
   if (!PGLYPH[p.g]) P.push(`[PEOPLE 类别非法] ${k} "${p.g}" 应为 ${Object.keys(PGLYPH).join('/')}`);
-  P.push(...[bi(p.n, `[PEOPLE 姓名非双语] ${k}`), bi(p.t, `[PEOPLE 身份句非双语] ${k}`), bi(p.s, `[PEOPLE「所以」非双语] ${k}`)].filter(Boolean));
+  P.push(...[bi(p.n, `[PEOPLE 姓名非双语] ${k}`), bi(p.t, `[PEOPLE 身份句非双语] ${k}`), bi(p.s, `[PEOPLE「意义」非双语] ${k}`)].filter(Boolean));
   if (!Array.isArray(p.a) || !p.a.length) P.push(`[PEOPLE 缺「三件事」] ${k}`);
   else p.a.forEach((x, i) => P.push(...[bi(x, `[PEOPLE「三件事」非双语] ${k}#${i}`)].filter(Boolean)));
   if (!Array.isArray(p.y) || p.y.length !== 2 || p.y.some(n => typeof n !== 'number')) P.push(`[PEOPLE 生卒非法] ${k}`);
