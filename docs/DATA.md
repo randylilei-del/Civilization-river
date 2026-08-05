@@ -11,6 +11,7 @@
 | `LANES` | {id, name} | 泳道,按经度自东向西;新泳道按经度插位 |
 | `SPHERES` | {name, v(CSS变量名)} | 文明圈;新增需配色 + 色盲校验 |
 | `CIVS` | {l, s, v, n, k, b, f, d, gl?} | 文明主表。l=泳道 s=文明圈 v=色深0/1/2 k=[[年,影响力]]关键帧 b=一句话 f=速览{鼎盛/中心/人物/成就} d=叙述 gl=鼎盛区间(可选) |
+| `GL_X` | 同 gl 子表 | v30 的追加块,在 TRACES 之前合并进 GL / c.gl,并**全站按起始年重排**。加新区间走这里,不必改写既有字面量;注意 gl 可能写在 CIVS 条目里,只往 GL 塞会被 `GL[c.n] \|\| c.gl` 短路吞掉 |
 | `gl` 子表 | {a, b, k, t:[zh,en], d:[zh,en]} | k∈econ/art/tech/thought;t/d 自带双语 |
 | `EVENTS` | {y, ls, t, n, d} | 交流事件;ls=涉及泳道 t∈war/trade/culture/tech/plague/migration |
 | `TRACES` | {n:[zh,en], stops:[{y,l,t:[..],d:[..],p?}]} | 传播轨迹;stops 按年排序,p=上游节点索引(默认前一个) |

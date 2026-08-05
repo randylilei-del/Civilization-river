@@ -3977,6 +3977,85 @@ const PEOPLE = {
      'Teotihuacan held perhaps 100,000 to 200,000 people at its height, the largest city in the Americas — yet its script remains essentially undeciphered, and we do not even know what its rulers called themselves. The one named episode in its history comes from the Maya it influenced, exactly as the Ghana Empire survives only in Arab geography: whether a civilisation leaves names behind often depends on whether its neighbours wrote things down.'] },
 
 };
+/* ---------- 鼎盛区间补充(v30) ----------
+   经济/艺术/科技/思想四维,原本 65 个文明只有 1 维、8 个一维都没有。
+   这里只追加,不改动上面 GL 与 CIVS.gl 里的既有条目;合并后按起始年重排,
+   保证区间条从上到下按时间先后出现。
+   有的文明把 gl 写在 CIVS 条目里(c.gl),有的写在 GL 表里,两种都要合并到位——
+   只往 GL 里塞会让 glHTML 的 "GL[c.n] || c.gl" 短路,把内联的那批整个吞掉。 */
+const GL_X = {
+'商':[{a:-1400,b:-1046,k:'art',t:['青铜礼器的巅峰','The height of ritual bronze'],d:['司母戊鼎重 832 公斤,是现存最大的先秦青铜器;纹饰繁复到后世再未复制。','The Simuwu ding weighs 832 kg — the largest surviving pre-Qin bronze, cast with a density of ornament never matched again.']}],
+'东周·春秋战国':[{a:-685,b:-221,k:'econ',t:['货币与城市市场','Coinage and city markets'],d:['刀币、布币、圜钱同时流通,临淄、邯郸等城人口逾十万。','Knife, spade and ring coins circulated together, and cities like Linzi passed 100,000 people.']},
+ {a:-500,b:-221,k:'tech',t:['铁器与大型水利','Iron and great waterworks'],d:['铁农具普及使深耕成为可能;都江堰前 256 年建成,至今仍在灌溉。','Iron tools made deep ploughing possible; the Dujiangyan irrigation system, finished in 256 BCE, still waters Sichuan today.']}],
+'秦':[{a:-221,b:-207,k:'econ',t:['统一度量衡与货币','One set of measures, one coin'],d:['半两钱与标准量器由官府统一颁发,商鞅方升至今存世。','The state issued standard coins and measuring vessels; Shang Yang\'s bronze measure survives.']}],
+'西汉':[{a:-140,b:9,k:'art',t:['汉赋与画像石','Fu poetry and carved stone'],d:['司马相如的大赋铺张扬厉;墓室画像石把神话、宴饮与农事刻满石壁。','Sima Xiangru\'s rhapsodies piled image on image, while tomb reliefs covered whole walls with myth, feasting and farming.']},
+ {a:-104,b:9,k:'tech',t:['太初历与《九章算术》','The Taichu calendar and the Nine Chapters'],d:['前 104 年颁太初历,以正月为岁首;《九章算术》给出负数与方程组解法。','The Taichu calendar of 104 BCE fixed the year\'s start; the Nine Chapters set out negative numbers and simultaneous equations.']}],
+'东汉':[{a:100,b:220,k:'art',t:['书法成为艺术','Calligraphy becomes an art'],d:['隶书成熟、草书兴起,写字第一次被当作独立的审美对象。','Clerical script matured and cursive appeared; for the first time writing itself was judged as art.']}],
+'唐':[{a:650,b:907,k:'tech',t:['雕版印刷与火药初现','Block printing and the first gunpowder'],d:['868 年《金刚经》是现存最早有确切纪年的印刷品;炼丹方书里首次出现火药配方。','The Diamond Sutra of 868 is the earliest dated printed book that survives, and alchemical texts record the first gunpowder formulas.']}],
+'隋':[{a:605,b:618,k:'tech',t:['大运河工程','The Grand Canal'],d:['六年间连通五大水系,全长约两千七百公里,是世界最长的人工运河。','Five river systems joined in six years — some 2,700 km, the longest artificial waterway ever dug.']}],
+'元':[{a:1271,b:1368,k:'thought',t:['多教并立','Many faiths at once'],d:['藏传佛教定为国教,同时道教、伊斯兰教、景教与天主教均可公开传布。','Tibetan Buddhism became the state religion while Daoists, Muslims, Nestorians and Catholics all preached openly.']}],
+'清':[{a:1662,b:1795,k:'tech',t:['大规模实测与工具书','Survey and reference on a national scale'],d:['《皇舆全览图》以实地三角测量绘成,是当时世界上最精确的国家地图之一;《康熙字典》收字四万七千余。','The Kangxi atlas was surveyed by triangulation on the ground — among the most accurate national maps in the world then — and the Kangxi dictionary held over 47,000 characters.']}],
+'日本':[{a:1868,b:2025,k:'tech',t:['从明治工业化到战后制造','From Meiji industry to postwar manufacturing'],d:['四十年建起铁路、钢铁与造船;战后以汽车与电子重回工业前列。','Railways, steel and shipyards in forty years; cars and electronics after the war.']}],
+// 南亚
+'孔雀王朝':[{a:-321,b:-185,k:'econ',t:['次大陆级的税收与商道','Taxation and roads across a subcontinent'],d:['《政事论》详列税则与市场管理;王家大道贯通西北到恒河口。','The Arthashastra sets out tax rates and market rules in detail, and a royal road ran from the northwest to the Ganges mouth.']}],
+'笈多王朝':[{a:320,b:550,k:'thought',t:['印度教六派哲学定型','The six schools take shape'],d:['数论、瑜伽、正理等体系在这一朝成文;佛教与耆那教同时繁荣。','Samkhya, Yoga, Nyaya and the rest were written down in this period, while Buddhism and Jainism flourished alongside.']}],
+'莫卧儿帝国':[{a:1556,b:1605,k:'thought',t:['阿克巴的宗教对话','Akbar\'s house of debate'],d:['在辩论厅里请印度教、耆那教、祆教与基督教学者当面争论,皇帝旁听。','Hindu, Jain, Zoroastrian and Christian scholars argued face to face while the emperor listened.']}],
+'印度·南亚诸国':[{a:1991,b:2025,k:'econ',t:['自由化与服务业外包','Liberalisation and the outsourcing boom'],d:['1991 年放开管制后增长加速;软件与后台服务成为对外的主要出口。','Growth accelerated after the 1991 deregulation, and software and back-office services became the main export.']}],
+// 中东·北非
+'阿拉伯哈里发':[{a:750,b:1258,k:'art',t:['书法、几何纹样与清真寺','Calligraphy, geometry and the mosque'],d:['不造偶像的传统把创造力推向文字与几何,阿拉伯纹样的数学复杂度至今被研究。','A ban on images pushed invention into script and geometry; the mathematics of those patterns is still studied.']}],
+'奥斯曼帝国':[{a:1450,b:1600,k:'tech',t:['巨炮与造船','Great guns and shipyards'],d:['1453 年攻城的乌尔班巨炮口径逾七十厘米;金角湾船厂一度是地中海最大的。','The Urban bombard of 1453 had a bore over 70 cm, and the Golden Horn yards were for a time the largest in the Mediterranean.']}],
+'罗马':[{a:-50,b:180,k:'art',t:['雕塑、壁画与凯旋建筑','Sculpture, fresco and the architecture of triumph'],d:['写实肖像雕塑、庞贝壁画,以及凯旋门与万神殿这类专为炫耀而建的形制。','Veristic portrait busts, the frescoes of Pompeii, and buildings — arches, the Pantheon — designed to be seen.']}],
+// 欧洲
+'古希腊':[{a:-450,b:-146,k:'tech',t:['几何学与医学','Geometry and medicine'],d:['把证明变成学问的方法在此成形;希波克拉底把疾病从神谴中分离出来。','Proof became a discipline here, and Hippocrates separated disease from divine punishment.']}],
+'拜占庭':[{a:527,b:700,k:'tech',t:['穹顶结构与希腊火','Domes and Greek fire'],d:['圣索菲亚的穹顶跨度三十一米,近千年无人超越;希腊火配方是国家机密,至今未完全复原。','Hagia Sophia\'s 31-metre dome went unmatched for a thousand years, and the recipe for Greek fire was a state secret never fully recovered.']}],
+'中世纪西欧':[{a:1100,b:1500,k:'tech',t:['水磨、机械钟与大学','Watermills, clocks and universities'],d:['13 世纪出现机械钟,时间第一次被均匀切分;博洛尼亚、巴黎、牛津相继设校。','The mechanical clock of the thirteenth century cut time into equal pieces for the first time, and Bologna, Paris and Oxford opened their doors.']}],
+'文艺复兴意大利':[{a:1400,b:1600,k:'thought',t:['人文主义','Humanism'],d:['把人而非神放回讨论中心,重新读起被遗忘一千年的古典文本。','Man rather than God at the centre of the argument, and the rereading of classical texts left aside for a thousand years.']},
+ {a:1420,b:1600,k:'tech',t:['透视法与解剖','Perspective and anatomy'],d:['布鲁内莱斯基用数学定出线性透视;画家开始解剖尸体来画准肌肉。','Brunelleschi worked out linear perspective mathematically, and painters began dissecting bodies to get the muscles right.']}],
+'大英帝国·英国':[{a:1750,b:1900,k:'art',t:['风景画与小说','Landscape and the novel'],d:['透纳与康斯太勃尔把风景变成主角;小说在这一时期成为最主要的文学形式。','Turner and Constable made landscape the subject, and the novel became the dominant literary form.']}],
+'法兰西':[{a:1600,b:1800,k:'econ',t:['重商主义与国家工场','Mercantilism and royal manufactures'],d:['柯尔贝尔以国家力量扶植丝绸、玻璃与挂毯,并统一关税。','Colbert used state money to build silk, glass and tapestry works, and unified the tariffs.']},
+ {a:1780,b:1900,k:'tech',t:['公制与工程学院','The metric system and the grandes écoles'],d:['1795 年确立公制,把度量交给自然常数而非国王的身体;巴黎综合理工开创现代工程教育。','The metric system of 1795 tied measurement to nature instead of a king\'s body, and the École Polytechnique invented modern engineering education.']}],
+'俄罗斯·苏联':[{a:1860,b:1920,k:'thought',t:['俄国文学的黄金期','The golden age of Russian letters'],d:['托尔斯泰与陀思妥耶夫斯基把小说变成追问信仰与道德的场所。','Tolstoy and Dostoevsky turned the novel into a place to interrogate faith and morality.']}],
+'德意志':[{a:1866,b:1930,k:'art',t:['音乐的最后一个德语世纪','The last German century in music'],d:['瓦格纳、勃拉姆斯、马勒、理查·施特劳斯先后接力,拜罗伊特成为专为一位作曲家而建的剧院。','Wagner, Brahms, Mahler and Strauss in succession — and at Bayreuth, a theatre built for the works of one composer.']},
+ {a:1870,b:1940,k:'tech',t:['化学工业与实验室科学','Chemical industry and the research laboratory'],d:['合成染料与合成氨在此诞生;"企业办实验室"这一模式也是德国人发明的。','Synthetic dyes and ammonia came from here — and so did the idea of a company running its own research laboratory.']}],
+'荷兰':[{a:1600,b:1700,k:'tech',t:['光学与制图','Optics and cartography'],d:['列文虎克用自磨透镜第一次看见细菌;阿姆斯特丹的海图供应全欧洲。','Leeuwenhoek ground his own lenses and saw bacteria first, and Amsterdam\'s sea charts supplied all Europe.']},
+ {a:1580,b:1700,k:'thought',t:['宗教宽容与国际法','Tolerance and the law of nations'],d:['收留各国流亡的印刷商与思想家,格劳秀斯在这里写下《战争与和平法》。','Exiled printers and thinkers found shelter here, and Grotius wrote the law of war and peace in it.']}],
+'西班牙·葡萄牙':[{a:1415,b:1600,k:'tech',t:['航海术与制图','Navigation and charts'],d:['轻快帆船、星盘定纬与秘密保存的航路图,构成当时最领先的一套远洋技术。','The caravel, the astrolabe and jealously guarded route charts made up the most advanced package of ocean technology then existing.']}],
+// 草原·中亚
+'匈人':[{a:400,b:453,k:'tech',t:['复合弓与马镫时代的骑射','The composite bow'],d:['分层粘合的复合弓在短弓身上做出强拉力,使骑手能在马背上连续射击。','A bow of laminated horn and sinew put heavy draw weight into a short frame, letting a rider shoot again and again from the saddle.']}],
+'嚈哒·白匈奴':[{a:440,b:560,k:'econ',t:['丝路中段的过境税','Tolls on the middle Silk Road'],d:['控制阿姆河两岸的商路,向东西往来的商队抽税,同时向萨珊波斯索贡。','Holding the roads on both banks of the Oxus, they taxed the caravans and took tribute from Persia besides.']}],
+'花剌子模':[{a:1100,b:1220,k:'econ',t:['河中商路的枢纽','The hinge of the Transoxiana trade'],d:['玉龙杰赤与撒马尔罕是东西货物的集散地,城市规模在当时的中亚居首。','Urgench and Samarkand were where east and west exchanged goods, and the largest cities in Central Asia.']}],
+'蒙古帝国':[{a:1230,b:1350,k:'tech',t:['驿站与工匠迁徙','The post roads and the moving of craftsmen'],d:['驿站把欧亚连成一张网,被征服城市的工匠被整批迁往新都,技术随之跨洲流动。','The relay stations knitted Eurasia into one network, and captured craftsmen were moved wholesale to new capitals, carrying their techniques across continents.']},
+ {a:1250,b:1350,k:'thought',t:['宗教宽容与世界史的诞生','Tolerance, and the first world history'],d:['各教一律免税、可自由传布;《史集》第一次把欧亚各文明并列写进一部书。','All religions were tax-exempt and free to preach, and the Compendium of Chronicles first set the civilisations of Eurasia side by side in one book.']}],
+'萨曼王朝':[{a:900,b:999,k:'tech',t:['医学与天文','Medicine and astronomy'],d:['伊本·西那的《医典》与比鲁尼的测地工作都出自这一朝的学术环境。','Ibn Sina\'s Canon and al-Biruni\'s measurements of the earth both came out of this court\'s scholarly world.']}],
+'准噶尔':[{a:1670,b:1750,k:'tech',t:['草原上的火器作坊','Guns on the steppe'],d:['雇请瑞典战俘等外来工匠铸炮制枪,是最后一个自行发展火器的游牧政权。','They employed foreign craftsmen — Swedish prisoners among them — to cast cannon, the last nomadic power to build its own firearms.']}],
+'俄国治下中亚':[{a:1880,b:1991,k:'econ',t:['棉花单一经济','A cotton monoculture'],d:['铁路修通后中亚被改造成棉花产区,为此大规模引水,咸海因此在一个世纪内几近消失。','Once the railways came, Central Asia was turned into a cotton belt; the irrigation it required drained the Aral Sea to almost nothing within a century.']}],
+'现代中亚':[{a:2000,b:2025,k:'econ',t:['油气与过境走廊','Oil, gas and the corridor'],d:['里海油气与横贯欧亚的铁路公路,使这五国重新成为大国竞相争取的通道。','Caspian hydrocarbons and the road and rail routes across Eurasia have made these five states a corridor the great powers court again.']}],
+// 东南亚
+'高棉·吴哥':[{a:900,b:1200,k:'tech',t:['水利工程','Hydraulic engineering'],d:['西池长八公里,配合运河与蓄水池调节旱雨两季,支撑起百万级人口的都城。','The West Baray runs eight kilometres; with its canals and reservoirs it balanced wet and dry seasons for a capital of perhaps a million.']}],
+'欧洲殖民东南亚':[{a:1600,b:1940,k:'econ',t:['种植园与香料垄断','Plantations and the spice monopoly'],d:['荷兰东印度公司以武力垄断丁香与肉豆蔻,后来橡胶、锡与稻米构成新的出口结构。','The Dutch company enforced its clove and nutmeg monopoly by arms; rubber, tin and rice later formed the new export economy.']}],
+// 撒南非洲
+'阿克苏姆':[{a:330,b:600,k:'thought',t:['最早的基督教国家之一','One of the first Christian states'],d:['4 世纪定基督教为国教,比罗马帝国全面基督教化还早;埃塞俄比亚正教会由此延续至今。','Christianity became the state religion in the fourth century, ahead of Rome\'s own full conversion, and the Ethiopian church has run unbroken since.']}],
+'马里帝国':[{a:1300,b:1500,k:'art',t:['廷巴克图的泥砖建筑与手抄本','The mud architecture and manuscripts of Timbuktu'],d:['津加里贝尔清真寺以泥砖与木梁建成,每年由全城居民共同修补;当地至今藏有数十万份中世纪手稿。','The Djinguereber mosque is mud brick over timber, replastered every year by the whole town; the city still holds hundreds of thousands of medieval manuscripts.']}],
+'欧洲殖民非洲':[{a:1650,b:1900,k:'econ',t:['三角贸易与矿业','The triangular trade, then the mines'],d:['三百年间约一千二百万非洲人被运往美洲;19 世纪后重心转向黄金、钻石与橡胶的开采。','Some twelve million Africans were shipped to the Americas over three centuries; after 1800 the focus shifted to gold, diamonds and rubber.']}],
+// 美洲
+'玛雅':[{a:250,b:900,k:'art',t:['石碑、壁画与陶器','Stelae, murals and painted pottery'],d:['博南帕克壁画完整记录了一场战争与庆典;石碑把统治者的生平逐年刻下。','The Bonampak murals record a war and its aftermath in full colour, and the stelae carve out rulers\' lives year by year.']},
+ {a:250,b:900,k:'thought',t:['历法与宇宙观','Calendar and cosmos'],d:['长纪历可以标记数千年内的任一天;美洲唯一成熟的文字体系用来书写神话与王统。','The Long Count can date any day across thousands of years, and the only fully developed script in the Americas was used to write myth and dynasty.']}],
+'印加':[{a:1438,b:1533,k:'econ',t:['国家仓储与劳役制','State granaries and the labour tax'],d:['沿路设仓储存粮食与织物,以劳役代替赋税——没有货币,也没有市场。','Storehouses along the roads held grain and cloth, and people paid in labour rather than goods. There was no money and no market.']}],
+'阿兹特克':[{a:1428,b:1521,k:'art',t:['羽饰、石雕与诗歌','Featherwork, stone and poetry'],d:['羽毛工艺精细到欧洲人以为是绘画;纳瓦特尔语诗歌被传教士记录下来,留存至今。','Featherwork so fine the Spaniards took it for painting, and Nahuatl poetry written down by missionaries and preserved.']}],
+'美国':[{a:1776,b:1900,k:'thought',t:['成文宪政与实用主义','A written constitution, and pragmatism'],d:['把三权分立写成一份可修订的文件;实用主义是美国贡献的第一个原创哲学流派。','Separation of powers set down in an amendable document, and pragmatism — the first philosophy the country produced on its own.']},
+ {a:1900,b:2025,k:'art',t:['电影、爵士与流行文化','Film, jazz and popular culture'],d:['好莱坞与爵士乐把美国的娱乐形式变成全球通用语言。','Hollywood and jazz turned American entertainment into a language everyone speaks.']}],
+};
+/* 合并:有的写在 GL 表、有的写在 CIVS 条目的 gl 字段,两处都要就地追加。
+   只往 GL 塞会让 glHTML 的 "GL[c.n] || c.gl" 短路,把内联的那批整个吞掉。 */
+for (const [n, v] of Object.entries(GL_X)) {
+  const c = CIVS.find(x => x.n === n);
+  const arr = GL[n] || (c && c.gl);
+  if (arr) arr.push(...v); else GL[n] = v.slice();
+}
+/* 全站统一按起始年重排,不只排这次动过的——既有数据里本来就有 6 个文明的区间
+   不按时间先后(明、南宋、南北朝、朱罗、三佛齐、帖木儿),只排新的会让顺序更不一致。 */
+CIVS.forEach(c => { const g = GL[c.n] || c.gl; if (g) g.sort((x, y) => x.a - y.a); });
+
 /* ---------- 传播轨迹:stops 按年代排序,p=上游节点索引(默认前一个) ---------- */
 const TRACES = [
 { n:['青铜技术','Bronze metallurgy'], stops:[
