@@ -149,7 +149,17 @@ for (const [k, v] of Object.entries(PEAK || {})) {
   if (!names.has(k)) P.push(`[PEAK 孤儿键] ${k}`);
   if (!v.a && !v.p && !v.w) P.push(`[PEAK 三项全空] ${k},应直接删掉这条`);
   if (v.a !== undefined && !(v.a > 0)) P.push(`[PEAK 版图非正数] ${k} = ${v.a}`);
-  if (v.p !== undefined && !(v.p > 0)) P.push(`[PEAK 人口非正数] ${k} = ${v.p}`);
+  if (v.p !== undefined) {
+    if (Array.isArray(v.p)) {
+      if (v.p.length !== 2 || !(v.p[0] > 0) || !(v.p[1] > 0)) P.push(`[PEAK 人口区间非法] ${k} = ${JSON.stringify(v.p)}`);
+      else if (v.p[0] >= v.p[1]) P.push(`[PEAK 人口区间下限不小于上限] ${k} = ${v.p[0]}~${v.p[1]}`);
+    } else if (!(v.p > 0)) P.push(`[PEAK 人口非正数] ${k} = ${v.p}`);
+  }
+  // 官方户口数必须给出年份,否则"户口数"三个字无从核对
+  if (v.pc && v.py === undefined) P.push(`[PEAK 标了户口数却无年份] ${k}`);
+  // 户口数是确切记录,不该写成估算区间
+  if (v.pc && Array.isArray(v.p)) P.push(`[PEAK 户口数不应为区间] ${k}`);
+  if (v.an !== undefined && (!Array.isArray(v.an) || v.an.length !== 2 || !v.an[0] || !v.an[1])) P.push(`[PEAK 面积口径说明非双语] ${k}`);
   if (v.w !== undefined && !(v.w > 0 && v.w <= 1)) P.push(`[PEAK 世界占比越界] ${k} = ${v.w},应在 0~1`);
   // 给了占比却没给人口,读者无从判断这个比例是怎么来的
   if (v.w !== undefined && v.p === undefined) P.push(`[PEAK 有占比无人口] ${k}`);
