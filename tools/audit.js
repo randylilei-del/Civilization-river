@@ -22,12 +22,12 @@ const body = script.slice(start, end).split('\n').filter(l => !l.startsWith('con
 
 const ctx = {};
 vm.createContext(ctx);
-const PICK = '({LANES,SPHERES,CIVS,EVENTS,GEO,CHRONO,GL,CHRONO_X,EN,TRACES,ERAS,PLACE,VIDEO,PEOPLE,PGLYPH,PGNAME})';
+const PICK = '({LANES,SPHERES,CIVS,EVENTS,GEO,CHRONO,GL,CHRONO_X,EN,TRACES,ERAS,PLACE,VIDEO,PEOPLE,PGLYPH,PGNAME,PEAK})';
 let D;
 try { vm.runInContext(body, ctx); D = vm.runInContext(PICK, ctx); } catch (e) {
   console.error('数据段解析失败:', e.message); process.exit(1);
 }
-const { LANES, CIVS, EVENTS, GEO, CHRONO, GL, CHRONO_X, EN, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME } = D;
+const { LANES, CIVS, EVENTS, GEO, CHRONO, GL, CHRONO_X, EN, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME, PEAK } = D;
 
 const P = [];
 const KINDS = ['econ', 'art', 'tech', 'thought'];
@@ -143,6 +143,17 @@ for (const [k, p] of Object.entries(PEOPLE || {})) {
   }
 }
 Object.keys(PGLYPH).forEach(g => { if (!PGNAME[g]) P.push(`[PGNAME 缺类别名] ${g}`); });
+
+// PEAK:鼎盛期硬数字。孤儿键会静默失效(那张卡永远看不到这行数字)
+for (const [k, v] of Object.entries(PEAK || {})) {
+  if (!names.has(k)) P.push(`[PEAK 孤儿键] ${k}`);
+  if (!v.a && !v.p && !v.w) P.push(`[PEAK 三项全空] ${k},应直接删掉这条`);
+  if (v.a !== undefined && !(v.a > 0)) P.push(`[PEAK 版图非正数] ${k} = ${v.a}`);
+  if (v.p !== undefined && !(v.p > 0)) P.push(`[PEAK 人口非正数] ${k} = ${v.p}`);
+  if (v.w !== undefined && !(v.w > 0 && v.w <= 1)) P.push(`[PEAK 世界占比越界] ${k} = ${v.w},应在 0~1`);
+  // 给了占比却没给人口,读者无从判断这个比例是怎么来的
+  if (v.w !== undefined && v.p === undefined) P.push(`[PEAK 有占比无人口] ${k}`);
+}
 
 if (EN.events && EN.events.length !== EVENTS.length) P.push(`[事件中英数量不等] zh=${EVENTS.length} en=${EN.events.length}`);
 const laneIds = new Set(LANES.map(l => l.id));
