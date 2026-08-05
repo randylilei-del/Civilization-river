@@ -163,6 +163,16 @@ for (const [k, v] of Object.entries(PEAK || {})) {
   if (v.w !== undefined && !(v.w > 0 && v.w <= 1)) P.push(`[PEAK 世界占比越界] ${k} = ${v.w},应在 0~1`);
   // 给了占比却没给人口,读者无从判断这个比例是怎么来的
   if (v.w !== undefined && v.p === undefined) P.push(`[PEAK 有占比无人口] ${k}`);
+  // ay/py 必须落在该文明自己的存续区间内。年份填到区间外肉眼极难发现——卡片照常渲染,
+  // 只是悄悄写着一个这个文明还不存在(或已亡)的年份。
+  const civ = CIVS.find(c => c.n === k);
+  if (civ && civ.k && civ.k.length) {
+    const lo = civ.k[0][0], hi = civ.k[civ.k.length - 1][0];
+    for (const f of ['ay', 'py']) {
+      if (v[f] !== undefined && (v[f] < lo || v[f] > hi))
+        P.push(`[PEAK 年份在存续区间外] ${k}.${f} = ${v[f]},存续 ${lo}~${hi}`);
+    }
+  }
 }
 
 if (EN.events && EN.events.length !== EVENTS.length) P.push(`[事件中英数量不等] zh=${EVENTS.length} en=${EN.events.length}`);
