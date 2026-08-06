@@ -177,6 +177,11 @@ for (const [k, v] of Object.entries(PEAK || {})) {
 
 // co:分裂时期的并存政权。规则 24—27
 CIVS.forEach(c => {
+  // ct(区块标题覆盖)必须双语,且只在有 co 时才有意义
+  if (c.ct !== undefined) {
+    if (!Array.isArray(c.ct) || c.ct.length !== 2 || !c.ct[0] || !c.ct[1]) P.push(`[ct 非双语] ${c.n}`);
+    if (!c.co) P.push(`[有 ct 无 co] ${c.n}——标题覆盖没有作用对象`);
+  }
   if (!c.co) return;
   if (!Array.isArray(c.co) || !c.co.length) { P.push(`[co 不是非空数组] ${c.n}`); return; }
   const lo = c.k[0][0], hi = c.k[c.k.length - 1][0];
