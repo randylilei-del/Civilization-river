@@ -347,6 +347,14 @@ a.wk::after { content: '↗'; font-size: .72em; color: var(--muted); margin-left
 /* flex-basis:100% 强制独占一行——否则「等十国」这类说明会挤在最后一个政权旁边,
    看起来像是又一个政权。能不能排下取决于前面几个名字多长,不能靠运气 */
 #panel .co-x { font-size: 11.5px; color: var(--muted); flex-basis: 100%; margin-top: 1px; }
+/* 兴衰六问:默认收起的 details。summary 样式对齐其他区块小标题 */
+#panel .p-q { margin-top: 13px; border-top: 1px solid var(--grid); padding-top: 10px; }
+#panel .p-q summary { cursor: pointer; font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: .05em; }
+#panel .p-q summary:hover { color: var(--ink); }
+#panel .p-q[open] summary { margin-bottom: 8px; }
+#panel .q-item { margin: 0 0 10px; }
+#panel .q-item b { display: block; font-size: 12px; margin-bottom: 2px; }
+#panel .q-item p { margin: 0; color: var(--ink-2); font-size: 12.5px; line-height: 1.55; }
 #panel .p-tl { margin-top: 13px; border-top: 1px solid var(--grid); padding-top: 10px; }
 #panel .p-tl h3 { font-size: 12px; color: var(--muted); margin: 0 0 7px; font-weight: 600; letter-spacing: .05em; }
 #panel .tl-item { display: flex; gap: 9px; margin: 0 0 7px; }
@@ -449,11 +457,23 @@ const CIVS = [
   d:'数百个独立城邦在贫瘠半岛上竞争共生,却在哲学、科学、艺术与政治制度上完成惊人的原创;希波战争挡住波斯后迎来黄金时代,伯罗奔尼撒战争内耗后被马其顿整合。亚历山大东征把希腊文化播撒到埃及与中亚;罗马虽征服其地,却"被俘虏的希腊俘虏了野蛮的征服者"。' },
 { l:'eu', s:'west', v:2, n:'罗马共和国', k:[[-509,0],[-264,.3],[-146,.55],[-50,.7],[-28,0]], b:'元老院与人民:一个城邦用五百年把地中海变成"我们的海"。',
   f:{ '鼎盛':'布匿战争之后(前2世纪)', '中心':'罗马城', '人物':'凯撒', '成就':'共和政制、公民兵军团、公民权扩张' },
+  q:{ born:['罗马人赶走最后一个国王后,最怕的就是权力再集中到一个人手里,于是设计出一套互相牵制的制度——共和与其说源于理想,不如说源于对国王的恐惧。','After expelling their last king the Romans feared one-man rule above all, so they built a system of mutual checks — the Republic was born less of ideals than of fear of kings.'],
+      rule:['执政官管行政,两人一组一年一换;元老院管钱和外交;保民官可以一票否决伤害平民的决议。权力被切开,谁也不能独大。','Two consuls ran the state a year at a time, the Senate held the purse and foreign policy, and tribunes could veto any act that harmed the plebs. Power was cut into pieces so that no one could hold it all.'],
+      money:['早期靠自耕农的农业;扩张后靠行省税收、战利品和奴隶庄园——战争本身成了最大的生意。','At first, the farms of citizen smallholders; with expansion came provincial taxes, war booty and slave estates — war itself became the biggest business.'],
+      power:['公民兵为自己的土地打仗;更关键的是对战败者的处理:不斩尽杀绝,而是分等级给公民权,把对手变成兵源——罗马可以输掉战役,却很难输掉战争。','Citizen-soldiers fought for their own land; more decisive was how Rome treated the defeated — tiers of citizenship instead of destruction, turning enemies into recruits. Rome could lose battles yet rarely lost wars.'],
+      fall:['扩张反噬了根基:小农常年出征,回来发现田地被奴隶庄园挤垮,公民兵随之枯竭;改行募兵后,军队效忠发饷的将军而不是国家——百年内战里,凯撒渡河只是最后一步。','Expansion ate its own base: smallholders came home from long wars to find their farms undercut by slave estates, and the citizen levy dried up. Paid armies then answered to the generals who paid them, not to the state — in the century of civil war that followed, the Rubicon was merely the last step.'],
+      legacy:['分权、任期、否决权——后世共和国的制度原型;美国参议院 Senate 这个词就直接来自元老院。','Divided powers, fixed terms and the veto — the template of later republics; the very word Senate comes from the Roman Senatus.'] },
   d:'前509年赶走最后一个国王后,罗马人立了一条规矩:权力必须分开、必须有任期。执政官两人一组、一年一换,元老院管钱和外交,保民官可以一个人否决伤害平民的决议。靠这套制度和公民组成的军团,罗马打赢三次布匿战争灭掉迦太基,把地中海变成自己的内湖。但一套为城邦设计的制度撑不住横跨三洲的疆域——将军们带着只效忠自己的军队回国,凯撒渡过卢比孔河,五百年的共和走到了头。',
   gl:[ { a:-509, b:-28, k:'thought', t:['共和政制','The republican constitution'], d:['分权、任期与否决权,后世共和国的原型。','Separated powers, fixed terms, the veto — the template for later republics.'] },
        { a:-312, b:-28, k:'tech', t:['大道与军团','Roads and legions'], d:['阿庇亚大道前312年动工,军团沿着它走到哪,罗马就修到哪。','The Appian Way begun in 312 BCE; wherever the legions marched, the roads followed.'] } ] },
 { l:'eu', s:'west', v:1, n:'罗马帝国', k:[[-27,0],[117,1],[235,.8],[378,.5],[476,0]], b:'两百年罗马和平;法律、拉丁语与教会塑造了整个欧洲。',
   f:{ '鼎盛':'117年(图拉真,版图最大)', '中心':'罗马城', '人物':'奥古斯都、图拉真', '成就':'罗马法、拉丁语、道路与引水渠' },
+  q:{ born:['百年内战证明,为一座城设计的共和制度管不住横跨三洲的疆土;屋大维保留共和的名义、收走实际的权力,精疲力竭的社会接受了这笔交易:用自由换和平。','A century of civil war showed that a constitution built for one city could not govern three continents. Octavian kept the forms of the Republic and took the substance of power, and an exhausted society accepted the bargain: liberty traded for peace.'],
+      rule:['皇帝之下,行省总督治民、职业军团守边;罗马法给整个地中海一套统一的裁判标准;对行省精英开放公民权换忠诚,212 年干脆给了所有自由民。','Under the emperor, governors ran the provinces and professional legions held the frontiers; Roman law gave the whole Mediterranean one standard of judgment. Citizenship bought the loyalty of provincial elites — and in 212 it went to every free man.'],
+      money:['地中海变成内湖后,贸易连成一张网:埃及和北非的粮船喂饱罗马城,行省税和统一银币把整个经济接在一起。','With the Mediterranean an inner lake, trade ran as one system: grain fleets from Egypt and Africa fed Rome, while provincial taxes and a single silver coinage wired the economy together.'],
+      power:['帝国的强大不再来自继续扩张,而来自消化:道路、引水渠、城市把征服变成秩序,和平本身就是生产力——史称「罗马和平」的两百年。','Its strength came not from further conquest but from digestion: roads, aqueducts and cities turned conquest into order, and peace itself became productive — the two centuries called the Pax Romana.'],
+      fall:['主流看法是多因叠加而非单一原因:边防开支压垮财政,银币掺假引发通胀,瘟疫削减人口,迁徙的民族不断叩边;东西分治后,税基薄弱的西部先撑不住。','The mainstream view is death by many causes, not one: frontier costs crushed the treasury, debased coinage bred inflation, plagues cut the population, and migrating peoples pressed the borders. After the east-west split, the poorer west gave way first.'],
+      legacy:['罗马法是大陆法系的底本;拉丁语生出法语、意大利语、西班牙语;教会接过帝国的行政骨架,把罗马的秩序又延续了一千年。','Roman law underlies the civil-law world; Latin fathered French, Italian and Spanish; and the Church inherited the imperial framework, carrying Roman order on for another thousand years.'] },
   d:'屋大维没有称王,他给自己的头衔是"元首"和"奥古斯都"——共和的名义保留着,权力已经归了一个人。此后两百年是"罗马和平":地中海贸易连成一片,道路、引水渠和浴场铺满行省,212年境内所有自由民都成了罗马公民。3世纪危机之后帝国东西分治,476年日耳曼将领废掉西部末代皇帝;但罗马法、拉丁语和基督教会,塑造了此后整个欧洲。' },
 { l:'eu', s:'west', v:0, n:'拜占庭', k:[[395,0],[420,.5],[555,.7],[700,.5],[1000,.55],[1204,.25],[1453,0]], b:'东罗马延续千年,保存希腊罗马典籍,东正教文明中心。',
   f:{ '鼎盛':'6世纪(查士丁尼)', '中心':'君士坦丁堡', '人物':'查士丁尼、巴西尔二世', '成就':'《查士丁尼法典》、圣索菲亚大教堂' },
@@ -475,6 +495,12 @@ const CIVS = [
   d:'太阳王的凡尔赛是欧洲宫廷的样板,启蒙哲人的沙龙是革命思想的温床;1789年大革命与拿破仑战争把"自由平等"与法典输出到全欧。此后虽两度被德国击溃,仍始终居于欧洲政治文化核心,今日与德国同为欧盟双引擎。' },
 { l:'eu', s:'west', v:2, n:'大英帝国·英国', k:[[1585,0],[1620,.15],[1700,.4],[1763,.6],[1815,.85],[1870,1],[1914,.9],[1945,.5],[1960,.3],[2025,.25]], b:'工业革命发源地,19世纪的全球霸主,统治世界四分之一人口。',
   f:{ '鼎盛':'1870—1914年', '中心':'伦敦', '人物':'伊丽莎白一世、瓦特、维多利亚、丘吉尔', '成就':'工业革命、议会政治、全球金融体系' },
+  q:{ born:['岛国土地有限,机会在海上;击败无敌舰队后,私掠船和特许公司(东印度公司)先行探路,国家随后跟进——这个帝国是生意做出来的。','A small island with limited land looked to the sea; after the Armada was beaten, privateers and chartered companies — the East India Company above all — went first and the state followed. This empire began as a business.'],
+      rule:['本土是议会主权;海外分级而治:直辖殖民地、保护国、自治领各不相同,靠当地精英代理——几千名文官治理三亿人的印度。','At home, parliamentary sovereignty; abroad, a graded empire of crown colonies, protectorates and dominions run through local elites — a few thousand civil servants governing an India of three hundred million.'],
+      money:['先是大西洋贸易与转口;工业革命后出口制成品、进口原料;伦敦金融城的保险、汇票和国债,把全球贸易的账记在英镑上。','First the Atlantic and carrying trades; after industrialisation, manufactures out and raw materials in; and the City of London — insurance, bills and bonds — kept the books of world trade in sterling.'],
+      power:['工业革命的先发优势(煤与蒸汽机)、皇家海军的制海权、能比对手多借几倍钱的国债体系——三样合起来,小岛撬动了全球。','First-mover industry in coal and steam, naval command of the seas, and a bond market that could borrow several times more than any rival — together they let a small island lever the globe.'],
+      fall:['帝国的落幕:两次世界大战把最大的债权国打成债务国;殖民地独立运动风起云涌,1947 年印度独立抽走基石;1956 年苏伊士危机确认霸权已经易手。','The end of the empire: two world wars turned the great creditor into a debtor; independence movements swept the colonies, and the loss of India in 1947 pulled the keystone; Suez in 1956 confirmed that command had passed elsewhere.'],
+      legacy:['英语成为全球通用语;普通法覆盖世界近半法域;议会制被广泛移植;还有足球——以及工业革命本身。','English as the global tongue; the common law across nearly half the world; parliamentary government widely transplanted; football — and the Industrial Revolution itself.'] },
   d:'岛国以海军、商业与议会制度后来居上:先后击败西班牙、荷兰、法国而独占海洋;18世纪中叶率先点燃工业革命,一个世纪内成为"世界工厂"与日不落帝国。两次大战耗尽国力、殖民地纷纷独立,但英语、普通法与其建立的贸易金融规则,至今仍是世界的底层协议。' },
 { l:'eu', s:'west', v:1, n:'德意志', k:[[1866,0],[1880,.4],[1914,.6],[1919,.3],[1941,.6],[1945,.08],[1975,.35],[2025,.35]], b:'统一后钢铁与科学冠绝欧洲,两次大战的策源地,战后经济中枢。',
   f:{ '鼎盛':'20世纪初(工业与科学)', '中心':'柏林', '人物':'俾斯麦、爱因斯坦(德语科学圈)', '成就':'现代大学、化学工业、社会保险制度' },
@@ -502,6 +528,12 @@ const CIVS = [
   gl:[ { a:-1792, b:-1750, k:'thought', t:['成文法传统','The written-law tradition'], d:['把王的裁决刻上石柱,让所有人看见。','The king\'s judgments carved where all can see.'] } ] },
 { l:'me', s:'mideast', v:0, n:'亚述', k:[[-1365,0],[-1225,.35],[-883,.45],[-705,.6],[-670,.7],[-612,.15],[-609,0]], b:'铁器军队与攻城塔踏平两河;也留下了三万块泥板。',
   f:{ '鼎盛':'前7世纪(亚述巴尼拔)', '中心':'尼尼微', '人物':'亚述巴尼拔', '成就':'尼尼微图书馆、铁器军队与攻城术' },
+  q:{ born:['两河北部无险可守、四面强邻,底格里斯河上游的亚述人把军事化当成了生存方式——不吃掉别人,就被别人吃掉。','Northern Mesopotamia had no natural walls and strong neighbours on every side; the Assyrians of the upper Tigris made militarism a way of survival — eat or be eaten.'],
+      rule:['王直辖的行省取代附庸国,驿道传递军情;最狠的一招是强制迁徙——把被征服民族整体搬走,打散一切反抗的根。','Royal provinces replaced vassal kings and post roads carried intelligence; the harshest tool was mass deportation — whole peoples moved wholesale, uprooting any base for revolt.'],
+      money:['战争经济:贡赋、掠夺,加上对商路的控制。帝国的收入表就是战报。','A war economy: tribute, plunder and control of the trade roads. The imperial balance sheet was a war report.'],
+      power:['最早的常备军、普及的铁兵器、专业的攻城工程——攻城塔与地道让城墙不再保险。战争技术领先所有邻居一个身位。','The first standing army, iron weapons in quantity and professional siegecraft — towers and tunnels made city walls unsafe. In the technology of war Assyria stood a full step ahead of every neighbour.'],
+      fall:['战争经济必须不停打仗才能自转,而靠恐惧的统治换不来认同;亚述巴尼拔死后即起内战,被压制的米底与巴比伦联手,三年拆完帝国——扩张停止之日,就是倒计时开始之时。','A war economy must keep fighting to keep running, and rule by terror wins no loyalty. Civil war followed the death of Ashurbanipal; the subjugated Medes and Babylonians joined forces and dismantled the empire in three years. The day expansion stopped, the countdown began.'],
+      legacy:['尼尼微图书馆的三万块泥板,是今天读懂两河文明的钥匙;它发明的行省直辖制,被波斯继承并放大。','The thirty thousand tablets of Nineveh remain the key to reading Mesopotamia, and its system of directly ruled provinces was inherited and enlarged by Persia.'] },
   d:'亚述人把战争做成了一门工程:铁制兵器、攻城塔、工兵编制,战果刻成石板传遍全境,被征服的城市整族迁走。靠这套机器,亚述建起第一个同时管住两河与埃及的帝国。但同一个王亚述巴尼拔,又下令把两河流域能找到的泥板全抄一份收进尼尼微王宫——这批泥板后来成了今人读懂美索不达米亚的钥匙。前612 年米底与巴比伦联军攻陷尼尼微,帝国三年后彻底消失。',
   gl:[ { a:-883, b:-612, k:'tech', t:['攻城术与铁器军队','Siegecraft and iron armies'], d:['攻城塔、地道与工兵编制,当时最专业的战争机器。','Siege towers, sapping and engineer corps — the most professional war machine of its day.'] },
        { a:-668, b:-627, k:'thought', t:['尼尼微泥板图书馆','The library at Nineveh'], d:['约三万块泥板,《吉尔伽美什史诗》靠它传世。','Some 30,000 tablets; the Epic of Gilgamesh survives because of it.'] } ] },
@@ -510,6 +542,12 @@ const CIVS = [
   d:'黎凡特海岸的城邦商人把生意做遍地中海,在北非建立迦太基;他们为记账发明的22个辅音字母,经希腊人加上元音,演化成今天几乎所有西方文字——你此刻读到的拉丁字母,源头就在腓尼基的账本上。' },
 { l:'me', s:'mideast', v:2, n:'新巴比伦', k:[[-626,0],[-605,.4],[-570,.6],[-562,.55],[-539,0]], b:'伊什塔尔门与空中花园传说;八十七年后不战而降。',
   f:{ '鼎盛':'尼布甲尼撒二世(前605—前562)', '中心':'巴比伦', '人物':'尼布甲尼撒二世', '成就':'伊什塔尔门、巴比伦天文、空中花园传说' },
+  q:{ born:['亚述崩盘留下真空,巴比伦联合米底瓜分了遗产——它不是白手起家,是接盘。','The collapse of Assyria left a vacuum; Babylon and the Medes divided the estate. It did not start from nothing — it inherited.'],
+      rule:['沿用亚述的行省框架,但更倚重神庙:马尔杜克祭司集团既是信仰中心,也是金库和法庭。','It kept the Assyrian provincial frame but leaned on the temples: the priesthood of Marduk was faith, treasury and court in one.'],
+      money:['灌溉农业撑起的两河粮仓,加上波斯湾到地中海的商路枢纽;神庙同时经营放贷。','The irrigated granary of Mesopotamia plus the crossroads of trade from the Gulf to the Mediterranean; the temples also ran the lending business.'],
+      power:['接收了亚述的制度机器,又有巴比伦一千多年的文化威望;尼布甲尼撒的大建设把财富和人才都吸进城里。','It took over the institutional machinery of Assyria and added a thousand years of Babylonian prestige; the great building programme of Nebuchadnezzar drew wealth and talent into the city.'],
+      fall:['只强盛了一代人。末代王纳波尼德冷落马尔杜克祭司集团,城内精英对王室离心;居鲁士兵临城下时,巴比伦不战而降——堡垒是从里面打开的。','The brilliance lasted one generation. The last king, Nabonidus, alienated the priesthood of Marduk, and the city elite drifted from the crown; when Cyrus arrived, Babylon opened its gates without a fight. The fortress was unlocked from within.'],
+      legacy:['几百年逐夜积累的天文记录,成了希腊天文学的地基;伊什塔尔门立在柏林;「巴比伦」从此成为大城的代名词。','Centuries of nightly sky records became the foundation of Greek astronomy; the Ishtar Gate stands in Berlin; and Babylon itself became a byword for the great city.'] },
   d:'亚述一倒,巴比伦重新翻身。尼布甲尼撒二世在位四十三年,把巴比伦修成当时世界最大的城:蓝釉砖砌的伊什塔尔门、横跨幼发拉底河的大桥,以及传说中的空中花园——遗址至今没有找到。他灭掉犹大国、把居民掳往巴比伦,这段"巴比伦之囚"写进了《圣经》。与此同时,巴比伦的祭司在做另一件事:逐夜记录星象,几百年不断,那批数据后来成了希腊天文学的地基。前539 年波斯的居鲁士兵临城下,巴比伦不战而降。',
   gl:[ { a:-626, b:-539, k:'tech', t:['巴比伦天文','Babylonian astronomy'], d:['连续观测数百年,周期预测成为希腊天文的底本。','Centuries of records — the base Greek astronomy built on.'] },
        { a:-605, b:-562, k:'art', t:['伊什塔尔门与空中花园','The Ishtar Gate and the Hanging Gardens'], d:['蓝釉砖浮雕的城门今在柏林;空中花园只见于记载,遗址未找到。','The blue-glazed gate now stands in Berlin; the gardens are known only from texts.'] } ] },
@@ -539,6 +577,12 @@ const CIVS = [
   d:'旭烈兀西征灭阿拔斯,蒙古人统治波斯八十年;后期皈依伊斯兰并推行改革,大不里士成为东西商路枢纽——中国的绘画技法与波斯细密画正是在此相遇。' },
 { l:'me', s:'mideast', v:0, n:'奥斯曼帝国', k:[[1299,0],[1453,.6],[1550,.9],[1683,.7],[1800,.4],[1918,0]], b:'攻陷君士坦丁堡,横跨三洲六百年,一战后解体。',
   f:{ '鼎盛':'苏莱曼大帝(1520—1566)', '中心':'伊斯坦布尔', '人物':'穆罕默德二世、苏莱曼大帝', '成就':'横跨三洲的行政与米利特体系' },
+  q:{ born:['塞尔柱帝国碎掉后,安纳托利亚满地小侯国;奥斯曼这一支恰好卡在拜占庭衰弱的方向上,靠边境圣战聚拢战士,越打越大。','When the Seljuk realm shattered, Anatolia was a floor of petty emirates; the house of Osman happened to face a fading Byzantium, gathered frontier fighters under the banner of holy war, and grew with every campaign.'],
+      rule:['德夫希尔梅征募基督徒少年,培养成只忠于苏丹的近卫军与官僚;米利特制让各宗教社群自治纳税;蒂玛封地把骑兵和土地税绑在一起。','The devshirme levy took Christian boys and raised them into janissaries and officials loyal to the sultan alone; the millet system let each faith govern itself and pay its tax; timar fiefs tied cavalry service to the land revenue.'],
+      money:['1453 年拿下君士坦丁堡后,东西方商路的过路钱进了奥斯曼的口袋;加上蒂玛体系的农业税与战利品。','After Constantinople fell in 1453, the tolls of east-west trade flowed into Ottoman hands, on top of timar farm taxes and the spoils of war.'],
+      power:['火药帝国的先行者:轰开君士坦丁堡的乌尔班巨炮、常备的耶尼切里军团都领先欧洲;宗教宽容降低了统治多民族的成本。','An early gunpowder empire: the great cannon that breached Constantinople and the standing janissary corps were both ahead of Europe, while religious tolerance kept the cost of ruling many peoples low.'],
+      fall:['主流看法是几重挤压:大航海让商路绕开了它;欧洲军事革命反超;耶尼切里从利刃变成阻挡改革的既得利益集团;多民族帝国撞上民族主义时代;一战站错边,帝国被肢解。','The mainstream account is a squeeze from several sides: ocean routes bypassed its tolls, the European military revolution overtook it, the janissaries turned from blade into a vested interest that blocked reform, nationalism cracked a multi-ethnic realm — and the wrong side in the First World War brought the partition.'],
+      legacy:['伊斯坦布尔这座城;今日中东的版图大体是帝国解体时画下的;咖啡与郁金香也是经它传入欧洲的。','The city of Istanbul; the map of the modern Middle East, drawn largely at the moment of imperial break-up; and coffee and tulips, which reached Europe through Ottoman hands.'] },
   d:'1453年穆罕默德二世以巨炮轰开千年帝都;苏莱曼时代兵临维也纳,地中海东半尽入其手。此后渐趋保守,19世纪沦为列强口中的"西亚病夫",一战站错队后帝国解体——今日中东的版图,多是其遗产被英法分割的结果。' },
 { l:'me', s:'mideast', v:1, n:'萨法维·波斯', k:[[1501,0],[1600,.5],[1722,.3],[1850,.2],[1925,0]], b:'什叶派波斯的定型者,与奥斯曼东西对峙。',
   f:{ '鼎盛':'阿拔斯大帝(1588—1629)', '中心':'伊斯法罕', '人物':'伊斯玛仪一世、阿拔斯一世', '成就':'什叶派国教化、伊斯法罕建筑群' },
@@ -585,6 +629,12 @@ const CIVS = [
   d:'辽亡于金之后,耶律大石率残部万里西行,在中亚重建政权。1141年卡特万之战大败塞尔柱苏丹桑贾尔,消息辗转传到欧洲,被附会成东方有位基督教君主"祭司王约翰"正在夹击穆斯林——十字军因此盼了整整一个世纪的东方援军。它本身是佛教政权,却统治着大批穆斯林臣民,宗教上相当宽容。' },
 { l:'st', s:'steppe', v:2, n:'蒙古帝国', k:[[1206,0],[1227,.8],[1260,1],[1294,.9],[1368,.3],[1400,0]], b:'史上最大陆地帝国,从太平洋到多瑙河;蒙古治世重通商路。',
   f:{ '鼎盛':'1260年前后', '中心':'哈拉和林', '人物':'成吉思汗、忽必烈、拔都', '成就':'史上最大陆地帝国、驿站系统' },
+  q:{ born:['铁木真统一草原,用千户制打散血缘部落,把忠诚从「跟着本部落」改成「跟着大汗」——草原第一次拧成一股绳。','Temujin unified the steppe by breaking the clans into units of a thousand, shifting loyalty from tribe to khan — for the first time the steppe pulled as one rope.'],
+      rule:['千户制编组全民;怯薛近卫既是精锐也是人质营;《大札撒》立法;征服区用当地人管当地事,蒙古人只抓兵权与税权。','The thousands organised the whole nation; the kheshig guard was elite corps and hostage camp in one; the Yassa laid down the law. Conquered lands were run by local administrators, with the Mongols keeping only the army and the tax.'],
+      money:['从掠夺到贡赋,再到保护商路收税——「蒙古和平」让丝路空前畅通,过路费成了长期财源。','From plunder to tribute to tolls: the Pax Mongolica made the Silk Road safer than ever, and the passage fees became a standing revenue.'],
+      power:['骑兵的机动、铁的纪律、先于对手的情报,加上对一切有用之物的吸收——回回炮、汉地工匠、畏兀儿文书,谁的本事好就用谁。','Cavalry mobility, iron discipline and better intelligence, plus total willingness to absorb whatever worked — Muslim siege engineers, Chinese artisans, Uighur scribes. Whoever had the skill was used.'],
+      fall:['死穴是继承制度:每逢大汗去世,四方远征一律停下回师争位;帝国本身按家族分成四大汗国,分裂是设计进去的;黑死病又沿商路蔓延,把贸易税基也摧毁了。','The fatal flaw was succession: each time a great khan died, the campaigns stopped and the princes rode home to contest the throne. The empire was parcelled among the family into four khanates — division was built in. Then the Black Death ran down the trade roads and destroyed the toll base itself.'],
+      legacy:['欧亚大陆第一次被打通:马可·波罗的游记、西传的火药与印刷术都走的这条路;驿站系统被后世帝国沿用;今日的蒙古国是它的直系后裔。','Eurasia was opened end to end for the first time — Marco Polo, gunpowder and printing all travelled this road; the relay-post system outlived the empire; and modern Mongolia is its direct heir.'] },
   d:'成吉思汗整编草原诸部,子孙三代打下从太平洋到多瑙河的疆域。毁灭与联通并行:屠城无数,却也让驿路畅通、商旅无阻,马可·波罗与教皇使节皆循此东来。四大汗国分立后各自本地化,帝国如潮水退去——但欧亚大陆从此再未彻底隔绝。' },
 { l:'st', s:'steppe', v:0, n:'帖木儿帝国', k:[[1370,0],[1405,.6],[1450,.4],[1507,0]], b:'从德里到安卡拉无役不胜;撒马尔罕的辉煌。',
   f:{ '鼎盛':'1400年前后', '中心':'撒马尔罕', '人物':'帖木儿、兀鲁伯', '成就':'撒马尔罕建筑群、兀鲁伯天文台' },
@@ -748,6 +798,12 @@ const CIVS = [
   d:'文帝结束近三百年分裂,创三省六部与科举取士;炀帝凿通大运河,把中国的经济南北轴线焊在一起。但三征高丽耗尽民力,隋如秦一样二世而亡——也如秦一样,它的制度被继任者全盘继承并发扬。' },
 { l:'ea', s:'sino', v:0, n:'唐', k:[[618,0],[627,.8],[713,1],[755,.9],[770,.55],[820,.5],[875,.35],[907,0]], b:'开放帝国的顶峰,长安是世界最大都会;安史之乱由盛转衰。',
   f:{ '鼎盛':'开元盛世(713—741)', '中心':'长安、洛阳', '人物':'唐太宗、武则天、李白、杜甫', '成就':'天可汗体系、唐诗、律令制输出东亚' },
+  q:{ born:['隋统一了天下却透支了民力,运河与征辽把百姓逼反;李唐接住这份家业,继承隋的制度、避开隋的错误。','The Sui reunified China but spent its people too hard — canal works and the Korean wars drove them to revolt. The Tang caught the falling estate, keeping Sui institutions while avoiding Sui mistakes.'],
+      rule:['三省六部把决策、审核、执行分开;科举在门阀之外开出一条做官的路;《唐律疏议》成了整个东亚的法律范本。','The Three Departments split policy, review and execution; the examinations opened an official career beyond the great clans; and the Tang Code became the legal model for all East Asia.'],
+      money:['前期均田制配租庸调:国家分地,农民纳粮服役;安史之乱后改两税法按资产征税,财政靠江南漕运撑起。','Early on, state-allotted land paired with grain-and-service dues; after the An Lushan rebellion the Two-Tax reform taxed property instead, and the treasury leaned on the Yangtze grain fleets.'],
+      power:['开放本身就是国力:突厥降将带兵,丝路商人云集长安,科举吸纳寒门——不断把外部的势能变成自己的。','Openness was itself the engine: surrendered Turkic generals led Tang armies, Silk Road merchants crowded the capital, and the exams drew talent from humble homes — outside energy converted into Tang strength.'],
+      fall:['均田制在人口增长与土地兼并下失灵,府兵随之枯竭;改募兵又让边镇节度使拥兵自重,安史之乱砍断王朝脊梁;此后中央与藩镇共治一百五十年,黄巢起义烧完了财政根基。','Land allotment failed as population grew and estates swallowed farms, and the militia dried up; the paid frontier armies then belonged to their governors, and the An Lushan rebellion broke the spine of the dynasty. For a century and a half the court shared power with the warlord provinces, until the Huang Chao rising burned out the fiscal base.'],
+      legacy:['科举成为此后一千三百年的选官制度;唐诗是中文的高峰;长安的棋盘格规划影响了日本京都;海外华人至今自称「唐人」。','The examinations chose officials for the next 1,300 years; Tang poetry remains the summit of Chinese verse; the grid plan of the capital shaped Kyoto; and overseas Chinese still call themselves the people of Tang.'] },
   d:'太宗被草原尊为"天可汗",长安百万人口,胡商、遣唐使与留学僧云集——一个真正的世界帝国。安史之乱腰斩盛世,此后藩镇割据、宦官废立,黄巢之乱后名存实亡;但科举、律令与唐诗已输出至整个东亚,塑造至今。',
   gl:[ { a:700, b:770, k:'art', t:['盛唐气象','High Tang poetry'], d:['李白杜甫王维同时在世——中文诗歌的最高峰。','Li Bai, Du Fu and Wang Wei alive at once.'] },
        { a:780, b:880, k:'econ', t:['中晚唐商业化','Late-Tang commerce'], d:['两税法后市坊松动,扬州益州繁华胜昔。','After the tax reform, Yangzhou and Chengdu boom.'] },
@@ -791,6 +847,12 @@ const CIVS = [
   d:'草原帝国首次整体统治中国,行省制沿用至今;色目商人往来欧亚,青花瓷的钴料来自波斯,马可·波罗笔下的"汗八里"让欧洲第一次系统地想象中国。九十七年而亡,是大一统王朝中最短的之一。' },
 { l:'ea', s:'sino', v:2, n:'明', k:[[1368,0],[1405,.85],[1550,.7],[1644,0]], b:'郑和七下西洋早于哥伦布近一个世纪;后期转向内敛。',
   f:{ '鼎盛':'永乐(1403—1424)', '中心':'南京→北京', '人物':'朱元璋、永乐帝、郑和、王阳明', '成就':'郑和宝船、紫禁城、阳明心学' },
+  q:{ born:['元末天灾连年、纸币崩溃、治理失灵,红巾军四起;朱元璋从最底层打出来,重建了一个以农为本的王朝。','Late-Yuan floods and famines, a collapsed paper currency and failing rule bred the Red Turban risings; Zhu Yuanzhang fought up from the very bottom and rebuilt a dynasty rooted in the land.'],
+      rule:['废丞相,皇帝直管六部,权力集中到极点;科举官僚治民,里甲户籍把每家每户登记在册、锁在土地上。','The chancellorship was abolished and the emperor ran the ministries himself; examination officials governed, while household registers fixed every family to its land.'],
+      money:['财政以定额农业税为主,简单但僵硬;晚明美洲白银经海贸大量流入,一条鞭法把赋役折成银两征收。','Revenue rested on fixed farm quotas — simple but rigid; in the late Ming, American silver poured in through the sea trade, and the Single Whip reform converted taxes into silver.'],
+      power:['开国的动员力惊人:郑和舰队七下西洋、重修长城、营建北京;战乱后人口与耕地快速恢复。','The founding state could mobilise on a huge scale: the Zheng He fleets, the rebuilt Great Wall, the new capital at Beijing; people and farmland recovered fast after the wars.'],
+      fall:['定额财政收不抵支,加税就激民变;经济被全球白银供给绑架,银根一紧物价就乱;小冰期天灾加辽东战费压顶——李自成进京,清军坐收渔利。','The rigid quotas could not meet rising costs, and new levies bred revolt; an economy hooked on silver seized up whenever the global flow tightened. Little Ice Age disasters and the Manchurian war bills crushed the budget — Li Zicheng took Beijing, and the Qing collected the prize.'],
+      legacy:['紫禁城与今日北京的城市格局;现存长城主体是明长城;《本草纲目》与《天工开物》记下了那个时代的科学与工艺。','The Forbidden City and the layout of Beijing; the Great Wall as it stands today is mostly Ming work; and the great compendia of medicine and technology recorded the science of the age.'] },
   d:'郑和宝船七下西洋,比哥伦布早近一个世纪、船队规模大数十倍,却在朝廷转向后戛然而止——此消彼长间,大航海的红利归了欧洲。晚明江南市镇与白银经济一度繁荣,终亡于财政崩溃与小冰期灾荒的交迫。',
   gl:[ { a:1550, b:1630, k:'econ', t:['白银经济','The silver economy'], d:['美洲白银经马尼拉涌入,江南市镇与手工业空前繁荣。','American silver pours in via Manila; Jiangnan booms.'] },
        { a:1508, b:1590, k:'thought', t:['阳明心学','Yangming philosophy'], d:['知行合一,冲击程朱正统,影响远及日本。','Wang Yangming\'s school shakes the orthodoxy, reaching Japan.'] },
@@ -798,6 +860,12 @@ const CIVS = [
        { a:1570, b:1640, k:'tech', t:['晚明技术总结','The late-Ming compendia'], d:['《本草纲目》《天工开物》《农政全书》三部大书同代问世。','Three great technical compendia in a single generation.'] } ] },
 { l:'ea', s:'sino', v:0, n:'清', k:[[1636,0],[1700,.8],[1790,.9],[1840,.6],[1895,.35],[1912,0]], b:'康乾盛世奠定现代中国版图;鸦片战争后陷入百年危机。',
   f:{ '鼎盛':'乾隆前中期(18世纪)', '中心':'北京', '人物':'康熙、乾隆、曹雪芹', '成就':'奠定现代版图与多民族格局、《红楼梦》' },
+  q:{ born:['满洲部落在明朝边防体系的缝隙里完成整合,八旗把部落变成战争机器;明亡于内乱,清入关接管天下。','In the seams of the Ming frontier system the Manchu tribes were welded together, the Eight Banners turning tribes into a war machine; when the Ming fell to internal revolt, the Qing marched in and took over.'],
+      rule:['一国多制:汉地沿用明制科举官僚,蒙古用盟旗,西藏派驻藏大臣,回疆用伯克——皇帝对不同族群以不同身份出现,八旗驻防各省监视。','One empire, several systems: Ming-style examinations for China proper, banner leagues for Mongolia, imperial residents for Tibet, local begs in the Muslim west — the emperor wore a different face for each people, with banner garrisons watching all.'],
+      money:['摊丁入亩后田赋稳定,盐税与对欧贸易顺差补充国库——茶、丝、瓷换回源源白银。','Land taxes ran stable once the poll tax was folded into them, topped up by salt revenue and a running trade surplus with Europe — tea, silk and porcelain exchanged for silver.'],
+      power:['康雍乾三代持续经营内亚,版图达到约 1470 万平方公里;美洲作物玉米、红薯上山下地,人口涨到四亿。','Three long reigns worked Inner Asia until the realm neared 14.7 million square kilometres, while maize and sweet potato climbed the hillsides and the population grew toward four hundred million.'],
+      fall:['人口爆炸而技术停滞,人均资源越摊越薄;小政府财政养不起近代军队;鸦片逆转白银流向,太平天国打烂腹地,列强环伺——改革总比危机慢一步,最终革命出局。','Population exploded while technique stood still, spreading resources ever thinner; a minimal treasury could not fund a modern army. Opium reversed the silver flow, the Taiping war wrecked the heartland, the powers pressed in — and reform ran one step behind crisis until revolution ended it.'],
+      legacy:['今日中国版图的基本盘继承自清,人口大国的底盘亦然;故宫、避暑山庄与《四库全书》留存至今。','The territorial outline of modern China descends from the Qing, and so does its demographic base; the Forbidden City, the Chengde resort and the great imperial library survive.'] },
   d:'康乾盛世人口破三亿,版图囊括新疆西藏,奠定现代中国的疆域底盘;但闭关与技术停滞使差距在不知不觉中拉开。1840年炮舰叩关后,条约、割地、赔款接踵而至——"三千年未有之大变局"贯穿其后七十年。',
   gl:[ { a:1680, b:1790, k:'econ', t:['康乾盛世经济','High-Qing economy'], d:['人口从一亿到三亿,玉米红薯功不可没。','Population triples; maize and sweet potato help.'] },
        { a:1720, b:1800, k:'thought', t:['乾嘉考据','Evidential scholarship'], d:['朴学大兴,以文献考证代替义理空谈。','Philology replaces speculation.'] },
@@ -4851,6 +4919,22 @@ function videoHTML(c) {
   return `<div class="p-vid">${btn}
     <a class="vid-search" href="${search}" target="_blank" rel="noopener noreferrer">${T('🎬 找纪录片看','🎬 Find a documentary')}<span>${T('B 站 ↗','YouTube ↗')}</span></a></div>`;
 }
+/* 兴衰六问:机制层的深挖,默认收起 —— 7 岁的默认视图保持干净,想深一层的人才展开。
+   口径纪律(spec 定的,继承 v26.1 人物卡教训):写主流共识、不写单因论、有争议标「主流看法」。 */
+const QT = [
+  ['born',   '① 为什么出现', '① Why it arose'],
+  ['rule',   '② 靠什么统治', '② How it was governed'],
+  ['money',  '③ 靠什么赚钱', '③ Where the wealth came from'],
+  ['power',  '④ 靠什么变强', '④ Why it grew strong'],
+  ['fall',   '⑤ 为什么衰落', '⑤ Why it declined'],
+  ['legacy', '⑥ 留下什么',   '⑥ What it left behind'],
+];
+function qHTML(c) {
+  if (!c.q) return '';
+  const li = LANG === 'zh' ? 0 : 1;
+  const rows = QT.map(([k, zh, en]) => c.q[k] ? `<div class="q-item"><b>${li ? en : zh}</b><p>${c.q[k][li]}</p></div>` : '').join('');
+  return `<details class="p-q"><summary>${T('兴衰六问','Six questions of rise and fall')}</summary>${rows}</details>`;
+}
 /* 分裂时期的并存政权。母条目在时间轴上仍是一条色带,这里把「同时有哪几个」摊开。
    按 g 分组,**保持数组原序**——五代的顺序本身就是历史顺序,排序会毁掉「接力」的可读性。
    x(「等十六国」这类)是整组共用的补充,渲染在列表末尾,语义上正好接在最后一个政权后面。 */
@@ -4895,6 +4979,7 @@ function openCiv(c) {
     ${coHTML(c)}
     ${videoHTML(c)}
     <div class="p-body">${cD(c)}</div>
+    ${qHTML(c)}
     ${ch.length ? `<div class="p-tl"><h3>${T('大事记(曲线上的小圆点)','Key moments (dots on the curve)')}</h3>${ch.map(([y, t2, d2]) =>
       `<div class="tl-item"><span class="tl-y">${fmtY(y)}</span><div><b>${wkA(t2, stripParen(t2))}</b>${d2 ? `<p>${d2}</p>` : ''}</div></div>`).join('')}</div>` : ''}
     ${evs.length ? `<div class="p-evs"><h3>${T('同期波及本区域的事件','Contemporary cross-regional events')}</h3>${evs.map(e =>

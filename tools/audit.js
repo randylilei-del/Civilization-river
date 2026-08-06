@@ -176,6 +176,15 @@ for (const [k, v] of Object.entries(PEAK || {})) {
 }
 
 // co:分裂时期的并存政权。规则 24—27
+// q(兴衰六问):六键齐全、每键双语。缺一键就等于卡片上少一问,渲染不报错、只是悄悄没有
+const QKEYS = ['born', 'rule', 'money', 'power', 'fall', 'legacy'];
+CIVS.forEach(c => {
+  if (!c.q) return;
+  const keys = Object.keys(c.q);
+  QKEYS.forEach(k => { if (!keys.includes(k)) P.push(`[q 缺键] ${c.n}.${k}`); });
+  keys.forEach(k => { if (!QKEYS.includes(k)) P.push(`[q 未知键] ${c.n}.${k}`); });
+  for (const k of keys) { const v = c.q[k]; if (!Array.isArray(v) || v.length !== 2 || !v[0] || !v[1]) P.push(`[q ${k} 非双语] ${c.n}`); }
+});
 CIVS.forEach(c => {
   // ct(区块标题覆盖)必须双语,且只在有 co 时才有意义
   if (c.ct !== undefined) {
