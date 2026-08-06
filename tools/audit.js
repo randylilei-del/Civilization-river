@@ -189,10 +189,12 @@ CIVS.forEach(c => {
       if (!Array.isArray(p[f]) || p[f].length !== 2 || !p[f][0] || !p[f][1]) P.push(`[co ${f} 非双语] ${at}`);
     }
     // 25:年代必须与母条目存续区间有重叠(不要求包含——前赵建于 304,早于东晋十六国的 317)
+    // y[0] 允许为 null:老国(战国的秦楚齐燕)不建于该时期,但灭亡年有教学价值,写成「亡于前221」
     if (p.y !== undefined) {
       if (!Array.isArray(p.y) || p.y.length !== 2) P.push(`[co 年代格式非法] ${at}`);
-      else if (!(p.y[0] < p.y[1])) P.push(`[co 年代起止倒置] ${at} = ${p.y[0]}~${p.y[1]}`);
-      else if (p.y[1] < lo || p.y[0] > hi) P.push(`[co 年代与母条目无重叠] ${at} = ${p.y[0]}~${p.y[1]},母条目 ${lo}~${hi}`);
+      else if (typeof p.y[1] !== 'number') P.push(`[co 缺终年] ${at}——起始年可省(写 null),终年不可`);
+      else if (p.y[0] !== null && !(p.y[0] < p.y[1])) P.push(`[co 年代起止倒置] ${at} = ${p.y[0]}~${p.y[1]}`);
+      else if (p.y[1] < lo || (p.y[0] !== null && p.y[0] > hi)) P.push(`[co 年代与母条目无重叠] ${at} = ${p.y[0]}~${p.y[1]},母条目 ${lo}~${hi}`);
     }
     const gk = p.g ? p.g[0] : '';
     // 26:x 是整组共用的,同组写了两个不同的值意味着数据有歧义
