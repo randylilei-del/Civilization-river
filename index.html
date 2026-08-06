@@ -330,6 +330,23 @@ a.wk::after { content: '↗'; font-size: .72em; color: var(--muted); margin-left
 #panel .fact > span { display: block; color: var(--muted); font-size: 11px; }
 #panel .fact b { font-weight: 600; font-size: 12px; }
 #panel .p-body { color: var(--ink-2); font-size: 13px; }
+/* 分裂时期的并存政权。与 .p-tl 同一套区块骨架(细线+小标题),视觉上归为同类信息 */
+#panel .p-co { margin-top: 13px; border-top: 1px solid var(--grid); padding-top: 10px; }
+#panel .p-co h3 { font-size: 12px; color: var(--muted); margin: 0 0 7px; font-weight: 600; letter-spacing: .05em; }
+#panel .co-g { margin-bottom: 8px; }
+#panel .co-g:last-of-type { margin-bottom: 0; }
+#panel .co-gt { display: block; font-size: 11px; color: var(--muted); margin: 0 0 4px; }
+#panel .co-l { display: flex; flex-wrap: wrap; gap: 3px 13px; align-items: baseline; }
+#panel .co-i { font-size: 12.5px; white-space: nowrap; }
+#panel .co-i b { font-weight: 600; }
+/* 年代与都城是次要信息,压暗;数字等宽,换行并排时列能对齐 */
+#panel .co-i i, #panel .co-i em { font-style: normal; color: var(--muted); font-size: 11.5px; margin-left: 4px; }
+#panel .co-i i { font-variant-numeric: tabular-nums; }
+/* 主线用下划线而不是新颜色——颜色在本站只承载「文明圈」这一个语义 */
+#panel .co-m b { border-bottom: 1.5px solid currentColor; padding-bottom: 1px; }
+/* flex-basis:100% 强制独占一行——否则「等十国」这类说明会挤在最后一个政权旁边,
+   看起来像是又一个政权。能不能排下取决于前面几个名字多长,不能靠运气 */
+#panel .co-x { font-size: 11.5px; color: var(--muted); flex-basis: 100%; margin-top: 1px; }
 #panel .p-tl { margin-top: 13px; border-top: 1px solid var(--grid); padding-top: 10px; }
 #panel .p-tl h3 { font-size: 12px; color: var(--muted); margin: 0 0 7px; font-weight: 600; letter-spacing: .05em; }
 #panel .tl-item { display: flex; gap: 9px; margin: 0 0 7px; }
@@ -644,10 +661,23 @@ const CIVS = [
   d:'武王克商后大封诸侯,周公制礼作乐,"天命靡常、惟德是辅"为此后三千年中国政治哲学定下基调。前841年国人暴动后的"共和行政",是中国有确切纪年的开始;前771年犬戎攻破镐京,西周终结。' },
 { l:'ea', s:'sino', v:0, n:'春秋', k:[[-770,0],[-700,.4],[-600,.42],[-500,.45],[-454,0]], b:'王室东迁只剩名分,霸主轮流坐庄——孔子和老子就活在这三百年里。',
   f:{ '鼎盛':'齐桓晋文(前7世纪)', '中心':'洛邑与列国都城', '人物':'孔子、老子', '成就':'会盟称霸、私学兴起、铁器初现' },
+  co:[ { n:['齐','Qi'], c:['临淄','Linzi'] },
+       { n:['晋','Jin'], c:['绛→新田','Jiang, later Xintian'] },
+       { n:['楚','Chu'], c:['郢','Ying'] },
+       { n:['秦','Qin'], c:['雍','Yong'] },
+       { n:['吴','Wu'], y:[-584,-473], c:['姑苏','Gusu'] },
+       { n:['越','Yue'], c:['会稽','Kuaiji'], x:['等一百余国,春秋末并到十几家','among a hundred-odd states, down to a dozen by the end'] } ],
   d:'周平王把都城迁到洛邑,王室从此只剩一个名分,谁强谁说了算。齐桓公、晋文公先后打着"尊王攘夷"的旗号当上霸主,一百多个诸侯国互相吞并到只剩十几个。恰恰在这个旧秩序松掉的年代,孔子办起了不问出身的私学,老子留下五千字的《道德经》——中国思想的源头从这里开始流。',
   gl:[ { a:-550, b:-454, k:'thought', t:['私学与诸子先声','Private schools, first masters'], d:['孔子"有教无类",学问第一次走出贵族。','Confucius taught "regardless of class" — learning left the aristocracy.'] } ] },
 { l:'ea', s:'sino', v:1, n:'战国', k:[[-453,0],[-400,.42],[-350,.48],[-300,.5],[-250,.5],[-221,0]], b:'七个大国打了两百年,也吵了两百年——变法、铁犁与百家争鸣。',
   f:{ '鼎盛':'百家争鸣(前4—前3世纪)', '中心':'咸阳、临淄、邯郸', '人物':'商鞅、屈原', '成就':'变法运动、铁器牛耕、诸子百家' },
+  co:[ { n:['秦','Qin'], y:[-453,-221], c:['咸阳','Xianyang'], m:1 },
+       { n:['楚','Chu'], y:[-453,-223], c:['郢→寿春','Ying, later Shouchun'] },
+       { n:['齐','Qi'], y:[-453,-221], c:['临淄','Linzi'] },
+       { n:['赵','Zhao'], y:[-453,-228], c:['邯郸','Handan'] },
+       { n:['魏','Wei'], y:[-453,-225], c:['大梁','Daliang'] },
+       { n:['韩','Han'], y:[-453,-230], c:['新郑','Xinzheng'] },
+       { n:['燕','Yan'], y:[-453,-222], c:['蓟','Ji'] } ],
   d:'三家分晋之后,连"尊王"这块遮羞布也不要了,七个大国各自变法图强——魏国李悝、楚国吴起、秦国商鞅。铁犁和牛耕让荒地变成良田,李冰修的都江堰灌溉四川到今天;齐国的稷下学宫里儒道法墨名农各说各话,吵出了中国思想最热闹的两百年。最后靠军功爵和郡县制,秦赢了。',
   gl:[ { a:-453, b:-280, k:'thought', t:['百家争鸣','Hundred Schools'], d:['儒道法墨并起,中国思想的原点。','Confucian, Daoist, Legalist and Mohist schools contend.'] } ] },
 { l:'ea', s:'sino', v:2, n:'秦', k:[[-221,0],[-219,.85],[-210,.9],[-207,0]], b:'十五年而亡的统一者:书同文、车同轨、郡县制。',
@@ -663,16 +693,33 @@ const CIVS = [
   d:'光武帝在王莽乱局后重建汉室,定都洛阳;班超以三十六人纵横西域,蔡伦改良造纸,佛教沿丝路传入。中后期外戚与宦官轮流秉政,党锢之祸寒了士人之心,黄巾一起、群雄并出——三国的序幕在汉末拉开。' },
 { l:'ea', s:'sino', v:2, n:'三国', k:[[220,0],[229,.45],[263,.4],[280,0]], b:'魏蜀吴鼎立六十年;一段被演义放大千年的历史。',
   f:{ '鼎盛':'三足鼎立(229—263)', '中心':'洛阳、成都、建业', '人物':'曹操、刘备、孙权、诸葛亮', '成就':'屯田制、江南与西南的深度开发' },
+  co:[ { n:['魏','Wei'], y:[220,266], c:['洛阳','Luoyang'], m:1 },
+       { n:['蜀','Shu'], y:[221,263], c:['成都','Chengdu'] },
+       { n:['吴','Wu'], y:[229,280], c:['建业','Jianye'] } ],
   d:'赤壁之战定下三分格局:曹魏据中原、蜀汉守巴蜀、孙吴开江东。诸葛亮五出祁山星落五丈原,邓艾偷渡阴平灭蜀,西晋代魏后顺流灭吴。正史六十年,却因《三国演义》成为中国人最熟的一段历史——江南与西南的开发也自此提速。' },
 { l:'ea', s:'sino', v:1, n:'西晋', k:[[266,0],[280,.5],[300,.4],[311,.15],[316,0]], b:'短暂统一即陷八王之乱;永嘉之祸,衣冠南渡。',
   f:{ '鼎盛':'太康之治(280—289)', '中心':'洛阳', '人物':'司马炎', '成就':'再统一(旋即失序)' },
   d:'司马氏代魏灭吴,天下重归一统,却大封宗室埋下祸根:八王之乱自相残杀十六年,匈奴刘渊趁虚而入,311年洛阳陷落——"永嘉之乱"后中原士族举族南渡,北方进入五胡十六国时代。' },
 { l:'ea', s:'sino', v:0, n:'东晋·十六国', k:[[317,0],[350,.35],[383,.4],[420,0]], b:'北方五胡迭起,南方偏安江左;淝水一战保住半壁。',
   f:{ '鼎盛':'383年(淝水之战,南方转危为安)', '中心':'建康;北方诸都', '人物':'王导、谢安、王羲之、苻坚', '成就':'江南开发、书法巅峰、法显西行' },
+  co:[ { n:['东晋','Eastern Jin'], y:[317,420], c:['建康','Jiankang'], m:1, g:['南方','South'], x:['士族拥晋室偏安','the gentry held the south'] },
+       { n:['前赵','Former Zhao'], y:[304,329], c:['平阳→长安','Pingyang, later Chang\'an'], g:['北方','North'], x:['等十六国,走马灯','among sixteen states, in quick succession'] },
+       { n:['后赵','Later Zhao'], y:[319,351], c:['襄国→邺','Xiangguo, later Ye'], g:['北方','North'] },
+       { n:['前燕','Former Yan'], y:[337,370], c:['邺','Ye'], g:['北方','North'] },
+       { n:['前秦','Former Qin'], y:[351,394], c:['长安','Chang\'an'], m:1, g:['北方','North'] } ],
   d:'北方在五胡十六国的走马灯中反复破碎,南方士族拥晋室偏安建康;383年淝水之战,谢安以八万胜苻坚号称百万,保住江南文脉。兰亭雅集的曲水流觞与法显的万里求法,都发生在这个乱世。',
   gl:[ { a:340, b:420, k:'art', t:['书法与玄学','Calligraphy & Neo-Daoism'], d:['王羲之的行书至今是中文书写的美学标尺。','Wang Xizhi sets the aesthetic standard of the script.'] } ] },
 { l:'ea', s:'sino', v:1, n:'南北朝', k:[[420,0],[450,.4],[494,.45],[550,.4],[589,0]], b:'南朝四代与北朝汉化并行;佛教石窟时代。',
   f:{ '鼎盛':'6世纪初(北魏孝文帝改革后)', '中心':'建康、平城→洛阳', '人物':'北魏孝文帝、萧衍(梁武帝)', '成就':'云冈龙门石窟、均田制、府兵制' },
+  co:[ { n:['宋','Song'], y:[420,479], c:['建康','Jiankang'], g:['南朝','Southern'] },
+       { n:['齐','Qi'], y:[479,502], c:['建康','Jiankang'], g:['南朝','Southern'] },
+       { n:['梁','Liang'], y:[502,557], c:['建康','Jiankang'], m:1, g:['南朝','Southern'] },
+       { n:['陈','Chen'], y:[557,589], c:['建康','Jiankang'], g:['南朝','Southern'] },
+       { n:['北魏','Northern Wei'], y:[386,534], c:['平城→洛阳','Pingcheng, later Luoyang'], m:1, g:['北朝','Northern'] },
+       { n:['东魏','Eastern Wei'], y:[534,550], c:['邺','Ye'], g:['北朝','Northern'] },
+       { n:['西魏','Western Wei'], y:[535,556], c:['长安','Chang\'an'], g:['北朝','Northern'] },
+       { n:['北齐','Northern Qi'], y:[550,577], c:['邺','Ye'], g:['北朝','Northern'] },
+       { n:['北周','Northern Zhou'], y:[557,581], c:['长安','Chang\'an'], g:['北朝','Northern'] } ],
   d:'南朝宋齐梁陈文风鼎盛,北朝鲜卑从平城迁洛、全面汉化,均田制与府兵制在北方成型——隋唐制度的三大支柱有两根铸于北朝。云冈龙门的大佛凿于此时,佛教在战乱中成为南北共同的精神庇护。' },
 { l:'ea', s:'sino', v:2, n:'隋', k:[[581,0],[589,.7],[605,.75],[615,.4],[618,0]], b:'再造统一、开凿运河、创立科举;隋亡而制度长存。',
   f:{ '鼎盛':'开皇之治', '中心':'大兴(长安)', '人物':'隋文帝、隋炀帝', '成就':'大运河、科举制、三省六部' },
@@ -685,6 +732,14 @@ const CIVS = [
        { a:653, b:750, k:'thought', t:['律令与佛学','Law codes and Buddhist learning'], d:['《唐律疏议》定下东亚法制底本,玄奘译经、禅宗成形。','The Tang Code becomes East Asia\'s legal template; Xuanzang translates, Chan takes shape.'] } ] },
 { l:'ea', s:'sino', v:1, n:'五代十国', k:[[907,0],[930,.35],[955,.4],[979,0]], b:'北方五代走马灯,南方十国割据;燕云十六州埋下两宋边患。',
   f:{ '鼎盛':'954—959年(后周世宗柴荣)', '中心':'开封;南方诸都', '人物':'柴荣(周世宗)', '成就':'南方经济持续开发' },
+  co:[ { n:['后梁','Later Liang'], y:[907,923], c:['开封','Kaifeng'], g:['五代','Five Dynasties'], x:['北方,十四年换一朝','the north, a new dynasty every fourteen years'] },
+       { n:['后唐','Later Tang'], y:[923,937], c:['洛阳','Luoyang'], g:['五代','Five Dynasties'] },
+       { n:['后晋','Later Jin'], y:[936,947], c:['开封','Kaifeng'], g:['五代','Five Dynasties'] },
+       { n:['后汉','Later Han'], y:[947,951], c:['开封','Kaifeng'], g:['五代','Five Dynasties'] },
+       { n:['后周','Later Zhou'], y:[951,960], c:['开封','Kaifeng'], m:1, g:['五代','Five Dynasties'] },
+       { n:['南唐','Southern Tang'], y:[937,975], c:['金陵','Jinling'], m:1, g:['十国','Ten Kingdoms'], x:['等十国,南方反而安定','among ten kingdoms; the south fared better'] },
+       { n:['吴越','Wuyue'], y:[907,978], c:['杭州','Hangzhou'], g:['十国','Ten Kingdoms'] },
+       { n:['后蜀','Later Shu'], y:[934,965], c:['成都','Chengdu'], g:['十国','Ten Kingdoms'] } ],
   d:'七十年间北方五个王朝更替、南方十国并立;936年石敬瑭把燕云十六州割给契丹,使中原此后四百年无险可守——两宋的战略困境在此注定。周世宗的改革为赵宋统一铺路,南方在割据中反而持续繁荣。' },
 { l:'ea', s:'sino', v:0, n:'北宋', k:[[960,0],[980,.65],[1050,.75],[1100,.65],[1127,0]], b:'商业革命与文治巅峰:纸币、活字、《清明上河图》。',
   f:{ '鼎盛':'仁宗朝(11世纪中)', '中心':'开封', '人物':'赵匡胤、王安石、苏轼、沈括', '成就':'交子(纸币)、活字印刷、火药武器' },
@@ -4753,6 +4808,29 @@ function videoHTML(c) {
   return `<div class="p-vid">${btn}
     <a class="vid-search" href="${search}" target="_blank" rel="noopener noreferrer">${T('🎬 找纪录片看','🎬 Find a documentary')}<span>${T('B 站 ↗','YouTube ↗')}</span></a></div>`;
 }
+/* 分裂时期的并存政权。母条目在时间轴上仍是一条色带,这里把「同时有哪几个」摊开。
+   按 g 分组,**保持数组原序**——五代的顺序本身就是历史顺序,排序会毁掉「接力」的可读性。
+   x(「等十六国」这类)是整组共用的补充,渲染在列表末尾,语义上正好接在最后一个政权后面。 */
+function coHTML(c) {
+  if (!c.co || !c.co.length) return '';
+  const li = LANG === 'zh' ? 0 : 1;
+  const groups = [];
+  for (const p of c.co) {
+    const key = p.g ? p.g[li] : '';
+    let g = groups.find(x => x.key === key);
+    if (!g) { g = { key, x: '', items: [] }; groups.push(g); }
+    if (p.x && !g.x) g.x = p.x[li];
+    g.items.push(p);
+  }
+  const body = groups.map(g => {
+    const items = g.items.map(p =>
+      `<span class="co-i${p.m ? ' co-m' : ''}"><b>${p.n[li]}</b>${p.y ? `<i>${fmtY(p.y[0])}—${fmtY(p.y[1])}</i>` : ''}${p.c ? `<em>${p.c[li]}</em>` : ''}</span>`).join('');
+    return `<div class="co-g">${g.key ? `<b class="co-gt">${g.key}</b>` : ''}<div class="co-l">${items}${g.x ? `<span class="co-x">${g.x}</span>` : ''}</div></div>`;
+  }).join('');
+  /* 下划线不自解释,有主线时才出这行说明;没有 m 的条目(如春秋)不出 */
+  const cap = c.co.some(p => p.m) ? `<div class="cap">${T('下划线 = 这一组里最强、或最后胜出的那个','Underlined = the strongest, or the eventual winner, in its group')}</div>` : '';
+  return `<div class="p-co"><h3>${T('同时存在的政权','Coexisting polities')}</h3>${body}${cap}</div>`;
+}
 function openCiv(c) {
   cur = { type: 'civ', obj: c };
   const f = cF(c);
@@ -4769,6 +4847,7 @@ function openCiv(c) {
     ${glHTML(c)}
     ${mapHTML(c)}
     ${facts}
+    ${coHTML(c)}
     ${videoHTML(c)}
     <div class="p-body">${cD(c)}</div>
     ${ch.length ? `<div class="p-tl"><h3>${T('大事记(曲线上的小圆点)','Key moments (dots on the curve)')}</h3>${ch.map(([y, t2, d2]) =>

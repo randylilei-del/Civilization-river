@@ -175,6 +175,39 @@ for (const [k, v] of Object.entries(PEAK || {})) {
   }
 }
 
+// co:分裂时期的并存政权。规则 24—27
+CIVS.forEach(c => {
+  if (!c.co) return;
+  if (!Array.isArray(c.co) || !c.co.length) { P.push(`[co 不是非空数组] ${c.n}`); return; }
+  const lo = c.k[0][0], hi = c.k[c.k.length - 1][0];
+  const mByGroup = new Map(), xByGroup = new Map();
+  c.co.forEach((p, i) => {
+    const at = `${c.n}[${i}]${p.n && p.n[0] ? ' ' + p.n[0] : ''}`;
+    // 24:双语完整性。单语会在另一种语言下渲染出 undefined
+    for (const f of ['n', 'c', 'g', 'x']) {
+      if (p[f] === undefined) { if (f === 'n') P.push(`[co 缺政权名] ${at}`); continue; }
+      if (!Array.isArray(p[f]) || p[f].length !== 2 || !p[f][0] || !p[f][1]) P.push(`[co ${f} 非双语] ${at}`);
+    }
+    // 25:年代必须与母条目存续区间有重叠(不要求包含——前赵建于 304,早于东晋十六国的 317)
+    if (p.y !== undefined) {
+      if (!Array.isArray(p.y) || p.y.length !== 2) P.push(`[co 年代格式非法] ${at}`);
+      else if (!(p.y[0] < p.y[1])) P.push(`[co 年代起止倒置] ${at} = ${p.y[0]}~${p.y[1]}`);
+      else if (p.y[1] < lo || p.y[0] > hi) P.push(`[co 年代与母条目无重叠] ${at} = ${p.y[0]}~${p.y[1]},母条目 ${lo}~${hi}`);
+    }
+    const gk = p.g ? p.g[0] : '';
+    // 26:x 是整组共用的,同组写了两个不同的值意味着数据有歧义
+    if (p.x) {
+      if (xByGroup.has(gk) && xByGroup.get(gk) !== p.x[0]) P.push(`[co 同组 x 不一致] ${c.n} 组「${gk || '(无组)'}」: "${xByGroup.get(gk)}" vs "${p.x[0]}"`);
+      else xByGroup.set(gk, p.x[0]);
+    }
+    // 27:每组最多一个主线
+    if (p.m) {
+      if (mByGroup.has(gk)) P.push(`[co 同组多个 m:1] ${c.n} 组「${gk || '(无组)'}」: ${mByGroup.get(gk)} 与 ${p.n && p.n[0]}`);
+      else mByGroup.set(gk, p.n && p.n[0]);
+    }
+  });
+});
+
 if (EN.events && EN.events.length !== EVENTS.length) P.push(`[事件中英数量不等] zh=${EVENTS.length} en=${EN.events.length}`);
 const laneIds = new Set(LANES.map(l => l.id));
 CIVS.forEach(c => { if (!laneIds.has(c.l)) P.push(`[泳道 id 不存在] ${c.n} → ${c.l}`); });
