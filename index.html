@@ -269,6 +269,16 @@ svg.hl .sheen, svg.tr .sheen { opacity: .1; }
 svg.hl .band { opacity: .14; }
 svg.hl .band.hit { opacity: 1; }
 svg.no-ev .evg { display: none; }
+.axhit { cursor: ew-resize; }
+.axhit:hover { fill: var(--wash); }
+/* 钉在 chart-card 上而不是画进 SVG:SVG 会跟着横向滚动跑掉(实测滚到 x=-79) */
+.axhint {
+  position: absolute; left: 12px; top: 50px; z-index: 2;
+  font-size: 10.5px; color: var(--muted);
+  pointer-events: none; user-select: none; white-space: nowrap;
+}
+/* 触屏:纵向单指仍翻页,浏览器自身的捏合让出来由脚本处理(见「缩放的三种输入」) */
+.scroller { touch-action: pan-y; }
 .blabel {
   pointer-events: none; font-weight: 600;
   fill: var(--ink); stroke: var(--surface); stroke-width: 3px; paint-order: stroke;
@@ -460,6 +470,7 @@ td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; ma
   <div class="chart-card">
     <div class="scroller" id="scroller"></div>
     <div class="lane-tags" id="laneTags"></div>
+    <div class="axhint" id="axHint"></div>
     <button id="zoomOut" hidden>⤺ 全景</button>
   </div>
 </div>
@@ -5721,7 +5732,7 @@ function buildChart() {
   /* 绸带高光:每条色带按自身包围盒(objectBoundingBox)上亮下暗,做出圆润的立体截面 */
   svg.push(`<defs><linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".32"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset=".72" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".16"/></linearGradient></defs>`);
   svg.push(`<defs><marker id="arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0.5L7.5,4L0,7.5Z" fill="var(--ink-2)"/></marker></defs>`);
-  svg.push(`<rect x="0" y="0" width="${INNER_W}" height="46" fill="transparent" style="touch-action:none"/>`);
+  svg.push(`<rect class="axhit" x="0" y="0" width="${INNER_W}" height="46" fill="transparent" style="touch-action:none"/>`);
   ERAS.forEach((e, i) => {
     if (e.b < VIEW.t0 || e.a > VIEW.t1) return;
     const x0 = Math.max(0, X(Math.max(e.a, VIEW.t0))), x1 = Math.min(INNER_W, X(Math.min(e.b, VIEW.t1)));
@@ -5801,16 +5812,21 @@ function buildChart() {
   chart.classList.toggle('no-ev', !document.getElementById('ck-ev').checked);
   chart.classList.toggle('tr', curTrace != null);
 }
+/* 全景时才提示怎么放大;已经放大了说明用户会了,再挂着是噪音 */
+function axHint() {
+  const el = document.getElementById('axHint');
+  if (el) el.textContent = VIEW.full ? T('↔ 时间轴上拖选或滚轮,可放大某一段', '↔ drag or scroll on the time axis to zoom in') : '';
+}
 function zoomTo(a, b) {
   if (b - a < 40) { const m = (a + b) / 2; a = m - 20; b = m + 20; }
   VIEW = { t0: Math.max(-3500, a), t1: Math.min(2025, b), full: false };
   document.getElementById('zoomOut').hidden = false;
-  buildChart();
+  buildChart(); axHint();
 }
 function zoomReset() {
   VIEW = { t0: -3500, t1: 2025, full: true };
   document.getElementById('zoomOut').hidden = true;
-  buildChart();
+  buildChart(); axHint();
 }
 
 function renderLanes() {
@@ -5932,6 +5948,71 @@ scrollerEl.addEventListener('pointerup', () => {
 });
 scrollerEl.addEventListener('pointerleave', () => tip.style.display = 'none');
 
+/* ---------- 缩放的三种输入 ----------
+   拖选(既有)只在顶部时间轴条内生效,没有任何提示,实际上没人找得到。补三条:
+
+   ① 滚轮 —— 只在时间轴条内缩放。**不能做成整张图都响应**:.scroller 是
+      overflow-y:hidden,纵向滚轮靠冒泡给页面滚动,图又有八条泳道占满一屏,
+      在整张图上 preventDefault 等于鼠标一停在图上就没法翻页。
+   ② Ctrl/Cmd + 滚轮 —— 整张图都响应。Mac 触控板的双指捏合正是以
+      ctrlKey=true 的 wheel 事件送达的,所以这一条同时把触控板捏合接上了。
+   ③ 双指捏合(触屏) —— iPad 用。scroller 上设 touch-action:pan-y:
+      纵向单指仍然翻页,但浏览器自身的捏合缩放被让出来给我们处理。 */
+const ZOOM_MIN_SPAN = 40, T_LO = -3500, T_HI = 2025;
+/* 以 px 处对应的年份为锚点缩放:锚点年在视图中的相对位置保持不变,
+   手指/指针底下的那一年不会跑掉。 */
+function zoomAround(px, factor) {
+  const [t0, t1] = VIEW.full ? [T_LO, T_HI] : [VIEW.t0, VIEW.t1];
+  const anchor = yearAt(px), span = t1 - t0;
+  let next = span * factor;
+  if (next < ZOOM_MIN_SPAN) next = ZOOM_MIN_SPAN;
+  if (next >= T_HI - T_LO) { if (!VIEW.full) zoomReset(); return; }
+  /* 已缩放时横轴是线性的,取像素比例 r=px/INNER_W 可以让光标下那一年精确不动
+     (实测连续缩放六次,锚点稳在同一年)。
+
+     但**全景 → 首次放大**这一步没法这么办:全景横轴是非线性分段的(BP 断点表,
+     古代压缩、近代放大),760 年在屏幕上占 48%、在年份区间里却占 77%,投影一换
+     这个对应关系必然断;再套上右端 2025 的夹取,实测光标下从 760 跳到 101,
+     越滚离目标越远。所以首次放大改成「以光标那一年居中、一步到位」:跨度直接
+     收到三分之一,既避开夹取,落点也可预期(指哪儿就以哪儿为中心)。 */
+  const first = VIEW.full;
+  if (first) next = Math.min(next, span * 0.35);
+  const r = first ? 0.5 : px / INNER_W;
+  let a = anchor - next * r, b = a + next;
+  if (a < T_LO) { a = T_LO; b = a + next; }
+  if (b > T_HI) { b = T_HI; a = b - next; }
+  zoomTo(a, b);
+}
+scrollerEl.addEventListener('wheel', e => {
+  const rect = chart.getBoundingClientRect();
+  const y = e.clientY - rect.top;
+  const onAxis = y > 4 && y <= 46;
+  /* 触控板捏合到达时是 ctrlKey+wheel;此外只认时间轴条,别处放给页面滚动 */
+  if (!e.ctrlKey && !e.metaKey && !onAxis) return;
+  e.preventDefault();
+  const d = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY;
+  zoomAround(e.clientX - rect.left, Math.exp(d * 0.002));
+}, { passive: false });
+
+/* 双指捏合。只在两指时接管,单指照旧(拖时光穿梭竖线、拖选、点色带都不受影响)。 */
+let pinch = null;
+const touchDist = t => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+scrollerEl.addEventListener('touchstart', e => {
+  if (e.touches.length !== 2) { pinch = null; return; }
+  const rect = chart.getBoundingClientRect();
+  const t = e.touches;
+  pinch = { d: touchDist(t), px: (t[0].clientX + t[1].clientX) / 2 - rect.left };
+  e.preventDefault();
+}, { passive: false });
+scrollerEl.addEventListener('touchmove', e => {
+  if (!pinch || e.touches.length !== 2) return;
+  const d = touchDist(e.touches);
+  if (!d || Math.abs(d - pinch.d) < 6) return;   /* 抖动阈值,免得手一放上去就跳 */
+  e.preventDefault();
+  zoomAround(pinch.px, pinch.d / d);
+  pinch.d = d;
+}, { passive: false });
+scrollerEl.addEventListener('touchend', () => { pinch = null; });
 
 /* ---------- 维基链接:搜索跳转,精确命中词条时直达 ---------- */
 const WIKI_NAME = { '明':'明朝', '清':'清朝', '元':'元朝', '商':'商朝', '秦':'秦朝', '隋':'隋朝',
@@ -6565,6 +6646,7 @@ function applyLang() {
     '<p>· 时间轴为非线性:史前与上古压缩,近 500 年放大。点击文明圈图例可高亮该文明圈在所有区域的分布(如 1500 年后蓝色涌入美洲,13 世纪绿色横扫欧亚)。</p><p>· 影响力厚度为主观示意估计,用于呈现兴衰节奏与同期对比,非精确度量。数据手工编写,难免疏漏,欢迎指正。</p>',
     '<p>· The time axis is nonlinear: antiquity is compressed, the last 500 years expanded. Click a sphere in the legend to highlight it across all regions (blue flooding the Americas after 1500, green sweeping Eurasia in the 13th century).</p><p>· Band thickness is a subjective, illustrative estimate — for rhythm and comparison, not precise measurement. Hand-curated data; corrections welcome.</p>');
   document.getElementById('zoomOut').textContent = T('⤺ 全景', '⤺ Full view');
+  axHint();
   document.getElementById('playBtn').textContent = PB.on ? T('⏸ 暂停', '⏸ Pause') : T('▶ 时光穿梭', '▶ Time travel');
   document.getElementById('pbNowLab').textContent = T('此刻在场', 'On stage now');
   document.getElementById('pbFeedLab').textContent = T('最近发生', 'Recently');
