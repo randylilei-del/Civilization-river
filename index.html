@@ -6127,8 +6127,15 @@ function mapHTML(c) {
     else farPeers.push(o);
   }
   minx -= 7; maxx += 7; miny -= 6; maxy += 8;
-  if (maxx - minx < 60) { const m = (maxx + minx) / 2; minx = m - 30; maxx = m + 30; }
-  if (maxy - miny < 30) { const m = (maxy + miny) / 2; miny = m - 15; maxy = m + 15; }
+  /* 最小视野随「有没有参照物」变:同期文明的圆点是读者定位的锚,一个都没有时(全站 17 张,
+     多是早期美洲与非洲)只给 60°×30° 会切出一条认不出的陆地窄条 —— 查文文化就是这样,
+     版图只占视野 8%,四周既无标注也无可辨认的海岸线。没有锚、版图本身又小的,把视野放到能认出
+     大陆的尺度;版图本身就够大的(现代中亚 35°、拉美 77°)不动,它们自己就是定位物。 */
+  const ownW = bx1 - bx0, ownH = by1 - by0;
+  const lost = !peers.length && ownW < 20 && ownH < 35;
+  const MINW = lost ? 110 : 60, MINH = lost ? 55 : 30;
+  if (maxx - minx < MINW) { const m = (maxx + minx) / 2; minx = m - MINW / 2; maxx = m + MINW / 2; }
+  if (maxy - miny < MINH) { const m = (maxy + miny) / 2; miny = m - MINH / 2; maxy = m + MINH / 2; }
   minx = Math.max(minx, -180); maxx = Math.min(maxx, 180); miny = Math.max(miny, -60); maxy = Math.min(maxy, 80);
   const W = 332, Hm = Math.max(115, Math.min(235, Math.round(W * (maxy - miny) / (maxx - minx))));
   const sx = x => (x - minx) / (maxx - minx) * W, sy = y => (maxy - y) / (maxy - miny) * Hm;
