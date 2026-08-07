@@ -382,7 +382,7 @@ td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; ma
 
 <header>
   <h1 id="h1T">文明长河</h1>
-  <p class="sub" id="subT">从史前到现代:各区域主导文明的兴衰与往来。厚度 = 区域内相对影响力(示意),颜色 = 所属文明圈。点击任意色带查看详情。</p>
+  <p class="sub" id="subT">从史前到现代:各区域主导文明的兴衰与往来。厚度 = 区域内相对影响力(示意),颜色 = 所属文明圈,同色的深浅只为区分相邻色带、没有含义。点击任意色带查看详情。</p>
 </header>
 
 <div class="controls">
@@ -5821,8 +5821,8 @@ renderTable();
 function applyLang() {
   document.documentElement.lang = LANG === 'zh' ? 'zh-CN' : 'en';
   document.getElementById('h1T').textContent = T('文明长河', 'A River of Civilizations');
-  document.getElementById('subT').textContent = T('从史前到现代:各区域主导文明的兴衰与往来。厚度 = 区域内相对影响力(示意),颜色 = 所属文明圈。点击任意色带查看详情。',
-    'Prehistory to the present: the rise, fall and exchanges of each region\'s dominant civilizations. Thickness = relative regional influence (illustrative); color = civilizational sphere. Click any band for details.');
+  document.getElementById('subT').textContent = T('从史前到现代:各区域主导文明的兴衰与往来。厚度 = 区域内相对影响力(示意),颜色 = 所属文明圈,同色的深浅只为区分相邻色带、没有含义。点击任意色带查看详情。',
+    'Prehistory to the present: the rise, fall and exchanges of each region\'s dominant civilizations. Thickness = relative regional influence (illustrative); color = civilizational sphere; lighter and darker shades of one color only tell neighbouring bands apart and carry no meaning. Click any band for details.');
   document.getElementById('evLbl').textContent = T('交流事件', 'Exchange events');
   document.getElementById('tblSum').textContent = T('数据表视图(全部文明)', 'Data table (all civilizations)');
   document.getElementById('notesT').innerHTML = T(
