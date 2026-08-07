@@ -224,6 +224,57 @@ CIVS.forEach(c => {
   });
 });
 
+// 29:f['鼎盛'] 与 k 曲线峰值不能各说各话。核查员在法蒂玛、马穆鲁克、渤海三张卡上
+// 都手工抓到过这一类,机械化掉。两个必要的收窄,否则会误报:
+//   ① 「前1000—前800」这类是**区间**不是两个孤立年份,峰值落在区间内即算一致
+//   ② **在世文明豁免**——末帧到 2025 的条目,「鼎盛」本身就是尚未定下的口径,
+//      曲线末端不归零是刻意的(见 docs/DATA.md),拿它当峰值比对必然误报
+const PEAK_TOL = 80;
+CIVS.forEach(c => {
+  const f = c.f && c.f['鼎盛'];
+  if (!f) return;
+  if (c.k[c.k.length - 1][0] >= 2025) return;                 // 在世文明豁免
+  // 「9世纪初」「14世纪前期」这类没有 3~4 位数字,但恰恰是最常见的写法——反向注错时
+  // 发现只认数字会把渤海、马穆鲁克这类整条跳过,而它们正是要防的场景
+  const yrs = [...String(f).matchAll(/(前)?\s?(\d{3,4})(?!\s?世纪)/g)].map(m => (m[1] ? -1 : 1) * (+m[2]));
+  // 「6—8世纪」这种跨世纪区间,只匹配单个「N世纪」会把起点丢掉(实测粟特被误报)
+  // 跨世纪区间有两种写法:「6—8世纪」与「前7—前4世纪」(破折号后还带一个「前」)
+  const spanned = [];
+  for (const m of String(f).matchAll(/(前)?(\d{1,2})\s?[—\-~－]\s?(前)?(\d{1,2})\s?世纪/g)) {
+    const bce1 = !!m[1] || !!m[3], n1 = +m[2], bce2 = !!m[3] || !!m[1], n2 = +m[4];
+    yrs.push(bce1 ? -n1 * 100 : (n1 - 1) * 100, bce2 ? -(n2 - 1) * 100 - 1 : n2 * 100 - 1);
+    spanned.push(m[0]);
+  }
+  // 已被区间吃掉的那段不能再按单个世纪算一遍,否则「前7—前4世纪」会退化成「前4世纪」
+  let rest = String(f);
+  for (const t of spanned) rest = rest.replace(t, '');
+  for (const m of rest.matchAll(/(前)?(\d{1,2})\s?世纪(初|前期|中期|中叶|后期|末)?/g)) {
+    const bce = !!m[1], n = +m[2], q = m[3] || '';
+    let a = bce ? -n * 100 : (n - 1) * 100, b = bce ? -(n - 1) * 100 - 1 : n * 100 - 1;
+    if (q === '初' || q === '前期') b = a + 39;
+    else if (q === '末' || q === '后期') a = b - 39;
+    else if (q === '中期' || q === '中叶') { a += 30; b -= 30; }
+    yrs.push(a, b);
+  }
+  if (!yrs.length) return;
+  let mi = 0; c.k.forEach((k, i) => { if (k[1] > c.k[mi][1]) mi = i; });
+  const peak = c.k[mi][0], lo = Math.min(...yrs), hi = Math.max(...yrs);
+  if (peak < lo - PEAK_TOL || peak > hi + PEAK_TOL)
+    P.push(`[鼎盛年与曲线峰值不符] ${c.n}: 「${f}」→ ${lo}~${hi},但 k 峰值在 ${peak}`);
+});
+
+// 30:GEO 的核心点必须落在自己的版图内(容差 1°)。写错一位经纬度,地图上的圆点
+// 就会跑到别的大陆去,而肉眼看小图未必发现
+Object.entries(GEO).forEach(([n, g]) => {
+  if (!g.c || !g.p) return;
+  let mnx = 999, mxx = -999, mny = 999, mxy = -999;
+  for (const poly of g.p) for (const [x, y] of poly) {
+    mnx = Math.min(mnx, x); mxx = Math.max(mxx, x); mny = Math.min(mny, y); mxy = Math.max(mxy, y);
+  }
+  if (g.c[0] < mnx - 1 || g.c[0] > mxx + 1 || g.c[1] < mny - 1 || g.c[1] > mxy + 1)
+    P.push(`[GEO 核心点在版图外] ${n}: 中心 [${g.c}] 不在 [${mnx},${mny}]~[${mxx},${mxy}] 内`);
+});
+
 if (EN.events && EN.events.length !== EVENTS.length) P.push(`[事件中英数量不等] zh=${EVENTS.length} en=${EN.events.length}`);
 const laneIds = new Set(LANES.map(l => l.id));
 CIVS.forEach(c => { if (!laneIds.has(c.l)) P.push(`[泳道 id 不存在] ${c.n} → ${c.l}`); });
