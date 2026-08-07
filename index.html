@@ -29,7 +29,32 @@
   --c-steppe: #008300;
   --c-africa: #4a3aa7;
   --c-sea: #e34948;
+  /* 每圈的浅档(-a)与深档(-b)。原先用 color-mix() 现算,但 Safari 要 16.2 才支持它 ——
+     不支持时整个 fill 属性失效、SVG 回退成纯黑,全站 71 条色带(v=1/v=2)在旧 iPad 上
+     全是黑的。这是 Ray 在 iPad 上实际撞到的问题,所以改成写死十六进制,零特性依赖。 */
+  --c-west-a: #6ea2e5;    --c-west-b: #2760a6;
+  --c-sino-a: #f69876;    --c-sino-b: #b6542f;
+  --c-indic-a: #76c8a1;   --c-indic-b: #248861;
+  --c-mideast-a: #f4be72; --c-mideast-b: #b77e1b;
+  --c-meso-a: #f2a3bf;    --c-meso-b: #b36280;
+  --c-steppe-a: #64a95f;  --c-steppe-b: #156812;
+  --c-africa-a: #7976c4;  --c-africa-b: #3c3283;
+  --c-sea-a: #f2867e;     --c-sea-b: #b03e3c;
   /* 地理底图三层:比文明色低一个视觉层级,任何情况下都不该抢过版图 */
+  /* 每圈的浅档(-a)与深档(-b),预先算好的十六进制 —— 不用 color-mix() 现算:
+     Safari 要 16.2 才支持它,不支持时 fill 属性整个失效、SVG 回退成纯黑,
+     全站 71 条色带(v=1/v=2)在旧 iPad 上会全黑。这是 Ray 实际撞到的问题。 */
+  --c-west-a: #6ea2e5;    --c-west-b: #2760a6;
+  --c-sino-a: #f69876;    --c-sino-b: #b6542f;
+  --c-indic-a: #76c8a1;   --c-indic-b: #248861;
+  --c-mideast-a: #f4be72; --c-mideast-b: #b77e1b;
+  --c-meso-a: #f2a3bf;    --c-meso-b: #b36280;
+  --c-steppe-a: #64a95f;  --c-steppe-b: #156812;
+  --c-africa-a: #7976c4;  --c-africa-b: #3c3283;
+  --c-sea-a: #f2867e;     --c-sea-b: #b03e3c;
+  --geo-land: #e6e6e5;
+  --surface-82: rgba(252,252,251,.82);
+  --pn-bg: rgba(11,11,11,.07); --pn-line: rgba(11,11,11,.22); --pn-hover: rgba(11,11,11,.15);
   --geo-river: #7ab3d9;
   --geo-range: #b3a48c;
   --geo-desert: #e9dcba;
@@ -54,6 +79,25 @@
     --c-steppe: #008300;
     --c-africa: #9085e9;
     --c-sea: #e66767;
+    --c-west-a: #78acef;    --c-west-b: #326bb1;
+    --c-sino-a: #ea8e6e;    --c-sino-b: #a84925;
+    --c-indic-a: #76c8a1;   --c-indic-b: #248861;
+    --c-mideast-a: #dbaa6a; --c-mideast-b: #9c6917;
+    --c-meso-a: #e788a5;    --c-meso-b: #a54366;
+    --c-steppe-a: #64a95f;  --c-steppe-b: #156812;
+    --c-africa-a: #afaaf2;  --c-africa-b: #7169b4;
+    --c-sea-a: #f29793;     --c-sea-b: #b25353;
+    --c-west-a: #78acef;    --c-west-b: #326bb1;
+    --c-sino-a: #ea8e6e;    --c-sino-b: #a84925;
+    --c-indic-a: #76c8a1;   --c-indic-b: #248861;
+    --c-mideast-a: #dbaa6a; --c-mideast-b: #9c6917;
+    --c-meso-a: #e788a5;    --c-meso-b: #a54366;
+    --c-steppe-a: #64a95f;  --c-steppe-b: #156812;
+    --c-africa-a: #afaaf2;  --c-africa-b: #7169b4;
+    --c-sea-a: #f29793;     --c-sea-b: #b25353;
+    --geo-land: #292928;
+    --surface-82: rgba(26,26,25,.82);
+    --pn-bg: rgba(255,255,255,.07); --pn-line: rgba(255,255,255,.22); --pn-hover: rgba(255,255,255,.15);
     --geo-river: #4a7fa3;
     --geo-range: #565044;
     --geo-desert: #494026;
@@ -78,6 +122,25 @@
   --c-steppe: #008300;
   --c-africa: #9085e9;
   --c-sea: #e66767;
+  --c-west-a: #78acef;  --c-west-b: #326bb1;
+  --c-sino-a: #ea8e6e;  --c-sino-b: #a84925;
+  --c-indic-a: #76c8a1;   --c-indic-b: #248861;
+  --c-mideast-a: #dbaa6a; --c-mideast-b: #9c6917;
+  --c-meso-a: #e788a5;  --c-meso-b: #a54366;
+  --c-steppe-a: #64a95f;  --c-steppe-b: #156812;
+  --c-africa-a: #afaaf2;  --c-africa-b: #7169b4;
+  --c-sea-a: #f29793;   --c-sea-b: #b25353;
+  --c-west-a: #78acef;    --c-west-b: #326bb1;
+  --c-sino-a: #ea8e6e;    --c-sino-b: #a84925;
+  --c-indic-a: #76c8a1;   --c-indic-b: #248861;
+  --c-mideast-a: #dbaa6a; --c-mideast-b: #9c6917;
+  --c-meso-a: #e788a5;    --c-meso-b: #a54366;
+  --c-steppe-a: #64a95f;  --c-steppe-b: #156812;
+  --c-africa-a: #afaaf2;  --c-africa-b: #7169b4;
+  --c-sea-a: #f29793;     --c-sea-b: #b25353;
+  --geo-land: #292928;
+  --surface-82: rgba(26,26,25,.82);
+  --pn-bg: rgba(255,255,255,.07); --pn-line: rgba(255,255,255,.22); --pn-hover: rgba(255,255,255,.15);
   --geo-river: #4a7fa3;
   --geo-range: #565044;
   --geo-desert: #494026;
@@ -192,7 +255,7 @@ svg { display: block; }
 .lane-tag {
   position: absolute; left: 0; transform: translateY(-50%);
   font-size: 11.5px; font-weight: 600; color: var(--ink-2);
-  background: color-mix(in oklab, var(--surface) 82%, transparent);
+  background: var(--surface-82);
   padding: 1px 7px; border-radius: 5px; backdrop-filter: blur(2px);
   letter-spacing: .04em; white-space: nowrap;
 }
@@ -257,10 +320,10 @@ a.wk::after { content: '↗'; font-size: .72em; color: var(--muted); margin-left
 /* 站内弹卡的人名:浅底小片、无 ↗——与 a.wk 的"要跳走"形成对比,一眼分得开 */
 .pn {
   cursor: pointer; padding: 1px 5px; border-radius: 5px;
-  background: color-mix(in oklab, var(--ink) 7%, transparent);
-  box-shadow: inset 0 -1px 0 color-mix(in oklab, var(--ink) 22%, transparent);
+  background: var(--pn-bg);
+  box-shadow: inset 0 -1px 0 var(--pn-line);
 }
-.pn:hover, .pn:focus-visible { background: color-mix(in oklab, var(--ink) 15%, transparent); outline: none; }
+.pn:hover, .pn:focus-visible { background: var(--pn-hover); outline: none; }
 
 /* ---------- 人物卡 ---------- */
 #pcard { position: fixed; inset: 0; z-index: 40; display: flex; align-items: center; justify-content: center; padding: 20px; }
@@ -5110,11 +5173,18 @@ const laneTop = i => TOP + i * LANE_H;
 const laneIdx = Object.fromEntries(LANES.map((l,i) => [l.id, i]));
 const UNIT = 46, MAXSTACK = LANE_H - 12;
 
+/* 色深三档直接查 CSS 变量,不做任何运算。
+   曾经用 color-mix(in oklab, …) 现算,踩了两个坑:
+   ① 混合基准取 --surface/--ink,而这两个变量在深浅模式下互换 —— 深色模式里
+      v1/v2 的明暗整个反转,v=1 成了往近黑里混,中世纪西欧那类条目变成暗蓝。
+   ② 更要命的是 color-mix 要 Safari 16.2 才支持,不支持时 fill 属性整个失效、
+      SVG 回退成纯黑 —— 全站 71 条色带(v=1/v=2)在旧 iPad 上全是黑的。
+   预计算成十六进制后两个问题一起消失,也不再依赖任何新 CSS 特性。 */
 function fill(civ) {
-  const v = `var(${SPHERES[civ.s].v})`;
-  if (civ.v === 1) return `color-mix(in oklab, ${v} 66%, var(--surface))`;
-  if (civ.v === 2) return `color-mix(in oklab, ${v} 80%, var(--ink))`;
-  return v;
+  const base = SPHERES[civ.s].v;
+  if (civ.v === 1) return `var(${base}-a)`;
+  if (civ.v === 2) return `var(${base}-b)`;
+  return `var(${base})`;
 }
 function interp(k, y) {
   if (y <= k[0][0] || y >= k[k.length-1][0]) return 0;
@@ -5504,7 +5574,7 @@ function mapHTML(c) {
   /* 只画与视野相交的地理要素;全在视野外的直接跳过,省得画一堆被裁掉的路径 */
   const inView = pts => pts.some(([x, y]) => x >= minx && x <= maxx && y >= miny && y <= maxy);
   let s = `<svg width="${W}" height="${Hm}" viewBox="0 0 ${W} ${Hm}" aria-label="版图示意图" style="background:var(--wash);border-radius:8px">`;
-  for (const r of LAND) s += `<path d="${path(r)}" fill="color-mix(in oklab, var(--ink) 8%, var(--surface))"/>`;
+  for (const r of LAND) s += `<path d="${path(r)}" fill="var(--geo-land)"/>`;
   for (const d of DESERTS) if (inView(d.p)) s += `<path d="${path(d.p)}" fill="var(--geo-desert)" opacity=".55"/>`;
   for (const m of RANGES) if (inView(m.p)) s += `<path d="${path(m.p)}" fill="var(--geo-range)" opacity=".5"/>`;
   for (const r of RIVERS) if (inView(r.p)) s += `<path d="${line(r.p)}" fill="none" stroke="var(--geo-river)" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/>`;
