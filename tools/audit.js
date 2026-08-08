@@ -29,12 +29,12 @@ const body = [script.slice(start, end), script.slice(achvAt, achvEnd)]
 
 const ctx = {};
 vm.createContext(ctx);
-const PICK = '({LANES,SPHERES,CIVS,EVENTS,GEO,CHRONO,GL,CHRONO_X,EN,TRACES,ERAS,PLACE,VIDEO,PEOPLE,PGLYPH,PGNAME,PEAK,ACHV,AGLYPH,GEO_CITY})';
+const PICK = '({LANES,SPHERES,CIVS,EVENTS,GEO,CHRONO,GL,CHRONO_X,EN,TRACES,ERAS,PLACE,VIDEO,PEOPLE,PGLYPH,PGNAME,PEAK,ACHV,AGLYPH,GEO_CITY,PLACE_LORE})';
 let D;
 try { vm.runInContext(body, ctx); D = vm.runInContext(PICK, ctx); } catch (e) {
   console.error('数据段解析失败:', e.message); process.exit(1);
 }
-const { LANES, CIVS, EVENTS, GEO, CHRONO, GL, CHRONO_X, EN, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME, PEAK, ACHV, AGLYPH, GEO_CITY } = D;
+const { LANES, CIVS, EVENTS, GEO, CHRONO, GL, CHRONO_X, EN, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME, PEAK, ACHV, AGLYPH, GEO_CITY, PLACE_LORE } = D;
 
 const P = [];
 const KINDS = ['econ', 'art', 'tech', 'thought'];
@@ -440,7 +440,7 @@ const GEO_CITIES = [
   ["拉合尔",74.34,31.55,6], ["达卡",90.41,23.81,6], ["科伦坡",79.86,6.93,1], ["加德满都",85.32,27.72,4],
   ["西安",108.94,34.34,20], ["洛阳",112.45,34.62,22], ["北京",116.4,39.9,17], ["南京",118.8,32.06,20],
   ["杭州",120.15,30.27,18], ["开封",114.31,34.8,22], ["成都",104.07,30.57,19], ["广州",113.26,23.13,17],
-  ["昆明",102.83,24.88,11], ["拉萨",91.14,29.65,4], ["乌鲁木齐",87.62,43.83,7], ["敦煌",94.66,40.14,7],
+  ["昆明",102.83,24.88,11], ["拉萨",91.14,29.65,4], ["乌鲁木齐",87.62,43.83,7], ["敦煌",94.66,40.14,13],
   ["喀什",75.99,39.47,7], ["呼和浩特",111.75,40.84,13], ["哈尔滨",126.53,45.8,7], ["首尔",126.98,37.57,2],
   ["平壤",125.75,39.03,2], ["庆州",129.22,35.86,2], ["东京",139.69,35.69,1], ["京都",135.77,35.01,1],
   ["大阪",135.5,34.69,1], ["福冈",130.4,33.59,1], ["札幌",141.35,43.06,1], ["台北",121.56,25.03,3],
@@ -465,7 +465,7 @@ const GEO_CITIES = [
   ["福州",119.3,26.07,17], ["厦门",118.09,24.48,17], ["泉州",118.59,24.87,17], ["汕头",116.68,23.35,17],
   ["温州",120.7,28,17], ["宁波",121.55,29.87,17], ["海口",110.2,20.04,11], ["桂林",110.29,25.27,17],
   ["长沙",112.94,28.23,18], ["武汉",114.31,30.59,20], ["济南",117.12,36.65,19], ["太原",112.55,37.87,19],
-  ["兰州",103.83,36.06,16], ["西宁",101.78,36.62,13], ["银川",106.23,38.49,17], ["沈阳",123.43,41.8,11],
+  ["兰州",103.83,36.06,16], ["西宁",101.78,36.62,15], ["银川",106.23,38.49,17], ["沈阳",123.43,41.8,11],
   ["大连",121.62,38.91,16], ["釜山",129.08,35.18,2], ["长春",125.32,43.82,6], ["迈阿密",-80.19,25.76,1],
   ["圣迭戈",-117.16,32.72,1], ["旧金山",-122.42,37.77,1], ["西雅图",-122.33,47.61,1], ["圣多明各",-69.9,18.47,2],
   ["圣胡安",-66.1,18.47,2], ["危地马拉城",-90.51,14.63,4], ["蒙特雷",-100.31,25.69,3], ["加拉加斯",-66.9,10.49,2],
@@ -496,6 +496,25 @@ if (GEO_CITY) {
       P.push(`[GEO_CITY 坐标出显示范围] ${zh}: [${lon},${lat}](纬度显示范围 -56~78,出界的点画在画布外)`);
     if (!Object.values(GEO).some(g => g.p && g.p.some(poly => pip(lon, lat, poly))))
       P.push(`[GEO_CITY 点不出任何文明] ${zh}: [${lon},${lat}] 一条版图都不命中,地图上是个白给的点`);
+  });
+}
+
+/* 38. 地点小段手写层(PLACE_LORE,v86)——键是 '城市|文明',三件事都得真:
+ * 城市在 GEO_CITY 里、文明在 CIVS 里、且城市坐标真的落在该文明版图内。
+ * 第三条最要紧:组合展示的前提是 PIP 命中,城市不在版图里 = 写了一段永远没人看得到的文案,
+ * 而且多半说明写的时候把归属想错了。另查双语两条都非空。 */
+if (PLACE_LORE) {
+  const cityByZh = Object.fromEntries((GEO_CITY || []).map(c => [c[0], c]));
+  const civByN = Object.fromEntries(CIVS.map(c => [c.n, c]));
+  Object.entries(PLACE_LORE).forEach(([k, v]) => {
+    const [cz, cn] = k.split('|');
+    const city = cityByZh[cz], civ = civByN[cn];
+    if (!city) { P.push(`[PLACE_LORE 城市不存在] ${k}: 「${cz}」不在 GEO_CITY 里`); return; }
+    if (!civ) { P.push(`[PLACE_LORE 文明不存在] ${k}: 「${cn}」不在 CIVS 里`); return; }
+    const g = GEO[cn];
+    if (!g || !g.p || !g.p.some(poly => pip(city[2], city[3], poly)))
+      P.push(`[PLACE_LORE 城市不在该文明版图内] ${k}: 这段文案永远展示不出来`);
+    if (!Array.isArray(v) || !v[0] || !v[1]) P.push(`[PLACE_LORE 双语不全] ${k}`);
   });
 }
 

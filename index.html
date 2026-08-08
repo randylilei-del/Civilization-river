@@ -425,7 +425,8 @@ a.wk::after { content: '↗'; font-size: .72em; color: var(--muted); margin-left
 #geoview .gv-row[aria-expanded="true"] { background: var(--wash); border-color: var(--border); }
 #geoview .gv-det { margin: 2px 0 8px 27px; padding: 8px 11px; background: var(--wash);
   border-radius: 8px; font-size: 12.5px; line-height: 1.6; }
-#geoview .gv-det .gd-pos { color: var(--ink-2); }
+#geoview .gv-det .gd-lore { margin-bottom: 6px; }
+#geoview .gv-det .gd-pos { color: var(--ink-2); font-size: 12px; }
 #geoview .gv-det .gd-ev { margin-top: 6px; }
 #geoview .gv-det .gd-ev b { font-variant-numeric: tabular-nums; font-weight: 600; margin-right: 6px; }
 #geoview .gv-det .gd-ev p { margin: 1px 0 0; color: var(--ink-2); font-size: 12px; }
@@ -2161,16 +2162,16 @@ const GEO = {
 '战国': { p:[[[103,31],[105,35],[110,40],[117,42],[122,39],[121,31],[115,28],[107,29]]], c:[113,34] },
 '秦': { p:[[[100,34],[104,40],[110,42],[118,41],[122,38],[122,30.5],[121,28],[119.8,26.1],[118.4,24.5],[117,23.4],[114.3,22.2],[110.5,21.3],[108,21],[103,25],[100,29]]], c:[108.9,34.3] },
 '西汉': { p:[[[76,40],[90,43],[100,42],[108,42],[118,42],[126,43],[124,38],[122,30.5],[121,28],[119.8,26.1],[118.4,24.5],[117,23.4],[114.3,22.2],[110.8,19.6],[108,19],[103,23],[100,28],[98,34],[88,38],[78,38]]], c:[108.9,34.3] },
-'东汉': { p:[[[96,38],[102,41],[110,42],[120,42],[125,42],[123,38],[122,30.5],[121,28],[119.8,26.1],[118.4,24.5],[117,23.4],[114.3,22.2],[110.8,19.8],[107,20],[102,24],[99,30]]], c:[112.5,34.6] },
-'三国': { p:[[[100,35],[106,40],[114,41],[122,41],[122,30.5],[121,28],[119.8,26.1],[118.4,24.5],[117,23.4],[114.3,22.2],[110.5,21],[108,22],[103,26],[100,30]]], c:[112.5,34.6] },
-'西晋': { p:[[[100,35],[106,40],[114,41],[122,41],[122,30.5],[121,28],[119.8,26.1],[118.4,24.5],[117,23.4],[114.3,22.2],[110.5,21],[108,22],[103,26],[100,30]]], c:[112.5,34.6] },
+'东汉': { p:[[[96,36.5],[92.8,39],[95.8,41.2],[102,41],[110,42],[120,42],[125,42],[123,38],[122,30.5],[121,28],[119.8,26.1],[118.4,24.5],[117,23.4],[114.3,22.2],[110.8,19.8],[107,20],[102,24],[99,30]]], c:[112.5,34.6] },
+'三国': { p:[[[100,35],[97,36.5],[92.8,39],[95.8,41.2],[106,40],[114,41],[122,41],[122,30.5],[121,28],[119.8,26.1],[118.4,24.5],[117,23.4],[114.3,22.2],[110.5,21],[108,22],[103,26],[100,30]]], c:[112.5,34.6] },
+'西晋': { p:[[[100,35],[97,36.5],[92.8,39],[95.8,41.2],[106,40],[114,41],[122,41],[122,30.5],[121,28],[119.8,26.1],[118.4,24.5],[117,23.4],[114.3,22.2],[110.5,21],[108,22],[103,26],[100,30]]], c:[112.5,34.6] },
 '东晋·十六国': { p:[[[100,32],[108,34],[116,34],[121.5,32],[122,30.5],[121,28],[119.8,26.1],[118.4,24.5],[117,23.4],[114.3,22.2],[110.5,21.2],[105,24],[101,28]]], c:[118.8,32.1] },
 '南北朝': { p:[[[100,35],[106,40],[114,41],[122,41],[122,30.5],[121,28],[119.8,26.1],[118.4,24.5],[117,23.4],[114.3,22.2],[110.5,21],[108,22],[103,26],[100,30]]], c:[112.5,34.6] },
-'隋': { p:[[[98,38],[104,41],[112,42],[122,42],[124,38],[122,30.5],[121,28],[119.8,26.1],[118.4,24.5],[117,23.4],[114.3,22.2],[110.8,19.8],[106,20],[102,24],[99,30]]], c:[108.9,34.3] },
+'隋': { p:[[[98,36.5],[92.8,39],[95.8,41.2],[104,41],[112,42],[122,42],[124,38],[122,30.5],[121,28],[119.8,26.1],[118.4,24.5],[117,23.4],[114.3,22.2],[110.8,19.8],[106,20],[102,24],[99,30]]], c:[108.9,34.3] },
 '唐': { p:[[[74,40],[86,44],[95,44],[105,42],[115,42],[124,42],[128,42],[124,38],[122,30.5],[121,28],[119.8,26.1],[118.4,24.5],[117,23.4],[114.3,22.2],[110.8,19.5],[106,19],[102,24],[99,30],[95,36],[85,40],[76,38]]], c:[108.9,34.3] },
 '五代十国': { p:[[[100,34],[106,39],[114,40],[120,38],[122,30.5],[121,28],[119.8,26.1],[118.4,24.5],[117,23.4],[114.3,22.2],[110.5,21.2],[106,21],[102,26],[100,30]]], c:[114.3,34.8] },
 '辽': { p:[[[105,40],[112,45],[120,50],[128,48],[132,44],[125,40],[120,37],[112,37],[107,38]]], c:[118.9,42.3] },
-'吐蕃': { p:[[[79,33],[88,36],[97,39],[103,37],[103,31],[94,28],[85,28],[79,31]]], c:[91,29.6] },
+'吐蕃': { p:[[[79,33],[88,36],[92,39.6],[96.3,41],[100,38.5],[103,37],[103,31],[94,28],[85,28],[79,31]]], c:[91,29.6] },
 '埃塞俄比亚': { p:[[[36,15],[40,15],[42,12],[42,8],[39,5],[35,7],[34,11]]], c:[38.7,9] },
 '奇穆': { p:[[[-80.5,-3.6],[-78.6,-4.5],[-77.3,-9],[-77.0,-11.8],[-77.8,-11.9],[-78.6,-9.6],[-80.8,-5]]], c:[-79,-8.1] },
 '密西西比文化·卡霍基亚': { p:[[[-94,39.5],[-88,40.5],[-84,37],[-86,32],[-91,31],[-94,35]]], c:[-90.06,38.66] },
@@ -2190,7 +2191,7 @@ const GEO = {
 '渤海国': { p:[[[124,40],[129,39],[133,43],[133,47.5],[127,48],[123.5,44]]], c:[129,44] },
 '马穆鲁克': { p:[[[25,31.5],[34,31.5],[36,36.5],[38,34.5],[36,30],[39,21],[34,22],[25,22]]], c:[31.2,30] },
 '阿散蒂': { p:[[[-4,5.5],[-4,9],[-1.5,11],[1,9],[1,6],[-1,5]]], c:[-1.6,6.7] },
-'西夏': { p:[[[98,36],[104,41],[108,40],[107,37],[102,34]]], c:[106.3,38.5] },
+'西夏': { p:[[[98,36],[92.8,39],[95.8,41.2],[104,41],[108,40],[107,37],[102,34]]], c:[106.3,38.5] },
 '金': { p:[[[104,38],[112,45],[120,50],[128,48],[132,44],[125,40],[121,34],[114,33],[107,34]]], c:[116.4,39.9] },
 '北宋': { p:[[[100,34],[108,36],[116,36],[121.5,32],[122,30.5],[121,28],[119.8,26.1],[118.4,24.5],[117,23.4],[114.3,22.2],[110.8,19.6],[106,20],[102,25],[100,30]]], c:[114.3,34.8] },
 '南宋': { p:[[[100,32],[106,33],[114,33],[122,31.5],[122,30.5],[121,28],[119.8,26.1],[118.4,24.5],[117,23.4],[114.3,22.2],[110.8,19.6],[105,23],[101,28]]], c:[120.2,30.3] },
@@ -3279,6 +3280,56 @@ const GC_ALIAS = {
 '伊斯坦布尔':['君士坦丁堡'], '京都':['平安京'], '东京':['江户'], '首尔':['汉城'], '河内':['升龙'],
 '亚历山大':['亚历山大城','亚历山大港','亚历山大里亚'], '巴特那':['华氏城','巴连弗邑'],
 '墨西哥城':['特诺奇蒂特兰'], '敦煌':['莫高窟'], '瓦拉纳西':['贝拿勒斯'],
+};
+/* 地点小段·手写层(地理视角第③层):回答「那个朝代,这个地方是什么样」。
+   键 = '城市|文明',两边都必须真实存在且城市落在该文明版图内(audit 规则 38)。
+   写法:两三句,只写查证过的硬事实,年代拿不准就用「前后/传为」hedge;
+   自动层(定位句+大事记筛选)仍会跟在这段后面,这里不重复年表。 */
+const PLACE_LORE = {
+'西安|西汉': ['都城长安在今西安西北,未央宫是当时世上最大的宫殿群之一。张骞两次出使西域都从这里出发——丝绸之路的东端起点就定在这座城。',
+ 'The capital Chang\'an stood just northwest of today\'s Xi\'an, and Weiyang Palace was among the largest palace complexes then on earth. Zhang Qian set out for the Western Regions from here — the eastern end of the Silk Road.'],
+'西安|唐': ['唐长安是当时世界上最大的城市之一,百万人口,棋盘般的街坊,中轴朱雀大街宽逾百米。日本遣唐使、粟特商人、各国僧侣都汇在这座城里。',
+ 'Tang Chang\'an was among the largest cities in the world: a million people, a chessboard of walled wards, and a central avenue over a hundred meters wide. Japanese envoys, Sogdian merchants and monks from across Asia all converged here.'],
+'敦煌|西汉': ['汉武帝夺取河西走廊后设四郡,敦煌是最西的一个;再往西出玉门关、阳关,就是西域。此后一千年,它都是丝路进出中国的大门。',
+ 'After Emperor Wu took the Hexi Corridor, four commanderies were founded — Dunhuang the westernmost. Beyond it lay the Yumen and Yang passes and the Western Regions: for the next thousand years this was the Silk Road\'s gateway into China.'],
+'敦煌|唐': ['唐时敦煌称沙州,莫高窟进入全盛,今存洞窟约半数开凿于隋唐。安史之乱后此地陷于吐蕃六十余年,848 年张议潮率归义军收复。',
+ 'Under the Tang, Dunhuang (then Shazhou) saw the Mogao Caves at their height — about half the surviving caves were cut in Sui and Tang times. After the An Lushan rebellion it fell to Tibet for six decades, until Zhang Yichao\'s Return-to-Allegiance army retook it in 848.'],
+'洛阳|南北朝': ['493 年前后,北魏孝文帝把都城从平城迁到洛阳,推行说汉话、改汉姓的全面汉化。城南伊水两岸的龙门石窟,就是在迁都前后开凿起来的。',
+ 'Around 493 Emperor Xiaowen of Northern Wei moved his capital from Pingcheng to Luoyang and pushed sweeping sinicization — Chinese speech, Chinese surnames. The Longmen Grottoes south of the city began to be carved at just this time.'],
+'开封|北宋': ['汴京是《清明上河图》画下的那座城:人口可能过百万,街市通宵不禁,是当时世界上最繁华的城市之一。',
+ 'Bianjing is the city painted in "Along the River During Qingming": perhaps over a million people, streets open through the night — one of the most prosperous cities then on earth.'],
+'杭州|南宋': ['1138 年南宋定都于此,称临安。到十三世纪,它的人口可能已过百万,被认为是当时世界上最大的城市之一。',
+ 'The Southern Song made it their capital in 1138 and called it Lin\'an. By the thirteenth century its population may have passed a million — likely among the largest cities in the world.'],
+'南京|明': ['1368 年朱元璋在此称帝建明。他修起的城墙现存 25 公里,至今仍是世界规模第一的砖石城墙。',
+ 'Zhu Yuanzhang proclaimed the Ming dynasty here in 1368. The wall he built still runs 25 kilometers — to this day the largest brick city wall in the world.'],
+'北京|元': ['忽必烈在金中都东北另起新城,是为大都——今天北京城的前身。马可·波罗笔下的「汗八里」就是这里,他说它的壮丽远超欧洲的城。',
+ 'Kublai Khan built a new city northeast of the ruined Jin capital: Dadu, the ancestor of today\'s Beijing. This is Marco Polo\'s "Khanbaliq," which he described as grander than any city in Europe.'],
+'北京|明': ['永乐帝迁都北京,1420 年紫禁城建成——此后明清两代二十四位皇帝都住在这座宫城里,就是今天的故宫。',
+ 'The Yongle Emperor moved the capital to Beijing; the Forbidden City was completed in 1420. Twenty-four Ming and Qing emperors would live in this palace — today\'s Palace Museum.'],
+'广州|唐': ['唐在广州设市舶使,管理海路贸易——中国最早的海关雏形。城中蕃坊里聚居着成千上万来自阿拉伯与波斯的商人,海上丝路在此起航。',
+ 'The Tang stationed a Maritime Trade Commissioner at Guangzhou — China\'s earliest customs office. Thousands of Arab and Persian merchants lived in its foreign quarter; the maritime Silk Road began here.'],
+'泉州|南宋': ['南宋时泉州超过广州,成为全国第一大港。城里住着数以万计的阿拉伯、波斯商人,清真寺与妈祖庙隔街相望。',
+ 'Under the Southern Song, Quanzhou overtook Guangzhou as China\'s greatest port. Tens of thousands of Arab and Persian merchants lived here — mosque and Mazu temple stood streets apart.'],
+'泉州|元': ['元时泉州以「刺桐」之名闻于世界。马可·波罗与伊本·白图泰都到过这里,后者称它可与亚历山大港并列,是世界最大的港口之一。',
+ 'Under the Yuan, Quanzhou was known to the world as Zayton. Marco Polo and Ibn Battuta both came; Battuta ranked it with Alexandria among the greatest ports on earth.'],
+'拉萨|吐蕃': ['松赞干布把都城定在逻些——今天的拉萨,在红山上最早筑宫,布达拉宫由此得名起源。大昭寺里供奉的佛像,相传就是文成公主从长安带来的。',
+ 'Songtsen Gampo fixed his capital at Rasa — today\'s Lhasa — and first built a palace on the Red Hill where the Potala now stands. The Buddha statue in the Jokhang temple is said to be the one Princess Wencheng brought from Chang\'an.'],
+'伊斯坦布尔|拜占庭': ['330 年君士坦丁在此建新都,城以他命名。537 年建成的圣索菲亚大教堂顶着当时世上最大的穹顶,此后近千年,君士坦丁堡都是欧洲最大最富的城市。',
+ 'Constantine dedicated his new capital here in 330 and gave it his name. Hagia Sophia, finished in 537, carried the largest dome then on earth; for most of the next millennium Constantinople was Europe\'s greatest and richest city.'],
+'伊斯坦布尔|奥斯曼帝国': ['1453 年 21 岁的穆罕默德二世攻下这座千年都城,奥斯曼迁都于此。圣索菲亚改作清真寺,托普卡帕宫在海角上建起——城市换了名字与信仰,仍是帝国的心脏。',
+ 'In 1453 the 21-year-old Mehmed II took the thousand-year capital, and the Ottomans made it their own. Hagia Sophia became a mosque, Topkapi Palace rose on the point — a new name, a new faith, still the heart of an empire.'],
+'罗马|罗马帝国': ['帝国盛期的罗马城约有百万人口,是古代西方最大的城市。80 年启用的斗兽场能容五万观众,引水道从几十公里外把清水送进全城的浴场与喷泉。',
+ 'At the empire\'s height Rome held about a million people — the largest city of the ancient West. The Colosseum, opened in 80 CE, seated fifty thousand; aqueducts carried water from dozens of kilometers away to baths and fountains across the city.'],
+'耶路撒冷|罗马治下近东': ['70 年提图斯镇压犹太起义,焚毁第二圣殿,只余今天的西墙。此后哈德良把城改建为罗马式的「爱利亚加比多连」,犹太人被逐出故城——大流散由此加深。',
+ 'In 70 CE Titus crushed the Jewish revolt and burned the Second Temple — only today\'s Western Wall remained. Hadrian later rebuilt the city as Roman "Aelia Capitolina" and barred Jews from it, deepening the diaspora.'],
+'巴格达|阿拉伯哈里发': ['762 年哈里发曼苏尔在底格里斯河畔建起正圆形的新都。此后两百年,巴格达与长安并列世界最大的城市,「智慧宫」里的学者把希腊、波斯、印度的典籍译成阿拉伯文。',
+ 'In 762 Caliph al-Mansur founded a perfectly round new capital on the Tigris. For two centuries Baghdad rivaled Chang\'an as the world\'s largest city, while scholars of the House of Wisdom translated Greek, Persian and Indian works into Arabic.'],
+'开罗|法蒂玛王朝': ['969 年法蒂玛军队征服埃及,在旧城之北建新都「开罗」——意为「胜利之城」。次年动工的爱资哈尔清真寺,后来成为伊斯兰世界延续至今的最古老学府之一。',
+ 'In 969 the Fatimid army took Egypt and founded a new capital north of the old town: al-Qahira, "the Victorious." The al-Azhar mosque, begun the next year, grew into one of the oldest continuously running centers of learning in the Islamic world.'],
+'撒马尔罕|帖木儿帝国': ['帖木儿把都城定在撒马尔罕,每征服一地就把最好的工匠掳回来营建它。比比哈努姆清真寺在他生前建成;他的孙子兀鲁伯后来在城里造了当时最精密的天文台。',
+ 'Timur made Samarkand his capital and shipped home the best craftsmen from every conquest to build it. The Bibi-Khanym mosque rose in his lifetime; his grandson Ulugh Beg later built here the most precise observatory of the age.'],
+'库斯科|印加': ['库斯科在克丘亚语里意近「世界的肚脐」,四方大道从城中广场通向帝国四区。太阳神殿的墙上曾包着金板;萨克萨瓦曼的巨石墙不用灰浆,石缝至今插不进一张纸。',
+ 'Cusco\'s name in Quechua means roughly "the navel of the world"; roads to the empire\'s four quarters set out from its central plaza. The Sun Temple\'s walls were once sheathed in gold, and the dry-fitted megaliths of Sacsayhuaman still leave no room for a sheet of paper.'],
 };
 /* ---------- English dictionary ---------- */
 const EN = {
@@ -7849,7 +7900,9 @@ function gvDetail(ri) {
         (hit.length > 6 ? `<div class="gd-ev" style="color:var(--ink-2)">…${T(`还有 ${hit.length - 6} 条,见文明卡`, `${hit.length - 6} more on the civilization card`)}</div>` : '');
     }
   }
-  return `<div class="gd-pos">${pos}</div>${evs}
+  /* ③ 手写层:有就放最前面,自动层跟在后面当注脚 */
+  const lore = city ? PLACE_LORE[`${city[0]}|${c.n}`] : null;
+  return `${lore ? `<div class="gd-lore">${lore[li]}</div>` : ''}<div class="gd-pos">${pos}</div>${evs}
     <span class="gv-go" data-gci="${h.i}" role="button" tabindex="0">${T('看整个文明 →', 'See the whole civilization →')}</span>`;
 }
 function gvToggle(ri) {
