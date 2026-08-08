@@ -342,10 +342,17 @@ Object.entries(ACHV || {}).forEach(([k, a]) => {
 // 写了 **强调** 就会把星号原样显示给读者——而读者是个 7 岁小孩。这类错在代码里看着
 // 很自然(周围全是带 ** 的注释),在页面上才露馅。v69 因此查出埃塞俄比亚六问里一处既有的。
 // 只查数据表,不查 JS 注释——注释里的 ** 是写给开发者看的,不渲染。
+// 34:同一个词里混进了别的字母表。西里尔/希腊字母本身是合法的(辽的卡片要讲
+// 「俄语 Китай 源自契丹」),但**紧贴着拉丁字母**出现就是输入法或复制粘贴的污染,
+// 会原样显示给读者。v71 因此查出卡霍基亚的「南阿palачi山」——本该是「南阿巴拉契亚山」,
+// 里面混了西里尔的 а(U+430) 与 ч(U+447),肉眼几乎看不出来。
+const MIX = /([A-Za-z][Ͱ-ϿЀ-ӿ])|([Ͱ-ϿЀ-ӿ][A-Za-z])/;
 const mdWalk = (v, path) => {
   if (typeof v === 'string') {
     const i = v.indexOf('**');
     if (i >= 0) P.push(`[数据里残留 markdown] ${path}: …${v.slice(Math.max(0, i - 18), i + 26)}…`);
+    const m = v.match(MIX);
+    if (m) P.push(`[同词里混了别的字母表] ${path}: …${v.slice(Math.max(0, m.index - 18), m.index + 26)}…`);
     return;
   }
   if (Array.isArray(v)) return v.forEach((x, i) => mdWalk(x, `${path}[${i}]`));
