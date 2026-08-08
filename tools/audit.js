@@ -373,6 +373,14 @@ const mdWalk = (v, path) => {
  ['GL', GL], ['EN', EN], ['PEAK', PEAK], ['PLACE', PLACE], ['EVENTS', EVENTS], ['TRACES', TRACES]]
   .forEach(([n, t]) => mdWalk(t, n));
 
+// 试过但没成的一条(v76,记在这里免得下次重来):
+// 「同一双语字段里中英的数字必须一致」——想法出自 v76 的核查(圣索菲亚中文「四十几扇窗」
+// 而英文 forty、印加中文「约三万公里」而英文 40,000)。实现过三版,全站命中依次是
+// 418 → 347 → 308 → 158,而剩下的**仍然全是噪声**:中文写「1090年代」「9世纪30年代末」
+// 「三万」,英文写 the 1090s / the 830s / 30,000 —— 书写习惯的差异与真正写错了的形状
+// 完全相同,正则分不出来。再收窄就要连真错一起漏掉。
+// **结论:这类问题只能靠人核,不要再花时间做成规则。**
+
 if (EN.events && EN.events.length !== EVENTS.length) P.push(`[事件中英数量不等] zh=${EVENTS.length} en=${EN.events.length}`);
 const laneIds = new Set(LANES.map(l => l.id));
 CIVS.forEach(c => { if (!laneIds.has(c.l)) P.push(`[泳道 id 不存在] ${c.n} → ${c.l}`); });
