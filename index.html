@@ -271,14 +271,41 @@ svg.hl .band.hit { opacity: 1; }
 svg.no-ev .evg { display: none; }
 .axhit { cursor: ew-resize; }
 .axhit:hover { fill: var(--wash); }
+/* 时代跳转:同样钉在 chart-card 上。SVG 里本来就画着时代名、点了能跳,但它们随画布
+   横滚跑掉——手机上图有 2300px 宽而屏只有 390px,要点「中古时代」得先滚过去,是个死循环。
+   这一排始终在屏内,一点就到。右边留出 96px 给「全景」按钮,窄屏上可横向滑动不换行
+   (换行会压到图上)。 */
+.eras {
+  position: absolute; left: 0; top: 0; z-index: 3;
+  display: flex; gap: 4px; width: 100%; box-sizing: border-box;
+  padding: 7px 96px 7px 10px; background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+}
+/* 通栏不透明:画布会从这一排底下横滚过去。原先做成窄条 + 渐隐,结果 SVG 里的时代名
+   会在容器外露出半截(截图里出现过一个孤零零的「时代」)——渐隐盖不住容器外面的东西。
+   通栏之后 SVG 里那份时代名就完全被挡住了,所以一并从 SVG 里去掉,只保留交替底色
+   标示时代边界;名字与跳转都归这一排。 */
+.eras::-webkit-scrollbar { display: none; }
+.eras button {
+  font: inherit; font-size: 11px; line-height: 1.7; white-space: nowrap; cursor: pointer;
+  padding: 0 8px; border-radius: 999px; backdrop-filter: blur(2px);
+  color: var(--ink-2); background: var(--surface-82); border: 1px solid var(--border);
+}
+.eras button:hover { color: var(--ink); border-color: var(--muted); }
+.eras button.on { color: var(--surface); background: var(--ink-2); border-color: var(--ink-2); }
 /* 钉在 chart-card 上而不是画进 SVG:SVG 会跟着横向滚动跑掉(实测滚到 x=-79) */
 .axhint {
   position: absolute; left: 12px; top: 50px; z-index: 2;
   font-size: 10.5px; color: var(--muted);
   pointer-events: none; user-select: none; white-space: nowrap;
 }
-/* 触屏:纵向单指仍翻页,浏览器自身的捏合让出来由脚本处理(见「缩放的三种输入」) */
-.scroller { touch-action: pan-y; }
+/* 触屏:单指横拖滚动图、纵向冒泡给页面翻页;两指捏合不含在内,让给脚本处理
+   (见「缩放的三种输入」)。
+   ⚠ 这里**必须同时写 pan-x**:v53 只写了 pan-y,而 pan-y 明确排除 pan-x——
+   于是手机上单指根本拖不动这张 2300px 宽的图,而图上唯一的导航(时代名)本身
+   也在会滚动的画布里,要点它得先滚过去,成了死循环。v80 修。 */
+.scroller { touch-action: pan-x pan-y; }
 .blabel {
   pointer-events: none; font-weight: 600;
   fill: var(--ink); stroke: var(--surface); stroke-width: 3px; paint-order: stroke;
@@ -487,6 +514,7 @@ td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; ma
 <div class="chart-wrap">
   <div class="chart-card">
     <div class="scroller" id="scroller"></div>
+    <div class="eras" id="eraJump"></div>
     <div class="lane-tags" id="laneTags"></div>
     <div class="axhint" id="axHint"></div>
     <button id="zoomOut" hidden>⤺ 全景</button>
@@ -6198,7 +6226,8 @@ function buildChart() {
     if (e.b < VIEW.t0 || e.a > VIEW.t1) return;
     const x0 = Math.max(0, X(Math.max(e.a, VIEW.t0))), x1 = Math.min(INNER_W, X(Math.min(e.b, VIEW.t1)));
     if (i % 2 === 1) svg.push(`<rect x="${x0}" y="0" width="${x1-x0}" height="${H}" fill="var(--wash)"/>`);
-    svg.push(`<text x="${(x0+x1)/2}" y="18" data-era="${i}" style="cursor:pointer" text-anchor="middle" font-size="12" font-weight="600" letter-spacing="2" fill="var(--muted)">${LANG==='zh'?e.n:EN.eras[i]}</text>`);
+    /* 时代名不再画进 SVG:它会从固定的 .eras 条底下滚过去、只露出半截。
+       名字与点击跳转都移到那一条上(v80),这里只保留交替底色标示边界。 */
   });
   for (const t of zoomTicks()) {
     const x = X(t);
@@ -6282,11 +6311,13 @@ function zoomTo(a, b) {
   if (b - a < 40) { const m = (a + b) / 2; a = m - 20; b = m + 20; }
   VIEW = { t0: Math.max(-3500, a), t1: Math.min(2025, b), full: false };
   document.getElementById('zoomOut').hidden = false;
+  if (typeof markEraJump === 'function') markEraJump();
   buildChart(); axHint();
 }
 function zoomReset() {
   VIEW = { t0: -3500, t1: 2025, full: true };
   document.getElementById('zoomOut').hidden = true;
+  if (typeof markEraJump === 'function') markEraJump();
   buildChart(); axHint();
 }
 
@@ -7134,6 +7165,27 @@ scrollerEl.addEventListener('click', e => {
 });
 document.getElementById('zoomOut').addEventListener('click', zoomReset);
 
+/* 时代跳转条。复用 SVG 里时代名已有的行为(zoomTo 该时代区间),只是把入口挪到
+   一个不随横滚跑掉的地方。当前视图落在哪个时代就高亮哪个;全景时不高亮。 */
+const eraJumpEl = document.getElementById('eraJump');
+function renderEraJump() {
+  eraJumpEl.innerHTML = ERAS.map((e, i) =>
+    `<button data-erajump="${i}">${LANG === 'zh' ? e.n : EN.eras[i]}</button>`).join('');
+  markEraJump();
+}
+function markEraJump() {
+  eraJumpEl.querySelectorAll('button').forEach((b, i) => {
+    const e = ERAS[i];
+    b.classList.toggle('on', !VIEW.full && VIEW.t0 === e.a && VIEW.t1 === e.b);
+  });
+}
+eraJumpEl.addEventListener('click', e => {
+  const b = e.target.closest('[data-erajump]');
+  if (!b) return;
+  const er = ERAS[+b.dataset.erajump];
+  zoomTo(er.a, er.b);
+});
+
 /* ---------- 时光穿梭:一条竖线从左扫到右,底部实时报此刻的世界 ----------
    竖线只更新自身的 x,不重建图表(buildChart 每帧跑一次会卡);底部信息带按
    ~8fps 刷新就够了,人眼跟不上更快的文字变化。
@@ -7444,6 +7496,7 @@ function applyLang() {
   traceSel.innerHTML = `<option value="">${T('传播追踪:关', 'Trace: off')}</option>` +
     TRACES.map((tr, i) => `<option value="${i}"${curTrace === i ? ' selected' : ''}>${tr.n[LANG === 'zh' ? 0 : 1]}</option>`).join('');
   renderLanes(); renderChips(); renderTable(); buildChart();
+  renderEraJump();
   document.querySelectorAll('#langSw button').forEach(b => b.classList.toggle('on', b.dataset.l === LANG));
   if (cur && panel.classList.contains('open')) cur.type === 'civ' ? openCiv(cur.obj) : openEvent(cur.obj);
 }
