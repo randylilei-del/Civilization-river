@@ -338,6 +338,23 @@ Object.entries(ACHV || {}).forEach(([k, a]) => {
   });
 });
 
+// 33:数据里不能残留 markdown 强调标记。渲染端是 `<p>${…}</p>` 直插、不处理 markdown,
+// 写了 **强调** 就会把星号原样显示给读者——而读者是个 7 岁小孩。这类错在代码里看着
+// 很自然(周围全是带 ** 的注释),在页面上才露馅。v69 因此查出埃塞俄比亚六问里一处既有的。
+// 只查数据表,不查 JS 注释——注释里的 ** 是写给开发者看的,不渲染。
+const mdWalk = (v, path) => {
+  if (typeof v === 'string') {
+    const i = v.indexOf('**');
+    if (i >= 0) P.push(`[数据里残留 markdown] ${path}: …${v.slice(Math.max(0, i - 18), i + 26)}…`);
+    return;
+  }
+  if (Array.isArray(v)) return v.forEach((x, i) => mdWalk(x, `${path}[${i}]`));
+  if (v && typeof v === 'object') return Object.entries(v).forEach(([k, x]) => mdWalk(x, `${path}.${k}`));
+};
+[['CIVS', CIVS], ['PEOPLE', PEOPLE], ['ACHV', ACHV], ['CHRONO', CHRONO], ['CHRONO_X', CHRONO_X],
+ ['GL', GL], ['EN', EN], ['PEAK', PEAK], ['PLACE', PLACE], ['EVENTS', EVENTS], ['TRACES', TRACES]]
+  .forEach(([n, t]) => mdWalk(t, n));
+
 if (EN.events && EN.events.length !== EVENTS.length) P.push(`[事件中英数量不等] zh=${EVENTS.length} en=${EN.events.length}`);
 const laneIds = new Set(LANES.map(l => l.id));
 CIVS.forEach(c => { if (!laneIds.has(c.l)) P.push(`[泳道 id 不存在] ${c.n} → ${c.l}`); });
