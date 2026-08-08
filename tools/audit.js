@@ -518,6 +518,23 @@ if (PLACE_LORE) {
   });
 }
 
+/* 39. 手写层里出现的年份必须同时出现在中英两侧(v89)。
+ * 三轮核查里反复栽的不是「事实错」而是「中英讲的不是同一件事」:开罗英文多出
+ * continuously、北京元英文多出 ruined、蒲甘中文「上万座」英文只写 thousands、
+ * 平壤中文「两百多年」英文写 two centuries。年份是这类漂移里唯一能机器查的部分,
+ * 先把它焊死;其余仍靠独立核查员。 */
+if (PLACE_LORE) {
+  const years = t => (t.match(/\b\d{3,4}\b/g) || []).filter(y => +y >= 100 && +y <= 2025);
+  Object.entries(PLACE_LORE).forEach(([k, v]) => {
+    if (!Array.isArray(v) || !v[0] || !v[1]) return;
+    const zh = new Set(years(v[0])), en = new Set(years(v[1]));
+    const only = (a, b) => [...a].filter(x => !b.has(x));
+    const zo = only(zh, en), eo = only(en, zh);
+    if (zo.length) P.push(`[PLACE_LORE 年份只在中文出现] ${k}: ${zo.join('、')}`);
+    if (eo.length) P.push(`[PLACE_LORE 年份只在英文出现] ${k}: ${eo.join('、')}`);
+  });
+}
+
 if (EN.events && EN.events.length !== EVENTS.length) P.push(`[事件中英数量不等] zh=${EVENTS.length} en=${EN.events.length}`);
 const laneIds = new Set(LANES.map(l => l.id));
 CIVS.forEach(c => { if (!laneIds.has(c.l)) P.push(`[泳道 id 不存在] ${c.n} → ${c.l}`); });
