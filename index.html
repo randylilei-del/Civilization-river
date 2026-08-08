@@ -381,6 +381,49 @@ a.wk::after { content: '↗'; font-size: .72em; color: var(--muted); margin-left
 .pn:hover, .pn:focus-visible { background: var(--pn-hover); outline: none; }
 
 /* ---------- 人物卡 ---------- */
+/* ---------- 地理视角 ---------- */
+#geoview { position: fixed; inset: 0; z-index: 15; display: flex; flex-direction: column; background: var(--page); }
+#geoview[hidden] { display: none; }
+#geoview .gv-head { display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+  border-bottom: 1px solid var(--border); background: var(--surface); flex: none; }
+#geoview .gv-head b { font-size: 13.5px; font-weight: 600; flex: 1; min-width: 0; }
+#geoview .gv-zoom { display: flex; gap: 4px; flex: none; }
+#geoview .gv-zoom button { font: inherit; font-size: 12px; padding: 3px 9px; border: 1px solid var(--border);
+  border-radius: 99px; background: var(--surface); color: var(--ink-2); cursor: pointer; }
+#geoview .gv-zoom button.on { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+#geoview .gv-x { font: inherit; font-size: 20px; line-height: 1; padding: 2px 9px; border: none;
+  background: none; color: var(--ink-2); cursor: pointer; flex: none; }
+/* 地图区:世界档整图缩放到容器宽,放大档在容器里拖动(touch-action 别忘了 pan-x,v80 的坑) */
+#geoview .gv-map { flex: none; height: 44vh; overflow: auto; background: var(--wash);
+  touch-action: pan-x pan-y; -webkit-overflow-scrolling: touch; position: relative; }
+#geoview .gv-map svg { display: block; cursor: crosshair; }
+#geoview .gv-map .gc-dot { fill: var(--ink-2); stroke: var(--surface); stroke-width: 1; }
+#geoview .gv-map .gc-hit { fill: transparent; cursor: pointer; }
+#geoview .gv-map .gc-on { fill: #c0392b; }
+#geoview .gv-map .gc-lab { font-size: 10px; fill: var(--ink-2); pointer-events: none;
+  paint-order: stroke; stroke: var(--surface); stroke-width: 2.6; }
+#geoview .gv-res { flex: 1; overflow-y: auto; padding: 12px 14px 20px; }
+#geoview .gv-place { font-size: 16px; font-weight: 700; margin: 2px 0 1px; }
+#geoview .gv-sub { font-size: 12px; color: var(--ink-2); margin-bottom: 10px; }
+#geoview .gv-row { display: flex; align-items: center; gap: 9px; padding: 7px 8px; border-radius: 8px;
+  cursor: pointer; border: 1px solid transparent; }
+#geoview .gv-row:hover { background: var(--wash); border-color: var(--border); }
+#geoview .gv-row .d { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+#geoview .gv-row .yr { font-size: 12px; color: var(--ink-2); font-variant-numeric: tabular-nums;
+  width: 108px; flex: none; }
+#geoview .gv-row .nm { font-size: 13.5px; font-weight: 600; flex: none; }
+#geoview .gv-row .core { font-size: 10.5px; color: var(--ink-2); border: 1px solid var(--border);
+  border-radius: 99px; padding: 0 6px; flex: none; }
+/* 每行一根小时间条,位置用全站同一条非线性时间轴,一眼看出这地方哪段热闹哪段安静 */
+#geoview .gv-row .tb { flex: 1; height: 4px; border-radius: 2px; background: var(--wash);
+  position: relative; min-width: 60px; }
+#geoview .gv-row .tb i { position: absolute; top: 0; bottom: 0; border-radius: 2px; }
+#geoview .gv-cap { font-size: 11.5px; color: var(--ink-2); margin-top: 12px; line-height: 1.55; }
+@media (max-width: 640px) {
+  #geoview .gv-head b { font-size: 12px; }
+  #geoview .gv-map { height: 38vh; }
+  #geoview .gv-row .tb { display: none; }  /* 窄屏放不下,年份文字已够 */
+}
 #pcard { position: fixed; inset: 0; z-index: 40; display: flex; align-items: center; justify-content: center; padding: 20px; }
 /* display:flex 会盖掉 [hidden],必须显式写回来——v21 的 playbar 就栽在这上面 */
 #pcard[hidden] { display: none; }
@@ -505,6 +548,7 @@ td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; ma
 
 <div class="controls">
   <button id="playBtn" class="playbtn">▶ 时光穿梭</button>
+  <button id="geoBtn" class="playbtn">🌍 换个地方看</button>
   <div class="chips" id="chips"></div>
   <label class="ctl"><input type="checkbox" id="ck-ev" checked> <span id="evLbl">交流事件</span></label>
   <select id="traceSel"></select>
@@ -525,6 +569,18 @@ td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; ma
 <aside id="panel" aria-label="详情面板"></aside>
 <!-- 人物卡:独立于 #panel 的一层,所以弹出/关闭都不动文明卡的滚动位置 -->
 <div id="pcard" hidden><div class="pc-back"></div><div class="pc-box" role="dialog" aria-modal="true" aria-label="人物"></div></div>
+
+<!-- 地理视角:主图是「同一时间看全世界」,这层是反过来「同一地点看全部时间」。
+     z-index 低于 #panel(20)与 #pcard(40),点结果行开出的文明卡直接盖在上面,关卡即返回。 -->
+<div id="geoview" hidden>
+  <div class="gv-head">
+    <b id="gvTitle">点地图上任意一处,看这里从古到今住过哪些文明</b>
+    <span class="gv-zoom"><button data-z="1" class="on">世界</button><button data-z="2.2">放大</button><button data-z="4">更大</button></span>
+    <button class="gv-x" id="gvClose" aria-label="关闭">×</button>
+  </div>
+  <div class="gv-map" id="gvMap"></div>
+  <div class="gv-res" id="gvRes"></div>
+</div>
 
 <div id="playbar" hidden aria-live="polite">
   <div class="pb-year"><b id="pbYear">—</b><span id="pbEra"></span></div>
@@ -3164,6 +3220,37 @@ const PLACE = {
 '硅谷':['美国加州','California, USA'],
 '圣保罗':['巴西','Brazil','圣保罗','Sao Paulo'], '布宜诺斯艾利斯':['阿根廷','Argentina','布宜诺斯艾利斯','Buenos Aires'],
 };
+/* 地理视角的城市点:[中文名, 英文名, 经度, 纬度]。坐标沿用 v82 扫查时逐点验证过的那批,
+   全部命中 ≥1 条文明版图(audit 规则 37 守着)。挑选标准:历史上重要 + 分布均衡,
+   不是「今日大城市榜」——所以有巨港(三佛齐都城)、巴特那(华氏城)、麦罗埃(库施)、
+   卡霍基亚,而没有深圳。 */
+const GEO_CITY = [
+['西安','Xi\'an',108.94,34.34],['洛阳','Luoyang',112.45,34.62],['北京','Beijing',116.40,39.90],['南京','Nanjing',118.80,32.06],
+['杭州','Hangzhou',120.15,30.27],['开封','Kaifeng',114.31,34.80],['成都','Chengdu',104.07,30.57],['广州','Guangzhou',113.26,23.13],
+['泉州','Quanzhou',118.59,24.87],['敦煌','Dunhuang',94.66,40.14],['喀什','Kashgar',75.99,39.47],['拉萨','Lhasa',91.14,29.65],
+['乌兰巴托','Ulaanbaatar',106.92,47.92],['哈拉和林','Karakorum',102.83,47.20],['首尔','Seoul',126.98,37.57],['平壤','Pyongyang',125.75,39.03],
+['东京','Tokyo',139.69,35.69],['京都','Kyoto',135.77,35.01],['台北','Taipei',121.56,25.03],['香港','Hong Kong',114.17,22.32],
+['河内','Hanoi',105.85,21.03],['吴哥','Angkor',103.87,13.41],['曼谷','Bangkok',100.50,13.76],['蒲甘','Bagan',94.86,21.17],
+['马六甲','Malacca',102.25,2.19],['雅加达','Jakarta',106.85,-6.21],['马尼拉','Manila',120.98,14.60],['巨港','Palembang',104.76,-2.99],
+['德里','Delhi',77.21,28.61],['孟买','Mumbai',72.88,19.08],['加尔各答','Kolkata',88.36,22.57],['瓦拉纳西','Varanasi',83.01,25.32],
+['拉合尔','Lahore',74.34,31.55],['科伦坡','Colombo',79.86,6.93],['巴特那','Patna',85.14,25.61],['汉皮','Hampi',76.46,15.34],
+['撒马尔罕','Samarkand',66.96,39.65],['布哈拉','Bukhara',64.42,39.77],['塔什干','Tashkent',69.24,41.30],['阿拉木图','Almaty',76.89,43.24],
+['巴格达','Baghdad',44.36,33.31],['大马士革','Damascus',36.29,33.51],['耶路撒冷','Jerusalem',35.21,31.77],['麦加','Mecca',39.83,21.42],
+['伊斯坦布尔','Istanbul',28.98,41.01],['开罗','Cairo',31.24,30.04],['亚历山大','Alexandria',29.92,31.20],['德黑兰','Tehran',51.39,35.69],
+['伊斯法罕','Isfahan',51.68,32.65],['巴比伦','Babylon',44.42,32.54],['安卡拉','Ankara',32.85,39.93],['突尼斯','Tunis',10.32,36.85],
+['非斯','Fez',-5.00,34.03],['喀布尔','Kabul',69.17,34.53],
+['雅典','Athens',23.73,37.98],['罗马','Rome',12.50,41.90],['巴黎','Paris',2.35,48.86],['伦敦','London',-0.13,51.51],
+['马德里','Madrid',-3.70,40.42],['科尔多瓦','Cordoba',-4.78,37.89],['里斯本','Lisbon',-9.14,38.72],['柏林','Berlin',13.40,52.52],
+['维也纳','Vienna',16.37,48.21],['布拉格','Prague',14.42,50.09],['华沙','Warsaw',21.01,52.23],['斯德哥尔摩','Stockholm',18.07,59.33],
+['莫斯科','Moscow',37.62,55.76],['基辅','Kyiv',30.52,50.45],['阿姆斯特丹','Amsterdam',4.90,52.37],['威尼斯','Venice',12.34,45.44],
+['佛罗伦萨','Florence',11.26,43.77],
+['廷巴克图','Timbuktu',-3.01,16.77],['阿克苏姆','Aksum',38.72,14.13],['大津巴布韦','Great Zimbabwe',30.93,-20.27],['蒙巴萨','Mombasa',39.67,-4.04],
+['拉各斯','Lagos',3.38,6.52],['开普敦','Cape Town',18.42,-33.92],['麦罗埃','Meroe',33.72,16.94],
+['墨西哥城','Mexico City',-99.13,19.43],['奇琴伊察','Chichen Itza',-88.57,20.68],['蒂卡尔','Tikal',-89.62,17.22],['库斯科','Cusco',-71.97,-13.53],
+['利马','Lima',-77.04,-12.05],['波哥大','Bogota',-74.07,4.71],['布宜诺斯艾利斯','Buenos Aires',-58.38,-34.60],['里约热内卢','Rio de Janeiro',-43.17,-22.91],
+['圣地亚哥','Santiago',-70.65,-33.45],['纽约','New York',-74.01,40.71],['洛杉矶','Los Angeles',-118.24,34.05],['哈瓦那','Havana',-82.38,23.13],
+['卡霍基亚','Cahokia',-90.06,38.66],
+];
 /* ---------- English dictionary ---------- */
 const EN = {
 lanes: { eu:'Europe', me:'Middle East & N. Africa', st:'Steppe & C. Asia', sa:'South Asia', se:'Southeast Asia', ea:'East Asia', af:'Sub-Saharan Africa', am:'Americas' },
@@ -7478,6 +7565,129 @@ function renderTable() {
 renderTable();
 
 /* ---------- 语言切换 ---------- */
+/* ---------- 地理视角:同一地点看全部时间 ----------
+   主图回答「某个年代,全世界都有谁」;这层反过来回答「某个地方,从古到今住过谁」。
+   数据零新增:全部由现有 GEO 版图做点在多边形内判定得出,所以 v82 那轮版图修正
+   是这个功能的前置条件——边界画歪,这里就会当着孩子的面漏掉泉州的宋元。 */
+const gv = document.getElementById('geoview'), gvMap = document.getElementById('gvMap'), gvRes = document.getElementById('gvRes');
+const GV = { zoom: 1, last: null };   // last = { lon, lat, ci } ci=GEO_CITY 下标或 -1
+const gvPip = (x, y, poly) => {
+  let ins = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const [xi, yi] = poly[i], [xj, yj] = poly[j];
+    if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) ins = !ins;
+  }
+  return ins;
+};
+/* 时间条位置用与主图同一条非线性轴,但不能直接调 X():主图缩放时 X 变成线性局部投影,
+   这里要的始终是全景投影,所以抄 BP 折线单独算 */
+const gvX = y => {
+  for (let i = 0; i < BP.length - 1; i++) {
+    const [y0, f0] = BP[i], [y1, f1] = BP[i + 1];
+    if (y <= y1 || i === BP.length - 2) return f0 + (f1 - f0) * (y - y0) / (y1 - y0);
+  }
+};
+const GV_LAT0 = -56, GV_LAT1 = 78;   // 裁掉南极,和文明卡小地图同一口径
+function renderGvMap() {
+  /* 每次换档整张重画,坐标全用像素:字号与点径不随缩放走样,点击换算也只剩一次除法 */
+  const W = Math.round(Math.max(320, gvMap.clientWidth) * GV.zoom);
+  const Hm = W * (GV_LAT1 - GV_LAT0) / 360;
+  const sx = lon => (lon + 180) / 360 * W, sy = lat => (GV_LAT1 - lat) / (GV_LAT1 - GV_LAT0) * Hm;
+  const path = poly => 'M' + poly.map(p => sx(p[0]).toFixed(1) + ',' + sy(p[1]).toFixed(1)).join('L') + 'Z';
+  let s = `<svg width="${W}" height="${Hm.toFixed(0)}" aria-label="${T('世界地图', 'World map')}">`;
+  for (const r of LAND) s += `<path d="${path(r)}" fill="var(--geo-land)"/>`;
+  GEO_CITY.forEach(([zh, en, lon, lat], i) => {
+    const x = sx(lon).toFixed(1), y = sy(lat).toFixed(1);
+    const on = GV.last && GV.last.ci === i;
+    s += `<circle class="gc-dot${on ? ' gc-on' : ''}" data-gd="${i}" cx="${x}" cy="${y}" r="2.6"/>`;
+    if (GV.zoom > 1.5) s += `<text class="gc-lab" x="${+x + 4}" y="${+y - 3}">${LANG === 'zh' ? zh : en}</text>`;
+    s += `<circle class="gc-hit" data-gc="${i}" cx="${x}" cy="${y}" r="10"><title>${LANG === 'zh' ? zh : en}</title></circle>`;
+  });
+  /* 自由点击的落点标记,平时藏在画布外 */
+  const mk = GV.last && GV.last.ci < 0 ? [sx(GV.last.lon), sy(GV.last.lat)] : [-99, -99];
+  s += `<circle id="gvMark" cx="${mk[0]}" cy="${mk[1]}" r="4.5" fill="none" stroke="#c0392b" stroke-width="2"/></svg>`;
+  gvMap.innerHTML = s;
+  /* 换档后把上次的落点(没有就是长安)滚回视野中央 */
+  const cx = GV.last ? sx(GV.last.lon) : sx(108.9), cy = GV.last ? sy(GV.last.lat) : sy(34.3);
+  gvMap.scrollLeft = cx - gvMap.clientWidth / 2;
+  gvMap.scrollTop = cy - gvMap.clientHeight / 2;
+}
+function gvQuery(lon, lat, ci) {
+  GV.last = { lon, lat, ci };
+  const hits = CIVS.map((c, i) => {
+    const g = GEO[c.n];
+    if (!g || !g.p || !g.p.some(poly => gvPip(lon, lat, poly))) return null;
+    const core = g.c && Math.hypot(g.c[0] - lon, g.c[1] - lat) <= 8;
+    return { c, i, a: c.k[0][0], b: c.k[c.k.length - 1][0], core };
+  }).filter(Boolean).sort((p, q) => p.a - q.a || p.b - q.b);
+  const city = ci >= 0 ? GEO_CITY[ci] : null;
+  const name = city ? (LANG === 'zh' ? city[0] : city[1])
+    : `${Math.abs(lat).toFixed(1)}°${lat >= 0 ? 'N' : 'S'} · ${Math.abs(lon).toFixed(1)}°${lon >= 0 ? 'E' : 'W'}`;
+  const rows = hits.map(h =>
+    `<div class="gv-row" data-gci="${h.i}" role="button" tabindex="0">
+      <span class="yr">${fmtY(h.a)} — ${fmtY(h.b)}</span><span class="d" style="background:${fill(h.c)}"></span>
+      <span class="nm">${cN(h.c)}</span>${h.core ? `<span class="core">${T('核心地带', 'heartland')}</span>` : ''}
+      <span class="tb"><i style="left:${(gvX(h.a) * 100).toFixed(1)}%;width:${Math.max(1.2, (gvX(h.b) - gvX(h.a)) * 100).toFixed(1)}%;background:${fill(h.c)}"></i></span>
+    </div>`).join('');
+  gvRes.innerHTML = `<div class="gv-place">${name}</div>
+    <div class="gv-sub">${hits.length
+      ? T(`从古到今,${hits.length} 条文明的版图先后覆盖过这里`, `${hits.length} civilizations have covered this spot over time`)
+      : T('这里还没有收录的文明版图——换个地方点点看', 'No recorded civilization here yet — try another spot')}</div>
+    ${rows}
+    <div class="gv-cap">${T('版图为鼎盛期示意、边界不精确;年代是整条文明的起止,不是它待在这里的年份。点任意一行看这条文明的详情。',
+      'Territories are peak-era sketches with imprecise borders; years are each civilization\'s full span, not its time at this spot. Tap a row for details.')}</div>`;
+  gvRes.scrollTop = 0;
+  /* 同步地图上的选中点 */
+  gvMap.querySelectorAll('.gc-on').forEach(d => d.classList.remove('gc-on'));
+  if (ci >= 0) { const d = gvMap.querySelector(`.gc-dot[data-gd="${ci}"]`); if (d) d.classList.add('gc-on'); }
+  const mk = gvMap.querySelector('#gvMark');
+  if (mk) {
+    const svg = gvMap.querySelector('svg'), W = +svg.getAttribute('width'), Hm = +svg.getAttribute('height');
+    if (ci < 0) { mk.setAttribute('cx', (lon + 180) / 360 * W); mk.setAttribute('cy', (GV_LAT1 - lat) / (GV_LAT1 - GV_LAT0) * Hm); }
+    else { mk.setAttribute('cx', -99); mk.setAttribute('cy', -99); }
+  }
+}
+function gvHeadTexts() {
+  document.getElementById('gvTitle').textContent = T('点地图上任意一处,看这里从古到今住过哪些文明', 'Tap anywhere on the map to see who has lived there through history');
+  const zb = gv.querySelectorAll('.gv-zoom button');
+  zb[0].textContent = T('世界', 'World'); zb[1].textContent = T('放大', 'Zoom'); zb[2].textContent = T('更大', 'More');
+}
+document.getElementById('geoBtn').addEventListener('click', () => {
+  gv.hidden = false;
+  gvHeadTexts();
+  renderGvMap();          // clientWidth 藏着时是 0,必须先显后画
+  if (GV.last) gvQuery(GV.last.lon, GV.last.lat, GV.last.ci);
+  else gvQuery(GEO_CITY[0][2], GEO_CITY[0][3], 0);   // 默认西安:全站序列最长的地方,开门先见示范
+});
+document.getElementById('gvClose').addEventListener('click', () => { gv.hidden = true; });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !gv.hidden && !panel.classList.contains('open') && pcard.hidden) gv.hidden = true;
+});
+gv.querySelector('.gv-zoom').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  GV.zoom = +b.dataset.z;
+  gv.querySelectorAll('.gv-zoom button').forEach(x => x.classList.toggle('on', x === b));
+  renderGvMap();
+});
+gvMap.addEventListener('click', e => {
+  const hit = e.target.closest && e.target.closest('.gc-hit');
+  if (hit) { const i = +hit.dataset.gc; gvQuery(GEO_CITY[i][2], GEO_CITY[i][3], i); return; }
+  const svg = gvMap.querySelector('svg'); if (!svg || !svg.contains(e.target)) return;
+  const r = svg.getBoundingClientRect();
+  const lon = (e.clientX - r.left) / r.width * 360 - 180;
+  const lat = GV_LAT1 - (e.clientY - r.top) / r.height * (GV_LAT1 - GV_LAT0);
+  gvQuery(+lon.toFixed(2), +lat.toFixed(2), -1);
+});
+gvRes.addEventListener('click', e => {
+  const row = e.target.closest && e.target.closest('[data-gci]');
+  if (row) { openCiv(CIVS[+row.dataset.gci]); panel.scrollTop = 0; }
+});
+gvRes.addEventListener('keydown', e => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const row = e.target.closest && e.target.closest('[data-gci]');
+  if (row) { e.preventDefault(); openCiv(CIVS[+row.dataset.gci]); panel.scrollTop = 0; }
+});
+
 function applyLang() {
   document.documentElement.lang = LANG === 'zh' ? 'zh-CN' : 'en';
   document.getElementById('h1T').textContent = T('文明长河', 'A River of Civilizations');
@@ -7491,6 +7701,8 @@ function applyLang() {
   document.getElementById('zoomOut').textContent = T('⤺ 全景', '⤺ Full view');
   axHint();
   document.getElementById('playBtn').textContent = PB.on ? T('⏸ 暂停', '⏸ Pause') : T('▶ 时光穿梭', '▶ Time travel');
+  document.getElementById('geoBtn').textContent = T('🌍 换个地方看', '🌍 Pick a place');
+  if (!gv.hidden) { gvHeadTexts(); renderGvMap(); if (GV.last) gvQuery(GV.last.lon, GV.last.lat, GV.last.ci); }
   document.getElementById('pbNowLab').textContent = T('此刻在场', 'On stage now');
   document.getElementById('pbFeedLab').textContent = T('最近发生', 'Recently');
   traceSel.innerHTML = `<option value="">${T('传播追踪:关', 'Trace: off')}</option>` +

@@ -29,12 +29,12 @@ const body = [script.slice(start, end), script.slice(achvAt, achvEnd)]
 
 const ctx = {};
 vm.createContext(ctx);
-const PICK = '({LANES,SPHERES,CIVS,EVENTS,GEO,CHRONO,GL,CHRONO_X,EN,TRACES,ERAS,PLACE,VIDEO,PEOPLE,PGLYPH,PGNAME,PEAK,ACHV,AGLYPH})';
+const PICK = '({LANES,SPHERES,CIVS,EVENTS,GEO,CHRONO,GL,CHRONO_X,EN,TRACES,ERAS,PLACE,VIDEO,PEOPLE,PGLYPH,PGNAME,PEAK,ACHV,AGLYPH,GEO_CITY})';
 let D;
 try { vm.runInContext(body, ctx); D = vm.runInContext(PICK, ctx); } catch (e) {
   console.error('数据段解析失败:', e.message); process.exit(1);
 }
-const { LANES, CIVS, EVENTS, GEO, CHRONO, GL, CHRONO_X, EN, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME, PEAK, ACHV, AGLYPH } = D;
+const { LANES, CIVS, EVENTS, GEO, CHRONO, GL, CHRONO_X, EN, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME, PEAK, ACHV, AGLYPH, GEO_CITY } = D;
 
 const P = [];
 const KINDS = ['econ', 'art', 'tech', 'thought'];
@@ -481,6 +481,23 @@ GEO_CITIES.forEach(([cn, x, y, floor]) => {
   if (hit.length < floor)
     P.push(`[版图覆盖跌破基线] ${cn}: 现命中 ${hit.length} 个文明,基线 ${floor}${hit.length ? '(现:' + hit.map(h => h[0]).join('、') + ')' : ''}`);
 });
+
+/* 37. 地理视角的城市点(GEO_CITY,v83)——地图上每个可点的城市必须真的能点出东西。
+ * 与规则 36 的基线表不同,GEO_CITY 是渲染进页面的交互数据:命中 0 条 = 孩子点了
+ * 一个白给的点。另查:中文名唯一(选中态按名高亮)、英文名非空、坐标在显示范围内
+ * (纬度显示范围 [-56,78],出界的点画在画布外,永远点不到)。 */
+if (GEO_CITY) {
+  const seen = new Set();
+  GEO_CITY.forEach(([zh, en, lon, lat]) => {
+    if (seen.has(zh)) P.push(`[GEO_CITY 重名] ${zh}`);
+    seen.add(zh);
+    if (!en) P.push(`[GEO_CITY 缺英文名] ${zh}`);
+    if (lon < -180 || lon > 180 || lat < -56 || lat > 78)
+      P.push(`[GEO_CITY 坐标出显示范围] ${zh}: [${lon},${lat}](纬度显示范围 -56~78,出界的点画在画布外)`);
+    if (!Object.values(GEO).some(g => g.p && g.p.some(poly => pip(lon, lat, poly))))
+      P.push(`[GEO_CITY 点不出任何文明] ${zh}: [${lon},${lat}] 一条版图都不命中,地图上是个白给的点`);
+  });
+}
 
 if (EN.events && EN.events.length !== EVENTS.length) P.push(`[事件中英数量不等] zh=${EVENTS.length} en=${EN.events.length}`);
 const laneIds = new Set(LANES.map(l => l.id));
