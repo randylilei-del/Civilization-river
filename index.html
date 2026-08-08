@@ -6329,7 +6329,7 @@ const ACHV = {
      ['共和后期随着对外扩张发展出「万民法」——前242年起专设一名裁判官处理罗马人与外邦人之间的诉讼,逐渐提炼出不依赖身份的通用规则','As Rome expanded in the late Republic a law of nations grew up — from 242 BC a praetor was appointed specifically for suits between Romans and foreigners, and from it came general rules that did not depend on who you were'],
      ['528年查士丁尼下令编纂,529年《法典》颁行,533年《学说汇纂》与《法学阶梯》完成,千年积累的法条、判例与法学家意见被整理成一部《民法大全》','Justinian ordered the compilation in 528; the Code was issued in 529 and the Digest and Institutes completed in 533, gathering a thousand years of statutes, cases and jurists\' opinions into a single body of civil law']],
   s:['11世纪《民法大全》在意大利被重新发现,博洛尼亚大学以研究它起家,此后成为欧洲大陆法系的共同底本;今天大陆法系国家的民法结构、许多术语与原则仍可追到那里。「法律面前人人平等」「无罪推定」这类说法的来源比它复杂得多,但罗马法是把规则从习惯与个人裁断中剥离出来、写成条文并公开的最早尝试之一。','The compilation was rediscovered in Italy in the eleventh century, the University of Bologna grew up around studying it, and it became the common foundation of the civil-law tradition on the continent; the structure of civil codes today, and many of their terms and principles, still trace back to it. Ideas like equality before the law and the presumption of innocence have more tangled origins than this, but Roman law is among the earliest attempts to lift rules out of custom and personal judgment, write them down, and make them public.'] },
-'司母戊鼎': { g:'obj', c:'商', y:[-1250,-1190], n:['司母戊鼎(后母戊鼎)','The Simuwu ding'],
+'司母戊鼎': { g:'obj', c:'商', y:[-1200], ca:1, yk:'m', n:['司母戊鼎(后母戊鼎)','The Simuwu ding'],
   t:['八百三十二公斤的一口大方鼎,是现存最大的先秦青铜器——而它是用来盛祭品的。','A rectangular cauldron weighing 832 kilograms, the largest surviving pre-Qin bronze — and it was made to hold an offering.'],
   a:[['1939年出土于河南安阳,当时为避免被日军掠走而重新埋回地下,抗战胜利后才起出','Excavated at Anyang in Henan in 1939 and reburied to keep it from being seized during the war, it was lifted again only after 1945'],
      ['用数十块陶范拼合一次浇铸,需要同时熔化一吨以上的铜液——这本身就是一次大规模的组织行动','Cast in one pour from dozens of assembled clay mould sections, which meant melting more than a tonne of metal at once — an act of organisation as much as of craft'],
@@ -6884,7 +6884,15 @@ function openAchv(key) {
   const a = ACHV[key]; if (!a) return;
   const civ = CIVS.find(c => c.n === a.c);
   const li = LANG === 'zh' ? 0 : 1;
-  const meta = `${civ ? cN(civ) : a.c} · ${AGNAME[a.g][li]}` + (a.y ? ` · ${fmtY(a.y[0])}—${fmtY(a.y[1])}` : '');
+  /* y = 这东西起作用的年代。多数是区间(科举 587—1905、造纸 105—1400);只考订得出
+     一个时点的给单值,yk='m' 表示那个时点是「铸造/制成」而不是一段存续,ca=年代为约值。
+     词汇与人物卡的 yk/ca 同一套。**别把断代的不确定范围写成区间**——那会被读成
+     「这东西只存在了六十年」,司母戊鼎原先就是这么错的。 */
+  const ayl = a.yk === 'm' ? T('铸于 ', 'cast ') : '';
+  const ys = a.y
+    ? ` · ${ayl}${a.ca ? T('约', 'c. ') : ''}${fmtY(a.y[0])}${a.y.length > 1 ? '—' + fmtY(a.y[1]) : ''}`
+    : '';
+  const meta = `${civ ? cN(civ) : a.c} · ${AGNAME[a.g][li]}${ys}`;
   pcBox.style.setProperty('--pc-col', civ ? fill(civ) : 'var(--ink-2)');
   pcBox.innerHTML = `
     <div class="pc-head"><span class="pc-g">${AGLYPH[a.g]}</span>

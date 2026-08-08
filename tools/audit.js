@@ -299,7 +299,17 @@ Object.entries(ACHV || {}).forEach(([k, a]) => {
   else a.a.forEach((x, i) => {
     if (!Array.isArray(x) || x.length !== 2) P.push(`[成就卡 a 条目非中英两项] ${k}.a[${i}]`);
   });
-  if (a.y && (a.y.length !== 2 || !(a.y[0] <= a.y[1]))) P.push(`[成就卡 y 区间非法] ${k}: [${a.y}]`);
+  // y 允许两种写法:[起,讫] 区间,或只考订得出一个时点时的单值 [年]。
+  // yk='m'(铸造/制成)与 ca(约值)沿用人物卡的词汇,且只在有 y 时才有意义。
+  if (a.y) {
+    if (!Array.isArray(a.y) || a.y.length < 1 || a.y.length > 2 || a.y.some(v => typeof v !== 'number'))
+      P.push(`[成就卡 y 写法非法] ${k}: [${a.y}](只允许 [起,讫] 或单值 [年])`);
+    else if (a.y.length === 2 && !(a.y[0] <= a.y[1]))
+      P.push(`[成就卡 y 区间倒置] ${k}: [${a.y}]`);
+  } else if (a.yk || a.ca) P.push(`[成就卡有 yk/ca 却无 y] ${k}`);
+  if (a.yk && a.yk !== 'm') P.push(`[成就卡 yk 取值非法] ${k}: yk=${a.yk}(目前只有 'm')`);
+  if (a.yk === 'm' && a.y && a.y.length !== 1)
+    P.push(`[成就卡 yk='m' 却给了区间] ${k}: [${a.y}]——「铸于」是一个时点,断代不确定要用 ca 而不是拉成区间`);
 
   const civ = civByName.get(a.c);
   if (!civ) { P.push(`[成就卡所属文明不存在] ${k} → ${a.c}`); return; }
@@ -315,11 +325,16 @@ Object.entries(ACHV || {}).forEach(([k, a]) => {
   if (!a.y) return;
   // 「科举制」→「科举」、「造纸术」→「造纸」:大事记里常用不带后缀的写法
   const alt = /[制术]$/.test(k) && k.length > 2 ? k.slice(0, -1) : null;
+  // 单值 y 就拿它自己当区间;标了 ca(约值)的年代本身是模糊的,跟大事记逐年比对没有意义,
+  // 给 ±100 年的余量——只用来抓「差了几百年」那种真错,不抓考订上的小出入。
+  const [lo, hi] = a.y.length === 2 ? a.y : [a.y[0], a.y[0]];
+  const tol = a.ca ? 100 : 0;
+  const shown = a.y.length === 2 ? `${a.y[0]}—${a.y[1]}` : `${a.ca ? '约' : ''}${a.y[0]}`;
   [...(CHRONO[a.c] || []), ...(CHRONO_X[a.c] || [])].forEach(r => {
     const txt = flatTxt(r.slice(1));
     if (!txt.includes(k) && !(alt && txt.includes(alt))) return;
-    if (r[0] < a.y[0] || r[0] > a.y[1])
-      P.push(`[成就卡年份与大事记不一致] ${k}: 卡片 ${a.y[0]}—${a.y[1]},而「${a.c}」大事记里同名事件在 ${r[0]}(${flatTxt(r[1])})`);
+    if (r[0] < lo - tol || r[0] > hi + tol)
+      P.push(`[成就卡年份与大事记不一致] ${k}: 卡片 ${shown},而「${a.c}」大事记里同名事件在 ${r[0]}(${flatTxt(r[1])})`);
   });
 });
 
