@@ -384,6 +384,25 @@ const mdWalk = (v, path) => {
 // 完全相同,正则分不出来。再收窄就要连真错一起漏掉。
 // **结论:这类问题只能靠人核,不要再花时间做成规则。**
 
+// 35:核心点必须真的落在多边形**内部**,而不只是外接框里。规则 30 查的是外接框,
+// 对细长或凹形的版图完全无效——v81 用点在多边形内判定扫了一遍,查出 6 条:
+// 大英(伦敦在环外 0.4°)、迦太基、南宋(临安在东界外 0.2°)、日本(东京落在细带子外)、
+// 印加(**库斯科**在东界外 0.19°)、瓦里·蒂瓦纳科(核心点正好压在顶点上)。
+// 这些在卡片地图上就是「圆点飘在色块外面」,肉眼看小图不一定发现。
+const pip = (x, y, poly) => {
+  let c = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const [xi, yi] = poly[i], [xj, yj] = poly[j];
+    if (((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi)) c = !c;
+  }
+  return c;
+};
+Object.entries(GEO).forEach(([n, g]) => {
+  if (!g.c || !g.p) return;
+  if (!g.p.some(poly => pip(g.c[0], g.c[1], poly)))
+    P.push(`[GEO 核心点不在多边形内] ${n}: [${g.c}] 落在自己的版图之外(外接框查不出这个)`);
+});
+
 if (EN.events && EN.events.length !== EVENTS.length) P.push(`[事件中英数量不等] zh=${EVENTS.length} en=${EN.events.length}`);
 const laneIds = new Set(LANES.map(l => l.id));
 CIVS.forEach(c => { if (!laneIds.has(c.l)) P.push(`[泳道 id 不存在] ${c.n} → ${c.l}`); });
