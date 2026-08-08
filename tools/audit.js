@@ -736,6 +736,28 @@ if (PLACE_LORE) {
  * (同 audit 里那条被废弃的「中英数字一致」,以及规则 40 里被删掉的维也纳哨兵。)
  */
 
+/* 41. 英文词漏进中文串(v94)。
+ * v94 写成都卡时手滑打出「次年唐玄宗west 奔蜀」,靠肉眼才发现——规则 34 只查
+ * 「汉字/拉丁 ↔ 西里尔/希腊」,查不到「汉字 ↔ 拉丁」。
+ * 裸的「汉字紧贴拉丁字母」会误报 9 处合法内容(线形文字A/B、IT服务业、T型车、
+ * 阿Q正传),信噪比 9:1 不能用;收窄到**连续 ≥3 个字母**后只剩 OPEC 一处,
+ * 白名单放行即可,而 west 这类真错(4 个字母)照样命中。 */
+const CJK_LAT = /[一-鿿][A-Za-z]{3,}|[A-Za-z]{3,}[一-鿿]/;
+const CJK_LAT_OK = /OPEC|GDP|WTO|GNP/;
+{
+  const walk = (v, path) => {
+    if (typeof v === 'string') {
+      const i = v.search(CJK_LAT);
+      if (i >= 0 && !CJK_LAT_OK.test(v.slice(Math.max(0, i - 2), i + 8)))
+        P.push(`[英文词贴着汉字] ${path}: …${v.slice(Math.max(0, i - 16), i + 24)}…`);
+    } else if (Array.isArray(v)) v.forEach(x => walk(x, path));
+    else if (v && typeof v === 'object') Object.entries(v).forEach(([k2, x]) => walk(x, path + '.' + k2));
+  };
+  walk(CIVS, 'CIVS'); walk(CHRONO, 'CHRONO'); walk(CHRONO_X, 'CHRONO_X');
+  walk(PEOPLE, 'PEOPLE'); walk(ACHV, 'ACHV'); walk(GL, 'GL');
+  if (typeof PLACE_LORE !== 'undefined') walk(PLACE_LORE, 'PLACE_LORE');
+}
+
 const SETTLED = [
   /* 试过并去掉的一条:「1683 维也纳解围必须写联军」。
      它会对**正确的文本**报警——索别斯基确实是联军统帅,波兰卡写「索别斯基率军解围」
