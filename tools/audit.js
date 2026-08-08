@@ -330,9 +330,20 @@ Object.entries(ACHV || {}).forEach(([k, a]) => {
   const [lo, hi] = a.y.length === 2 ? a.y : [a.y[0], a.y[0]];
   const tol = a.ca ? 100 : 0;
   const shown = a.y.length === 2 ? `${a.y[0]}—${a.y[1]}` : `${a.ca ? '约' : ''}${a.y[0]}`;
+  // 「X的Y」说明这条大事记讲的是 Y、只是拿 X 作参照,不是在给 X 断代 ——
+  // 高棉 1060 年那条讲巴普昂寺、描述写「吴哥窟的预演」,按原来的宽匹配会误报。
+  // 反过来「科举制发端」里 X 是主语,那才是真正要查的情形(v67 就是靠它抓到 605/587)。
+  const named = (txt, key) => {
+    let i = txt.indexOf(key);
+    while (i >= 0) {
+      if (txt[i + key.length] !== '的') return true;   // 不是「X的…」,算作在给 X 断代
+      i = txt.indexOf(key, i + 1);
+    }
+    return false;
+  };
   [...(CHRONO[a.c] || []), ...(CHRONO_X[a.c] || [])].forEach(r => {
     const txt = flatTxt(r.slice(1));
-    if (!txt.includes(k) && !(alt && txt.includes(alt))) return;
+    if (!named(txt, k) && !(alt && named(txt, alt))) return;
     if (r[0] < lo - tol || r[0] > hi + tol)
       P.push(`[成就卡年份与大事记不一致] ${k}: 卡片 ${shown},而「${a.c}」大事记里同名事件在 ${r[0]}(${flatTxt(r[1])})`);
   });
