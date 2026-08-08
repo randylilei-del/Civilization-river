@@ -18,16 +18,23 @@ const tracesAt = script.indexOf('const TRACES');
 if (start < 0 || tracesAt < 0) { console.error('抽取失败:找不到 LANES 或 TRACES 声明'); process.exit(1); }
 const after = script.slice(tracesAt);
 const end = tracesAt + after.indexOf('\n];') + 3;
-const body = script.slice(start, end).split('\n').filter(l => !l.startsWith('const LAND')).join('\n');
+
+// AGLYPH/AGNAME/ACHV 声明在 TRACES 之后,落在上面那段之外,单独再抽一段拼上。
+const achvAt = script.indexOf('const AGLYPH');
+if (achvAt < 0) { console.error('抽取失败:找不到 AGLYPH 声明'); process.exit(1); }
+const achvEnd = achvAt + script.slice(achvAt).indexOf('\n};') + 3;
+
+const body = [script.slice(start, end), script.slice(achvAt, achvEnd)]
+  .join('\n').split('\n').filter(l => !l.startsWith('const LAND')).join('\n');
 
 const ctx = {};
 vm.createContext(ctx);
-const PICK = '({LANES,SPHERES,CIVS,EVENTS,GEO,CHRONO,GL,CHRONO_X,EN,TRACES,ERAS,PLACE,VIDEO,PEOPLE,PGLYPH,PGNAME,PEAK})';
+const PICK = '({LANES,SPHERES,CIVS,EVENTS,GEO,CHRONO,GL,CHRONO_X,EN,TRACES,ERAS,PLACE,VIDEO,PEOPLE,PGLYPH,PGNAME,PEAK,ACHV,AGLYPH})';
 let D;
 try { vm.runInContext(body, ctx); D = vm.runInContext(PICK, ctx); } catch (e) {
   console.error('数据段解析失败:', e.message); process.exit(1);
 }
-const { LANES, CIVS, EVENTS, GEO, CHRONO, GL, CHRONO_X, EN, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME, PEAK } = D;
+const { LANES, CIVS, EVENTS, GEO, CHRONO, GL, CHRONO_X, EN, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME, PEAK, ACHV, AGLYPH } = D;
 
 const P = [];
 const KINDS = ['econ', 'art', 'tech', 'thought'];
@@ -273,6 +280,47 @@ Object.entries(GEO).forEach(([n, g]) => {
   }
   if (g.c[0] < mnx - 1 || g.c[0] > mxx + 1 || g.c[1] < mny - 1 || g.c[1] > mxy + 1)
     P.push(`[GEO 核心点在版图外] ${n}: 中心 [${g.c}] 不在 [${mnx},${mny}]~[${mxx},${mxy}] 内`);
+});
+
+// 31:成就卡(ACHV)结构 + 可达性。渲染端把文明 f['成就'] 按 NSPLIT 拆开、去掉括号后
+// 与 ACHV 的键做**精确匹配**,匹配不上就只是一段纯文本——卡片永远点不开,而页面不报
+// 任何错。按概念命名(写「科举」而站里原文是「科举制」)就会踩这个,上一轮四张里中了两张。
+const NSPLIT_A = /[、,;；]/;
+const stripParenA = s => s.replace(/（[^）]*）|\([^)]*\)/g, '').trim();
+const civByName = new Map(CIVS.map(c => [c.n, c]));
+const achvWords = c => ((c.f && c.f['成就']) || '').split(NSPLIT_A).map(stripParenA).filter(Boolean);
+
+Object.entries(ACHV || {}).forEach(([k, a]) => {
+  if (!AGLYPH[a.g]) P.push(`[成就卡类别不存在] ${k}: g=${a.g}`);
+  ['n', 't', 's'].forEach(f => {
+    if (!Array.isArray(a[f]) || a[f].length !== 2) P.push(`[成就卡字段非中英两项] ${k}.${f}`);
+  });
+  if (!Array.isArray(a.a) || !a.a.length) P.push(`[成就卡缺 a 条目] ${k}`);
+  else a.a.forEach((x, i) => {
+    if (!Array.isArray(x) || x.length !== 2) P.push(`[成就卡 a 条目非中英两项] ${k}.a[${i}]`);
+  });
+  if (a.y && (a.y.length !== 2 || !(a.y[0] <= a.y[1]))) P.push(`[成就卡 y 区间非法] ${k}: [${a.y}]`);
+
+  const civ = civByName.get(a.c);
+  if (!civ) { P.push(`[成就卡所属文明不存在] ${k} → ${a.c}`); return; }
+  if (!achvWords(civ).includes(k))
+    P.push(`[成就卡点不出来] ${k}: 「${a.c}」的 f['成就'] 里没有这个整词(现有:${achvWords(civ).join('、') || '空'})`);
+});
+
+// 32:成就卡年份与同一文明大事记里同名事件的年份必须对得上。曾经出过成就卡写 605、
+// 站内大事记写 587 而两处讲的是同一件事。CHRONO 是 [年,'中文',...],CHRONO_X 是
+// [年,[中,英],[中,英]],所以取文本要递归拍平。
+const flatTxt = v => Array.isArray(v) ? v.map(flatTxt).join(' ') : String(v);
+Object.entries(ACHV || {}).forEach(([k, a]) => {
+  if (!a.y) return;
+  // 「科举制」→「科举」、「造纸术」→「造纸」:大事记里常用不带后缀的写法
+  const alt = /[制术]$/.test(k) && k.length > 2 ? k.slice(0, -1) : null;
+  [...(CHRONO[a.c] || []), ...(CHRONO_X[a.c] || [])].forEach(r => {
+    const txt = flatTxt(r.slice(1));
+    if (!txt.includes(k) && !(alt && txt.includes(alt))) return;
+    if (r[0] < a.y[0] || r[0] > a.y[1])
+      P.push(`[成就卡年份与大事记不一致] ${k}: 卡片 ${a.y[0]}—${a.y[1]},而「${a.c}」大事记里同名事件在 ${r[0]}(${flatTxt(r[1])})`);
+  });
 });
 
 if (EN.events && EN.events.length !== EVENTS.length) P.push(`[事件中英数量不等] zh=${EVENTS.length} en=${EN.events.length}`);
