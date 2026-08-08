@@ -394,8 +394,10 @@ a.wk::after { content: '↗'; font-size: .72em; color: var(--muted); margin-left
 #geoview .gv-x { font: inherit; font-size: 20px; line-height: 1; padding: 2px 9px; border: none;
   background: none; color: var(--ink-2); cursor: pointer; flex: none; }
 /* 地图区:世界档整图缩放到容器宽,放大档在容器里拖动(touch-action 别忘了 pan-x,v80 的坑) */
+/* touch-action:none = 浏览器手势整个接管过来自己管(单指拖/双指捏合/双击都是手写的);
+   v80 的教训是 pan-y 吃掉横向拖,这里干脆一半也不留给浏览器 */
 #geoview .gv-map { flex: none; height: 44vh; overflow: auto; background: var(--wash);
-  touch-action: pan-x pan-y; -webkit-overflow-scrolling: touch; position: relative; }
+  touch-action: none; overscroll-behavior: contain; position: relative; }
 #geoview .gv-map svg { display: block; cursor: crosshair; }
 #geoview .gv-map .gc-dot { fill: var(--ink-2); stroke: var(--surface); stroke-width: 1; }
 #geoview .gv-map .gc-hit { fill: transparent; cursor: pointer; }
@@ -419,6 +421,16 @@ a.wk::after { content: '↗'; font-size: .72em; color: var(--muted); margin-left
   position: relative; min-width: 60px; }
 #geoview .gv-row .tb i { position: absolute; top: 0; bottom: 0; border-radius: 2px; }
 #geoview .gv-cap { font-size: 11.5px; color: var(--ink-2); margin-top: 12px; line-height: 1.55; }
+/* 行内展开的「地点小段」:回答「那时候这里是什么样」,不跳走 */
+#geoview .gv-row[aria-expanded="true"] { background: var(--wash); border-color: var(--border); }
+#geoview .gv-det { margin: 2px 0 8px 27px; padding: 8px 11px; background: var(--wash);
+  border-radius: 8px; font-size: 12.5px; line-height: 1.6; }
+#geoview .gv-det .gd-pos { color: var(--ink-2); }
+#geoview .gv-det .gd-ev { margin-top: 6px; }
+#geoview .gv-det .gd-ev b { font-variant-numeric: tabular-nums; font-weight: 600; margin-right: 6px; }
+#geoview .gv-det .gd-ev p { margin: 1px 0 0; color: var(--ink-2); font-size: 12px; }
+#geoview .gv-det .gv-go { display: inline-block; margin-top: 8px; font-size: 12px; cursor: pointer;
+  color: var(--ink); text-decoration: underline dotted; text-underline-offset: 3px; }
 @media (max-width: 640px) {
   #geoview .gv-head b { font-size: 12px; }
   #geoview .gv-map { height: 38vh; }
@@ -3257,6 +3269,17 @@ const GEO_CITY = [
 ['圣地亚哥','Santiago',-70.65,-33.45],['纽约','New York',-74.01,40.71],['洛杉矶','Los Angeles',-118.24,34.05],['哈瓦那','Havana',-82.38,23.13],
 ['卡霍基亚','Cahokia',-90.06,38.66],
 ];
+/* 城市古称别名:用于从大事记里筛「发生在这里的事」。只收指同一城址(或紧邻,如咸阳之于西安)
+   的名字;有歧义的不收——「东京」不给开封(会误匹配日本东京),「亚历山大」必须带「城/港/里亚」
+   (裸词会匹配到亚历山大大帝本人)。civ 名里含别名时该别名对该 civ 失效(防「罗马」在罗马诸带里
+   把整部国史都当成城市史)。 */
+const GC_ALIAS = {
+'西安':['长安','镐京','咸阳'], '洛阳':['洛邑'], '北京':['大都','燕京','中都','北平'],
+'南京':['建康','建业','金陵','江宁'], '杭州':['临安'], '开封':['汴京','汴梁'],
+'伊斯坦布尔':['君士坦丁堡'], '京都':['平安京'], '东京':['江户'], '首尔':['汉城'], '河内':['升龙'],
+'亚历山大':['亚历山大城','亚历山大港','亚历山大里亚'], '巴特那':['华氏城','巴连弗邑'],
+'墨西哥城':['特诺奇蒂特兰'], '敦煌':['莫高窟'], '瓦拉纳西':['贝拿勒斯'],
+};
 /* ---------- English dictionary ---------- */
 const EN = {
 lanes: { eu:'Europe', me:'Middle East & N. Africa', st:'Steppe & C. Asia', sa:'South Asia', se:'Southeast Asia', ea:'East Asia', af:'Sub-Saharan Africa', am:'Americas' },
@@ -7629,12 +7652,13 @@ function gvQuery(lon, lat, ci) {
   const city = ci >= 0 ? GEO_CITY[ci] : null;
   const name = city ? (LANG === 'zh' ? city[0] : city[1])
     : `${Math.abs(lat).toFixed(1)}°${lat >= 0 ? 'N' : 'S'} · ${Math.abs(lon).toFixed(1)}°${lon >= 0 ? 'E' : 'W'}`;
-  const rows = hits.map(h =>
-    `<div class="gv-row" data-gci="${h.i}" role="button" tabindex="0">
+  GV.hits = hits; GV.name = name;
+  const rows = hits.map((h, ri) =>
+    `<div class="gv-row" data-ri="${ri}" role="button" tabindex="0" aria-expanded="false">
       <span class="yr">${fmtY(h.a)} — ${fmtY(h.b)}</span><span class="d" style="background:${fill(h.c)}"></span>
       <span class="nm">${cN(h.c)}</span>${h.core ? `<span class="core">${T('核心地带', 'heartland')}</span>` : ''}
       <span class="tb"><i style="left:${(gvX(h.a) * 100).toFixed(1)}%;width:${Math.max(1.2, (gvX(h.b) - gvX(h.a)) * 100).toFixed(1)}%;background:${fill(h.c)}"></i></span>
-    </div>`).join('');
+    </div><div class="gv-det" data-rd="${ri}" hidden></div>`).join('');
   gvRes.innerHTML = `<div class="gv-place">${name}</div>
     <div class="gv-sub">${hits.length
       ? T(`从古到今,${hits.length} 条文明的版图先后覆盖过这里`, `${hits.length} civilizations have covered this spot over time`)
@@ -7675,23 +7699,182 @@ gv.querySelector('.gv-zoom').addEventListener('click', e => {
   gv.querySelectorAll('.gv-zoom button').forEach(x => x.classList.toggle('on', x === b));
   renderGvMap();
 });
-gvMap.addEventListener('click', e => {
-  const hit = e.target.closest && e.target.closest('.gc-hit');
-  if (hit) { const i = +hit.dataset.gc; gvQuery(GEO_CITY[i][2], GEO_CITY[i][3], i); return; }
-  const svg = gvMap.querySelector('svg'); if (!svg || !svg.contains(e.target)) return;
-  const r = svg.getBoundingClientRect();
-  const lon = (e.clientX - r.left) / r.width * 360 - 180;
-  const lat = GV_LAT1 - (e.clientY - r.top) / r.height * (GV_LAT1 - GV_LAT0);
-  gvQuery(+lon.toFixed(2), +lat.toFixed(2), -1);
-});
+/* ---- 触摸手势(Ray 2026-08-08 反馈:要单指拖动 + 双指捏合) ----
+   全手写,不引外部库(铁律)。手势结束才按新倍率重画(捏合过程中只做 CSS 缩放
+   预览),文字和点不糊。拖过、捏过的那次抬手不算点击(gvMoved 拦住)。 */
+let gvMoved = false;
+{
+  const PTS = new Map();
+  let pan0 = null, pinch0 = null, lastTap = { t: 0, x: 0, y: 0 };
+  const clampZ = z => Math.max(1, Math.min(6, z));
+  const syncZoomBtns = () => gv.querySelectorAll('.gv-zoom button')
+    .forEach(b => b.classList.toggle('on', Math.abs(+b.dataset.z - GV.zoom) / GV.zoom < .15));
+  /* 以视口内某点为锚缩放:重画后把锚点下面的世界坐标滚回原处 */
+  function zoomAt(cx, cy, nz) {
+    nz = clampZ(nz); if (Math.abs(nz - GV.zoom) < .01) return;
+    const r = gvMap.getBoundingClientRect();
+    const mx = cx - r.left, my = cy - r.top;
+    const svg = gvMap.querySelector('svg'); if (!svg) return;
+    const oldW = +svg.getAttribute('width');
+    const fx = (gvMap.scrollLeft + mx) / oldW, fy = (gvMap.scrollTop + my) / +svg.getAttribute('height');
+    GV.zoom = nz;
+    renderGvMap();
+    const nsvg = gvMap.querySelector('svg');
+    gvMap.scrollLeft = fx * +nsvg.getAttribute('width') - mx;
+    gvMap.scrollTop = fy * +nsvg.getAttribute('height') - my;
+    syncZoomBtns();
+  }
+  gvMap.addEventListener('pointerdown', e => {
+    PTS.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    try { gvMap.setPointerCapture(e.pointerId); } catch (err) {}   // 合成事件没有活跃指针,会抛
+    if (PTS.size === 1) {
+      pan0 = { x: e.clientX, y: e.clientY, sl: gvMap.scrollLeft, st: gvMap.scrollTop };
+      gvMoved = false;
+    } else if (PTS.size === 2) {
+      const [a, b] = [...PTS.values()];
+      pinch0 = { d: Math.hypot(a.x - b.x, a.y - b.y) || 1,
+                 mx: (a.x + b.x) / 2, my: (a.y + b.y) / 2,
+                 z: GV.zoom, sl: gvMap.scrollLeft, st: gvMap.scrollTop, f: 1 };
+      pan0 = null; gvMoved = true;
+    }
+  });
+  gvMap.addEventListener('pointermove', e => {
+    if (!PTS.has(e.pointerId)) return;
+    PTS.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (PTS.size === 1 && pan0) {
+      const dx = e.clientX - pan0.x, dy = e.clientY - pan0.y;
+      if (Math.abs(dx) + Math.abs(dy) > 6) gvMoved = true;
+      gvMap.scrollLeft = pan0.sl - dx; gvMap.scrollTop = pan0.st - dy;
+    } else if (PTS.size === 2 && pinch0) {
+      const [a, b] = [...PTS.values()];
+      pinch0.f = (Math.hypot(a.x - b.x, a.y - b.y) || 1) / pinch0.d;
+      /* 捏合中只做 CSS 预览,锚在两指初始中点对应的内容坐标上 */
+      const svg = gvMap.querySelector('svg');
+      const r = gvMap.getBoundingClientRect();
+      if (svg) {
+        svg.style.transformOrigin = `${pinch0.sl + pinch0.mx - r.left}px ${pinch0.st + pinch0.my - r.top}px`;
+        svg.style.transform = `scale(${pinch0.f})`;
+      }
+    }
+  });
+  /* 点击查询并进抬手逻辑,不依赖 click 事件——setPointerCapture 会把事件重定向到
+     容器,click 的 target 不再是城市点,靠 click 判定会失灵 */
+  function tapAt(cx, cy) {
+    const el = document.elementFromPoint(cx, cy);
+    const hit = el && el.closest && el.closest('.gc-hit');
+    if (hit) { const i = +hit.dataset.gc; gvQuery(GEO_CITY[i][2], GEO_CITY[i][3], i); return; }
+    const svg = gvMap.querySelector('svg');
+    if (!svg || !el || !svg.contains(el)) return;
+    const r = svg.getBoundingClientRect();
+    const lon = (cx - r.left) / r.width * 360 - 180;
+    const lat = GV_LAT1 - (cy - r.top) / r.height * (GV_LAT1 - GV_LAT0);
+    gvQuery(+lon.toFixed(2), +lat.toFixed(2), -1);
+  }
+  const endPt = e => {
+    if (!PTS.has(e.pointerId)) return;
+    PTS.delete(e.pointerId);
+    if (pinch0 && PTS.size < 2) {
+      const svg = gvMap.querySelector('svg');
+      if (svg) { svg.style.transform = ''; svg.style.transformOrigin = ''; }
+      zoomAt(pinch0.mx, pinch0.my, pinch0.z * pinch0.f);
+      pinch0 = null; pan0 = null;
+      return;
+    }
+    if (PTS.size === 0 && !gvMoved && e.type === 'pointerup') {
+      const now = e.timeStamp;
+      if (now - lastTap.t < 300 && Math.hypot(e.clientX - lastTap.x, e.clientY - lastTap.y) < 30) {
+        /* 双击(300ms 内同一处两次抬手)= 快速放大一档;第二次抬手不再当查询 */
+        zoomAt(e.clientX, e.clientY, GV.zoom * 1.8);
+        lastTap = { t: 0, x: 0, y: 0 };
+      } else {
+        lastTap = { t: now, x: e.clientX, y: e.clientY };
+        tapAt(e.clientX, e.clientY);
+      }
+    }
+    if (PTS.size === 0) pan0 = null;
+  };
+  gvMap.addEventListener('pointerup', endPt);
+  gvMap.addEventListener('pointercancel', endPt);
+  /* 桌面触控板捏合走 ctrl+wheel */
+  gvMap.addEventListener('wheel', e => {
+    if (!e.ctrlKey) return;
+    e.preventDefault();
+    zoomAt(e.clientX, e.clientY, GV.zoom * (e.deltaY < 0 ? 1.15 : .87));
+  }, { passive: false });
+}
+/* ---- 行内展开:「那时候这里是什么样」 ----
+   两层内容,全部来自既有数据、零新增事实:
+   ① 从该文明的大事记里筛「提到这个地方」的条目(古称别名见 GC_ALIAS);
+   ② 一句自动定位:年代 + 在谁的鼎盛版图内 + 距核心区多远。
+   点「看整个文明 →」才跳全国卡,不再一点行就跳走(Ray 2026-08-08 反馈)。 */
+const gvKm = (lon1, lat1, lon2, lat2) => {
+  const r = Math.PI / 180, R = 6371;
+  const h = Math.sin((lat2 - lat1) * r / 2) ** 2 +
+    Math.cos(lat1 * r) * Math.cos(lat2 * r) * Math.sin((lon2 - lon1) * r / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+};
+function gvDetail(ri) {
+  const h = GV.hits[ri], c = h.c, li = LANG === 'zh' ? 0 : 1;
+  const city = GV.last && GV.last.ci >= 0 ? GEO_CITY[GV.last.ci] : null;
+  /* ② 定位句 */
+  const g = GEO[c.n];
+  let pos;
+  const spanTxt = `${fmtY(h.a)}—${fmtY(h.b)}`;
+  if (g && g.c && GV.last) {
+    const km = gvKm(GV.last.lon, GV.last.lat, g.c[0], g.c[1]);
+    const kmTxt = km < 100 ? T('不到 100', 'under 100') : T(`约 ${Math.round(km / 100) * 100}`, `about ${Math.round(km / 100) * 100}`);
+    pos = T(`${spanTxt},${GV.name}在${cN(c)}的鼎盛版图内,距其核心区${kmTxt}公里,${h.core ? '属核心地带' : '处在边缘'}。`,
+      `${spanTxt}: within ${cN(c)}'s peak territory, ${kmTxt} km from its heartland — ${h.core ? 'part of the core' : 'near the frontier'}.`);
+  } else {
+    pos = T(`${spanTxt},${GV.name}在${cN(c)}的鼎盛版图内。`, `${spanTxt}: within ${cN(c)}'s peak territory.`);
+  }
+  /* ① 大事记筛选:双语按索引对齐,匹配始终在中文侧做(中文是数据主键) */
+  let evs = '';
+  if (city) {
+    const zh = city[0];
+    /* 裸「亚历山大」会匹配到亚历山大大帝本人,该城只认带后缀的全称 */
+    const names = (zh === '亚历山大' ? [] : [zh]).concat(GC_ALIAS[zh] || [])
+      .filter(al => !c.n.includes(al));
+    const bi = (CHRONO[c.n] || []).map((it, i) => {
+      const e = (EN.chrono[c.n] || [])[i] || [];
+      return { y: it[0], zt: it[1], zd: it[2] || '', et: e[0] || it[1], ed: e[1] || '' };
+    }).concat((CHRONO_X[c.n] || []).map(it => ({
+      y: it[0], zt: it[1][0], zd: it[2] ? it[2][0] : '', et: it[1][1], ed: it[2] ? it[2][1] : '' })));
+    const hit = bi.filter(x => names.some(al => x.zt.includes(al) || x.zd.includes(al)))
+      .sort((p, q) => p.y - q.y);   // CHRONO 与 CHRONO_X 拼接后原本不保证时序
+    if (hit.length) {
+      evs = `<div class="gd-lab" style="margin-top:7px;font-weight:600;font-size:12px">${T('大事记里发生在这里的', 'Recorded here in the chronicle')}</div>` +
+        hit.slice(0, 6).map(x =>
+          `<div class="gd-ev"><b>${fmtY(x.y)}</b>${li ? x.et : x.zt}${(li ? x.ed : x.zd) ? `<p>${li ? x.ed : x.zd}</p>` : ''}</div>`).join('') +
+        (hit.length > 6 ? `<div class="gd-ev" style="color:var(--ink-2)">…${T(`还有 ${hit.length - 6} 条,见文明卡`, `${hit.length - 6} more on the civilization card`)}</div>` : '');
+    }
+  }
+  return `<div class="gd-pos">${pos}</div>${evs}
+    <span class="gv-go" data-gci="${h.i}" role="button" tabindex="0">${T('看整个文明 →', 'See the whole civilization →')}</span>`;
+}
+function gvToggle(ri) {
+  const det = gvRes.querySelector(`.gv-det[data-rd="${ri}"]`);
+  const row = gvRes.querySelector(`.gv-row[data-ri="${ri}"]`);
+  const open = det.hidden;
+  gvRes.querySelectorAll('.gv-det').forEach(d => d.hidden = true);
+  gvRes.querySelectorAll('.gv-row').forEach(r => r.setAttribute('aria-expanded', 'false'));
+  if (open) {
+    if (!det.innerHTML) det.innerHTML = gvDetail(ri);   // 首次展开才构建
+    det.hidden = false; row.setAttribute('aria-expanded', 'true');
+  }
+}
 gvRes.addEventListener('click', e => {
-  const row = e.target.closest && e.target.closest('[data-gci]');
-  if (row) { openCiv(CIVS[+row.dataset.gci]); panel.scrollTop = 0; }
+  const go = e.target.closest && e.target.closest('[data-gci]');
+  if (go) { openCiv(CIVS[+go.dataset.gci]); panel.scrollTop = 0; return; }
+  const row = e.target.closest && e.target.closest('[data-ri]');
+  if (row) gvToggle(+row.dataset.ri);
 });
 gvRes.addEventListener('keydown', e => {
   if (e.key !== 'Enter' && e.key !== ' ') return;
-  const row = e.target.closest && e.target.closest('[data-gci]');
-  if (row) { e.preventDefault(); openCiv(CIVS[+row.dataset.gci]); panel.scrollTop = 0; }
+  const go = e.target.closest && e.target.closest('[data-gci]');
+  if (go) { e.preventDefault(); openCiv(CIVS[+go.dataset.gci]); panel.scrollTop = 0; return; }
+  const row = e.target.closest && e.target.closest('[data-ri]');
+  if (row) { e.preventDefault(); gvToggle(+row.dataset.ri); }
 });
 
 function applyLang() {
