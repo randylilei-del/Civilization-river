@@ -307,6 +307,12 @@ svg.no-ev .evg { display: none; }
 /* 卡片里的曲线/区间条/地图都按 330 的内部坐标系画,靠 viewBox 缩放到面板实际宽度。
    这样面板一放大,图和字一起变大,不用改任何绘制代码里的尺寸计算。 */
 #panel .p-spark svg, #panel .p-gl svg, #panel .p-map svg { width: 100%; height: auto; display: block; }
+#panel .sp-hit { cursor: pointer; }
+#panel .sp-hit:hover + .sp-dot, #panel .sp-dot { transition: r .12s ease; }
+#panel .sp-hit:hover, #panel .sp-hit:focus-visible { outline: none; }
+#panel .tl-item.tl-hit { animation: tlHit 1.1s ease; }
+@keyframes tlHit { 0%, 60% { background: var(--wash); } 100% { background: transparent; } }
+@media (prefers-reduced-motion: reduce) { #panel .tl-item.tl-hit { animation: none; background: var(--wash); } }
 @media (prefers-reduced-motion: reduce) { #panel { transition: none; } }
 /* iPad 这类中等屏:372px 的窄条缩在最右边很憋屈,放到接近整屏 */
 @media (max-width: 1279px) {
@@ -6211,6 +6217,15 @@ const stripParen = s => s.replace(/（[^）]*）|\([^)]*\)/g, '').trim();
    所以 EN 的 Figures 必须与中文「人物」逐个对齐,audit 会查这一条。
    两种人名视觉上必须能分开:站内卡片是浅底小片、无箭头,外链保持 wk 的 ↗。 */
 const NSPLIT = /[、,;；]/;
+/* 「成就」字段:配了 ACHV 的词变成可点,没配的保持纯文本(人名那边没配的是维基外链,
+   成就不做外链——成就名往往不是维基词条,搜出来多半是无关内容)。 */
+const linkAchv = (s, c) => {
+  const zh = ((c.f && c.f['成就']) || '').split(NSPLIT).map(x => x.trim()).filter(Boolean);
+  return s.split(NSPLIT).map(x => x.trim()).filter(Boolean).map((x, i) => {
+    const key = stripParen(zh[i] || '');
+    return ACHV[key] ? `<span class="pn" data-achv="${key}" role="button" tabindex="0">${x}</span>` : x;
+  }).join(T('、', ', '));
+};
 const linkNames = (s, c) => {
   const zh = ((c.f && c.f['人物']) || '').split(NSPLIT).map(x => x.trim()).filter(Boolean);
   return s.split(NSPLIT).map(x => x.trim()).filter(Boolean).map((x, i) => {
@@ -6221,6 +6236,40 @@ const linkNames = (s, c) => {
   }).join(T('、', ', '));
 };
 
+/* ---------- 成就卡 ----------
+   与人物卡同一层弹出。Ray 拍板走「各管各的」:卡片中间那条「领域鼎盛区间」
+   讲的是**这个文明什么领域什么时候最好**,成就卡讲的是**这一样东西本身**——
+   是什么、怎么来的、后来影响了谁。两者视角不同,不合并。
+   写法固定为三段,与人物卡的「身份+三件事+意义」对齐但换了轴。
+   g 用于取字形:inst 制度 / obj 器物 / tech 技术 / idea 观念。 */
+const AGLYPH = { inst:'⚖', obj:'🏺', tech:'⚙', idea:'💡' };
+const AGNAME = { inst:['制度','Institution'], obj:['器物','Object'], tech:['技术','Technique'], idea:['观念','Idea'] };
+const ACHV = {
+'科举制': { g:'inst', c:'隋', y:[605,1905], n:['科举制','The examination system'],
+  t:['用考试而不是出身来选官,这套办法在中国用了一千三百年。','Choosing officials by examination rather than birth — a method used in China for thirteen centuries.'],
+  a:[['隋朝开始试行,唐朝定型为常设科目,宋朝加上糊名与誊录,尽量让阅卷者认不出是谁的卷子','Begun under the Sui and made a regular institution under the Tang; the Song added sealed names and recopied papers so examiners could not tell whose work they were marking'],
+     ['考的主要是儒家经典与文章,不考专业技能——它选的是「会治理的人」而不是「会做事的人」','What it tested was mainly the Confucian classics and composition, not technical skill: it selected men judged able to govern, not able to do'],
+     ['1905年废除。此前一千三百年间,它是普通人家进入统治阶层几乎唯一的通道','Abolished in 1905; for the thirteen centuries before that it was almost the only route by which an ordinary family could enter the governing class']],
+  s:['它把「谁来当官」这件事从血统手里拿走,交给了一场可以准备的考试——这在世界上出现得很早。朝鲜、越南都仿行过;18世纪起欧洲人通过传教士的记述了解到它,英国1855年建立文官考试制度时,当时的讨论里多次提到中国的例子。它也有代价:考试内容长期不变,读书人的精力被引向经典与文章,与技术、商业无关。','It took the question of who governs out of the hands of birth and gave it to an examination anyone could prepare for — very early by world standards. Korea and Vietnam adopted versions of it, and from the eighteenth century Europeans learned of it through missionary accounts; when Britain set up its civil service examinations in 1855 the Chinese example came up repeatedly in the debate. It had a price: the syllabus barely changed, and scholarly effort was drawn toward classics and composition, away from technology and trade.'] },
+'造纸术': { g:'tech', c:'东汉', y:[105,1400], n:['造纸术','Papermaking'],
+  t:['把树皮、麻头、破布煮烂、捞成薄片——知识从此变得便宜。','Bark, hemp and rags boiled down and lifted out as a thin sheet — and knowledge became cheap.'],
+  a:[['105年蔡伦向朝廷进献改良的造纸法。纸此前已经存在,他的贡献是把原料换成便宜易得的东西并把工艺标准化','In 105 Cai Lun presented an improved method to the court; paper already existed, and his contribution was to switch to cheap, common materials and standardise the process'],
+     ['取代了竹简与丝帛:一部书从「一车竹简」变成可以拿在手里','It replaced bamboo slips and silk — a book went from a cartload of slats to something you could hold'],
+     ['751年怛罗斯之战后传入撒马尔罕,再经巴格达、大马士革传到北非与西班牙,12世纪进入欧洲','After the battle of Talas in 751 it reached Samarkand, then Baghdad and Damascus, then North Africa and Spain, and Europe in the twelfth century']],
+  s:['它降低的是记录与传播的成本,而这个成本一降,别的事情才可能发生:雕版与活字印刷、科举需要的大量书籍、伊斯兰世界的翻译运动、欧洲的宗教改革传单。中国用纸比欧洲早了一千年,这一千年里书籍的普及程度差距很大。今天的纸仍然是同一个原理:把植物纤维打散,再让它们重新交织成片。','What it lowered was the cost of recording and moving information — and once that cost fell, other things became possible: block printing and movable type, the mountains of books the examination system required, the translation movement in the Islamic world, the pamphlets of the European Reformation. China had paper a thousand years before Europe, and over that millennium the difference in how widely books circulated was very large. Paper today works on the same principle: break plant fibre apart, then let it knit back together as a sheet.'] },
+'罗马法': { g:'idea', c:'罗马帝国', y:[-450,533], n:['罗马法','Roman law'],
+  t:['先把规则写下来给所有人看——这件事本身就是它的起点。','It began with writing the rules down where everyone could see them.'],
+  a:[['约公元前450年《十二铜表法》刻成公示,平民第一次能知道法官依据什么判案','Around 450 BC the Twelve Tables were inscribed and put on public display, so ordinary citizens could see on what basis judgments were made'],
+     ['帝国时期发展出「万民法」——处理罗马人与外邦人之间的关系,逐渐提炼出不依赖身份的通用规则','Under the empire a law of nations grew up to handle dealings between Romans and foreigners, and from it came general rules that did not depend on who you were'],
+     ['533年查士丁尼下令编成《民法大全》,把千年积累的法条、判例与法学家意见整理为一部','In 533 Justinian had it compiled into a single body of civil law, gathering a thousand years of statutes, cases and jurists\' opinions']],
+  s:['11世纪《民法大全》在意大利被重新发现,博洛尼亚大学以研究它起家,此后成为欧洲大陆法系的共同底本;今天大陆法系国家的民法结构、许多术语与原则仍可追到那里。「法律面前人人平等」「无罪推定」这类说法的来源比它复杂得多,但罗马法是把规则从习惯与个人裁断中剥离出来、写成条文并公开的最早尝试之一。','The compilation was rediscovered in Italy in the eleventh century, the University of Bologna grew up around studying it, and it became the common foundation of the civil-law tradition on the continent; the structure of civil codes today, and many of their terms and principles, still trace back to it. Ideas like equality before the law and the presumption of innocence have more tangled origins than this, but Roman law is among the earliest attempts to lift rules out of custom and personal judgment, write them down, and make them public.'] },
+'司母戊鼎': { g:'obj', c:'商', y:[-1600,-771], n:['司母戊鼎(后母戊鼎)','The Simuwu ding'],
+  t:['八百三十二公斤的一口大方鼎,是现存最大的先秦青铜器——而它是用来盛祭品的。','A rectangular cauldron weighing 832 kilograms, the largest surviving pre-Qin bronze — and it was made to hold an offering.'],
+  a:[['1939年出土于河南安阳,当时为避免被日军掠走而重新埋回地下,抗战胜利后才起出','Excavated at Anyang in Henan in 1939 and reburied to keep it from being seized during the war, it was lifted again only after 1945'],
+     ['用数十块陶范拼合一次浇铸,需要同时熔化一吨以上的铜液——这本身就是一次大规模的组织行动','Cast in one pour from dozens of assembled clay mould sections, which meant melting more than a tonne of metal at once — an act of organisation as much as of craft'],
+     ['腹内壁铸有三字铭文,是商王为祭祀母亲所作;鼎的名字就来自这三个字,读法至今仍有「司」与「后」两说','Three characters are cast inside: a Shang king\'s dedication to his mother. The vessel is named after them, and whether the first should read si or hou is still argued']],
+  s:['同时期的西亚与欧洲主要把青铜用于兵器和工具,商周却把冶金的最高水平投进了祭祀用器——这个选择本身就说明这个社会认为什么最重要。用几个鼎、几个簋对应什么身份,有严格规定,「问鼎中原」「一言九鼎」这类说法都从这套等级来。器上的铭文是双重遗产:既记录了青铜工艺,也是汉字早期形态的实物证据。','In West Asia and Europe at the same date bronze went mainly into weapons and tools; Shang and Zhou China put its highest metallurgy into vessels for sacrifice — and that choice says plainly what the society thought mattered most. How many cauldrons and food vessels a person might use was fixed by rank, and several Chinese idioms about legitimate authority come straight from that graded set. The cast inscriptions are a double bequest: a record of the craft, and physical evidence of an early stage of Chinese writing.'] },
+};
 /* ---------- 详情面板 ---------- */
 const panel = document.getElementById('panel');
 function sparkSVG(c) {
@@ -6239,7 +6288,12 @@ function sparkSVG(c) {
     if (yy <= y0 || yy >= y1) continue;
     const xx = (yy - y0) / (y1 - y0) * W;
     const pv = interp(c.k, yy);
-    dots += `<circle cx="${xx.toFixed(1)}" cy="${(Hs - 8 - pv / maxP * (Hs - 14)).toFixed(1)}" r="2.3" fill="var(--surface)" stroke="${fill(c)}" stroke-width="1.4"/>`;
+    const cy = (Hs - 8 - pv / maxP * (Hs - 14)).toFixed(1);
+    /* 圆点原本是纯装饰,但它长得像按钮 —— Ray 在 iPad 上点了点不动。改成可点:
+       点一下跳到下面对应的那条大事记。半径 2.3 手指绝对点不中,所以另叠一个
+       半径 11 的透明圆当命中区(与「时光穿梭」竖线 ±22px 的做法同理)。 */
+    dots += `<circle class="sp-dot" cx="${xx.toFixed(1)}" cy="${cy}" r="2.3" fill="var(--surface)" stroke="${fill(c)}" stroke-width="1.4"/>`
+          + `<circle class="sp-hit" data-ev="${yy}" cx="${xx.toFixed(1)}" cy="${cy}" r="11" fill="transparent" role="button" tabindex="0"><title>${fmtY(yy)}</title></circle>`;
   }
   return `<svg width="${W}" height="${Hs + 16}" viewBox="0 0 ${W} ${Hs + 16}" aria-label="影响力曲线">
     <line x1="0" y1="${Hs - 8}" x2="${W}" y2="${Hs - 8}" stroke="var(--baseline)" stroke-width="1"/>
@@ -6558,7 +6612,7 @@ function openCiv(c) {
   cur = { type: 'civ', obj: c };
   const f = cF(c);
   const facts = f ? `<div class="p-facts">${Object.entries(f).map(([k, v]) =>
-    `<div class="fact"><span>${k}</span><b>${(k === '人物' || k === 'Figures') ? linkNames(v, c) : v}</b>${(k === '中心' || k === 'Center') ? todayHTML(c) : ''}${(k === '鼎盛' || k === 'Peak') ? peakHTML(c) : ''}</div>`).join('')}${PEAK[c.n] ? `<div class="cap pk-cap">${T('版图取历史最大疆域、人口取历史峰值,二者未必同期;占比按当时世界人口估算',
+    `<div class="fact"><span>${k}</span><b>${(k === '人物' || k === 'Figures') ? linkNames(v, c) : (k === '成就' || k === 'Legacy') ? linkAchv(v, c) : v}</b>${(k === '中心' || k === 'Center') ? todayHTML(c) : ''}${(k === '鼎盛' || k === 'Peak') ? peakHTML(c) : ''}</div>`).join('')}${PEAK[c.n] ? `<div class="cap pk-cap">${T('版图取历史最大疆域、人口取历史峰值,二者未必同期;占比按当时世界人口估算',
     'Area = greatest extent, population = peak; not necessarily the same year. Share is of estimated world population at the time.')}</div>` : ''}</div>` : '';
   const evs = EVENTS.filter(e => e.ls.includes(c.l) && e.y >= c.k[0][0] - 30 && e.y <= c.k[c.k.length-1][0] + 30);
   const ch = chronoOf(c);
@@ -6575,7 +6629,7 @@ function openCiv(c) {
     <div class="p-body">${cD(c)}</div>
     ${qHTML(c)}
     ${ch.length ? `<div class="p-tl"><h3>${T('大事记(曲线上的小圆点)','Key moments (dots on the curve)')}</h3>${ch.map(([y, t2, d2]) =>
-      `<div class="tl-item"><span class="tl-y">${fmtY(y)}</span><div><b>${wkA(t2, stripParen(t2))}</b>${d2 ? `<p>${d2}</p>` : ''}</div></div>`).join('')}</div>` : ''}
+      `<div class="tl-item" data-evy="${y}"><span class="tl-y">${fmtY(y)}</span><div><b>${wkA(t2, stripParen(t2))}</b>${d2 ? `<p>${d2}</p>` : ''}</div></div>`).join('')}</div>` : ''}
     ${evs.length ? `<div class="p-evs"><h3>${T('同期波及本区域的事件','Contemporary cross-regional events')}</h3>${evs.map(e =>
       `<div class="p-ev"><b>${EV_GLYPH[e.t]} ${wkA(evTitle(e))}</b> <span class="y">${T('约','c. ')}${fmtY(e.y)}${T('年','')}</span><p>${evDesc(e)}</p></div>`).join('')}</div>` : ''}`;
   panel.classList.add('open');
@@ -6760,6 +6814,24 @@ traceSel.addEventListener('change', () => {
    "点了人名就回不来"正是这个功能要解决的问题,自己就不能再制造一次。 */
 const pcard = document.getElementById('pcard');
 const pcBox = pcard.querySelector('.pc-box');
+function openAchv(key) {
+  const a = ACHV[key]; if (!a) return;
+  const civ = CIVS.find(c => c.n === a.c);
+  const li = LANG === 'zh' ? 0 : 1;
+  const meta = `${civ ? cN(civ) : a.c} · ${AGNAME[a.g][li]}` + (a.y ? ` · ${fmtY(a.y[0])}—${fmtY(a.y[1])}` : '');
+  pcBox.style.setProperty('--pc-col', civ ? fill(civ) : 'var(--ink-2)');
+  pcBox.innerHTML = `
+    <div class="pc-head"><span class="pc-g">${AGLYPH[a.g]}</span>
+      <div><h3>${a.n[li]}</h3><div class="pc-sub">${meta}</div></div>
+      <button class="pc-x" aria-label="${T('关闭', 'Close')}">×</button></div>
+    <p class="pc-t">${a.t[li]}</p>
+    <ul class="pc-a">${a.a.map(x => `<li>${x[li]}</li>`).join('')}</ul>
+    <p class="pc-s"><b>${T('后来影响了谁', 'What came of it')}</b>${a.s[li]}</p>
+    <div class="pc-foot">${civ ? `<span class="pc-civ" data-pgo="${civ.n}">↩ ${cN(civ)}</span>` : ''}</div>`;
+  pcard.hidden = false;
+  pcBox.scrollTop = 0;
+  const x = pcBox.querySelector('.pc-x'); if (x) x.focus();
+}
 function openPerson(key) {
   const p = PEOPLE[key]; if (!p) return;
   const civ = CIVS.find(c => c.n === p.c);
@@ -6796,12 +6868,22 @@ pcard.addEventListener('click', e => {
 /* 人名可用键盘触发(role=button + tabindex=0),空格要 preventDefault 否则页面滚动 */
 panel.addEventListener('keydown', e => {
   const pn = e.target.closest && e.target.closest('.pn');
-  if (pn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openPerson(pn.dataset.person); }
+  if (pn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); pn.dataset.achv ? openAchv(pn.dataset.achv) : openPerson(pn.dataset.person); }
 });
 panel.addEventListener('click', e => {
   if (e.target.classList.contains('p-close')) panel.classList.remove('open');
   const pn = e.target.closest && e.target.closest('.pn');
-  if (pn) { openPerson(pn.dataset.person); return; }
+  if (pn) { pn.dataset.achv ? openAchv(pn.dataset.achv) : openPerson(pn.dataset.person); return; }
+  /* 曲线上的小圆点 → 跳到下面对应的那条大事记并高亮一下 */
+  const dot = e.target.closest && e.target.closest('.sp-hit');
+  if (dot) {
+    const li = panel.querySelector(`.tl-item[data-evy="${dot.dataset.ev}"]`);
+    if (li) {
+      li.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      li.classList.remove('tl-hit'); void li.offsetWidth; li.classList.add('tl-hit');
+    }
+    return;
+  }
   /* 卡内漫游:点同期文明(地图圆点/视野外列表)跳到那个文明的卡片 */
   const go = e.target.closest && e.target.closest('[data-goto]');
   if (go) {
