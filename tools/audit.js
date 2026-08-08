@@ -712,6 +712,56 @@ if (PLACE_LORE) {
   });
 }
 
+/* 40. 已裁决口径的复发哨兵(v92)。
+ * 这个站反复出现同一种失败:某个说法在一层被核查改对了,过一阵在**另一层**又被写回去。
+ * 实例:1683 维也纳解围的功劳,v79 在文明卡层改成「波兰与帝国联军」,v92 又在
+ * PLACE_LORE 层被写回单方归功;「智慧宫是翻译中心」「爱资哈尔 continuously」
+ * 同理。下表登记的是**已经裁决过、不许再出现的措辞**,命中即报——
+ * 它查的不是事实对错,是「这条已经讨论过了」。
+ * 新增条目的门槛:必须是核查员报过、改过、且换个位置还会再犯的。 */
+/* 41 —— 试过两版、最后放弃的一条:「手写层的年份必须落在所属文明的存续期内」。
+ * 起因是真问题:v92 把 1618 年的掷出窗外事件挂在了德意志(1866—2025)下面,而每张小卡
+ * 下面会自动打印「{起}—{止},某城在某文明的鼎盛版图内」,用户会直接看到矛盾。
+ *
+ * 第一版「早于起点就报」——当场误报纽约(1664 早于美国 1776)、孟买(1661 早于英属印度
+ * 1757)、伊斯坦布尔(330 早于拜占庭 395)三条**正确文本**:开头交代一句城市前史是这一层
+ * 的正常写法。
+ * 第二版收窄成「整段没有任何年份落在窗口内才报」——又误报雅典(窗口内的内容写成「前五
+ * 世纪」不是四位数年份,只有 1687 那发炮弹是数字)、巴比伦(1901 苏萨出土)、大津巴布韦
+ * (1905 考古)。
+ *
+ * 根因:合法的「前史 / 后世影响」句与真正的配对错误,在**年份分布**上长得一模一样;
+ * 而窗口内的内容常常根本不写成四位数年份。信号与噪音同形,再收窄只会继续两头落空。
+ * 这类判断留给核查员——布拉格那次正是核查员读内容读出来的,不是机器查出来的。
+ * (同 audit 里那条被废弃的「中英数字一致」,以及规则 40 里被删掉的维也纳哨兵。)
+ */
+
+const SETTLED = [
+  /* 试过并去掉的一条:「1683 维也纳解围必须写联军」。
+     它会对**正确的文本**报警——索别斯基确实是联军统帅,波兰卡写「索别斯基率军解围」
+     没有错;v79 裁决的是「两张卡各自独占、孩子点两处得到互斥答案」,不是禁止提他。
+     一个会误报正确文本的哨兵,比没有哨兵更糟(同 audit 里那条被废弃的「中英数字一致」)。
+     这类**依赖上下文**的裁决留给核查员,不要写进机器规则。 */
+  [/continuously running centers? of learning/, '爱资哈尔中断近百年,不可写 continuously(v87 已裁决)'],
+  [/一战定(局|输赢)(?!」)/, '通迪比/单一战役定局的说法站内已明确反对(v91 已裁决)'],
+  [/第一个股票交易所|the first stock exchange/, '威尼斯、佛罗伦萨、热那亚均有先例,应写「最早的之一」(v90 已裁决)'],
+  [/first Turkic dynasty to adopt Islam|第一位信奉伊斯兰教的突厥君主/, '伏尔加保加利亚 922 年更早,应写「最早的几个之一」(v91 已裁决)'],
+];
+{
+  const hay = [];
+  const walk = (v, path) => {
+    if (typeof v === 'string') hay.push([path, v]);
+    else if (Array.isArray(v)) v.forEach((x, i) => walk(x, path));
+    else if (v && typeof v === 'object') Object.entries(v).forEach(([k2, x]) => walk(x, path + '.' + k2));
+  };
+  walk(CIVS, 'CIVS'); walk(CHRONO, 'CHRONO'); walk(CHRONO_X, 'CHRONO_X');
+  walk(EN, 'EN'); walk(PEOPLE, 'PEOPLE'); walk(ACHV, 'ACHV');
+  if (typeof PLACE_LORE !== 'undefined') walk(PLACE_LORE, 'PLACE_LORE');
+  SETTLED.forEach(([re, why]) => hay.forEach(([path, txt]) => {
+    if (re.test(txt)) P.push(`[复发已裁决的说法] ${path}: ${why}\n    …${txt.slice(Math.max(0, txt.search(re) - 15), txt.search(re) + 45)}…`);
+  }));
+}
+
 if (EN.events && EN.events.length !== EVENTS.length) P.push(`[事件中英数量不等] zh=${EVENTS.length} en=${EN.events.length}`);
 const laneIds = new Set(LANES.map(l => l.id));
 CIVS.forEach(c => { if (!laneIds.has(c.l)) P.push(`[泳道 id 不存在] ${c.n} → ${c.l}`); });
