@@ -14,9 +14,11 @@
    **不要信本文件里写死的 commit 号**
 2. `node tools/audit.js` —— 应当 exit 0、45 条规则全过（规则 45 = index.html 与 data/ 正本一致性）
 3. `node tools/coverage.js` —— 应当是「条目 637 · 城市 101 · 全满 101 · 总缺口 0」
-4. **v111 起有构建管线**：已迁移表的正本在 `data/*.js`（v116 时点 21 张，名单见 docs/DATA.md「表的性质与住处」末行），
-   改它们要跑 `node tools/build.js`；其余表照旧直接改 index.html。**动数据住处之前必读 `docs/ARCH.md`**——分阶段路线、
-   哪些表迁哪些不迁、成功标准全在里面，不要凭感觉开工
+4. **数据迁出重构已全部完成（v111–v118，Phase 1–3）**：23 张内容表的正本全在 `data/*.js`，
+   **改数据 → 改 `data/<表>.js` → `node tools/build.js`**；改代码/config → 直接改 index.html。
+   audit/coverage/peakgap/refs 四工具统一走 `tools/load.js`（注意它镜像了 GL_X 合并，
+   index.html 那边改合并逻辑两处要同步）。设计与决策全在 `docs/ARCH.md`。
+   Phase 4（中英 {zh,en} 成对化）是独立决策，**未启动、未拍板**
 
 三条都对，就说明站是干净的。**如果 Ray 直接说「继续」而没指方向**，
 按「进行中 / 下一步」里那张推荐排序表提议，让他挑——不要自己选一个就开干，

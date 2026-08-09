@@ -2,18 +2,7 @@
 /* PEAK 缺口盘点：列出还没有版图数字(a)的色带，附泳道、年限、影响力峰值。
  * 用法: node tools/peakgap.js
  */
-const fs=require('fs'),path=require('path'),vm=require('vm');
-const ROOT=path.join(__dirname,'..');
-const src=fs.readFileSync(path.join(ROOT,'index.html'),'utf8');
-const script=src.slice(src.indexOf('<script>')+8,src.lastIndexOf('</script>'));
-const start=script.indexOf('const LANES'),tracesAt=script.indexOf('const TRACES');
-const end=tracesAt+script.slice(tracesAt).indexOf('\n];')+3;
-const achvAt=script.indexOf('const AGLYPH');
-const achvEnd=achvAt+script.slice(achvAt).indexOf('\n};')+3;
-const body=[script.slice(start,end),script.slice(achvAt,achvEnd)].join('\n')
-  .split('\n').filter(l=>!l.startsWith('const LAND')&&!l.startsWith('const BORDERS')).join('\n');
-const ctx={};vm.createContext(ctx);vm.runInContext(body,ctx);
-const {CIVS,PEAK,LANES}=vm.runInContext('({CIVS,PEAK,LANES})',ctx);
+const {CIVS,PEAK,LANES}=require('./load')();
 const rows=[];
 for(const c of CIVS){
   const p=PEAK[c.n];

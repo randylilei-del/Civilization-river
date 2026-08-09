@@ -9,9 +9,10 @@
 ## 文件结构
 
 ```
-index.html            # 交付产物 + 代码手写源:样式、渲染器、未迁移的数据表
-data/                 # 已迁移数据表的正本(.js 文本片段,名单见 docs/DATA.md「表的性质与住处」)
+index.html            # 交付产物 + 代码手写源:样式、渲染器、config 常量(数据表已全部迁出)
+data/                 # 全部 23 张内容表的正本(.js 文本片段,性质分类见 docs/DATA.md)
 tools/build.js        # 把 data/*.js 注入回 index.html 的标记区间;改 data 后必跑
+tools/load.js         # audit/coverage/peakgap/refs 共用的数据加载器(含 GL_X 合并镜像)
 manifest.webmanifest  # PWA 清单
 sw.js                 # 离线缓存(network-first);改缓存策略记得升 CACHE 版本号
 icons/                # SVG 图标 + apple-touch-icon.png(iOS 主屏用)
@@ -23,7 +24,7 @@ docs/CHANGELOG.md     # 版本史
 
 ## 修改工作流
 
-1. 改代码/未迁移的表:直接改 `index.html`。**改已迁移的表:改 `data/<表名>.js` → `node tools/build.js`**(直接改 index.html 的数据区间会被 audit 规则 45 拦下)
+1. **改数据(23 张内容表全在 `data/`):改 `data/<表名>.js` → `node tools/build.js`**(直接改 index.html 的数据区间会被 audit 规则 45 拦下)。改代码/样式/config 常量:直接改 `index.html`
 2. 语法检查:`sed -n '/<script>/,/<\/script>/p' index.html | sed '1d;$d' > /tmp/c.js && node --check /tmp/c.js`
 3. 数据校验:`node tools/audit.js`(自包含,无依赖;查中英条目数对齐、大事记越界与排序、GL 区间合法性、孤儿键等;退出码非 0 即有问题)
 4. 渲染验证:浏览器打开确认无 pageerror、无布局破坏(深浅色 × 中英都看)

@@ -60,13 +60,14 @@
 
 ## 分阶段路线
 
-- **Phase 1**（本次）：迁 `PEAK` 一张表，建立 `data/`、`tools/build.js`、audit 规则 45。
-  产物与迁移前差异精确 = 两行标记注释。
-- **Phase 2**：逐表机械搬迁（纯移动，零 schema 变更）。顺序从小而稳的表开始
-  （VIDEO/EVENTS/TRACES → GEO/CHRONO/GL → LAND/BORDERS → PLACE_LORE/PEOPLE/ACHV → CIVS/EN 最后）。
-  内容表约 25 张；渲染参数类 const 不迁。
-- **Phase 3**：全部迁完后，audit 改读 `data/` 目录，删除 HTML 切片逻辑。
-- **Phase 4**（独立决策，可不做）：按表把中英平行字典合并为 `{zh,en}` 成对结构——
+- **Phase 1** ✅（v111）：迁 `PEAK`，建立 `data/`、`tools/build.js`、audit 规则 45。
+- **Phase 2** ✅（v112–v117，五批）：23 张内容表全部迁出；config 类 const 留守。
+  批次明细见 CHANGELOG v112–v117。
+- **Phase 3** ✅（v118）：四个工具（audit/coverage/peakgap/refs）统一走 `tools/load.js`，
+  位置切片删除。**load.js 镜像了 index.html 的 GL_X 合并逻辑**（切换时靠对照
+  audit 统计行抓到的回归：不镜像的话 GL 校验对象从合并后 265 段悄悄缩水到 170 段，
+  exit 码不变）——那边改合并，这边要跟。
+- **Phase 4**（独立决策，可不做，未启动）：按表把中英平行字典合并为 `{zh,en}` 成对结构——
   唯一值得做的 schema 变更，把索引错位类错误由构造杜绝。**动渲染器，一张表一张表来。**
 - **到此为止**。不做 Knowledge 层结构化 schema、不做 lens engine、不做数据库。
 

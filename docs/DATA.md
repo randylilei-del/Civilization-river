@@ -13,7 +13,7 @@
 | **presentation** | 当前 age-7 版本的具体表达 | `PLACE_LORE`(地点小段叙事) · `PEOPLE` `ACHV`(卡片文案) · `CIVS.b/.d/.f` 的措辞 · `WIKI_NAME` `EN.civ.w`(消歧) · `VIDEO` · `EN`(翻译) |
 | **config** | 渲染参数,不是历史数据,**永远不迁出** | `LANES` `SPHERES` `ERAS` `EV_GLYPH` `EV_NAME` `PGLYPH` `PGNAME` `AGLYPH` `AGNAME` `GL_KIND` `QT` 及 `INNER_W`/`BP`/`UNIT`/`STEP`/`ZOOM_MIN_SPAN`/`AY_GAP`/`NSPLIT`/`PB`/`GV*` 等标量 |
 
-**已迁移到 `data/` 的表**:`PEAK`(v111)· `VIDEO` `EVENTS` `TRACES`(v112)· `GEO` `CHRONO` `GL` `GL_X`(v113)· `LAND` `BORDERS` `RIVERS` `RANGES` `DESERTS`(v114)· `CHRONO_X` `PLACE` `GEO_CITY` `GC_ALIAS` `WIKI_NAME` `ACHV`(v115)· `PLACE_LORE` `PEOPLE`(v116;`PGLYPH` `PGNAME` 判为 config 留守,同 AGLYPH 先例)。**只剩 `CIVS` `EN` 两张压轴**。
+**Phase 2 已完成(v117)**:23 张内容表全部迁到 `data/`,`CIVS` `EN` 于 v117 收口。config 类(`PGLYPH` `PGNAME` `AGLYPH` `AGNAME` `LANES` `SPHERES` `ERAS` 及渲染标量)按设计留在 index.html。**Phase 3 已完成(v118)**:audit / coverage / peakgap / refs 四个工具统一走 `tools/load.js`(数据表按目录枚举 data/、config 表按名抽取),「从 LANES 切到 TRACES」的位置切片已删除。**注意 load.js 镜像了 index.html 的 GL_X 合并逻辑**——index.html 那边改合并,load.js 要跟(两处都有注释互指)。
 
 `tools/audit.js` 自包含、无依赖,直接从 index.html 抽表,查下面这些约定是否被破坏:中英条目数对齐、大事记越界与排序、CHRONO_X 双语完整性与同年重复、GL 区间越界与 k 值合法性、按名索引表的孤儿键、泳道 id 有效性。
 

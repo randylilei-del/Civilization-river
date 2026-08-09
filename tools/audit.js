@@ -1,38 +1,15 @@
 #!/usr/bin/env node
 /* 文明长河 — 数据结构校验
  * 用法(在仓库根目录): node tools/audit.js
- * 自包含:直接从 index.html 抽数据表,不依赖任何临时文件或外部依赖。
+ * 数据经 tools/load.js 统一加载(Phase 3,2026-08-09):数据表按目录枚举 data/*.js,
+ * config 表按名从 index.html 抽取——不再依赖「从 LANES 切到 TRACES」的位置切片。
+ * 那套切片曾要求 AGLYPH 之后的新表单独补一段,漏补即静默失明;现在新表落盘即被发现,
+ * 抽不到指名的 config 会大声报错。
  * 退出码 0 = 全通过,1 = 发现问题。
  */
-const fs = require('fs');
-const path = require('path');
-const vm = require('vm');
-
-const ROOT = path.join(__dirname, '..');
-const src = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-
-// 抽出 <script> 里从 LANES 到 TRACES 结束的整段常量声明;LAND 是压缩海岸线,体量大且与校验无关,剔除。
-const script = src.slice(src.indexOf('<script>') + 8, src.lastIndexOf('</script>'));
-const start = script.indexOf('const LANES');
-const tracesAt = script.indexOf('const TRACES');
-if (start < 0 || tracesAt < 0) { console.error('抽取失败:找不到 LANES 或 TRACES 声明'); process.exit(1); }
-const after = script.slice(tracesAt);
-const end = tracesAt + after.indexOf('\n];') + 3;
-
-// AGLYPH/AGNAME/ACHV 声明在 TRACES 之后,落在上面那段之外,单独再抽一段拼上。
-const achvAt = script.indexOf('const AGLYPH');
-if (achvAt < 0) { console.error('抽取失败:找不到 AGLYPH 声明'); process.exit(1); }
-const achvEnd = achvAt + script.slice(achvAt).indexOf('\n};') + 3;
-
-const body = [script.slice(start, end), script.slice(achvAt, achvEnd)]
-  .join('\n').split('\n').filter(l => !l.startsWith('const LAND') && !l.startsWith('const BORDERS')).join('\n');
-
-const ctx = {};
-vm.createContext(ctx);
-const PICK = '({LANES,SPHERES,CIVS,EVENTS,GEO,CHRONO,GL,CHRONO_X,EN,TRACES,ERAS,PLACE,VIDEO,PEOPLE,PGLYPH,PGNAME,PEAK,ACHV,AGLYPH,GEO_CITY,PLACE_LORE})';
 let D;
-try { vm.runInContext(body, ctx); D = vm.runInContext(PICK, ctx); } catch (e) {
-  console.error('数据段解析失败:', e.message); process.exit(1);
+try { D = require('./load')(); } catch (e) {
+  console.error('数据加载失败:', e.message); process.exit(1);
 }
 const { LANES, CIVS, EVENTS, GEO, CHRONO, GL, CHRONO_X, EN, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME, PEAK, ACHV, AGLYPH, GEO_CITY, PLACE_LORE } = D;
 
