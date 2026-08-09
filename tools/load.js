@@ -19,7 +19,7 @@ const DATA_DIR = path.join(ROOT, 'data');
 
 /* index.html 里的 config 表(docs/DATA.md「表的性质与住处」的 config 行)。
    工具需要谁就列谁;列了却抽不到 = 硬错误。 */
-const CONFIG_CONSTS = ['LANES', 'SPHERES', 'ERAS', 'PGLYPH', 'PGNAME', 'AGLYPH', 'AGNAME'];
+const CONFIG_CONSTS = ['LANES', 'SPHERES', 'ERAS', 'EV_NAME', 'PGLYPH', 'PGNAME', 'AGLYPH', 'AGNAME'];
 
 /* 按名字抽一条 const 声明:跳过字符串与注释的括号配平。 */
 function grabConst(src, name) {

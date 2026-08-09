@@ -25,7 +25,7 @@
     out['strings:' + lang] = hash([
       LANES.map(l => lName(l.id)).join('|'),
       LANES.map(l => sName(Object.keys(SPHERES)[0])).length ? Object.keys(SPHERES).map(k => sName(k)).join('|') : '',
-      ERAS.map((e, i) => LANG === 'zh' ? e.n : (typeof EN !== 'undefined' && EN.eras ? EN.eras[i] : e.n[1])).join('|'),
+      ERAS.map((e, i) => LANG === 'zh' ? e.n : (e.en || (typeof EN !== 'undefined' && EN.eras && EN.eras[i]))).join('|'),
       Object.keys(EV_NAME).map(t => evType(t)).join('|'),
     ].join('##'));
   }

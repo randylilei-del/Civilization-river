@@ -1,5 +1,5 @@
 # Handoff — 文明长河 / civilization-river
-更新时间：2026-08-09（v110 已由 Ray push 确认到位后再核；v111 已 commit，**尚未 push**）
+更新时间：2026-08-09（v111–v118 已由 Ray push；**v119–v123（Phase 4 全部）已 commit 未 push**）
 
 > 给下一个 Claude 会话：先读本文件 + CLAUDE.md 即可继续，无需原对话记录。
 > 上线地址 https://civilization-river.vercel.app ；仓库实名是大写 C 的 `Civilization-river`。
@@ -12,13 +12,15 @@
 
 1. `git log --oneline -3` + `git ls-remote origin main` —— 确认本地与远端状态，
    **不要信本文件里写死的 commit 号**
-2. `node tools/audit.js` —— 应当 exit 0、45 条规则全过（规则 45 = index.html 与 data/ 正本一致性）
+2. `node tools/audit.js` —— 应当 exit 0、46 条规则全过（45 = 正本一致性守卫，46 = config 英文完整性）
 3. `node tools/coverage.js` —— 应当是「条目 637 · 城市 101 · 全满 101 · 总缺口 0」
 4. **数据迁出重构已全部完成（v111–v118，Phase 1–3）**：23 张内容表的正本全在 `data/*.js`，
    **改数据 → 改 `data/<表>.js` → `node tools/build.js`**；改代码/config → 直接改 index.html。
-   audit/coverage/peakgap/refs 四工具统一走 `tools/load.js`（注意它镜像了 GL_X 合并，
-   index.html 那边改合并逻辑两处要同步）。设计与决策全在 `docs/ARCH.md`。
-   Phase 4（中英 {zh,en} 成对化）是独立决策，**未启动、未拍板**
+   audit/coverage/peakgap/refs 四工具统一走 `tools/load.js`（注意两点：①它镜像了 GL_X 合并，
+   index.html 那边改合并逻辑两处要同步 ②它返回的是**合并后视图**，做字节级比对要直接 eval 文件）。
+   **Phase 4 也已完成（v119–v123）**：EN 字典退役，中英同条目成对（EVENTS/CHRONO 的 [zh,en]、
+   CIVS 的 e 块、config 的 en 字段），CHRONO_X 已并回 CHRONO。**改内容时中英一起写在同一条里**。
+   渲染层改动的验证用 `tools/snapshot.browser.js`（DOM 快照 326 条哈希）。设计与决策全在 `docs/ARCH.md`
 
 三条都对，就说明站是干净的。**如果 Ray 直接说「继续」而没指方向**，
 按「进行中 / 下一步」里那张推荐排序表提议，让他挑——不要自己选一个就开干，

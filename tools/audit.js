@@ -11,7 +11,7 @@ let D;
 try { D = require('./load')(); } catch (e) {
   console.error('数据加载失败:', e.message); process.exit(1);
 }
-const { LANES, CIVS, EVENTS, GEO, CHRONO, GL, EN, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME, PEAK, ACHV, AGLYPH, GEO_CITY, PLACE_LORE } = D;
+const { LANES, SPHERES, ERAS, EV_NAME, CIVS, EVENTS, GEO, CHRONO, GL, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME, PEAK, ACHV, AGLYPH, GEO_CITY, PLACE_LORE } = D;
 
 const P = [];
 const KINDS = ['econ', 'art', 'tech', 'thought'];
@@ -198,6 +198,15 @@ CIVS.forEach(c => {
   const has = PEAK[c.n] && PEAK[c.n].a !== undefined;
   if (!has && !naSet.has(c.n)) P.push(`[PEAK 缺版图且未列入留空名单] ${c.n} —— 要么补 a,要么去 audit.js 的 PEAK_NA 里说明为什么不该有`);
   if (has && naSet.has(c.n)) P.push(`[PEAK 留空名单已过期] ${c.n} 现在有 a=${PEAK[c.n].a},应从 PEAK_NA.${naSet.get(c.n)} 移除`);
+});
+
+/* 规则 46(v123):config 表的英文必须齐全——EN 字典退役后,英文住在各 config 条目里
+ * (LANES/SPHERES/ERAS 的 en 字段、EV_NAME 的 [zh,en] 对),漏写英文界面会静默出 undefined。 */
+LANES.forEach(l => { if (!l.en) P.push(`[泳道缺英文名] ${l.name}`); });
+Object.entries(SPHERES).forEach(([k, v]) => { if (!v.en) P.push(`[文明圈缺英文名] ${v.name}`); });
+ERAS.forEach(e => { if (!e.en) P.push(`[时代缺英文名] ${e.n}`); });
+Object.entries(EV_NAME).forEach(([k, v]) => {
+  if (!Array.isArray(v) || v.length !== 2 || !v[0] || !v[1]) P.push(`[事件类型名非双语] ${k}`);
 });
 
 // co:分裂时期的并存政权。规则 24—27
@@ -391,7 +400,7 @@ const mdWalk = (v, path) => {
   if (v && typeof v === 'object') return Object.entries(v).forEach(([k, x]) => mdWalk(x, `${path}.${k}`));
 };
 [['CIVS', CIVS], ['PEOPLE', PEOPLE], ['ACHV', ACHV], ['CHRONO', CHRONO],
- ['GL', GL], ['EN', EN], ['PEAK', PEAK], ['PLACE', PLACE], ['EVENTS', EVENTS], ['TRACES', TRACES]]
+ ['GL', GL], ['PEAK', PEAK], ['PLACE', PLACE], ['EVENTS', EVENTS], ['TRACES', TRACES]]
   .forEach(([n, t]) => mdWalk(t, n));
 
 // 试过但没成的一条(v76,记在这里免得下次重来):
@@ -786,7 +795,7 @@ if (PLACE_LORE && GEO_CITY) {
     if (o && typeof o === 'object') for (const k of Object.keys(o)) walk(o[k], `${path}.${k}`);
   };
   walk(CIVS, 'CIVS'); walk(CHRONO, 'CHRONO');
-  walk(EN, 'EN'); walk(PEOPLE, 'PEOPLE'); walk(ACHV, 'ACHV'); walk(PLACE, 'PLACE');
+  walk(PEOPLE, 'PEOPLE'); walk(ACHV, 'ACHV'); walk(PLACE, 'PLACE');
   if (typeof PLACE_LORE !== 'undefined') walk(PLACE_LORE, 'PLACE_LORE');
   hay.forEach(([path, txt]) => {
     const i = txt.search(STRAY);
@@ -859,7 +868,7 @@ const SETTLED = [
     else if (v && typeof v === 'object') Object.entries(v).forEach(([k2, x]) => walk(x, path + '.' + k2));
   };
   walk(CIVS, 'CIVS'); walk(CHRONO, 'CHRONO');
-  walk(EN, 'EN'); walk(PEOPLE, 'PEOPLE'); walk(ACHV, 'ACHV');
+  walk(PEOPLE, 'PEOPLE'); walk(ACHV, 'ACHV');
   if (typeof PLACE_LORE !== 'undefined') walk(PLACE_LORE, 'PLACE_LORE');
   SETTLED.forEach(([re, why]) => hay.forEach(([path, txt]) => {
     if (re.test(txt)) P.push(`[复发已裁决的说法] ${path}: ${why}\n    …${txt.slice(Math.max(0, txt.search(re) - 15), txt.search(re) + 45)}…`);
