@@ -2417,6 +2417,12 @@ const PEOPLE = {
   s:['南非从种族隔离到多数人统治的转变没有演变成内战,这在当时被普遍认为几乎不可能。真相与和解委员会以"讲出真相换取赦免"取代审判,此后被卢旺达、东帝汶等三十余个国家借鉴。他只做一届总统即主动交权。联合国把他的生日 7 月 18 日定为"曼德拉国际日"。',
      'South Africa moved from apartheid to majority rule without the civil war almost everyone expected. The Truth and Reconciliation Commission traded amnesty for testimony instead of holding trials, and more than thirty countries — Rwanda and Timor-Leste among them — have since borrowed the model. He served one term and handed over power. The UN keeps his birthday, 18 July, as Nelson Mandela International Day.'] },
 
+'西潘王': { g:'king', y:[250,300], yk:'a', ca:1, c:'莫切', n:['西潘王','Lord of Sipán'],
+  t:['约三世纪莫切的一位统治者。没有任何文字记下他,我们知道的一切,都是考古学家从他的墓里「读」出来的。','A Moche ruler of about the third century. No text records him; everything we know was read out of his tomb.'],
+  a:[['1987 年,盗墓贼先挖进了西潘村旁的土坯金字塔;考古学家瓦尔特·阿尔瓦闻讯赶到,在警察看守下抢救发掘,找到了第一座完整出土、未被盗掘的莫切王墓。','In 1987 looters broke into an adobe pyramid by the village of Sipán; archaeologist Walter Alva rushed in to excavate under police guard and found the first Moche royal tomb ever recovered intact.'],
+     ['他戴着金银头饰,项链是二十颗花生形状的珠子——金银各十颗;陪葬的还有武士、女子、孩童、一条狗,还有两头美洲驼。','He wore gold and silver regalia, with a necklace of twenty peanut-shaped beads — ten gold, ten silver — and was buried with warriors, women, a child, a dog and two llamas.'],
+     ['他的整套装束,与莫切陶器上反复出现的「武士祭司」形象对得上——学者由此确认:陶画里主持仪式的那种人物,真实存在过。','His full regalia matches the "warrior priest" who appears again and again on Moche pottery — confirming that the figure presiding over those painted ceremonies really existed.']],
+  s:['这座墓被称作「美洲的图坦卡蒙」;同一座金字塔后来又发掘出年代更早的「老西潘王」等多座王墓。出土文物如今收藏在专为它们建造的西潘王室陵墓博物馆里,是秘鲁最重要的博物馆之一——一个没有文字的文明,靠一座没被盗走的墓,让世界记住了它的王。','The find has been called an American Tutankhamun; the same pyramid later yielded the earlier "Old Lord of Sipán" and other royal tombs. The treasures now fill the Royal Tombs of Sipán Museum, built for them and among the most important museums in Peru — a civilisation without writing, remembered through the one tomb the looters never reached.'] },
 '火之生': { g:'war', y:[374,396], yk:'a', ca:1, c:'特奥蒂瓦坎', n:['火之生','Siyaj K\'ak\''],
   t:['我们知道他,全靠一千公里外的玛雅人把他写进了石碑。',
      'We know him only because the Maya, a thousand kilometres away, carved him into stone.'],
