@@ -2072,6 +2072,7 @@ const CIVS = [
       legacy:['20世纪的文学「爆炸」把马尔克斯、略萨、科塔萨尔送进世界文学的中心,更早的博尔赫斯与诗人聂鲁达同样如此。足球在这里被改造成另一种踢法。农业上,原产于美洲的玉米、马铃薯、番茄、辣椒、可可与橡胶早已改变了全世界的饮食与工业。「解放神学」与参与式预算这类社会实验,也从这里传向别处。','The literary boom of the twentieth century put García Márquez, Borges and Neruda at the centre of world literature. Football was remade here into another way of playing the game. In agriculture, maize, the potato, the tomato, chilli, cacao and rubber all came from the Americas and long ago changed how the world eats and manufactures. Social experiments such as liberation theology and participatory budgeting have travelled outward from here too.'] },
   d:'玻利瓦尔们在拿破仑战争的间隙赢得独立,却未能赢得整合:强人政治、原料依赖与债务循环缠绕两百年;文化上却极为丰饶——从探戈到魔幻现实主义,拉美始终在输出想象力。' },
 ];
+/*__DATA:events:start__*/
 /* 交流事件 */
 const EVENTS = [
 { y:-1200, ls:['eu','me'], t:'war', n:'青铜时代大崩溃', d:'"海上民族"入侵叠加系统性崩溃,迈锡尼、赫梯覆灭,东地中海进入黑暗时代。' },
@@ -2097,6 +2098,7 @@ const EVENTS = [
 { y:1947, ls:['am','eu','ea','sa','se','af'], t:'culture', n:'冷战与去殖民化', d:'两大阵营对峙四十余年;亚非数十国相继独立,殖民时代落幕。' },
 { y:1517, ls:['eu'], t:'culture', n:'宗教改革', d:'路德九十五条论纲引发新旧教分裂;印刷术让神学争论首次成为大众事件,百年宗教战争随之而来。' },
 ];
+/*__DATA:events:end__*/
 const EV_GLYPH = { war:'⚔', trade:'⇄', culture:'✦', tech:'⚙', plague:'☠', migration:'➤' };
 const EV_NAME = { war:'战争·征服', trade:'贸易', culture:'思想·宗教', tech:'技术', plague:'瘟疫', migration:'迁徙' };
 /* ---------- 地理数据:LAND 为内嵌世界海岸线;GEO 为各文明鼎盛期粗略版图(示意) ---------- */
@@ -2982,6 +2984,7 @@ const CHRONO_X = {
  [1619, ['萨尔浒之战','Sarhu'], ['明军四路分进十余万,五日内被各个击破;辽东攻守易势,再未夺回。','Four Ming columns, over 100,000 men, destroyed one by one in five days — the initiative in the northeast never came back.']],
  [1637, ['《天工开物》','Exploitation of the Works of Nature'], ['宋应星记下一百三十项工艺,从种稻到炼铁。','Song Yingxing records 130 crafts, from rice to iron.']] ],
 };
+/*__DATA:video:start__*/
 /* ---------- 纪录片:人工策展 ----------
    键 = CIVS.n,值 = 数组(一个文明可配多部,按阶段拆)。
    每项:b = B 站 BV 号,y = YouTube 视频 ID(可选),t = 片名[zh,en]。
@@ -3036,6 +3039,7 @@ const VIDEO = {
   '南北朝': [ { b:'BV1w3411v7jd', t:['一口气看完 170 年的乱世南北朝','170 years of division'] } ],
   '东晋·十六国': [ { b:'BV1N7411M7wA', t:['两晋十六国:后三国时代 174 年','Jin and the Sixteen Kingdoms'] } ],
 };
+/*__DATA:video:end__*/
 /* ---------- 地理底图:河流 / 山脉 / 沙漠 ----------
    地理常常比政治更能解释文明为什么在这里起、又为什么停在那里。
    坐标为手写粗略折线/多边形,精度约 ±1~2°——地图 332px 宽通常覆盖 60~120 经度
@@ -7508,6 +7512,7 @@ for (const [n, v] of Object.entries(GL_X)) {
    不按时间先后(明、南宋、南北朝、朱罗、三佛齐、帖木儿),只排新的会让顺序更不一致。 */
 CIVS.forEach(c => { const g = GL[c.n] || c.gl; if (g) g.sort((x, y) => x.a - y.a); });
 
+/*__DATA:traces:start__*/
 /* ---------- 传播轨迹:stops 按年代排序,p=上游节点索引(默认前一个) ---------- */
 const TRACES = [
 { n:['青铜技术','Bronze metallurgy'], stops:[
@@ -7577,6 +7582,7 @@ const TRACES = [
   { y:1600, l:'af', t:['木薯玉米入非','Cassava & maize to Africa'], d:['至今仍是非洲主粮;同一航线上驶着奴隶船。','Still Africa\'s staples — carried on the same routes as the slave ships.'], p:0 },
 ] },
 ];
+/*__DATA:traces:end__*/
 
 /* ---------- 布局与比例尺 ---------- */
 const INNER_W = 2300, LANE_H = 120, TOP = 66, BOT = 34;

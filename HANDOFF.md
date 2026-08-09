@@ -14,8 +14,8 @@
    **不要信本文件里写死的 commit 号**
 2. `node tools/audit.js` —— 应当 exit 0、45 条规则全过（规则 45 = index.html 与 data/ 正本一致性）
 3. `node tools/coverage.js` —— 应当是「条目 637 · 城市 101 · 全满 101 · 总缺口 0」
-4. **v111 起有构建管线**：`PEAK` 表的正本在 `data/peak.js`，改它要跑 `node tools/build.js`；
-   其余表照旧直接改 index.html。**动数据住处之前必读 `docs/ARCH.md`**——分阶段路线、
+4. **v111 起有构建管线**：已迁移表的正本在 `data/*.js`（v112 时点：peak / video / events / traces），
+   改它们要跑 `node tools/build.js`；其余表照旧直接改 index.html。**动数据住处之前必读 `docs/ARCH.md`**——分阶段路线、
    哪些表迁哪些不迁、成功标准全在里面，不要凭感觉开工
 
 三条都对，就说明站是干净的。**如果 Ray 直接说「继续」而没指方向**，
@@ -204,6 +204,11 @@ v51–v108 全部已推。Ray 的本机 settings 拦 Claude 的 push，**任何�
 **③ 窄屏测量漏算滚动条，结论偏乐观**
 先前报「co 卡 360px 溢出 0」，实际面板有 **17px 竖滚动条**，可用宽度是 287px 不是 302px，法兰克那条 296px 一直是超的。
 **对策：量 flex 容器宽度时先确认 `panel.offsetWidth - panel.clientWidth`。**
+
+**④′ 反向注入要先确认锚点真的落在目标区间（v112）**
+测规则 45 时用「青铜时代大崩溃」做注入串，`replace` 改到的第一处在 650 行的 CIVS——
+未迁移区，本来就不归规则 45 管，于是「注入」了个寂寞，audit exit=0 差点被读成守卫失效。
+**对策：注入前先取标记区间的切片、assert 目标串在区间内，再改。**
 
 **④ 管道会吞掉退出码，我据此报过一次「四条规则全过」（v109）**
 测 audit 新规则时写的是 `node tools/audit.js | grep PEAK; echo exit=$?`，四条注入全打印 `exit=0`——
