@@ -14,7 +14,7 @@
    **不要信本文件里写死的 commit 号**
 2. `node tools/audit.js` —— 应当 exit 0、45 条规则全过（规则 45 = index.html 与 data/ 正本一致性）
 3. `node tools/coverage.js` —— 应当是「条目 637 · 城市 101 · 全满 101 · 总缺口 0」
-4. **v111 起有构建管线**：已迁移表的正本在 `data/*.js`（v115 时点 19 张，名单见 docs/DATA.md「表的性质与住处」末行），
+4. **v111 起有构建管线**：已迁移表的正本在 `data/*.js`（v116 时点 21 张，名单见 docs/DATA.md「表的性质与住处」末行），
    改它们要跑 `node tools/build.js`；其余表照旧直接改 index.html。**动数据住处之前必读 `docs/ARCH.md`**——分阶段路线、
    哪些表迁哪些不迁、成功标准全在里面，不要凭感觉开工
 

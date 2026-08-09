@@ -3378,6 +3378,7 @@ const GC_ALIAS = {
 '墨西哥城':['特诺奇蒂特兰'], '敦煌':['莫高窟'], '瓦拉纳西':['贝拿勒斯'],
 };
 /*__DATA:gc_alias:end__*/
+/*__DATA:place_lore:start__*/
 /* 地点小段·手写层(地理视角第③层):回答「那个朝代,这个地方是什么样」。
    键 = '城市|文明',两边都必须真实存在且城市落在该文明版图内(audit 规则 38)。
    写法:两三句,只写查证过的硬事实,年代拿不准就用「前后/传为」hedge;
@@ -4658,6 +4659,7 @@ const PLACE_LORE = {
 '阿姆斯特丹|荷兰': ['十七世纪的阿姆斯特丹是欧洲的金融与航运中心:阿姆斯特丹银行、世界上最早的股票交易所之一都在这里,东印度公司的股票就在这座城里买卖。1637 年郁金香球茎的价格崩盘,是后世常被引用的早期投机泡沫。',
  'Seventeenth-century Amsterdam was Europe\'s hub of finance and shipping: the Bank of Amsterdam and one of the world\'s first stock exchanges were here, and shares in the East India Company changed hands in this city. When tulip bulb prices collapsed in 1637, it left one of the most cited early speculative bubbles.'],
 };
+/*__DATA:place_lore:end__*/
 /* ---------- English dictionary ---------- */
 const EN = {
 lanes: { eu:'Europe', me:'Middle East & N. Africa', st:'Steppe & C. Asia', sa:'South Asia', se:'Southeast Asia', ea:'East Asia', af:'Sub-Saharan Africa', am:'Americas' },
@@ -4986,6 +4988,7 @@ const ERAS = [
 const PGLYPH = { king:'👑', state:'🏛️', war:'⚔️', mind:'📜', sci:'⚙️', art:'🎨', faith:'☸️', sail:'🧭' };
 const PGNAME = { king:['帝王','Ruler'], state:['政治','Statesman'], war:['征战','Conqueror'], mind:['思想','Thinker'],
   sci:['科学','Scientist'], art:['艺术','Artist'], faith:['宗教','Faith'], sail:['航海','Navigator'] };
+/*__DATA:people:start__*/
 const PEOPLE = {
 '考底利耶': { g:'mind', y:[-350,-283], ca:1, c:'孔雀王朝', n:['考底利耶','Kautilya (Chanakya)'],
   t:['他没当过国王，却写了一本教国王怎么当国王的书。',
@@ -7415,6 +7418,7 @@ const PEOPLE = {
      'Teotihuacan held perhaps 100,000 to 200,000 people at its height, the largest city in the Americas — yet its script remains essentially undeciphered, and we do not even know what its rulers called themselves. The one named episode in its history comes from the Maya it influenced, exactly as the Ghana Empire survives only in Arab geography: whether a civilisation leaves names behind often depends on whether its neighbours wrote things down.'] },
 
 };
+/*__DATA:people:end__*/
 /*__DATA:gl_x:start__*/
 /* ---------- 鼎盛区间补充(v30) ----------
    经济/艺术/科技/思想四维,原本 65 个文明只有 1 维、8 个一维都没有。
