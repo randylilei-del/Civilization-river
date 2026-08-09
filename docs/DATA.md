@@ -13,7 +13,7 @@
 | **presentation** | 当前 age-7 版本的具体表达 | `PLACE_LORE`(地点小段叙事) · `PEOPLE` `ACHV`(卡片文案) · `CIVS.b/.d/.f` 的措辞 · `WIKI_NAME` `EN.civ.w`(消歧) · `VIDEO` · `EN`(翻译) |
 | **config** | 渲染参数,不是历史数据,**永远不迁出** | `LANES` `SPHERES` `ERAS` `EV_GLYPH` `EV_NAME` `PGLYPH` `PGNAME` `AGLYPH` `AGNAME` `GL_KIND` `QT` 及 `INNER_W`/`BP`/`UNIT`/`STEP`/`ZOOM_MIN_SPAN`/`AY_GAP`/`NSPLIT`/`PB`/`GV*` 等标量 |
 
-**已迁移到 `data/` 的表**:`PEAK`(v111)· `VIDEO` `EVENTS` `TRACES`(v112)。其余仍在 index.html,按 ARCH.md 的 Phase 2 顺序逐表搬。
+**已迁移到 `data/` 的表**:`PEAK`(v111)· `VIDEO` `EVENTS` `TRACES`(v112)· `GEO` `CHRONO` `GL` `GL_X`(v113)。其余仍在 index.html,按 ARCH.md 的 Phase 2 顺序逐表搬。
 
 `tools/audit.js` 自包含、无依赖,直接从 index.html 抽表,查下面这些约定是否被破坏:中英条目数对齐、大事记越界与排序、CHRONO_X 双语完整性与同年重复、GL 区间越界与 k 值合法性、按名索引表的孤儿键、泳道 id 有效性。
 
