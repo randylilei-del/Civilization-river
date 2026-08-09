@@ -24,7 +24,7 @@ const D = require('./load')();
 /* 表 → 数据文件。行号在该文件里搜,一表一文件,不会串。 */
 const FILE = {
   CIVS: 'civs', GEO: 'geo', CHRONO: 'chrono', GL: 'gl', GL_X: 'gl_x',
-  VIDEO: 'video', PEAK: 'peak', WIKI_NAME: 'wiki_name', 'EN.civ': 'en', 'EN.chrono': 'en',
+  VIDEO: 'video', PEAK: 'peak', WIKI_NAME: 'wiki_name',
   PEOPLE: 'people', TRACES: 'traces', EVENTS: 'events',
 };
 const lineCache = {};
@@ -40,13 +40,13 @@ const hits = [];
 // 1. CIVS 主表(含内联 gl)
 const civ = D.CIVS.find(c => c.n === name);
 if (civ) {
-  hits.push(['CIVS', at(`n:'${name}'`, 'CIVS'), `色带 ${civ.k[0][0]}~${civ.k[civ.k.length - 1][0]}` + (civ.gl ? ` · 内联 gl ${civ.gl.length} 条` : '') + (civ.co ? ` · co ${civ.co.length} 条` : '')]);
+  hits.push(['CIVS', at(`n:'${name}'`, 'CIVS'), `色带 ${civ.k[0][0]}~${civ.k[civ.k.length - 1][0]}` + (civ.gl ? ` · 内联 gl ${civ.gl.length} 条` : '') + (civ.co ? ` · co ${civ.co.length} 条` : '') + (civ.e ? ' · 含英文块 e' : '')]);
 }
 // 2. 按名索引的各表
 const tables = [
   ['GEO', D.GEO], ['CHRONO', D.CHRONO],
   ['GL', D.GL], ['GL_X', D.GL_X], ['VIDEO', D.VIDEO], ['PEAK', D.PEAK],
-  ['WIKI_NAME', D.WIKI_NAME], ['EN.civ', D.EN.civ], ['EN.chrono', D.EN.chrono],
+  ['WIKI_NAME', D.WIKI_NAME],
 ];
 for (const [label, tbl] of tables) {
   if (!tbl || !(name in tbl)) continue;

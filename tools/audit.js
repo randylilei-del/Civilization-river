@@ -24,7 +24,7 @@ CIVS.forEach(c => {
   if (c.k[0][1] !== 0) P.push(`[k首帧非0] ${c.n} = ${c.k[0][1]}`);
   for (let i = 1; i < c.k.length; i++) if (c.k[i][0] <= c.k[i - 1][0]) P.push(`[k年份未递增] ${c.n} @${c.k[i][0]}`);
 
-  if (!EN.civ[c.n]) P.push(`[缺英文 EN.civ] ${c.n}`);
+  if (!c.e) P.push(`[缺英文块 e] ${c.n}`);
   if (!GEO[c.n]) P.push(`[缺版图 GEO] ${c.n}`);
 
   /* CHRONO 自 v120 起与 CHRONO_X 同格式([年,[zh,en],[zh,en]?])——「中英数量不等」
@@ -59,7 +59,7 @@ CIVS.forEach(c => {
 
 // 按名索引的补充表里,键必须对得上现有文明名(拆分色带后最容易留下孤儿键)
 const names = new Set(CIVS.map(c => c.n));
-[['GEO', GEO], ['CHRONO', CHRONO], ['GL', GL], ['EN.civ', EN.civ]]
+[['GEO', GEO], ['CHRONO', CHRONO], ['GL', GL]]
   .forEach(([k, o]) => Object.keys(o).filter(n => !names.has(n)).forEach(n => P.push(`[孤儿键 ${k}] ${n}`)));
 
 // PLACE:"中心"里出现的每个古地名都要能换算出今属何处,否则该文明的卡片上就少一行
@@ -71,7 +71,7 @@ CIVS.forEach(c => {
     if (PLACE[p]) placeUsed.add(p); else P.push(`[PLACE 缺古地名] "${p}" ← ${c.n}`);
   });
   // 中英"中心"的地点数必须一致,否则英文卡片会漏掉某个都城
-  const en = EN.civ[c.n] && EN.civ[c.n].f && (EN.civ[c.n].f['Center'] || EN.civ[c.n].f['Centre']);
+  const en = c.e && c.e.f && (c.e.f['Center'] || c.e.f['Centre']);
   if (en) {
     const nz = v.split(SPLIT).filter(s => s.trim()).length, ne = en.split(SPLIT).filter(s => s.trim()).length;
     if (nz !== ne) P.push(`[中心中英地点数不等] ${c.n}: zh=${nz} en=${ne}`);
@@ -100,7 +100,7 @@ for (const [k, arr] of Object.entries(VIDEO || {})) {
 const bi = (v, n) => Array.isArray(v) && v.length === 2 && v[0] && v[1] ? '' : n;
 CIVS.forEach(c => {
   const z = c.f && c.f['人物']; if (!z) return;
-  const ef = EN.civ[c.n] && EN.civ[c.n].f;
+  const ef = c.e && c.e.f;
   const e = ef && (ef['Figures'] || ef['People']);
   if (!e) { P.push(`[缺英文 Figures] ${c.n}`); return; }
   const nz = z.split(SPLIT).filter(s => s.trim()).length, ne = e.split(SPLIT).filter(s => s.trim()).length;
