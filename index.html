@@ -2580,6 +2580,7 @@ const GL = {
 '拉丁美洲诸国': [ { a:1955, b:1990, k:'art', t:['魔幻现实主义','Magical realism'], d:['马尔克斯们把本地经验写成了世界文学。','Garcia Marquez and company make local experience world literature.'] } ],
 };
 /*__DATA:gl:end__*/
+/*__DATA:chrono_x:start__*/
 /* ---------- 补充大事记(双语内联,渲染时按年并入排序) ---------- */
 const CHRONO_X = {
 '古希腊': [
@@ -2994,6 +2995,7 @@ const CHRONO_X = {
  [1619, ['萨尔浒之战','Sarhu'], ['明军四路分进十余万,五日内被各个击破;辽东攻守易势,再未夺回。','Four Ming columns, over 100,000 men, destroyed one by one in five days — the initiative in the northeast never came back.']],
  [1637, ['《天工开物》','Exploitation of the Works of Nature'], ['宋应星记下一百三十项工艺,从种稻到炼铁。','Song Yingxing records 130 crafts, from rice to iron.']] ],
 };
+/*__DATA:chrono_x:end__*/
 /*__DATA:video:start__*/
 /* ---------- 纪录片:人工策展 ----------
    键 = CIVS.n,值 = 数组(一个文明可配多部,按阶段拆)。
@@ -3231,6 +3233,7 @@ const PEAK = {
 };
 /*__DATA:peak:end__*/
 
+/*__DATA:place:start__*/
 const PLACE = {
 /* 东亚 */
 '三星堆(今广汉)':['中国','China','广汉','Guanghan'], '金沙(今成都)':['中国','China','成都','Chengdu'],
@@ -3328,6 +3331,8 @@ const PLACE = {
 '硅谷':['美国加州','California, USA'],
 '圣保罗':['巴西','Brazil','圣保罗','Sao Paulo'], '布宜诺斯艾利斯':['阿根廷','Argentina','布宜诺斯艾利斯','Buenos Aires'],
 };
+/*__DATA:place:end__*/
+/*__DATA:geo_city:start__*/
 /* 地理视角的城市点:[中文名, 英文名, 经度, 纬度]。坐标沿用 v82 扫查时逐点验证过的那批,
    全部命中 ≥1 条文明版图(audit 规则 37 守着)。挑选标准:历史上重要 + 分布均衡,
    不是「今日大城市榜」——所以有巨港(三佛齐都城)、巴特那(华氏城)、麦罗埃(库施)、
@@ -3359,6 +3364,8 @@ const GEO_CITY = [
 ['圣地亚哥','Santiago',-70.65,-33.45],['纽约','New York',-74.01,40.71],['洛杉矶','Los Angeles',-118.24,34.05],['哈瓦那','Havana',-82.38,23.13],
 ['卡霍基亚','Cahokia',-90.06,38.66],
 ];
+/*__DATA:geo_city:end__*/
+/*__DATA:gc_alias:start__*/
 /* 城市古称别名:用于从大事记里筛「发生在这里的事」。只收指同一城址(或紧邻,如咸阳之于西安)
    的名字;有歧义的不收——「东京」不给开封(会误匹配日本东京),「亚历山大」必须带「城/港/里亚」
    (裸词会匹配到亚历山大大帝本人)。civ 名里含别名时该别名对该 civ 失效(防「罗马」在罗马诸带里
@@ -3370,6 +3377,7 @@ const GC_ALIAS = {
 '亚历山大':['亚历山大城','亚历山大港','亚历山大里亚'], '巴特那':['华氏城','巴连弗邑'],
 '墨西哥城':['特诺奇蒂特兰'], '敦煌':['莫高窟'], '瓦拉纳西':['贝拿勒斯'],
 };
+/*__DATA:gc_alias:end__*/
 /* 地点小段·手写层(地理视角第③层):回答「那个朝代,这个地方是什么样」。
    键 = '城市|文明',两边都必须真实存在且城市落在该文明版图内(audit 规则 38)。
    写法:两三句,只写查证过的硬事实,年代拿不准就用「前后/传为」hedge;
@@ -7999,12 +8007,14 @@ scrollerEl.addEventListener('touchmove', e => {
 scrollerEl.addEventListener('touchend', () => { pinch = null; });
 
 /* ---------- 维基链接:搜索跳转,精确命中词条时直达 ---------- */
+/*__DATA:wiki_name:start__*/
 const WIKI_NAME = { '后倭马亚·安达卢斯':'科尔多瓦哈里发国', '莫切':'莫切文化', '明':'明朝', '清':'清朝', '元':'元朝', '商':'商朝', '秦':'秦朝', '隋':'隋朝',
   '唐':'唐朝', '辽':'辽朝', '金':'金朝', '春秋':'春秋时期', '战国':'战国时期', '东晋·十六国':'东晋',
   '民国':'中华民国', '共和国':'中华人民共和国', '罗马共和国':'罗马共和国', '罗马帝国':'罗马帝国', '拜占庭':'拜占庭帝国',
   '波斯(阿契美尼德)':'阿契美尼德王朝', '暹罗':'暹罗', '扶南':'扶南', '朱罗王朝':'注辇',
   '嚈哒·白匈奴':'嚈哒', '西辽·哈剌契丹':'西辽', '布哈拉·希瓦·浩罕三汗国':'布哈拉汗国',
   '喀喇汗王朝':'喀喇汗国', '花剌子模':'花剌子模沙朝', '粟特':'粟特' };
+/*__DATA:wiki_name:end__*/
 const wiki = t => (LANG === 'zh' ? 'https://zh.wikipedia.org' : 'https://en.wikipedia.org') + '/w/index.php?search=' + encodeURIComponent(t);
 const wkA = (text, term) => `<a class="wk" href="${wiki(term || text)}" target="_blank" rel="noopener">${text}</a>`;
 /* 国内出口。维基百科在国内打不开,而这个站是给孩子用的——他点任何标题都是白屏。
@@ -8053,6 +8063,7 @@ const linkNames = (s, c) => {
    g 用于取字形:inst 制度 / obj 器物 / tech 技术 / idea 观念。 */
 const AGLYPH = { inst:'⚖', obj:'🏺', tech:'⚙', idea:'💡' };
 const AGNAME = { inst:['制度','Institution'], obj:['器物','Object'], tech:['技术','Technique'], idea:['观念','Idea'] };
+/*__DATA:achv:start__*/
 const ACHV = {
 '金凳': { g:'obj', c:'阿散蒂', y:[1700,1902], n:['金凳','The Golden Stool'],
   t:['一张没有人坐过的凳子——阿散蒂人相信整个民族的灵魂都在里面。','A stool no one has ever sat on: the Asante hold that the soul of the whole nation is inside it.'],
@@ -8271,6 +8282,7 @@ const ACHV = {
      ['腹内壁铸有三字铭文,是商王为祭祀母亲所作;鼎的名字就来自这三个字,读法至今仍有「司」与「后」两说','Three characters are cast inside: a Shang king\'s dedication to his mother. The vessel is named after them, and whether the first should read si or hou is still argued']],
   s:['同时期的西亚与欧洲主要把青铜用于兵器和工具,商周却把冶金的最高水平投进了祭祀用器——这个选择本身就说明这个社会认为什么最重要。用几个鼎、几个簋对应什么身份,有严格规定,「问鼎中原」「一言九鼎」这类说法都从这套等级来。器上的铭文是双重遗产:既记录了青铜工艺,也是汉字早期形态的实物证据。','In West Asia and Europe at the same date bronze went mainly into weapons and tools; Shang and Zhou China put its highest metallurgy into vessels for sacrifice — and that choice says plainly what the society thought mattered most. How many cauldrons and food vessels a person might use was fixed by rank, and several Chinese idioms about legitimate authority come straight from that graded set. The cast inscriptions are a double bequest: a record of the craft, and physical evidence of an early stage of Chinese writing.'] },
 };
+/*__DATA:achv:end__*/
 /* ---------- 详情面板 ---------- */
 const panel = document.getElementById('panel');
 function sparkSVG(c) {
