@@ -701,7 +701,11 @@ if (PLACE_LORE) {
  * 平壤中文「两百多年」英文写 two centuries。年份是这类漂移里唯一能机器查的部分,
  * 先把它焊死;其余仍靠独立核查员。 */
 if (PLACE_LORE) {
-  const years = t => (t.match(/\b\d{3,4}\b/g) || []).filter(y => +y >= 100 && +y <= 2025);
+  /* 年代写法要对齐:中文「1980 年代」对英文「the 1980s」,而 \b1980\b 匹配不上 1980s
+     (0 和 s 之间没有词边界),会误报成「年份只在中文出现」。把两边都归一到裸数字。 */
+  const years = t => (t.match(/\b\d{3,4}s?\b/g) || [])
+    .map(y => y.replace(/s$/, ''))
+    .filter(y => +y >= 100 && +y <= 2025);
   Object.entries(PLACE_LORE).forEach(([k, v]) => {
     if (!Array.isArray(v) || !v[0] || !v[1]) return;
     const zh = new Set(years(v[0])), en = new Set(years(v[1]));
@@ -742,6 +746,27 @@ if (PLACE_LORE && GEO_CITY) {
     const thr = Math.min(CORE_KM, m / 3);
     if (d <= thr && EDGE_ZH.test(v[0]) && EDGE_EN.test(v[1]))
       P.push(`[正文说边缘·系统判核心] ${k}: 距核心区 ${Math.round(d)} 公里(阈值 ${Math.round(thr)} 公里,判为「核心地带」),但正文写了「边」。改措辞或改 GEO 核心点`);
+  });
+}
+
+/* 43. 非拉丁字母混进英文单词(v97)。写巴格达时手滑打出 "двух-headed"(西里尔),
+ * node --check、规则 41(英文词漏进中文)、双语数量校验全都看不见它——英文串里
+ * 混进另一种文字,现有检查没有一条覆盖。
+ * 不能一刀切禁西里尔:正文里有意引用过俄语「Китай」(契丹→中国的词源),共 10 处合法。
+ * 判据收窄成「西里尔/希腊字母紧贴拉丁字母或连字符」——合法引用总是被空格和标点围着。 */
+{
+  const STRAY = /[Ѐ-ӿͰ-Ͽ][-A-Za-z]|[-A-Za-z][Ѐ-ӿͰ-Ͽ]/;
+  const hay = [];
+  const walk = (o, path) => {
+    if (typeof o === 'string') { if (STRAY.test(o)) hay.push([path, o]); return; }
+    if (o && typeof o === 'object') for (const k of Object.keys(o)) walk(o[k], `${path}.${k}`);
+  };
+  walk(CIVS, 'CIVS'); walk(CHRONO, 'CHRONO'); walk(CHRONO_X, 'CHRONO_X');
+  walk(EN, 'EN'); walk(PEOPLE, 'PEOPLE'); walk(ACHV, 'ACHV'); walk(PLACE, 'PLACE');
+  if (typeof PLACE_LORE !== 'undefined') walk(PLACE_LORE, 'PLACE_LORE');
+  hay.forEach(([path, txt]) => {
+    const i = txt.search(STRAY);
+    P.push(`[非拉丁字母混进单词] ${path}: …${txt.slice(Math.max(0, i - 20), i + 25)}…`);
   });
 }
 
