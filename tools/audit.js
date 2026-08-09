@@ -27,11 +27,20 @@ CIVS.forEach(c => {
   if (!EN.civ[c.n]) P.push(`[缺英文 EN.civ] ${c.n}`);
   if (!GEO[c.n]) P.push(`[缺版图 GEO] ${c.n}`);
 
-  // CHRONO 与 EN.chrono 按索引对齐,数量必须一致
-  const zh = CHRONO[c.n] || [], en = (EN.chrono || {})[c.n] || [];
-  if (zh.length !== en.length) P.push(`[大事记中英数量不等] ${c.n}: zh=${zh.length} en=${en.length}`);
-  zh.forEach(it => { if (it[0] < y0 || it[0] > y1) P.push(`[大事记越界] ${c.n} ${it[0]} "${it[1]}" (色带 ${y0}~${y1})`); });
-  for (let i = 1; i < zh.length; i++) if (zh[i][0] < zh[i - 1][0]) P.push(`[大事记未按年排序] ${c.n} @${zh[i][0]} "${zh[i][1]}"`);
+  /* CHRONO 自 v120 起与 CHRONO_X 同格式([年,[zh,en],[zh,en]?])——「中英数量不等」
+     那条规则随平行字典退役。标题双非空从严(转换时实测英文标题零缺失);
+     描述对允许单边空串(历史数据本就有 72 条单边,严查会把既有正确数据全报错),
+     但不允许双空(双空应当省略第三元)。 */
+  const zh = CHRONO[c.n] || [];
+  zh.forEach(it => {
+    if (it[0] < y0 || it[0] > y1) P.push(`[大事记越界] ${c.n} ${it[0]} "${it[1][0]}" (色带 ${y0}~${y1})`);
+    if (!Array.isArray(it[1]) || it[1].length !== 2 || !it[1][0] || !it[1][1]) P.push(`[大事记标题非双语] ${c.n} ${it[0]}`);
+    if (it[2] !== undefined) {
+      if (!Array.isArray(it[2]) || it[2].length !== 2) P.push(`[大事记描述非对] ${c.n} ${it[0]}`);
+      else if (!it[2][0] && !it[2][1]) P.push(`[大事记描述双空] ${c.n} ${it[0]},应省略第三元`);
+    }
+  });
+  for (let i = 1; i < zh.length; i++) if (zh[i][0] < zh[i - 1][0]) P.push(`[大事记未按年排序] ${c.n} @${zh[i][0]} "${zh[i][1][0]}"`);
 
   // CHRONO_X 双语内联,渲染时按年并入 CHRONO
   const x = CHRONO_X[c.n] || [];
@@ -56,7 +65,7 @@ CIVS.forEach(c => {
 
 // 按名索引的补充表里,键必须对得上现有文明名(拆分色带后最容易留下孤儿键)
 const names = new Set(CIVS.map(c => c.n));
-[['GEO', GEO], ['CHRONO', CHRONO], ['GL', GL], ['CHRONO_X', CHRONO_X], ['EN.chrono', EN.chrono || {}], ['EN.civ', EN.civ]]
+[['GEO', GEO], ['CHRONO', CHRONO], ['GL', GL], ['CHRONO_X', CHRONO_X], ['EN.civ', EN.civ]]
   .forEach(([k, o]) => Object.keys(o).filter(n => !names.has(n)).forEach(n => P.push(`[孤儿键 ${k}] ${n}`)));
 
 // PLACE:"中心"里出现的每个古地名都要能换算出今属何处,否则该文明的卡片上就少一行
