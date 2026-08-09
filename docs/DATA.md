@@ -8,14 +8,14 @@
 
 | 性质 | 含义 | 表 |
 |---|---|---|
-| **fact** | 受众无关的历史事实,未来任何受众/页面直接复用 | `CHRONO` `CHRONO_X`(年份+事件) · `PEAK`(版图人口,`as`/`an` 记出处与口径) · `GEO` `GEO_CITY` `GC_ALIAS` `PLACE`(地理) · `LAND` `BORDERS` `RIVERS` `RANGES` `DESERTS`(底图) · `CIVS.k`(影响力曲线,半主观但口径统一) |
+| **fact** | 受众无关的历史事实,未来任何受众/页面直接复用 | `CHRONO`(年份+事件;v121 起原 CHRONO_X 已并入) · `PEAK`(版图人口,`as`/`an` 记出处与口径) · `GEO` `GEO_CITY` `GC_ALIAS` `PLACE`(地理) · `LAND` `BORDERS` `RIVERS` `RANGES` `DESERTS`(底图) · `CIVS.k`(影响力曲线,半主观但口径统一) |
 | **interpretation** | 经拍板的历史理解(结论受众无关,语言已偏儿童) | 六问(`CIVS.q`) · `GL` `GL_X`(领域鼎盛判断) · `EVENTS` `TRACES`(文明间关系) · `co`/`ct`(并存政权判断) · audit 的 `SETTLED` 表(已裁决说法) |
 | **presentation** | 当前 age-7 版本的具体表达 | `PLACE_LORE`(地点小段叙事) · `PEOPLE` `ACHV`(卡片文案) · `CIVS.b/.d/.f` 的措辞 · `WIKI_NAME` `EN.civ.w`(消歧) · `VIDEO` · `EN`(翻译) |
 | **config** | 渲染参数,不是历史数据,**永远不迁出** | `LANES` `SPHERES` `ERAS` `EV_GLYPH` `EV_NAME` `PGLYPH` `PGNAME` `AGLYPH` `AGNAME` `GL_KIND` `QT` 及 `INNER_W`/`BP`/`UNIT`/`STEP`/`ZOOM_MIN_SPAN`/`AY_GAP`/`NSPLIT`/`PB`/`GV*` 等标量 |
 
 **Phase 2 已完成(v117)**:23 张内容表全部迁到 `data/`,`CIVS` `EN` 于 v117 收口。config 类(`PGLYPH` `PGNAME` `AGLYPH` `AGNAME` `LANES` `SPHERES` `ERAS` 及渲染标量)按设计留在 index.html。**Phase 3 已完成(v118)**:audit / coverage / peakgap / refs 四个工具统一走 `tools/load.js`(数据表按目录枚举 data/、config 表按名抽取),「从 LANES 切到 TRACES」的位置切片已删除。**注意 load.js 镜像了 index.html 的 GL_X 合并逻辑**——index.html 那边改合并,load.js 要跟(两处都有注释互指)。
 
-`tools/audit.js` 自包含、无依赖,直接从 index.html 抽表,查下面这些约定是否被破坏:中英条目数对齐、大事记越界与排序、CHRONO_X 双语完整性与同年重复、GL 区间越界与 k 值合法性、按名索引表的孤儿键、泳道 id 有效性。
+`tools/audit.js` 自包含、无依赖,直接从 index.html 抽表,查下面这些约定是否被破坏:大事记越界/排序/双语完整性/同年重复、GL 区间越界与 k 值合法性、按名索引表的孤儿键、泳道 id 有效性等 40 余条。
 
 **GEO 三条几何规则的分工**(容易只记住前两条):30 查外接框是否离谱、35 查核心点是否落在自己版图内、36 拿内联的 230 城基线表查「命中数是否跌破」。36 只报跌破、不报上涨(新增文明本来就会让命中数上升);基线 0 的六座城是站里确实没有对应文明(悉尼/奥克兰/火奴鲁鲁/复活节岛无大洋洲泳道,奥斯陆/哥本哈根无维京·北欧带)。**有意收缩某条版图时**,把该城基线改小即可——但改之前先确认那片地方真的该空着。
 
@@ -32,7 +32,7 @@
 | `EVENTS` | {y, ls, t, n:[zh,en], d:[zh,en]} | 交流事件;ls=涉及泳道 t∈war/trade/culture/tech/plague/migration。**v119 起 n/d 双语成对**,EN.events 已退役 |
 | `TRACES` | {n:[zh,en], stops:[{y,l,t:[..],d:[..],p?}]} | 传播轨迹;stops 按年排序,p=上游节点索引(默认前一个) |
 | `GEO` | {'文明名': {p:[[[lon,lat]..]..], c:[lon,lat]}} | 鼎盛期示意版图(可多多边形)+ 核心点;键=CIVS.n。**是示意图不是地图**,顶点少、海岸线简化,但「简化」不等于可以用一条直线代替一整段海岸:v82 就是因为从秦到共和国 17 条色带都拿 `[121,30]→[113,22]` 一条斜线当东南沿海,把福建与粤东整片切在版图外。画完必须过 audit 规则 30(外接框)、35(核心点在自己多边形内)、**36(城市覆盖基线)**——前两条查不出「边界画歪、漏掉一整片」,只有 36 能 |
-| `CHRONO` | {'文明名': [[年,[中标题,英标题],[中一句话,英一句话]?]..]} | 大事记。**v120 起与 CHRONO_X 同格式**,EN.chrono 已退役;标题双非空,描述对允许单边空串(双空则省略第三元) |
+| `CHRONO` | {'文明名': [[年,[中标题,英标题],[中一句话,英一句话]?]..]} | 大事记,**单表已按年排序**。v120 双语成对(EN.chrono 退役);**v121 原 CHRONO_X 追加块并入本表**——数据进 data/ 后「追加不改既有字面量」的理由消失。标题双非空,描述对允许单边空串(双空则省略第三元),同年重复 audit 查 |
 | `EN` | lanes/spheres/eras/evtype/events/civ/chrono | 英文字典;events/chrono 按索引与中文对齐,**数量必须一致** |
 | `VIDEO` | {'文明名': {b?:BV号, y?:YouTube ID, t:[zh,en]}} | 纪录片,**人工策展**。b/y 至少给一个;中文界面优先 B 站、英文优先 YouTube。**绝不可凭印象生成 ID**——编出来的要么死链、要么指向无关内容,而用户是小孩。没条目的文明只显示搜索按钮 |
 | `RIVERS` | {n:[zh,en], p:[[lon,lat]..]} | 河流折线(不闭合),约 35 条。手写粗略坐标 ±1~2° |

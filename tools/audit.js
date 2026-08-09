@@ -11,7 +11,7 @@ let D;
 try { D = require('./load')(); } catch (e) {
   console.error('数据加载失败:', e.message); process.exit(1);
 }
-const { LANES, CIVS, EVENTS, GEO, CHRONO, GL, CHRONO_X, EN, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME, PEAK, ACHV, AGLYPH, GEO_CITY, PLACE_LORE } = D;
+const { LANES, CIVS, EVENTS, GEO, CHRONO, GL, EN, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME, PEAK, ACHV, AGLYPH, GEO_CITY, PLACE_LORE } = D;
 
 const P = [];
 const KINDS = ['econ', 'art', 'tech', 'thought'];
@@ -42,16 +42,10 @@ CIVS.forEach(c => {
   });
   for (let i = 1; i < zh.length; i++) if (zh[i][0] < zh[i - 1][0]) P.push(`[大事记未按年排序] ${c.n} @${zh[i][0]} "${zh[i][1][0]}"`);
 
-  // CHRONO_X 双语内联,渲染时按年并入 CHRONO
-  const x = CHRONO_X[c.n] || [];
-  x.forEach(it => {
-    if (it[0] < y0 || it[0] > y1) P.push(`[CHRONO_X 越界] ${c.n} ${it[0]} "${it[1][0]}" (色带 ${y0}~${y1})`);
-    if (!Array.isArray(it[1]) || it[1].length !== 2 || !it[1][0] || !it[1][1]) P.push(`[CHRONO_X 标题非双语] ${c.n} ${it[0]}`);
-    if (it[2] !== undefined && (!Array.isArray(it[2]) || it[2].length !== 2 || !it[2][0] || !it[2][1])) P.push(`[CHRONO_X 描述非双语] ${c.n} ${it[0]}`);
-  });
-  for (let i = 1; i < x.length; i++) if (x[i][0] < x[i - 1][0]) P.push(`[CHRONO_X 未按年排序] ${c.n} @${x[i][0]}`);
-  const zy = new Set(zh.map(i => i[0]));
-  x.forEach(it => { if (zy.has(it[0])) P.push(`[CHRONO_X 与 CHRONO 同年重复] ${c.n} ${it[0]} "${it[1][0]}"`); });
+  /* v121 起 CHRONO_X 已并回 CHRONO,其专属规则(越界/双语/排序)由上面的 CHRONO 规则接管;
+     「同年重复」原本查的是两表之间,并表后转为查表内(合并时实测全站零重复)。 */
+  { const seen = new Set();
+    zh.forEach(it => { if (seen.has(it[0])) P.push(`[大事记同年重复] ${c.n} ${it[0]} "${it[1][0]}"`); seen.add(it[0]); }); }
 
   // GL 鼎盛区间
   (GL[c.n] || c.gl || []).forEach(g => {
@@ -65,7 +59,7 @@ CIVS.forEach(c => {
 
 // 按名索引的补充表里,键必须对得上现有文明名(拆分色带后最容易留下孤儿键)
 const names = new Set(CIVS.map(c => c.n));
-[['GEO', GEO], ['CHRONO', CHRONO], ['GL', GL], ['CHRONO_X', CHRONO_X], ['EN.civ', EN.civ]]
+[['GEO', GEO], ['CHRONO', CHRONO], ['GL', GL], ['EN.civ', EN.civ]]
   .forEach(([k, o]) => Object.keys(o).filter(n => !names.has(n)).forEach(n => P.push(`[孤儿键 ${k}] ${n}`)));
 
 // PLACE:"中心"里出现的每个古地名都要能换算出今属何处,否则该文明的卡片上就少一行
@@ -342,7 +336,7 @@ Object.entries(ACHV || {}).forEach(([k, a]) => {
 });
 
 // 32:成就卡年份与同一文明大事记里同名事件的年份必须对得上。曾经出过成就卡写 605、
-// 站内大事记写 587 而两处讲的是同一件事。CHRONO 是 [年,'中文',...],CHRONO_X 是
+// 站内大事记写 587 而两处讲的是同一件事。大事记条目是
 // [年,[中,英],[中,英]],所以取文本要递归拍平。
 const flatTxt = v => Array.isArray(v) ? v.map(flatTxt).join(' ') : String(v);
 Object.entries(ACHV || {}).forEach(([k, a]) => {
@@ -365,7 +359,7 @@ Object.entries(ACHV || {}).forEach(([k, a]) => {
     }
     return false;
   };
-  [...(CHRONO[a.c] || []), ...(CHRONO_X[a.c] || [])].forEach(r => {
+  (CHRONO[a.c] || []).forEach(r => {
     const txt = flatTxt(r.slice(1));
     if (!named(txt, k) && !(alt && named(txt, alt))) return;
     if (r[0] < lo - tol || r[0] > hi + tol)
@@ -396,7 +390,7 @@ const mdWalk = (v, path) => {
   if (Array.isArray(v)) return v.forEach((x, i) => mdWalk(x, `${path}[${i}]`));
   if (v && typeof v === 'object') return Object.entries(v).forEach(([k, x]) => mdWalk(x, `${path}.${k}`));
 };
-[['CIVS', CIVS], ['PEOPLE', PEOPLE], ['ACHV', ACHV], ['CHRONO', CHRONO], ['CHRONO_X', CHRONO_X],
+[['CIVS', CIVS], ['PEOPLE', PEOPLE], ['ACHV', ACHV], ['CHRONO', CHRONO],
  ['GL', GL], ['EN', EN], ['PEAK', PEAK], ['PLACE', PLACE], ['EVENTS', EVENTS], ['TRACES', TRACES]]
   .forEach(([n, t]) => mdWalk(t, n));
 
@@ -791,7 +785,7 @@ if (PLACE_LORE && GEO_CITY) {
     if (typeof o === 'string') { if (STRAY.test(o)) hay.push([path, o]); return; }
     if (o && typeof o === 'object') for (const k of Object.keys(o)) walk(o[k], `${path}.${k}`);
   };
-  walk(CIVS, 'CIVS'); walk(CHRONO, 'CHRONO'); walk(CHRONO_X, 'CHRONO_X');
+  walk(CIVS, 'CIVS'); walk(CHRONO, 'CHRONO');
   walk(EN, 'EN'); walk(PEOPLE, 'PEOPLE'); walk(ACHV, 'ACHV'); walk(PLACE, 'PLACE');
   if (typeof PLACE_LORE !== 'undefined') walk(PLACE_LORE, 'PLACE_LORE');
   hay.forEach(([path, txt]) => {
@@ -841,7 +835,7 @@ const CJK_LAT_OK = /OPEC|GDP|WTO|GNP/;
     } else if (Array.isArray(v)) v.forEach(x => walk(x, path));
     else if (v && typeof v === 'object') Object.entries(v).forEach(([k2, x]) => walk(x, path + '.' + k2));
   };
-  walk(CIVS, 'CIVS'); walk(CHRONO, 'CHRONO'); walk(CHRONO_X, 'CHRONO_X');
+  walk(CIVS, 'CIVS'); walk(CHRONO, 'CHRONO');
   walk(PEOPLE, 'PEOPLE'); walk(ACHV, 'ACHV'); walk(GL, 'GL');
   if (typeof PLACE_LORE !== 'undefined') walk(PLACE_LORE, 'PLACE_LORE');
 }
@@ -864,7 +858,7 @@ const SETTLED = [
     else if (Array.isArray(v)) v.forEach((x, i) => walk(x, path));
     else if (v && typeof v === 'object') Object.entries(v).forEach(([k2, x]) => walk(x, path + '.' + k2));
   };
-  walk(CIVS, 'CIVS'); walk(CHRONO, 'CHRONO'); walk(CHRONO_X, 'CHRONO_X');
+  walk(CIVS, 'CIVS'); walk(CHRONO, 'CHRONO');
   walk(EN, 'EN'); walk(PEOPLE, 'PEOPLE'); walk(ACHV, 'ACHV');
   if (typeof PLACE_LORE !== 'undefined') walk(PLACE_LORE, 'PLACE_LORE');
   SETTLED.forEach(([re, why]) => hay.forEach(([path, txt]) => {
@@ -895,12 +889,12 @@ EVENTS.forEach(e => e.ls.forEach(l => { if (!laneIds.has(l)) P.push(`[事件泳�
 console.log(P.length ? P.join('\n') : '✅ 结构校验全通过');
 
 const nChrono = Object.values(CHRONO).reduce((s, a) => s + a.length, 0);
-const nX = Object.values(CHRONO_X).reduce((s, a) => s + a.length, 0);
+
 const nGL = Object.values(GL).reduce((s, a) => s + a.length, 0) + CIVS.filter(c => c.gl).reduce((s, c) => s + c.gl.length, 0);
-console.log(`\n文明 ${CIVS.length} · 大事记 ${nChrono + nX}(CHRONO ${nChrono} + CHRONO_X ${nX}) · GL ${nGL} 段,覆盖 ${CIVS.filter(c => GL[c.n] || c.gl).length}/${CIVS.length} · 事件 ${EVENTS.length} · 轨迹 ${TRACES.length}`);
+console.log(`\n文明 ${CIVS.length} · 大事记 ${nChrono} · GL ${nGL} 段,覆盖 ${CIVS.filter(c => GL[c.n] || c.gl).length}/${CIVS.length} · 事件 ${EVENTS.length} · 轨迹 ${TRACES.length}`);
 console.log('各泳道大事记:' + LANES.map(l => {
   const cs = CIVS.filter(c => c.l === l.id);
-  return `${l.name} ${cs.reduce((s, c) => s + (CHRONO[c.n] || []).length + (CHRONO_X[c.n] || []).length, 0)}`;
+  return `${l.name} ${cs.reduce((s, c) => s + (CHRONO[c.n] || []).length, 0)}`;
 }).join(' · '));
 
 process.exit(P.length ? 1 : 0);

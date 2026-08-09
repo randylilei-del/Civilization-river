@@ -23,7 +23,7 @@ const D = require('./load')();
 
 /* 表 → 数据文件。行号在该文件里搜,一表一文件,不会串。 */
 const FILE = {
-  CIVS: 'civs', GEO: 'geo', CHRONO: 'chrono', CHRONO_X: 'chrono_x', GL: 'gl', GL_X: 'gl_x',
+  CIVS: 'civs', GEO: 'geo', CHRONO: 'chrono', GL: 'gl', GL_X: 'gl_x',
   VIDEO: 'video', PEAK: 'peak', WIKI_NAME: 'wiki_name', 'EN.civ': 'en', 'EN.chrono': 'en',
   PEOPLE: 'people', TRACES: 'traces', EVENTS: 'events',
 };
@@ -44,7 +44,7 @@ if (civ) {
 }
 // 2. 按名索引的各表
 const tables = [
-  ['GEO', D.GEO], ['CHRONO', D.CHRONO], ['CHRONO_X', D.CHRONO_X],
+  ['GEO', D.GEO], ['CHRONO', D.CHRONO],
   ['GL', D.GL], ['GL_X', D.GL_X], ['VIDEO', D.VIDEO], ['PEAK', D.PEAK],
   ['WIKI_NAME', D.WIKI_NAME], ['EN.civ', D.EN.civ], ['EN.chrono', D.EN.chrono],
 ];
