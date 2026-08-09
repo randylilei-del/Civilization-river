@@ -873,10 +873,15 @@ try {
   P.push('[build 结构错误] ' + e.message);
 }
 
-if (EN.events && EN.events.length !== EVENTS.length) P.push(`[事件中英数量不等] zh=${EVENTS.length} en=${EN.events.length}`);
+/* 事件的 n/d 自 v119 起是 [zh,en] 成对——「中英数量不等」那条规则随平行数组一起退役,
+   结构上写不出来的错误不需要规则;换成查双语完整性。 */
+EVENTS.forEach(e => {
+  if (!Array.isArray(e.n) || e.n.length !== 2 || !e.n[0] || !e.n[1]) P.push(`[事件标题非双语] ${Array.isArray(e.n) ? e.n[0] : e.n}`);
+  if (!Array.isArray(e.d) || e.d.length !== 2 || !e.d[0] || !e.d[1]) P.push(`[事件描述非双语] ${Array.isArray(e.n) ? e.n[0] : e.n}`);
+});
 const laneIds = new Set(LANES.map(l => l.id));
 CIVS.forEach(c => { if (!laneIds.has(c.l)) P.push(`[泳道 id 不存在] ${c.n} → ${c.l}`); });
-EVENTS.forEach(e => e.ls.forEach(l => { if (!laneIds.has(l)) P.push(`[事件泳道 id 不存在] ${e.n} → ${l}`); }));
+EVENTS.forEach(e => e.ls.forEach(l => { if (!laneIds.has(l)) P.push(`[事件泳道 id 不存在] ${e.n[0]} → ${l}`); }));
 
 console.log(P.length ? P.join('\n') : '✅ 结构校验全通过');
 
