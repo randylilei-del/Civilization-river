@@ -200,6 +200,22 @@ CIVS.forEach(c => {
   if (has && naSet.has(c.n)) P.push(`[PEAK 留空名单已过期] ${c.n} 现在有 a=${PEAK[c.n].a},应从 PEAK_NA.${naSet.get(c.n)} 移除`);
 });
 
+/* 规则 48(v130):「人物」字段留空必须是「有意留空」,不能是「还没写」。
+ * 判据是 v28 定的:**真的没有名字可写才留空**——无同时代文字记录、也无考古实证个体的文明,
+ * 编人名比空着糟得多(二里头不写禹,三星堆不写蚕丛鱼凫:那是千年后追记的传说)。
+ * 反例(不该留空的形状):特奥蒂瓦坎的统治者名字见于玛雅碑文,所以补了;
+ * 莫切的西潘王是考古实证个体,2026-08-09 已提请 Ray 决定是否补。
+ * 双向:缺「人物」又不在名单 → 新色带没人判断过;在名单里却有了「人物」→ 名单过期该删。 */
+const FIGURES_NA = ['米诺斯·迈锡尼', '印度河文明', '三星堆·古蜀', '二里头·夏', '大津巴布韦',
+  '奥尔梅克', '查文文化', '莫切', '瓦里·蒂瓦纳科', '密西西比文化·卡霍基亚'];
+{ const na = new Set(FIGURES_NA);
+  for (const n of na) if (!names.has(n)) P.push(`[人物留空名单孤儿] ${n} 不是现存色带名`);
+  CIVS.forEach(c => {
+    const has = !!(c.f && c.f['人物']);
+    if (!has && !na.has(c.n)) P.push(`[缺人物且未列入留空名单] ${c.n} —— 要么补人物,要么去 audit.js 的 FIGURES_NA 里说明为什么不该有`);
+    if (has && na.has(c.n)) P.push(`[人物留空名单已过期] ${c.n} 现在有人物字段,应从 FIGURES_NA 移除`);
+  }); }
+
 /* 规则 46(v123):config 表的英文必须齐全——EN 字典退役后,英文住在各 config 条目里
  * (LANES/SPHERES/ERAS 的 en 字段、EV_NAME 的 [zh,en] 对),漏写英文界面会静默出 undefined。 */
 LANES.forEach(l => { if (!l.en) P.push(`[泳道缺英文名] ${l.name}`); });
