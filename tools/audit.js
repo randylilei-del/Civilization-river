@@ -167,6 +167,8 @@ for (const [k, v] of Object.entries(PEAK || {})) {
   // 户口数是确切记录,不该写成估算区间
   if (v.pc && Array.isArray(v.p)) P.push(`[PEAK 户口数不应为区间] ${k}`);
   if (v.an !== undefined && (!Array.isArray(v.an) || v.an.length !== 2 || !v.an[0] || !v.an[1])) P.push(`[PEAK 面积口径说明非双语] ${k}`);
+  // as 与 an 同为双语数组,原先只查了 an —— 漏一半等于没查
+  if (v.as !== undefined && (!Array.isArray(v.as) || v.as.length !== 2 || !v.as[0] || !v.as[1])) P.push(`[PEAK 面积出处非双语] ${k}`);
   if (v.w !== undefined && !(v.w > 0 && v.w <= 1)) P.push(`[PEAK 世界占比越界] ${k} = ${v.w},应在 0~1`);
   // 给了占比却没给人口,读者无从判断这个比例是怎么来的
   if (v.w !== undefined && v.p === undefined) P.push(`[PEAK 有占比无人口] ${k}`);
@@ -181,6 +183,42 @@ for (const [k, v] of Object.entries(PEAK || {})) {
     }
   }
 }
+
+/* 规则 44:版图留空必须是「有意留空」,不能是「还没查」。
+ * 缘由:PEAK 缺 a 的条目一多,就分不清哪些是查过确认不该有数字、哪些是没人查过。
+ * 于是每来一个新 session 就把同一批重查一遍(2026-08 那轮 56 条缺口查下来,
+ * 只有 8 条真能填)。把结论钉死在这里,并做双向校验:
+ *   ① 缺 a 又不在名单 → 新加的色带没人做过判断,报出来逼一次决定
+ *   ② 在名单里却已经有 a → 名单过期了,该删这一行
+ * 判据只有一条:**这个数字存在吗**。不是「大不大」「重不重要」。
+ * 分四类留空,每类的理由不同,别混:
+ *   split   同一条带里是多个并立政权/城邦,根本没有单一疆域面
+ *   agg     多国聚合带,或本身是别人版图的一部分(罗马治下近东 ⊂ 罗马帝国)
+ *   colo    殖民聚合带,疆域属于宗主国那几条带
+ *   arch    考古文化:无同时代文字记录,或当时不存在「边界」这个概念
+ *   nosrc   查证过,公开学术渠道确无可靠估算(2026-08 逐条查过,见 CHANGELOG v109)
+ * ⚠ 往 nosrc 里加条目前必须真的查过,这一类不是「我没找到」的垃圾桶。 */
+const PEAK_NA = {
+  split: ['古希腊', '玛雅', '战国', '春秋', '文艺复兴意大利', '粟特', '东晋·十六国', '五代十国',
+          '腓尼基', '斯瓦希里城邦', '布哈拉·希瓦·浩罕三汗国', '马六甲及诸苏丹国', '中世纪诸王朝'],
+  agg:   ['印度·南亚诸国', '现代中东', '罗马治下近东', '朝鲜半岛'],
+  colo:  ['欧洲殖民非洲', '欧洲殖民东南亚', '西葡殖民美洲', '俄国治下中亚'],
+  arch:  ['特奥蒂瓦坎', '米诺斯·迈锡尼', '吠陀时代', '二里头·夏', '奥尔梅克', '查文文化',
+          '三星堆·古蜀', '大津巴布韦', '莫切', '瓦里·蒂瓦纳科', '密西西比文化·卡霍基亚', '扶南'],
+  nosrc: ['荷兰', '朱罗王朝', '满者伯夷', '喀喇汗王朝', '波罗王朝', '蒲甘', '卡涅姆·博尔努',
+          '加纳帝国', '暹罗', '哈萨克汗国', '大越', '南诏·大理', '渤海国', '奇穆', '库施·努比亚'],
+};
+const naSet = new Map();
+for (const [why, list] of Object.entries(PEAK_NA)) for (const n of list) {
+  if (naSet.has(n)) P.push(`[PEAK 留空名单重复] ${n} 同时列在 ${naSet.get(n)} 与 ${why}`);
+  naSet.set(n, why);
+}
+for (const n of naSet.keys()) if (!names.has(n)) P.push(`[PEAK 留空名单孤儿] ${n} 不是现存色带名`);
+CIVS.forEach(c => {
+  const has = PEAK[c.n] && PEAK[c.n].a !== undefined;
+  if (!has && !naSet.has(c.n)) P.push(`[PEAK 缺版图且未列入留空名单] ${c.n} —— 要么补 a,要么去 audit.js 的 PEAK_NA 里说明为什么不该有`);
+  if (has && naSet.has(c.n)) P.push(`[PEAK 留空名单已过期] ${c.n} 现在有 a=${PEAK[c.n].a},应从 PEAK_NA.${naSet.get(c.n)} 移除`);
+});
 
 // co:分裂时期的并存政权。规则 24—27
 // q(兴衰六问):六键齐全、每键双语。缺一键就等于卡片上少一问,渲染不报错、只是悄悄没有
