@@ -712,6 +712,39 @@ if (PLACE_LORE) {
   });
 }
 
+/* 42. 手写正文与自动定位句的「核心/边缘」互斥(v97)。
+ * 每条 lore 下面会自动拼一句「距其核心区 X 公里,属核心地带/处在边缘」,判据在
+ * index.html 的 gvQuery 里。核查员 2026-08-09 发现三处正文说「边防据点/西北边城」、
+ * 下一行系统却打「属核心地带」——根因是判据当时用经纬度差 8 度、显示的却是公里,
+ * 于是能印出「距核心区 800 公里,属核心地带」。判据已改成 350km,这条规则盯住的是
+ * 「往后再写 lore 时正文说边、系统说核心」这类新的对撞,机器能查的只有这个方向:
+ * 反方向(正文说都城、系统说边缘)会被明初南京这类迁都情形大量误报,故不做。 */
+const CORE_KM = 350;  /* 上限;实际判据是 min(CORE_KM, 版图半径/3),与 index.html 的 gvCoreR 同步 */
+if (PLACE_LORE && GEO_CITY) {
+  const km = (a, b, c, d) => {
+    const r = Math.PI / 180, R = 6371;
+    const h = Math.sin((d - b) * r / 2) ** 2 + Math.cos(b * r) * Math.cos(d * r) * Math.sin((c - a) * r / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(h));
+  };
+  const pos = {}; GEO_CITY.forEach(([zh, , lon, lat]) => { pos[zh] = [lon, lat]; });
+  /* 中英两侧都要说「边」才算。只看英文会误报:开封|商 的英文里有 "opening the frontier",
+     那是地名「启封」的来历(启拓封疆),不是说商代开封在边疆——中文侧根本没有边疆词。 */
+  const EDGE_ZH = /边防|边城|边陲|边境|边缘|边地/;
+  const EDGE_EN = /frontier|borderland|outpost|march of/i;
+  Object.entries(PLACE_LORE).forEach(([k, v]) => {
+    if (!Array.isArray(v) || !v[0] || !v[1]) return;
+    const [cz, cn] = k.split('|');
+    const pt = pos[cz], g = GEO[cn];
+    if (!pt || !g || !g.c) return;
+    const d = km(pt[0], pt[1], g.c[0], g.c[1]);
+    let m = 0;
+    for (const poly of g.p) for (const vx of poly) { const e = km(g.c[0], g.c[1], vx[0], vx[1]); if (e > m) m = e; }
+    const thr = Math.min(CORE_KM, m / 3);
+    if (d <= thr && EDGE_ZH.test(v[0]) && EDGE_EN.test(v[1]))
+      P.push(`[正文说边缘·系统判核心] ${k}: 距核心区 ${Math.round(d)} 公里(阈值 ${Math.round(thr)} 公里,判为「核心地带」),但正文写了「边」。改措辞或改 GEO 核心点`);
+  });
+}
+
 /* 40. 已裁决口径的复发哨兵(v92)。
  * 这个站反复出现同一种失败:某个说法在一层被核查改对了,过一阵在**另一层**又被写回去。
  * 实例:1683 维也纳解围的功劳,v79 在文明卡层改成「波兰与帝国联军」,v92 又在
