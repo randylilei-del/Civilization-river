@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>六个问题看懂唐朝</title>
+<!-- ============================================================
+  唐朝 prototype(v124 起,设计讨论见 docs/ARCH.md「唐朝 prototype 是另一条线」)
+
+  这是一个产品实验,不是主站功能:验证「一次回答一个孩子问得出口的问题」
+  是否比一张分类齐全的文明卡更能让 7 岁孩子建立认知。
+  - 独立单文件、零依赖、中文单语(实验对象是一个孩子,双语是主站的约束不是实验的)
+  - 不 import 主站任何代码;内容改写自主站已核数据(六问/PLACE_LORE/CHRONO/PEAK/GEO),
+    第 4 幕(长安日常)为新写,经独立核查
+  - 实验判据与观察清单见 docs/TANG-EXPERIMENT.md;结果出来前不推广到其他文明
+============================================================ -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  :root {
+    --paper: #faf8f4; --ink: #2b2620; --ink2: #8a8177;
+    --accent: #b23a2a;            /* 唐红,全页唯一强调色 */
+    --line: #e5dfd5;
+  }
+  html, body { height: 100%; }
+  body {
+    background: var(--paper); color: var(--ink);
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    line-height: 1.75; overflow: hidden;
+  }
+  #stage { height: 100%; display: flex; flex-direction: column; max-width: 640px; margin: 0 auto; }
+
+  /* 顶栏:回目录 + 进度点 */
+  #top { display: flex; align-items: center; gap: 10px; padding: 14px 20px 6px; }
+  #home { border: 1px solid var(--line); background: none; border-radius: 8px; padding: 4px 12px;
+          font-size: 14px; color: var(--ink2); cursor: pointer; }
+  #dots { display: flex; gap: 6px; margin-left: auto; }
+  #dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--line); }
+  #dots i.on { background: var(--accent); }
+
+  #scene { flex: 1; overflow-y: auto; padding: 10px 24px 20px; }
+  .q-tag { color: var(--accent); font-size: 14px; font-weight: 600; letter-spacing: 1px; }
+  h1 { font-size: 26px; line-height: 1.4; margin: 4px 0 18px; }
+
+  /* 内容块:一块一块被点出来 */
+  .blk { margin-bottom: 16px; opacity: 0; transform: translateY(8px);
+         transition: opacity .45s, transform .45s; }
+  .blk.show { opacity: 1; transform: none; }
+  .blk p { font-size: 17px; }
+  .blk .big { font-size: 21px; font-weight: 600; }
+  .card { border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; background: #fff; }
+  .num { color: var(--accent); font-weight: 700; }
+  .cap { color: var(--ink2); font-size: 13px; margin-top: 4px; }
+
+  /* 底部大按钮:整个实验的核心交互——他按不按 */
+  #next { margin: 8px 20px calc(16px + env(safe-area-inset-bottom)); padding: 15px;
+          border: none; border-radius: 14px; background: var(--accent); color: #fff;
+          font-size: 18px; font-weight: 600; cursor: pointer; }
+  #next:active { transform: scale(.98); }
+  #next.subtle { background: none; color: var(--ink2); border: 1px solid var(--line); font-weight: 400; }
+
+  /* 目录页 */
+  .menu-item { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left;
+               border: 1px solid var(--line); background: #fff; border-radius: 14px;
+               padding: 14px 16px; margin-bottom: 12px; font-size: 17px; cursor: pointer; color: var(--ink); }
+  .menu-item .g { font-size: 24px; }
+  .menu-item.done { border-color: var(--accent); }
+  .menu-item.done::after { content: '✓'; margin-left: auto; color: var(--accent); font-weight: 700; }
+  #cover h1 { font-size: 34px; margin-top: 24px; }
+  #cover .sub { color: var(--ink2); margin-bottom: 26px; font-size: 16px; }
+
+  /* 地图 */
+  svg { display: block; width: 100%; height: auto; }
+  .map-tang { fill: rgba(178,58,42,.28); stroke: var(--accent); stroke-width: 1.2; }
+  .map-now  { fill: none; stroke: var(--ink2); stroke-width: 1; stroke-dasharray: 4 4; }
+  .map-dot  { fill: var(--ink); }
+  .map-lab  { font-size: 11px; fill: var(--ink); }
+  .map-lab2 { font-size: 11px; fill: var(--ink2); }
+
+  /* 第 2 幕:同时代名片 */
+  .world { display: flex; flex-direction: column; gap: 10px; }
+  .wcard { border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 10px;
+           background: #fff; padding: 10px 14px; }
+  .wcard b { font-size: 17px; }
+  .wcard p { font-size: 15px; color: var(--ink); }
+
+  /* 第 5 幕:多米诺因果链 */
+  .domino { border: 1px solid var(--line); border-radius: 10px; background: #fff;
+            padding: 10px 14px; margin-bottom: 6px; }
+  .domino b { color: var(--accent); }
+  .d-arrow { text-align: center; color: var(--accent); font-size: 18px; line-height: 1; margin: 2px 0 8px; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="top">
+    <button id="home">☰ 六个问题</button>
+    <div id="dots"></div>
+  </div>
+  <div id="scene"></div>
+  <button id="next">开始 →</button>
+</div>
+
+<script>
+/* ---------- 内容:六幕 ----------
+   每幕 = { g 图标, q 问题, blocks: [html…] }。blocks 逐块点出。
+   内容来源:主站已核的六问/PLACE_LORE/CHRONO/PEAK;第 4 幕新写(已核查)。 */
+
+/* 版图坐标逐字取自主站 GEO 表(data/geo.js,经过 101 城命中核查)——唐的主多边形 +
+   海南块,共和国的大陆 + 海南 + 台湾三块。**不要手改这些数字**,要改去主站正本改完再同步。 */
+const TANG_P = [[[74,40],[86,44],[95,44],[105,42],[115,42],[124,42],[128,42],[124,38],[122,30.5],[121,28],[119.8,26.1],[118.4,24.5],[117,23.4],[114.3,22.2],[110.2,21.3],[108.2,21.5],[107.5,18],[106,16],[104,18.5],[102,24],[99,30],[95,36],[85,40],[76,38]],
+  [[110.9,20.1],[111.1,19.6],[110.4,18.2],[109.2,18.15],[108.6,19.3],[109.4,20]]];
+const NOW_P = [[[74,40],[80,45],[90,46],[96,43],[105,42],[112,41],[120,42],[126,42],[132,48],[134,44],[126,40],[122,30.5],[121,28],[119.8,26.1],[118.4,24.5],[117,23.4],[114.3,22.2],[110.5,20.3],[108.2,21.6],[103.5,22.5],[98,26],[90,28],[80,32],[76,36]],
+  [[110.9,20.1],[111.1,19.6],[110.4,18.2],[109.2,18.15],[108.6,19.3],[109.4,20]],
+  [[120.1,23.5],[120.6,24.6],[121.5,25.3],[122,24.9],[121.6,23.2],[120.9,21.95],[120.1,22.6]]];
+const CITY = [['长安', 108.9, 34.3], ['敦煌', 94.7, 40.1], ['广州', 113.3, 23.1]];
+function mapSVG() {
+  const X = lon => (lon - 70) * 9, Y = lat => (52 - lat) * 9;   // 70–134°E / 14–52°N
+  const path = polys => polys.map(pts => 'M' + pts.map(p => X(p[0]).toFixed(0) + ',' + Y(p[1]).toFixed(0)).join('L') + 'Z').join(' ');
+  return `<svg viewBox="0 0 576 345">
+    <path id="mNow" class="map-now" d="${path(NOW_P)}" style="display:none"/>
+    <path class="map-tang" d="${path(TANG_P)}"/>
+    ${CITY.map(([n, lo, la]) => `<circle class="map-dot" cx="${X(lo)}" cy="${Y(la)}" r="3.5"/>
+      <text class="map-lab" x="${X(lo) + 7}" y="${Y(la) + 4}">${n}</text>`).join('')}
+    <text id="mNowLab" class="map-lab2" x="440" y="60" style="display:none">今天的中国(虚线)</text>
+  </svg>`;
+}
+
+const ACTS = [
+{ g: '🗺️', q: '问题一', t: '唐朝在哪里?', blocks: [
+  `<div class="card">${mapSVG()}<div class="cap">红色 = 最大时的唐朝(公元 715 年前后)</div></div>
+   <p style="margin-top:10px">这就是唐朝。它的都城叫<b>长安</b>,就是今天的西安。</p>`,
+  `<p>它有多大?最大的时候约 <span class="num">540 万</span>平方公里。<button class="menu-item" style="margin:10px 0 0" onclick="document.getElementById('mNow').style.display='';document.getElementById('mNowLab').style.display='';this.style.display='none'">👀 点一下,和今天的中国比比看</button></p>`,
+  `<p>住在里面的人更多:大约 <span class="num">七八千万</span>人。那时全世界的人加起来才两亿多——<span class="big">每 3 个地球人里,就有 1 个住在唐朝。</span></p>`,
+] },
+{ g: '🌍', q: '问题二', t: '唐朝的时候,世界上还有谁?', blocks: [
+  `<p>唐朝不是一个人在过日子。同一时间,地球上还有这些大国:</p>`,
+  `<div class="world"><div class="wcard"><b>阿拉伯帝国</b> · 在唐朝的西边<p>另一个超级大国,地盘比唐朝还要大。公元 751 年,两边的军队真的在中亚打过一仗。</p></div></div>`,
+  `<div class="world"><div class="wcard"><b>吐蕃</b> · 在高原上<p>就是今天西藏一带。唐朝把文成公主嫁了过去,两家做了亲戚,也打过很多仗。</p></div>
+   <div class="wcard"><b>日本</b> · 在海的东边<p>一船一船地派人来长安学习,叫「遣唐使」。唐朝的鉴真和尚也渡海去了日本——六次出海五次失败,眼睛都瞎了,还是去成了。</p></div></div>`,
+  `<div class="world"><div class="wcard"><b>拜占庭</b> · 在很远的西边<p>罗马帝国留下的那一半,守着一座大城君士坦丁堡。</p></div>
+   <div class="wcard"><b>玛雅</b> · 在地球另一边<p>美洲雨林里的城邦,金字塔造得很棒。但那时候没有船能横跨太平洋——<b>唐朝和玛雅互相不知道对方存在。</b></p></div></div>`,
+  `<p class="big">长安见过上面所有人——除了玛雅。日本的学生、阿拉伯的商人、吐蕃的使者,都在这座城里走过。</p>`,
+] },
+{ g: '💪', q: '问题三', t: '为什么唐朝这么强?', blocks: [
+  `<p>三个原因。</p>
+   <div class="domino"><b>① 接住了别人交的学费。</b><br>唐朝前面是隋朝——隋统一了天下,却把老百姓逼得太狠,很快垮了。唐朝把隋朝好的制度留下来,把逼垮它的错误躲开。</div>`,
+  `<div class="domino"><b>② 当官不看出身,看考试。</b><br>这个制度叫<b>科举</b>。以前当大官基本要拼爸爸;科举一开,普通人家的孩子读书考试,也有机会。全国聪明人都愿意为它做事。</div>`,
+  `<div class="domino"><b>③ 门开得特别大。</b><br>草原来的将军可以带唐朝的兵,外国商人挤满长安的市场,留学生住满客栈。别人的本事,唐朝都能变成自己的力量。</div>`,
+  `<p class="big">强,不是因为关起门来自己厉害,是因为把全世界的人和本事都请了进来。</p>`,
+] },
+{ g: '🏮', q: '问题四', t: '住在长安的小孩,一天是什么样的?', blocks: [
+  `<p>想象你住在一千三百年前的长安。</p>
+   <div class="card"><p><b>你的城市像一个巨大的棋盘。</b>一百多个方格子,每个格子叫一个「坊」,你家就住在其中一格里。中间那条朱雀大街,宽过一百米——比今天很多机场跑道还宽。</p></div>`,
+  `<div class="card"><p><b>天一黑,全城关门。</b>晚上鼓声一响,每个坊的大门就锁上,大街上不许走人,这叫「宵禁」。只有正月十五前后几天例外——那几夜不关门,全城出来看花灯。</p></div>`,
+  `<div class="card"><p><b>你吃的东西,一半你认识,一半你想不到。</b>主食是饼和小米饭,茶正在流行起来。但是没有辣椒、没有土豆、没有玉米、没有西红柿——这些要等八百多年后才从美洲传过来。</p></div>`,
+  `<div class="card"><p><b>玩的花样不少。</b>大人骑在马上打「马球」,这游戏是从波斯传来的,连皇帝都爱打;小孩踢皮球、放风筝。上学的孩子不多,读书人家的小孩,要背《千字文》这样的课本。</p></div>`,
+  `<p class="big">去西市逛一圈,能听到好几种语言,买到波斯的地毯和西域的葡萄——住在长安,就是住在那时全世界最热闹的地方。</p>`,
+] },
+{ g: '💥', q: '问题五', t: '安史之乱为什么改变了唐朝?', blocks: [
+  `<p>公元 755 年,一场大乱把唐朝拦腰砍断。它像推倒的多米诺骨牌——<b>点一下,看它一张一张倒下去。</b></p>`,
+  `<div class="domino"><b>第 1 张:边境的将军权力太大了。</b><br>唐朝为了守边疆,让边境大将同时管兵、管钱。一个叫安禄山的将军,一个人管着三个镇的军队。</div><div class="d-arrow">↓</div>`,
+  `<div class="domino"><b>第 2 张:他反了。</b><br>755 年,安禄山从范阳(今天的北京一带)起兵,一路打下洛阳和长安。皇帝逃去了四川。</div><div class="d-arrow">↓</div>`,
+  `<div class="domino"><b>第 3 张:乱平了,伤没好。</b><br>打了八年,叛乱平定。但为了平乱,朝廷给了更多将军更大的权力——病根不但没除,反而更多了。</div><div class="d-arrow">↓</div>`,
+  `<div class="domino"><b>第 4 张:朝廷说话不算数了。</b><br>之后的一百五十年,很多地方名义上归唐朝,实际上自己管自己。乱刚平,连长安都又被吐蕃占过一次。</div>`,
+  `<p class="big">所以安史之乱不是「一场打输了的仗」,而是一次好不了的重伤——唐朝之后又活了一百五十年,但再也没能回到从前。</p>`,
+] },
+{ g: '🔍', q: '问题六', t: '今天,还能在哪里看到唐朝?', blocks: [
+  `<div class="card"><p><b>在西安。</b>大雁塔还站在那里——当年就是为了存放玄奘从印度带回来的佛经,才建了这座塔。</p></div>`,
+  `<div class="card"><p><b>在日本。</b>京都的街道是棋盘格,就是照着长安的样子规划的。</p></div>`,
+  `<div class="card"><p><b>在你的语文课本里。</b>李白和杜甫就是唐朝人。你会背的那些诗,一千多年前的小孩也在背。</p></div>`,
+  `<div class="card"><p><b>在全世界的「唐人街」。</b>海外的中国人聚居的街区叫唐人街——因为很久以来,外国人管中国人叫「唐人」。一个朝代结束一千多年了,还在给中国人当名字。</p></div>`,
+  `<p class="big">唐朝没有完全消失。它变成了城市、诗和名字,一直活到今天。</p>`,
+] },
+];
+
+/* ---------- 引擎:目录 / 幕 / 逐块展开 ---------- */
+const scene = document.getElementById('scene'), next = document.getElementById('next'),
+      dots = document.getElementById('dots'), homeBtn = document.getElementById('home');
+let act = -1, blk = 0;
+const seen = new Set(JSON.parse(localStorage.getItem('tang_seen') || '[]'));
+
+function renderDots() {
+  dots.innerHTML = ACTS.map((_, i) => `<i class="${i === act ? 'on' : ''}"></i>`).join('');
+}
+function showMenu() {
+  act = -1; renderDots();
+  scene.innerHTML = `<div id="cover">
+    <h1>六个问题<br>看懂唐朝</h1><div class="sub">一次一个问题,点着往下走。</div>
+    ${ACTS.map((a, i) => `<button class="menu-item ${seen.has(i) ? 'done' : ''}" data-i="${i}">
+      <span class="g">${a.g}</span><span>${a.t}</span></button>`).join('')}</div>`;
+  scene.querySelectorAll('.menu-item').forEach(b => b.onclick = () => openAct(+b.dataset.i));
+  const nextAct = ACTS.findIndex((_, i) => !seen.has(i));
+  next.textContent = nextAct < 0 ? '全部看完了 🎉 再看一遍?' : (nextAct === 0 ? '开始 →' : '继续 →');
+  next.className = ''; next.onclick = () => openAct(nextAct < 0 ? 0 : nextAct);
+  scene.scrollTop = 0;
+}
+function openAct(i) {
+  act = i; blk = 0; renderDots();
+  const a = ACTS[i];
+  scene.innerHTML = `<div class="q-tag">${a.g} ${a.q}</div><h1>${a.t}</h1>
+    ${a.blocks.map(b => `<div class="blk">${b}</div>`).join('')}`;
+  scene.scrollTop = 0;
+  reveal();
+}
+function reveal() {
+  const blocks = scene.querySelectorAll('.blk');
+  if (blk < blocks.length) {
+    const el = blocks[blk];
+    el.classList.add('show'); blk++;
+    setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: blk > 1 ? 'start' : 'nearest' }), 60);
+  }
+  if (blk < blocks.length) {
+    next.textContent = '接着说 →'; next.className = ''; next.onclick = reveal;
+  } else {
+    seen.add(act); localStorage.setItem('tang_seen', JSON.stringify([...seen]));
+    if (act < ACTS.length - 1) {
+      next.textContent = `下一个问题:${ACTS[act + 1].t}`; next.className = '';
+      next.onclick = () => openAct(act + 1);
+    } else {
+      next.textContent = '看完啦,回到六个问题'; next.className = 'subtle';
+      next.onclick = showMenu;
+    }
+  }
+}
+homeBtn.onclick = showMenu;
+showMenu();
+</script>
+</body>
+</html>
