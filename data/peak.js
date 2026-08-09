@@ -54,7 +54,11 @@ const PEAK = {
 '民国':{a:1140,ay:1912,an:['法理疆域','claimed territory'],p:54000,py:1949,w:.22}, '共和国':{a:960,p:141000,py:2024,w:.17},
 '韩国':{a:10,p:5200},
 // 南亚
-'印度河文明':{a:130,as:['文化范围而非政权疆域','cultural range, not a polity\'s borders']}, '孔雀王朝':{a:340,ay:-261}, '贵霜帝国':{a:200,as:['Turchin 数据','after Turchin']}, '笈多王朝':{a:350,as:['Turchin 数据','after Turchin']},
+'印度河文明':{a:130,as:['文化范围而非政权疆域','cultural range, not a polity\'s borders']}, /* 孔雀取 Taagepera 1978a Table 2 (p.116) 的 3.5@前250(羯陵伽之后、阿育王治下),v109 核查员
+   一手读过原表:前300=2.5/前250=3.5/前200=2.5。旧值 340@前261 两边序列都对不上,-261 是
+   羯陵伽之战年——与「商」同一种「取了有名事件年份」的错。Turchin 2009 另给 5.0@前250,
+   与 Taagepera 差 43%,按全站口径取 Taagepera。 */
+'孔雀王朝':{a:350,ay:-250}, '贵霜帝国':{a:200,as:['Turchin 数据','after Turchin']}, '笈多王朝':{a:350,as:['Turchin 数据','after Turchin']},
 '马拉塔':{a:250,ay:1760,as:['Turchin 数据','after Turchin']}, '百乘王朝':{a:50,ay:150,as:['非 Taagepera 序列','not from the Taagepera series']}, '德里苏丹国':{a:320,ay:1312}, '莫卧儿帝国':{a:400,ay:1690,p:15000,py:1700,w:.25},
 /* 维查耶纳伽尔用 Stein 1989(NCHI I.2, p.2):王室铭文出土范围约 14 万平方英里 = 36.3 万 km²。
    维基信息框那个 88 万 km² 引 Keay 2018,核不到对应原文,且 1500 年前后泰卢固一带
