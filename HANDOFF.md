@@ -1,5 +1,5 @@
 # Handoff — 文明长河 / civilization-river
-更新时间：2026-08-09（v109 已由 Ray push；v110 已 commit，**尚未 push**）
+更新时间：2026-08-09（v110 已由 Ray push 确认到位后再核；v111 已 commit，**尚未 push**）
 
 > 给下一个 Claude 会话：先读本文件 + CLAUDE.md 即可继续，无需原对话记录。
 > 上线地址 https://civilization-river.vercel.app ；仓库实名是大写 C 的 `Civilization-river`。
@@ -12,8 +12,11 @@
 
 1. `git log --oneline -3` + `git ls-remote origin main` —— 确认本地与远端状态，
    **不要信本文件里写死的 commit 号**
-2. `node tools/audit.js` —— 应当 exit 0、44 条规则全过
+2. `node tools/audit.js` —— 应当 exit 0、45 条规则全过（规则 45 = index.html 与 data/ 正本一致性）
 3. `node tools/coverage.js` —— 应当是「条目 637 · 城市 101 · 全满 101 · 总缺口 0」
+4. **v111 起有构建管线**：`PEAK` 表的正本在 `data/peak.js`，改它要跑 `node tools/build.js`；
+   其余表照旧直接改 index.html。**动数据住处之前必读 `docs/ARCH.md`**——分阶段路线、
+   哪些表迁哪些不迁、成功标准全在里面，不要凭感觉开工
 
 三条都对，就说明站是干净的。**如果 Ray 直接说「继续」而没指方向**，
 按「进行中 / 下一步」里那张推荐排序表提议，让他挑——不要自己选一个就开干，

@@ -1,6 +1,19 @@
 # 数据模型与增改指南
 
-全部数据在 index.html 的 <script> 内,均为常量表。改动后务必:语法检查 → `node tools/audit.js` → 渲染验证 → 双语同步(完整工作流见 CLAUDE.md)。
+全部数据以常量表形式存在。**已迁移到 `data/` 的表**(名单见下面「表的性质与住处」),正本是 `data/<表名>.js`,改完跑 `node tools/build.js` 注入回 index.html——**直接改 index.html 里的数据区间是错的**,audit 规则 45 会拦;**未迁移的表**照旧直接改 index.html 的 `<script>` 段。改动后务必:语法检查 → `node tools/audit.js` → 渲染验证 → 双语同步(完整工作流见 CLAUDE.md,迁移设计见 ARCH.md)。
+
+## 表的性质与住处(2026-08-09 起,设计原则见 ARCH.md)
+
+四类性质。**这是「One History, Many Lenses」原则的全部落地形式**——不做 lens 机制,只守两条纪律:**新增 fact 类字段不得掺叙事语言;新增叙事内容不得混入 fact 表。**
+
+| 性质 | 含义 | 表 |
+|---|---|---|
+| **fact** | 受众无关的历史事实,未来任何受众/页面直接复用 | `CHRONO` `CHRONO_X`(年份+事件) · `PEAK`(版图人口,`as`/`an` 记出处与口径) · `GEO` `GEO_CITY` `GC_ALIAS` `PLACE`(地理) · `LAND` `BORDERS` `RIVERS` `RANGES` `DESERTS`(底图) · `CIVS.k`(影响力曲线,半主观但口径统一) |
+| **interpretation** | 经拍板的历史理解(结论受众无关,语言已偏儿童) | 六问(`CIVS.q`) · `GL` `GL_X`(领域鼎盛判断) · `EVENTS` `TRACES`(文明间关系) · `co`/`ct`(并存政权判断) · audit 的 `SETTLED` 表(已裁决说法) |
+| **presentation** | 当前 age-7 版本的具体表达 | `PLACE_LORE`(地点小段叙事) · `PEOPLE` `ACHV`(卡片文案) · `CIVS.b/.d/.f` 的措辞 · `WIKI_NAME` `EN.civ.w`(消歧) · `VIDEO` · `EN`(翻译) |
+| **config** | 渲染参数,不是历史数据,**永远不迁出** | `LANES` `SPHERES` `ERAS` `EV_GLYPH` `EV_NAME` `PGLYPH` `PGNAME` `AGLYPH` `AGNAME` `GL_KIND` `QT` 及 `INNER_W`/`BP`/`UNIT`/`STEP`/`ZOOM_MIN_SPAN`/`AY_GAP`/`NSPLIT`/`PB`/`GV*` 等标量 |
+
+**已迁移到 `data/` 的表**:`PEAK`(v111)。其余仍在 index.html,按 ARCH.md 的 Phase 2 顺序逐表搬。
 
 `tools/audit.js` 自包含、无依赖,直接从 index.html 抽表,查下面这些约定是否被破坏:中英条目数对齐、大事记越界与排序、CHRONO_X 双语完整性与同年重复、GL 区间越界与 k 值合法性、按名索引表的孤儿键、泳道 id 有效性。
 

@@ -886,6 +886,16 @@ const SETTLED = [
   }));
 }
 
+/* 规则 45:index.html 的数据区间必须与 data/ 正本一致(防漂移,设计见 docs/ARCH.md)。
+ * 两边谁被单改都会报:直接改了 index.html 里已迁移表的区间(该去改 data/),
+ * 或改了 data/*.js 忘了跑 node tools/build.js。 */
+try {
+  if (!require('./build').check())
+    P.push('[数据正本漂移] index.html 与 data/*.js 不一致 —— 已迁移的表要改 data/ 里的正本,然后跑 node tools/build.js');
+} catch (e) {
+  P.push('[build 结构错误] ' + e.message);
+}
+
 if (EN.events && EN.events.length !== EVENTS.length) P.push(`[事件中英数量不等] zh=${EVENTS.length} en=${EN.events.length}`);
 const laneIds = new Set(LANES.map(l => l.id));
 CIVS.forEach(c => { if (!laneIds.has(c.l)) P.push(`[泳道 id 不存在] ${c.n} → ${c.l}`); });
