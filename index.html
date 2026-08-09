@@ -375,6 +375,12 @@ svg.no-ev .evg { display: none; }
 a.wk { color: inherit; text-decoration: underline dotted var(--muted); text-underline-offset: 2.5px; }
 a.wk:hover { text-decoration-style: solid; }
 a.wk::after { content: '↗'; font-size: .72em; color: var(--muted); margin-left: 1.5px; vertical-align: super; }
+/* 国内出口(见 bkA)。刻意做得比标题轻:小字号 + muted 色 + 细框,是「另一条路」不是并列标题。
+   不用 ::after 的 ↗——它自己已经带 ▶,再加箭头两个符号打架。 */
+a.bk { margin-left: 7px; font-size: 11px; font-weight: 400; white-space: nowrap; color: var(--ink-2);
+       text-decoration: none; border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px; vertical-align: middle; }
+a.bk:hover { border-color: var(--ink-2); }
+#pcard .pc-foot a.bk { margin-left: 0; }
 /* 站内弹卡的人名:浅底小片、无 ↗——与 a.wk 的"要跳走"形成对比,一眼分得开 */
 .pn {
   cursor: pointer; padding: 1px 5px; border-radius: 5px;
@@ -7975,6 +7981,15 @@ const WIKI_NAME = { '后倭马亚·安达卢斯':'科尔多瓦哈里发国', '�
   '喀喇汗王朝':'喀喇汗国', '花剌子模':'花剌子模沙朝', '粟特':'粟特' };
 const wiki = t => (LANG === 'zh' ? 'https://zh.wikipedia.org' : 'https://en.wikipedia.org') + '/w/index.php?search=' + encodeURIComponent(t);
 const wkA = (text, term) => `<a class="wk" href="${wiki(term || text)}" target="_blank" rel="noopener">${text}</a>`;
+/* 国内出口。维基百科在国内打不开,而这个站是给孩子用的——他点任何标题都是白屏。
+   中文模式下在**两个主出口**(文明卡标题、人物卡底部)另给一条 B 站搜索链接,
+   与 VIDEO 那块「中文优先 B 站」同一口径;维基保留不动,两类读者各得其所。
+   ⚠ 只加这两处,不往大事记/事件/正文人名上铺——那是几百个条目,每条挂两个尾巴就成了噪音。
+   ⚠ 英文模式不出现:英文读者不在墙内,给了是噪音。所以 bkA 自己判 LANG,调用点不用管。
+   ⚠ 这是**搜索页**不是具体视频,冷门条目(赫梯/桑海/卡涅姆)搜出来什么无法预先保证;
+      人工核过的具体视频走 VIDEO 表,那是另一条路,别混。 */
+const bili = t => 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(t);
+const bkA = term => LANG === 'zh' && term ? `<a class="bk" href="${bili(term)}" target="_blank" rel="noopener">▶ B 站</a>` : '';
 const stripParen = s => s.replace(/（[^）]*）|\([^)]*\)/g, '').trim();
 /* 键会被插进 HTML 属性,而键里可能带 ASCII 双引号(笈多的成就原文就是 "零"与十进制)。
    不转义的话属性会被提前闭合:data-achv="" 零"与十进制"="" ——属性变成空串,卡片
@@ -8588,7 +8603,7 @@ function openCiv(c) {
   const evs = EVENTS.filter(e => e.ls.includes(c.l) && e.y >= c.k[0][0] - 30 && e.y <= c.k[c.k.length-1][0] + 30);
   const ch = chronoOf(c);
   panel.innerHTML = `
-    <div class="p-head"><span class="t-dot" style="background:${fill(c)}"></span><h2>${wkA(cN(c), LANG === 'zh' ? WIKI_NAME[c.n] : (EN.civ[c.n] && EN.civ[c.n].w))}</h2>
+    <div class="p-head"><span class="t-dot" style="background:${fill(c)}"></span><h2>${wkA(cN(c), LANG === 'zh' ? WIKI_NAME[c.n] : (EN.civ[c.n] && EN.civ[c.n].w))}${bkA(WIKI_NAME[c.n] || c.n)}</h2>
       <button class="p-close" aria-label="${T('关闭','Close')}">×</button></div>
     <div class="p-meta">${civSpan(c)} · ${lName(c.l)} · ${sName(c.s)}${T('文明圈',' sphere')}</div>
     <div class="p-spark">${sparkSVG(c)}</div>
@@ -8850,7 +8865,7 @@ function openPerson(key) {
     <p class="pc-t">${p.t[li]}</p>
     <ul class="pc-a">${p.a.map(x => `<li>${x[li]}</li>`).join('')}</ul>
     <p class="pc-s"><b>${T('意义', 'Significance')}</b>${p.s[li]}</p>
-    <div class="pc-foot">${civ ? `<span class="pc-civ" data-pgo="${attr(civ.n)}">↩ ${cN(civ)}</span>` : ''}${wkA(T('维基百科', 'Wikipedia'), LANG === 'zh' ? (p.w || p.n[0]) : p.n[1])}</div>`;
+    <div class="pc-foot">${civ ? `<span class="pc-civ" data-pgo="${attr(civ.n)}">↩ ${cN(civ)}</span>` : ''}${wkA(T('维基百科', 'Wikipedia'), LANG === 'zh' ? (p.w || p.n[0]) : p.n[1])}${bkA(p.w || p.n[0])}</div>`;
   pcard.hidden = false;
   pcBox.scrollTop = 0;
   const x = pcBox.querySelector('.pc-x'); if (x) x.focus();
