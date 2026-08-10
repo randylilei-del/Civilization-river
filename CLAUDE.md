@@ -17,6 +17,7 @@ manifest.webmanifest  # PWA 清单
 sw.js                 # 离线缓存(network-first);改缓存策略记得升 CACHE 版本号
 icons/                # SVG 图标 + apple-touch-icon.png(iOS 主屏用)
 docs/ARCH.md          # 数据迁出架构:决策理由、分阶段路线、成功标准(动数据住处前必读)
+docs/IDEAS.md         # 产品想法库:想清楚了但现在不做的东西,**带触发条件,到点要主动拿出来讨论**
 docs/DESIGN.md        # 设计决策与理由(改视觉/交互前必读)
 docs/DATA.md          # 数据模型与增改内容指南(加文明/事件/轨迹前必读)
 docs/CHANGELOG.md     # 版本史
@@ -46,6 +47,10 @@ docs/CHANGELOG.md     # 版本史
 - **不引入外部资源**:Artifact CSP 与离线场景都不允许;新数据一律内嵌
 
 ## Roadmap
+
+> **⚠ 主体工程收尾时必读 `docs/IDEAS.md`。** 那里存着 Ray 认定重要、但当时有意押后的产品方向
+> (目前 001「从浏览一条长河到回答孩子的问题」——搜索/别名/故事级颗粒三层缺口,分析与实测数据已备)。
+> **别让它烂在文件里**:主体待办清空、或唐朝实验出结论时,主动把它拿出来讨论。
 
 - [ ] 首次发布:Ray 建 GitHub 公开仓库 → 推送 → Vercel 导入 → iPad 主屏(两步待办在 Ray 手里)
 - [ ] 数据校对:逐泳道核对年代/曲线/版图/大事记/传播节点(Ray 主导,中国史优先)
