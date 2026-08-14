@@ -11,7 +11,7 @@ let D;
 try { D = require('./load')(); } catch (e) {
   console.error('数据加载失败:', e.message); process.exit(1);
 }
-const { LANES, SPHERES, ERAS, EV_NAME, CIVS, EVENTS, GEO, CHRONO, GL, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME, PEAK, ACHV, AGLYPH, GEO_CITY, PLACE_LORE, UNIONS } = D;
+const { LANES, SPHERES, ERAS, EV_NAME, CIVS, EVENTS, GEO, CHRONO, GL, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME, PEAK, ACHV, AGLYPH, GEO_CITY, PLACE_LORE, UNIONS, SEARCH_ALIAS } = D;
 
 const P = [];
 const KINDS = ['econ', 'art', 'tech', 'thought'];
@@ -1009,6 +1009,28 @@ CIVS.forEach(c => {
       prev = y;
       if (!Array.isArray(t2) || t2.length !== 2 || !t2[0] || !t2[1]) P.push(`${tag} 关键年份 ${y} 的说明非双语`);
     });
+  });
+})();
+
+/* 规则 52(v152):搜索别名表。别名是「孩子的词 → 站内文明」的硬指针,三处会烂:
+   ① c 指向不存在的文明(改名时最容易断——v135 改 4 条色带名的教训);
+   ② 同一个词落进两条别名(后写的静默吃掉先写的,先写的那条永远不出现);
+   ③ why 缺一边语言(EN 界面搜出中文句)。 */
+(() => {
+  const names = new Set(CIVS.map(c => c.n));
+  const seen = new Map();
+  (SEARCH_ALIAS || []).forEach(a => {
+    const tag = `[搜索别名] ${(a.t && a.t[0]) || '?'}`;
+    if (!Array.isArray(a.t) || !a.t.length || a.t.some(x => !x || typeof x !== 'string')) P.push(`${tag} t 为空或含空项`);
+    (a.t || []).forEach(x => {
+      const k = String(x).toLowerCase();
+      if (x !== x.trim()) P.push(`${tag} 词「${x}」带首尾空白`);
+      if (/[A-Z]/.test(x)) P.push(`${tag} 英文词「${x}」应全小写(匹配统一 lowercase)`);
+      if (seen.has(k)) P.push(`${tag} 词「${x}」与「${seen.get(k)}」条重复`);
+      seen.set(k, (a.t && a.t[0]) || '?');
+    });
+    if (!names.has(a.c)) P.push(`${tag} 指向不存在的文明:${a.c}`);
+    if (!Array.isArray(a.why) || a.why.length !== 2 || !a.why[0] || !a.why[1]) P.push(`${tag} why 非双语`);
   });
 })();
 

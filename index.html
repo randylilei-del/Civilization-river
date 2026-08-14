@@ -352,6 +352,20 @@ svg.no-ev .evg { display: none; }
 #firstHint { display: inline-flex; gap: 8px; align-items: baseline; }
 #firstHint button { border: 0; background: none; color: var(--muted); cursor: pointer; font-size: 14px; padding: 0 2px; line-height: 1; }
 #firstHint button:hover { color: var(--ink); }
+/* v152 搜索:输入框混在 controls 行里;结果浮层贴在框下,不占版面。
+   高亮不用底色用加粗——颜色在本站只承载文明圈语义,搜索命中不配新颜色 */
+.sbox { position: relative; }
+.sbox input { width: 168px; padding: 6px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--ink); font-size: 13px; }
+.sbox input:focus { outline: none; border-color: var(--muted); }
+#searchRes { position: absolute; left: 0; top: calc(100% + 6px); width: 340px; max-width: 88vw; max-height: 55vh; overflow-y: auto; z-index: 30; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 6px 24px rgba(0,0,0,.16); padding: 5px; }
+#searchRes .sr-row { display: flex; gap: 8px; width: 100%; padding: 7px 9px; border: 0; background: none; text-align: left; cursor: pointer; border-radius: 7px; align-items: flex-start; }
+#searchRes .sr-row:hover { background: var(--grid); }
+#searchRes .dot { flex: none; width: 10px; height: 10px; border-radius: 3px; margin-top: 3px; }
+#searchRes .sr-tx { min-width: 0; }
+#searchRes .sr-tx b { display: block; font-size: 13px; color: var(--ink); }
+#searchRes .sr-tx i { font-style: normal; font-size: 12px; color: var(--ink-2); line-height: 1.45; }
+#searchRes mark { background: none; color: var(--ink); font-weight: 700; }
+#searchRes .sr-none { padding: 10px; font-size: 12.5px; color: var(--muted); }
 .t-dot { width: 9px; height: 9px; border-radius: 3px; flex: none; display: inline-block; }
 #tip .t-span { color: var(--muted); font-size: 11.5px; font-variant-numeric: tabular-nums; }
 #tip .t-blurb { color: var(--ink-2); margin-top: 3px; }
@@ -611,6 +625,7 @@ td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; ma
   <div class="chips" id="chips"></div>
   <label class="ctl"><input type="checkbox" id="ck-ev" checked> <span id="evLbl">交流事件</span></label>
   <select id="traceSel"></select>
+  <div class="sbox"><input id="searchIn" type="search" autocomplete="off" enterkeyhint="search"><div id="searchRes" hidden></div></div>
   <div class="lang" id="langSw"><button data-l="zh" class="on">中</button><button data-l="en">EN</button></div>
 </div>
 
@@ -3997,6 +4012,39 @@ const GC_ALIAS = {
 '墨西哥城':['特诺奇蒂特兰'], '敦煌':['莫高窟'], '瓦拉纳西':['贝拿勒斯'],
 };
 /*__DATA:gc_alias:end__*/
+/*__DATA:search_alias:start__*/
+/* 搜索别名表(v152,IDEAS 001 层一)——孩子嘴里的词 → 站内文明。
+   目的:堵「知道了才查得到」的死循环(他知道「奥德赛」,不知道它属于迈锡尼时代)。
+   纪律:
+   - c 必须是 data/civs.js 里存在的 n(audit 规则 52 拦);
+   - why 双语各一句,写成**给孩子的回答**,不是注释——搜索结果里直接显示这句;
+   - 同一个词只许出现在一条里(规则 52 拦重复);英文词一律小写,匹配时统一 lowercase;
+   - 全文已能命中且落点分散得当的词(金字塔→四个文明、奥运会、特洛伊)**不建别名**,
+     别名只救零命中或落点跑偏的词;
+   - 新词来源:localStorage `whviz-sq` 里攒的真实搜索记录(零命中的那些就是下一批别名)。 */
+const SEARCH_ALIAS = [
+  { t:['奥德赛','木马屠城','特洛伊木马','odyssey','troy','trojan horse','trojan war'], c:'米诺斯·迈锡尼',
+    why:['《奥德赛》和木马屠城讲的都是特洛伊战争——传说就发生在这个时代','The Odyssey and the Trojan Horse both come from the Trojan War, set in this age'] },
+  { t:['宙斯','奥林匹斯','希腊神话','zeus','olympus','greek gods'], c:'古希腊',
+    why:['宙斯是古希腊神话的主神,住在奥林匹斯山','Zeus, king of the ancient Greek gods, lives on Mount Olympus'] },
+  { t:['木乃伊','法老','狮身人面像','mummy','pharaoh','sphinx'], c:'古埃及',
+    why:['木乃伊、法老和狮身人面像都来自古埃及','Mummies, pharaohs and the Sphinx all come from Ancient Egypt'] },
+  { t:['一千零一夜','阿拉丁','辛巴达','aladdin','arabian nights','sinbad'], c:'阿拉伯哈里发',
+    why:['《一千零一夜》的故事发生在哈里发时代的巴格达','The Arabian Nights tales are set in Baghdad under the Caliphate'] },
+  { t:['孙悟空','西游记','monkey king','journey to the west'], c:'唐',
+    why:['《西游记》是从唐朝玄奘取经的真实旅程里长出来的','Journey to the West grew out of the real journey of the Tang monk Xuanzang'] },
+  { t:['花木兰','木兰','mulan'], c:'南北朝',
+    why:['木兰从军的故事背景是南北朝时期的北朝','The ballad of Mulan is set in the Northern Dynasties of this era'] },
+  { t:['泰姬陵','taj mahal'], c:'莫卧儿帝国',
+    why:['泰姬陵是莫卧儿皇帝沙贾汗为皇后修的陵墓','The Taj Mahal is the tomb a Mughal emperor built for his empress'] },
+  { t:['兵马俑','terracotta army','terracotta'], c:'秦',
+    why:['兵马俑是秦始皇陵的陪葬军团','The Terracotta Army guards the tomb of the First Emperor of Qin'] },
+  { t:['长城','万里长城','great wall'], c:'明',
+    why:['今天看到的长城大多是明朝修的;最早把各国的墙连起来的是秦','Most of the Great Wall you see today is Ming work; Qin first linked the earlier walls'] },
+  { t:['角斗士','斗兽场','竞技场','gladiator','colosseum'], c:'罗马帝国',
+    why:['角斗士在罗马帝国的斗兽场里搏斗,最大的一座能坐五万人','Gladiators fought in Roman arenas; the Colosseum held some fifty thousand people'] },
+];
+/*__DATA:search_alias:end__*/
 /*__DATA:place_lore:start__*/
 /* 地点小段·手写层(地理视角第③层):回答「那个朝代,这个地方是什么样」。
    键 = '城市|文明',两边都必须真实存在且城市落在该文明版图内(audit 规则 38)。
@@ -9910,6 +9958,112 @@ gvRes.addEventListener('keydown', e => {
   if (row) { e.preventDefault(); gvToggle(+row.dataset.ri); }
 });
 
+/* ---------- v152:搜索(IDEAS 001 层一:搜索 + 别名 + 显示命中句) ----------
+   孩子的入口是具体的东西(奥德赛/木乃伊/兵马俑),站的组织是文明×时间——搜索是两者之间
+   唯一不需要预备知识的桥。三条设计决定:
+   ① 结果直接显示命中的那句话,不是只跳整卡——即使内容只有一句,孩子也拿到一个答案;
+   ② SEARCH_ALIAS(data/search_alias.js)只救零命中/落点跑偏的词,why 句写成给孩子的回答,
+      命中别名时它就是结果行的正文,排最前;
+   ③ 搜索词落 localStorage `whviz-sq`(点击了什么/零命中了什么)——IDEAS 001 说层三该做哪些
+      「故事级颗粒」要用真实搜索词决定,这就是采集探针,不发任何网络请求。
+   索引惰性建、按语言缓存;全部子串匹配,不做分词——数据量(千条级)全扫也在毫秒级。 */
+let SIDX = null, SLANG = '';
+function sBuild() {
+  const li = LANG === 'zh' ? 0 : 1;
+  SIDX = []; SLANG = LANG;
+  const push = (c, w, text, y) => { if (text) SIDX.push({ c, w, text: String(text), lo: String(text).toLowerCase(), y }); };
+  for (const c of CIVS) {
+    push(c, 5, cN(c));
+    if (c.qh) for (const k in c.qh) push(c, 3, c.qh[k][li]);
+    if (c.q) for (const k in c.q) push(c, 1, c.q[k][li]);
+    push(c, 2, cD(c));
+    const f = cF(c);
+    if (f) for (const v of Object.values(f)) push(c, 2, v);
+    for (const e of chronoOf(c)) push(c, 2, e[2] ? e[1] + ':' + e[2] : e[1], e[0]);
+  }
+}
+const sEsc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+function sSnip(text, i, qlen) {
+  const stops = '。!?.!?;;\n';
+  let a = i, b = i + qlen;
+  while (a > 0 && !stops.includes(text[a - 1])) a--;
+  while (b < text.length && !stops.includes(text[b])) b++;
+  if (b < text.length) b++;
+  let s = text.slice(a, b);
+  if (s.length > 110) {
+    const from = Math.max(0, Math.min(i - a - 30, s.length - 110));
+    s = (from > 0 ? '…' : '') + s.slice(from, from + 110) + (from + 110 < s.length ? '…' : '');
+  }
+  return s;
+}
+function sQuery(q) {
+  if (SLANG !== LANG || !SIDX) sBuild();
+  const ql = q.toLowerCase();
+  const li = LANG === 'zh' ? 0 : 1;
+  const best = new Map();
+  for (const a of SEARCH_ALIAS) {
+    if (a.t.some(t => t.includes(ql) || ql.includes(t))) {
+      const c = CIVS.find(c2 => c2.n === a.c);
+      if (c) best.set(a.c, { c, score: 100, snip: sEsc(a.why[li]) });
+    }
+  }
+  /* 纯拉丁查询要求词首边界:'troy' 不许命中 'destroyed'(实测撞出来的);
+     中文无词边界概念,照旧子串。边界只锁词首不锁词尾,'rom' 打到一半也能出 'Rome'。 */
+  const re = /^[\x20-\x7e]+$/.test(ql)
+    ? new RegExp('\\b' + ql.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) : null;
+  for (const it of SIDX) {
+    const i = re ? (m => m ? m.index : -1)(re.exec(it.lo)) : it.lo.indexOf(ql);
+    if (i < 0) continue;
+    const prev = best.get(it.c.n);
+    const score = it.w * 10 + (it.text.length < 40 ? 2 : 0);
+    if (prev && prev.score >= score) continue;
+    const raw = sSnip(it.text, i, q.length);
+    const j = raw.toLowerCase().indexOf(ql);
+    const snip = j >= 0
+      ? sEsc(raw.slice(0, j)) + '<mark>' + sEsc(raw.slice(j, j + q.length)) + '</mark>' + sEsc(raw.slice(j + q.length))
+      : sEsc(raw);
+    best.set(it.c.n, { c: it.c, score, snip, y: it.y });
+  }
+  return [...best.values()].sort((x, y2) => y2.score - x.score).slice(0, 12);
+}
+function sLog(q, hit) {
+  try {
+    const log = JSON.parse(localStorage.getItem('whviz-sq') || '[]');
+    log.push({ q, hit, d: new Date().toISOString().slice(0, 10) });
+    localStorage.setItem('whviz-sq', JSON.stringify(log.slice(-100)));
+  } catch (e) {}
+}
+const sIn = document.getElementById('searchIn'), sRes = document.getElementById('searchRes');
+let sTm = 0, sZeroTm = 0;
+function sRender() {
+  const q = sIn.value.trim();
+  const min = /[a-z0-9]/i.test(q) ? 2 : 1;
+  if (q.length < min) { sRes.hidden = true; sRes.innerHTML = ''; return; }
+  const rs = sQuery(q);
+  clearTimeout(sZeroTm);
+  if (!rs.length) {
+    /* 零命中静置 1.2s 才记日志:打字打到一半的残词不算数 */
+    sZeroTm = setTimeout(() => { if (sIn.value.trim() === q) sLog(q, null); }, 1200);
+    sRes.innerHTML = `<div class="sr-none">${T('没找到「' + sEsc(q) + '」。换个词试试?比如一个人、一个地方、一个朝代',
+      'Nothing for "' + sEsc(q) + '". Try another word - a person, a place, a dynasty')}</div>`;
+    sRes.hidden = false;
+    return;
+  }
+  sRes.innerHTML = rs.map(r =>
+    `<button class="sr-row" data-sn="${CIVS.indexOf(r.c)}"><span class="dot" style="background:${fill(r.c)}"></span><span class="sr-tx"><b>${cN(r.c)}${r.y != null ? ' · ' + fmtY(r.y) : ''}</b><i>${r.snip}</i></span></button>`).join('');
+  sRes.hidden = false;
+}
+sIn.addEventListener('input', () => { clearTimeout(sTm); sTm = setTimeout(sRender, 180); });
+sIn.addEventListener('focus', () => { if (sIn.value.trim()) sRender(); });
+sIn.addEventListener('keydown', e => { if (e.key === 'Escape') { sRes.hidden = true; sIn.blur(); } });
+sRes.addEventListener('click', e => {
+  const b = e.target.closest('[data-sn]');
+  if (b) { const c = CIVS[+b.dataset.sn]; sLog(sIn.value.trim(), c.n); sRes.hidden = true; openCiv(c); }
+});
+document.addEventListener('pointerdown', e => {
+  if (!sRes.hidden && !sRes.contains(e.target) && e.target !== sIn) sRes.hidden = true;
+}, true);
+
 /* ---------- v151:开场条(今日文明 + 首访提示) ----------
    今日文明:按日期确定性轮换(不用随机——同一天里刷新不变,孩子跟别人说「今天是 XX」才成立),
    带一条钩子句当诱饵,点开即卡片。首访提示指向两个不需要先看懂泳道图的入口
@@ -9964,6 +10118,8 @@ function applyLang() {
     TRACES.map((tr, i) => `<option value="${i}"${curTrace === i ? ' selected' : ''}>${tr.n[LANG === 'zh' ? 0 : 1]}</option>`).join('');
   renderLanes(); renderChips(); renderTable(); buildChart();
   renderEraJump(); renderStrip();
+  sIn.placeholder = T('找什么?如:特洛伊、兵马俑', 'Search: Troy, pyramid…');
+  SIDX = null; sRes.hidden = true;
   document.querySelectorAll('#langSw button').forEach(b => b.classList.toggle('on', b.dataset.l === LANG));
   /* v143:这里原来只有 civ / ev 两个分支,新增卡片类型必须同步登记——
      漏登记的表现是「切语言时开着的卡直接抛异常」,而卡片本身怎么点都正常,
