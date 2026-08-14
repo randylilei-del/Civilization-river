@@ -538,14 +538,17 @@ a.bk:hover { border-color: var(--ink-2); }
 /* flex-basis:100% 强制独占一行——否则「等十国」这类说明会挤在最后一个政权旁边,
    看起来像是又一个政权。能不能排下取决于前面几个名字多长,不能靠运气 */
 #panel .co-x { font-size: 11.5px; color: var(--muted); flex-basis: 100%; margin-top: 1px; }
-/* 兴衰六问:默认收起的 details。summary 样式对齐其他区块小标题 */
+/* 兴衰六问(v149 重排):标题与其他区块小标题一致;问句+钩子句平铺,正文按问收起。
+   summary 去掉默认三角,用行尾「+/−」当展开暗示——三角在六行里排成一列太吵。 */
 #panel .p-q { margin-top: 13px; border-top: 1px solid var(--grid); padding-top: 10px; }
-#panel .p-q summary { cursor: pointer; font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: .05em; }
-#panel .p-q summary:hover { color: var(--ink); }
-#panel .p-q[open] summary { margin-bottom: 8px; }
+#panel .p-q h3 { font-size: 12px; color: var(--muted); margin: 0 0 7px; font-weight: 600; letter-spacing: .05em; }
 #panel .q-item { margin: 0 0 10px; }
-#panel .q-item b { display: block; font-size: 12px; margin-bottom: 2px; }
-#panel .q-item p { margin: 0; color: var(--ink-2); font-size: 12.5px; line-height: 1.55; }
+#panel .q-item summary { cursor: pointer; list-style: none; position: relative; padding-right: 18px; }
+#panel .q-item summary::-webkit-details-marker { display: none; }
+#panel .q-item summary::after { content: '+'; position: absolute; right: 2px; top: 0; color: var(--muted); font-size: 14px; line-height: 1.2; }
+#panel .q-item[open] summary::after { content: '−'; }
+#panel .q-item b { display: block; font-size: 12px; margin-bottom: 2px; color: var(--muted); }
+#panel .q-item p { margin: 3px 0 0; color: var(--ink-2); font-size: 12.5px; line-height: 1.55; }
 /* v134 钩子句:比正文重、比小标题轻。用 ink 而非 ink-2 拉开层次——一段里现在有三级:
    问题(12px 灰) / 答案一句话(13px 深) / 正文(12.5px 次深)。眼睛的落点是中间那行。 */
 #panel .q-item .q-h { display: block; font-size: 13px; font-weight: 600; color: var(--ink); line-height: 1.5; margin: 1px 0 3px; }
@@ -9070,8 +9073,10 @@ function videoHTML(c) {
   return `<div class="p-vid">${btn}
     <a class="vid-search" href="${search}" target="_blank" rel="noopener noreferrer">${T('🎬 找纪录片看','🎬 Find a documentary')}<span>${T('B 站 ↗','YouTube ↗')}</span></a></div>`;
 }
-/* 兴衰六问:机制层的深挖,默认收起 —— 7 岁的默认视图保持干净,想深一层的人才展开。
-   口径纪律(spec 定的,继承 v26.1 人物卡教训):写主流共识、不写单因论、有争议标「主流看法」。 */
+/* 兴衰六问。口径纪律(spec 定的,继承 v26.1 人物卡教训):写主流共识、不写单因论、有争议标「主流看法」。
+   v149(Ray 拍板):从「整块 details 默认收起」改为「问句+钩子句平铺可见,正文逐问点开」——
+   840 条钩子句(v136–v142)收在一个合上的折叠区里,孩子不会展开一个不知道里面是什么的东西;
+   问句本身就是钩子,藏起来等于白写。视图干净的目标改由「正文默认收起」承担。 */
 /* v134:中文六条改成能念出口的问句。旧版是「靠什么统治/靠什么赚钱/靠什么变强」——
    三个「靠什么 X」连排是模板不是人话,且六条一个问号都没有,读起来像目录而不像提问,
    与「六问」这个名字名实不符。口径对齐六个故事页(「唐朝在哪里?」)。英文原本就没这毛病,不动。 */
@@ -9097,12 +9102,13 @@ function qHTML(c) {
     /* v134 样板:qh 是可选的钩子句,有就在正文上面单起一行。目前只有唐与古埃及有,
        其余 138 个文明照旧只出正文——所以这是加法,不是替换,没有半成品状态。 */
     const h = c.qh && c.qh[k];
-    return `<div class="q-item"><b>${li ? en : zh}</b>${h ? `<strong class="q-h">${h[li]}</strong>` : ''}<p>${c.q[k][li]}</p></div>`;
+    /* v149:每问一个 details——summary 里问句+钩子句常驻可见,点开才见正文。 */
+    return `<details class="q-item"><summary><b>${li ? en : zh}</b>${h ? `<strong class="q-h">${h[li]}</strong>` : ''}</summary><p>${c.q[k][li]}</p></details>`;
   }).join('');
   /* v134:alive 的旧标题「这个国家的六问」中文别扭;「六个问题」又和「六个麻烦」同形,索性用「六问」。 */
   const title = alive ? T('六问', 'Six questions about this country')
                       : T('兴衰六问', 'Six questions of rise and fall');
-  return `<details class="p-q"><summary>${title}</summary>${rows}</details>`;
+  return `<div class="p-q"><h3>${title}</h3>${rows}</div>`;
 }
 /* 分裂时期的并存政权。母条目在时间轴上仍是一条色带,这里把「同时有哪几个」摊开。
    按 g 分组,**保持数组原序**——五代的顺序本身就是历史顺序,排序会毁掉「接力」的可读性。
@@ -9146,9 +9152,9 @@ function openCiv(c) {
     ${mapHTML(c)}
     ${facts}
     ${coHTML(c)}
-    ${videoHTML(c)}
     <div class="p-body">${cD(c)}</div>
     ${qHTML(c)}
+    ${videoHTML(c)}
     ${ch.length ? `<div class="p-tl"><h3>${T('大事记(曲线上的小圆点)','Key moments (dots on the curve)')}</h3>${ch.map(([y, t2, d2]) =>
       `<div class="tl-item" data-evy="${y}"><span class="tl-y">${fmtY(y)}</span><div><b>${wkA(t2, stripParen(t2))}</b>${d2 ? `<p>${d2}</p>` : ''}</div></div>`).join('')}</div>` : ''}
     ${evs.length ? `<div class="p-evs"><h3>${T('同期波及本区域的事件','Contemporary cross-regional events')}</h3>${evs.map(e =>
