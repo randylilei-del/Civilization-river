@@ -11,7 +11,7 @@ let D;
 try { D = require('./load')(); } catch (e) {
   console.error('数据加载失败:', e.message); process.exit(1);
 }
-const { LANES, SPHERES, ERAS, EV_NAME, CIVS, EVENTS, GEO, CHRONO, GL, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME, PEAK, ACHV, AGLYPH, GEO_CITY, PLACE_LORE } = D;
+const { LANES, SPHERES, ERAS, EV_NAME, CIVS, EVENTS, GEO, CHRONO, GL, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME, PEAK, ACHV, AGLYPH, GEO_CITY, PLACE_LORE, UNIONS } = D;
 
 const P = [];
 const KINDS = ['econ', 'art', 'tech', 'thought'];
@@ -966,6 +966,46 @@ CIVS.forEach(c => {
       P.push(`[钩子句与正文重复] ${c.n} qh.${k} —— 钩子取自正文首句,正文里要把那句删掉`);
   }
 });
+
+/* 规则 51(v143):UNIONS 共同体表。这张表最容易出的错不是格式,是**名单和事实对不上**,
+ * 所以除了双语/年份这些常规项,重点是两条语义检查:
+ *   ① 已退出的国家不能还留在现有成员名单里(英国 2020 年离开是这条最容易搞错的地方)
+ *   ② 退出年份必须落在 [a,b] 内 —— 写成加入年或写反了,名单就变成了另一段历史
+ * 时间轴上它靠 X(a)/X(b) 定位,a>=b 会画出一条负长度的横杠(不报错、只是看不见)。 */
+(() => {
+  const laneSet = new Set(LANES.map(l => l.id));
+  UNIONS.forEach(u => {
+    const tag = `[共同体] ${(u.n && u.n[0]) || u.id}`;
+    if (!laneSet.has(u.l)) P.push(`${tag} 泳道 id 不存在:${u.l}`);
+    if (!(u.a < u.b)) P.push(`${tag} 起止年不合法:${u.a}—${u.b}`);
+    if (!u.g) P.push(`${tag} 缺图标 g`);
+    for (const k of ['n', 's', 'w', 'd', 'nt']) {
+      const v = u[k];
+      if (!Array.isArray(v) || v.length !== 2 || !v[0] || !v[1]) P.push(`${tag} ${k} 非双语`);
+    }
+    for (const k of ['f', 'm']) {
+      const a = u[k];
+      if (!Array.isArray(a) || !a.length) { P.push(`${tag} ${k} 为空`); continue; }
+      a.forEach(p => { if (!Array.isArray(p) || p.length !== 2 || !p[0] || !p[1]) P.push(`${tag} ${k} 里有条目非双语`); });
+    }
+    const gone = new Set();
+    (u.x || []).forEach(([n, y]) => {
+      if (!Array.isArray(n) || n.length !== 2 || !n[0] || !n[1]) { P.push(`${tag} 退出条目非双语`); return; }
+      if (!(y >= u.a && y <= u.b)) P.push(`${tag} 退出年份 ${y} 不在 ${u.a}—${u.b} 内 —— ${n[0]}`);
+      gone.add(n[0]);
+    });
+    (u.m || []).forEach(p => {
+      if (Array.isArray(p) && gone.has(p[0])) P.push(`${tag} ${p[0]} 已列为退出,却还留在现有成员名单里`);
+    });
+    let prev = -Infinity;
+    (u.k || []).forEach(([y, t2]) => {
+      if (y < u.a || y > u.b) P.push(`${tag} 关键年份 ${y} 越出 ${u.a}—${u.b}`);
+      if (y < prev) P.push(`${tag} 关键年份未按年排序:${y} 在 ${prev} 之后`);
+      prev = y;
+      if (!Array.isArray(t2) || t2.length !== 2 || !t2[0] || !t2[1]) P.push(`${tag} 关键年份 ${y} 的说明非双语`);
+    });
+  });
+})();
 
 const laneIds = new Set(LANES.map(l => l.id));
 CIVS.forEach(c => { if (!laneIds.has(c.l)) P.push(`[泳道 id 不存在] ${c.n} → ${c.l}`); });
