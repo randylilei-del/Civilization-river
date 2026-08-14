@@ -344,6 +344,14 @@ svg.no-ev .evg { display: none; }
 }
 #bandPick button:hover { background: var(--grid); }
 #bandPick .dot { flex: none; width: 10px; height: 10px; border-radius: 3px; }
+/* v151 开场条:一行 muted 小字,不与图表抢眼。今日文明是按钮但长得像一句话 */
+.start-strip { max-width: 1200px; margin: 2px auto 6px; padding: 0 20px; display: flex; flex-wrap: wrap; gap: 4px 18px; align-items: baseline; font-size: 12.5px; color: var(--muted); }
+.start-strip #civToday { border: 0; background: none; padding: 0; font: inherit; color: var(--muted); cursor: pointer; text-align: left; }
+.start-strip #civToday b { color: var(--ink); font-weight: 600; margin-right: 6px; }
+.start-strip #civToday:hover { color: var(--ink); }
+#firstHint { display: inline-flex; gap: 8px; align-items: baseline; }
+#firstHint button { border: 0; background: none; color: var(--muted); cursor: pointer; font-size: 14px; padding: 0 2px; line-height: 1; }
+#firstHint button:hover { color: var(--ink); }
 .t-dot { width: 9px; height: 9px; border-radius: 3px; flex: none; display: inline-block; }
 #tip .t-span { color: var(--muted); font-size: 11.5px; font-variant-numeric: tabular-nums; }
 #tip .t-blurb { color: var(--ink-2); margin-top: 3px; }
@@ -604,6 +612,12 @@ td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; ma
   <label class="ctl"><input type="checkbox" id="ck-ev" checked> <span id="evLbl">交流事件</span></label>
   <select id="traceSel"></select>
   <div class="lang" id="langSw"><button data-l="zh" class="on">中</button><button data-l="en">EN</button></div>
+</div>
+
+<!-- v151 开场条:今日文明常驻;首访提示只出一次,点过 时光穿梭/换个地方看 或 × 就不再出 -->
+<div class="start-strip">
+  <button id="civToday"></button>
+  <span id="firstHint" hidden><span id="fhTxt"></span><button id="fhX" aria-label="不再显示">×</button></span>
 </div>
 
 <div class="chart-wrap">
@@ -9896,6 +9910,39 @@ gvRes.addEventListener('keydown', e => {
   if (row) { e.preventDefault(); gvToggle(+row.dataset.ri); }
 });
 
+/* ---------- v151:开场条(今日文明 + 首访提示) ----------
+   今日文明:按日期确定性轮换(不用随机——同一天里刷新不变,孩子跟别人说「今天是 XX」才成立),
+   带一条钩子句当诱饵,点开即卡片。首访提示指向两个不需要先看懂泳道图的入口
+   (时光穿梭自动播、地图点自家),点过任一入口或 × 后写 localStorage 永久收起。 */
+const TODAY_C = (() => {
+  const d = new Date();
+  const seed = d.getFullYear() * 372 + (d.getMonth() + 1) * 31 + d.getDate();
+  return { c: CIVS[seed % CIVS.length], qi: seed % QT.length };
+})();
+function renderStrip() {
+  const li = LANG === 'zh' ? 0 : 1;
+  const c = TODAY_C.c;
+  let hook = '';
+  if (c.qh) {
+    const keys = QT.map(q => q[0]).filter(k => c.qh[k]);
+    if (keys.length) hook = c.qh[keys[TODAY_C.qi % keys.length]][li];
+  }
+  document.getElementById('civToday').innerHTML =
+    `<b>${T('今日文明', 'Civilization of the day')}</b>${cN(c)}${hook ? ` · ${hook}` : ''} →`;
+  document.getElementById('fhTxt').textContent = T(
+    '第一次来?点 ▶ 时光穿梭 看历史自己流过;点 🌍 换个地方看,找找你住的地方以前住着谁。',
+    'First time? Tap ▶ Time travel to watch history flow, or 🌍 Pick a place to see who lived where you live.');
+}
+document.getElementById('civToday').addEventListener('click', () => openCiv(TODAY_C.c));
+function fhDismiss() {
+  document.getElementById('firstHint').hidden = true;
+  try { localStorage.setItem('whviz-hint', '1'); } catch (e) {}
+}
+try { if (!localStorage.getItem('whviz-hint')) document.getElementById('firstHint').hidden = false; } catch (e) {}
+document.getElementById('fhX').addEventListener('click', fhDismiss);
+document.getElementById('playBtn').addEventListener('click', fhDismiss);
+document.getElementById('geoBtn').addEventListener('click', fhDismiss);
+
 function applyLang() {
   document.documentElement.lang = LANG === 'zh' ? 'zh-CN' : 'en';
   document.getElementById('h1T').textContent = T('文明长河', 'A River of Civilizations');
@@ -9916,7 +9963,7 @@ function applyLang() {
   traceSel.innerHTML = `<option value="">${T('传播追踪:关', 'Trace: off')}</option>` +
     TRACES.map((tr, i) => `<option value="${i}"${curTrace === i ? ' selected' : ''}>${tr.n[LANG === 'zh' ? 0 : 1]}</option>`).join('');
   renderLanes(); renderChips(); renderTable(); buildChart();
-  renderEraJump();
+  renderEraJump(); renderStrip();
   document.querySelectorAll('#langSw button').forEach(b => b.classList.toggle('on', b.dataset.l === LANG));
   /* v143:这里原来只有 civ / ev 两个分支,新增卡片类型必须同步登记——
      漏登记的表现是「切语言时开着的卡直接抛异常」,而卡片本身怎么点都正常,
