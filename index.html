@@ -329,6 +329,21 @@ svg.no-ev .evg { display: none; }
   display: none;
 }
 #tip .t-name { font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+/* v150 细色带选单:按钮做大(iPad 手指),不做 hover 依赖 */
+#bandPick {
+  position: fixed; z-index: 30; min-width: 150px; max-width: 260px; padding: 6px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.16); display: none;
+}
+#bandPick.open { display: block; }
+#bandPick b { display: block; font-size: 11.5px; color: var(--muted); font-weight: 600; padding: 3px 8px 5px; }
+#bandPick button {
+  display: flex; align-items: center; gap: 8px; width: 100%; padding: 8px 10px;
+  border: 0; background: none; color: var(--ink); font-size: 14px; text-align: left;
+  border-radius: 7px; cursor: pointer;
+}
+#bandPick button:hover { background: var(--grid); }
+#bandPick .dot { flex: none; width: 10px; height: 10px; border-radius: 3px; }
 .t-dot { width: 9px; height: 9px; border-radius: 3px; flex: none; display: inline-block; }
 #tip .t-span { color: var(--muted); font-size: 11.5px; font-variant-numeric: tabular-nums; }
 #tip .t-blurb { color: var(--ink-2); margin-top: 3px; }
@@ -9194,16 +9209,64 @@ function openUnion(u) {
     <div class="cap">${u.nt[li]}</div>`;
   panel.classList.add('open');
 }
+/* ---------- v150:细色带命中补偿 ----------
+   问题:挤的泳道里细带只有几像素高,iPad 手指点不准(实测鼠标瞄「唐」都会点中旁边的
+   「朝鲜半岛诸王朝」)。做法:点击点上下 ±16px 采样 elementsFromPoint 收集邻近色带;
+   点在厚处(±8px 仍是同一条)直接开,不打扰;细处或空隙有多条候选时弹小选单让人选。
+   几何免推导——elementsFromPoint 拿的就是画出来的东西,不用重算泳道堆叠。 */
+function bandAt(x, y) {
+  for (const el of document.elementsFromPoint(x, y))
+    if (el.classList && el.classList.contains('band')) return el;
+  return null;
+}
+function bandCandidates(x, y) {
+  const seen = [];
+  for (const dy of [0, -6, 6, -11, 11, -16, 16]) {
+    const el = bandAt(x, y + dy);
+    if (el) { const ci = +el.dataset.ci; if (!seen.includes(ci)) seen.push(ci); }
+  }
+  return seen;
+}
+const bandPick = document.createElement('div');
+bandPick.id = 'bandPick';
+document.body.appendChild(bandPick);
+function hideBandPick() { bandPick.classList.remove('open'); }
+function showBandPick(cis, x, y) {
+  bandPick.innerHTML = `<b>${T('想看哪个?', 'Which one?')}</b>` + cis.map(ci =>
+    `<button data-ci="${ci}"><span class="dot" style="background:${fill(CIVS[ci])}"></span>${cN(CIVS[ci])}</button>`).join('');
+  bandPick.classList.add('open');
+  const r = bandPick.getBoundingClientRect();
+  bandPick.style.left = Math.max(6, Math.min(x - 20, innerWidth - r.width - 10)) + 'px';
+  bandPick.style.top = Math.max(6, Math.min(y + 10, innerHeight - r.height - 10)) + 'px';
+}
+bandPick.addEventListener('click', e => {
+  const b = e.target.closest('[data-ci]');
+  if (b) { hideBandPick(); openCiv(CIVS[+b.dataset.ci]); }
+});
+/* capture 阶段收掉选单:点哪儿都先关,点中选项的场景由上面的 click 监听接住 */
+document.addEventListener('pointerdown', e => { if (!bandPick.contains(e.target)) hideBandPick(); }, true);
 scrollerEl.addEventListener('click', e => {
   if (justDragged) return;
   const t = e.target;
   const eraEl = t.closest && t.closest('[data-era]');
   if (eraEl) { const er = ERAS[+eraEl.dataset.era]; zoomTo(er.a, er.b); return; }
-  if (t.classList && t.classList.contains('band')) { openCiv(CIVS[+t.dataset.ci]); return; }
+  if (t.classList && t.classList.contains('band')) {
+    const ci = +t.dataset.ci;
+    const up = bandAt(e.clientX, e.clientY - 8), dn = bandAt(e.clientX, e.clientY + 8);
+    if (up && dn && +up.dataset.ci === ci && +dn.dataset.ci === ci) { openCiv(CIVS[ci]); return; }
+    const cands = bandCandidates(e.clientX, e.clientY);
+    if (cands.length <= 1) { openCiv(CIVS[ci]); return; }
+    showBandPick(cands, e.clientX, e.clientY);
+    return;
+  }
   const ug = t.closest && t.closest('.ung');
   if (ug) { openUnion(UNIONS[+ug.dataset.un]); return; }
   const g = t.closest && t.closest('.evg');
-  if (g) openEvent(EVENTS[+g.dataset.ev]);
+  if (g) { openEvent(EVENTS[+g.dataset.ev]); return; }
+  /* 全落空 = 点在色带间隙。附近有带就补救:一条直接开,多条给选单 */
+  const near = bandCandidates(e.clientX, e.clientY);
+  if (near.length === 1) openCiv(CIVS[near[0]]);
+  else if (near.length > 1) showBandPick(near, e.clientX, e.clientY);
 });
 document.getElementById('zoomOut').addEventListener('click', zoomReset);
 
