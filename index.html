@@ -8135,8 +8135,32 @@ function buildChart() {
     svg.push(`<path class="sheen" d="${d}Z" fill="url(#sheen)" pointer-events="none"/>`);
     let mi = a; for (let i = a; i <= b; i++) if (p[i] > p[mi]) mi = i;
     const th = st.bots[j][mi] - st.tops[j][mi];
-    if (th >= 13 && (XS[b]-XS[a]) >= 52)
-      labels.push(`<text class="blabel" data-ci="${ci}" x="${XS[mi]}" y="${(st.tops[j][mi]+st.bots[j][mi])/2 + 4}" text-anchor="middle" font-size="${th>=26?12:10.5}">${cN(c)}</text>`);
+    if (th >= 13 && (XS[b]-XS[a]) >= 52) {
+      /* 标签定位(v145 重写)。老做法是「放在最厚点、居中对齐」,而最厚点常常就是视野边缘——
+         结果每个视图都有 4—16 条标签被画布边切掉,英文中古时代最多切掉 96px(「现代东南亚」
+         在现代视图下只剩三个字,就是这个)。两步定位:
+           ① 先框出「整条标签能完整放下」的 x 区间(按字数估宽,中日韩按一个字宽、拉丁按 0.57——0.52 实测偏低 4—10%,英文最长的三条会蹭到边)
+           ② 在「厚度接近峰值」的高原里,挑离可见段中点最近的一处
+         有明显峰值时高原很窄,标签仍落在峰上(唐、罗马帝国这类不动);而像「现代东南亚」这种
+         几乎等厚的长带,argmax 本来就是噪声,这时自然回到可见段中间。
+         放不下就**整条不画**——宁可没有名字,也不要半个名字。 */
+      const nm = cN(c), fs = th >= 26 ? 12 : 10.5;
+      const halfW = [...nm].reduce((s, ch) => s + (ch.codePointAt(0) > 0x2e80 ? fs : fs * 0.57), 0) / 2;
+      const xlo = Math.max(XS[a], halfW + 2), xhi = Math.min(XS[b], INNER_W - halfW - 2);
+      if (xlo <= xhi) {
+        let mx = 0; for (let i = a; i <= b; i++) if (p[i] > mx) mx = p[i];
+        const cx = (Math.max(XS[a], 0) + Math.min(XS[b], INNER_W)) / 2;
+        let bi = -1, bd = Infinity;
+        for (let i = a; i <= b; i++) {
+          if (p[i] < mx * 0.92) continue;
+          const x = XS[i]; if (x < xlo || x > xhi) continue;
+          const d = Math.abs(x - cx); if (d < bd) { bd = d; bi = i; }
+        }
+        /* 高原整段都放不下(窄带贴着边缘)时,退回最厚点再夹进可放区间 */
+        if (bi < 0) bi = Math.min(Math.max(Math.round(Math.min(Math.max(XS[mi], xlo), xhi) / STEP), a), b);
+        labels.push(`<text class="blabel" data-ci="${ci}" x="${XS[bi]}" y="${(st.tops[j][bi]+st.bots[j][bi])/2 + 4}" text-anchor="middle" font-size="${fs}">${nm}</text>`);
+      }
+    }
   });
   svg.push(...labels);
   EVENTS.forEach((e, ei) => {
