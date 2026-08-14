@@ -31,10 +31,10 @@ const GL = {
 '文艺复兴意大利': [
  { a:1400, b:1500, k:'econ', t:['银行与商业','Banking & commerce'], d:['美第奇银行与复式记账。','The Medici bank and double-entry books.'] },
  { a:1480, b:1530, k:'art', t:['盛期文艺复兴','High Renaissance'], d:['达芬奇、米开朗基罗、拉斐尔同城竞技。','Leonardo, Michelangelo and Raphael in rivalry.'] } ],
-'西班牙·葡萄牙': [
+'西班牙·葡萄牙帝国': [
  { a:1545, b:1640, k:'econ', t:['白银世纪','The silver century'], d:['波托西白银撑起第一个全球贸易循环。','Potosi silver powers the first global loop.'] },
  { a:1580, b:1660, k:'art', t:['黄金世纪','Siglo de Oro'], d:['塞万提斯与委拉斯开兹的时代。','The age of Cervantes and Velazquez.'] } ],
-'荷兰': [
+'荷兰共和国': [
  { a:1600, b:1670, k:'econ', t:['黄金时代','Golden Age'], d:['人均财富冠绝欧洲的商业共和国。','The richest people in Europe.'] },
  { a:1630, b:1670, k:'art', t:['伦勃朗与维米尔','Rembrandt & Vermeer'], d:['市民肖像与光影的巅峰。','Burgher portraits, mastery of light.'] } ],
 '法兰西': [
@@ -79,7 +79,7 @@ const GL = {
  { a:1279, b:1368, k:'art', t:['元曲杂剧','Yuan drama'], d:['关汉卿《窦娥冤》,市井舞台的黄金期。','Guan Hanqing\'s tragedies — theatre for the streets.'] },
  { a:1276, b:1300, k:'tech', t:['天文与水利','Astronomy and waterworks'], d:['郭守敬造仪、测影、修历、通渠。','Guo Shoujing: instruments, observations, calendar, canals.'] },
  { a:1271, b:1330, k:'econ', t:['欧亚大通道','The Eurasian corridor'], d:['驿站相连,泉州港与海运同时鼎盛。','Post roads inland, Quanzhou\'s harbour at sea.'] } ],
-'朝鲜半岛': [
+'朝鲜半岛诸王朝': [
  { a:1150, b:1250, k:'art', t:['高丽青瓷','Goryeo celadon'], d:['翡色镶嵌,当时中国人也推为第一。','Kingfisher-green inlay, rated first even in China.'] },
  { a:1234, b:1450, k:'tech', t:['金属活字与谚文','Metal type and Hangul'], d:['金属活字早于古腾堡两百年;世宗造字给百姓用。','Metal type 200 years before Gutenberg; an alphabet for commoners.'] } ],
 '韩国': [

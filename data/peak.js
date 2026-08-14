@@ -28,7 +28,7 @@ const PEAK = {
    tributary status is taken as the date of conquest」——附庸从纳贡期起就计入,
    排除的只是「official borders 之外的模糊势力范围」。 */
 '罗马共和国':{a:195,ay:-50},
-'中世纪西欧':{a:120}, '西班牙·葡萄牙':{a:1370}, '后倭马亚·安达卢斯':{a:60,ay:1000},
+'中世纪西欧':{a:120}, '西班牙·葡萄牙帝国':{a:1370}, '后倭马亚·安达卢斯':{a:60,ay:1000},
 '波兰-立陶宛':{a:110,ay:1480}, '奥地利·哈布斯堡':{a:62,ay:1905}, '瑞典帝国':{a:99,ay:1700}, '法兰西':{a:250,as:['非 Taagepera 序列','not from the Taagepera series']},
 '大英帝国·英国':{a:3550,ay:1920,p:41200,py:1913,w:.23}, '德意志':{a:54,p:6500,as:['非 Taagepera 序列','not from the Taagepera series']},
 '俄罗斯·苏联':{a:2240,ay:1945,p:28600,py:1991,w:.053},
@@ -88,7 +88,7 @@ const PEAK = {
    ——今日埃塞(不含厄立特里亚)恰好也约 110 万,数字撞车,别据此以为 110 就是不含厄立特里亚。
    刚果王国 12.9 来自 Thornton 1977 (JAH 18(4):526-27),是他为估算人口密度所划的范围,
    对应 1623 年那份耶稣会报告,**不是刚果的历史最大疆域**(公认鼎盛在 15 世纪末—16 世纪初)。 */
-'埃塞俄比亚':{a:110,ay:1954,an:['含厄立特里亚,陆地面积','Eritrea included, land area'],as:['非 Taagepera 序列','not from the Taagepera series']},
+'埃塞俄比亚帝国':{a:110,ay:1954,an:['含厄立特里亚,陆地面积','Eritrea included, land area'],as:['非 Taagepera 序列','not from the Taagepera series']},
 '刚果王国':{a:12.9,ay:1623,an:['Thornton 为估人口密度所划范围','Thornton\'s extent for a density estimate'],as:['非 Taagepera 序列','not from the Taagepera series']},
 // 美洲
 '阿兹特克':{a:22,ay:1520,p:550}, '印加':{a:200,ay:1527,p:1000},
