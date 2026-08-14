@@ -983,8 +983,13 @@ CIVS.forEach(c => {
       const v = u[k];
       if (!Array.isArray(v) || v.length !== 2 || !v[0] || !v[1]) P.push(`${tag} ${k} 非双语`);
     }
+    /* 创始成员:少就列名字(f),多到列了也没人读就写一句话(fd,如非盟的 32 国)。
+       两者必居其一、且不该同时给——同时给的话卡片只渲染 f,fd 会静默失效。 */
+    if (!u.f === !u.fd) P.push(`${tag} 创始成员 f 与说明 fd 必须且只能给一个`);
+    if (u.fd && (!Array.isArray(u.fd) || u.fd.length !== 2 || !u.fd[0] || !u.fd[1])) P.push(`${tag} fd 非双语`);
     for (const k of ['f', 'm']) {
       const a = u[k];
+      if (a === undefined && k === 'f') continue;      // 用 fd 代替,上面已校验
       if (!Array.isArray(a) || !a.length) { P.push(`${tag} ${k} 为空`); continue; }
       a.forEach(p => { if (!Array.isArray(p) || p.length !== 2 || !p[0] || !p[1]) P.push(`${tag} ${k} 里有条目非双语`); });
     }
