@@ -538,6 +538,9 @@ a.bk:hover { border-color: var(--ink-2); }
 #panel .q-item { margin: 0 0 10px; }
 #panel .q-item b { display: block; font-size: 12px; margin-bottom: 2px; }
 #panel .q-item p { margin: 0; color: var(--ink-2); font-size: 12.5px; line-height: 1.55; }
+/* v134 钩子句:比正文重、比小标题轻。用 ink 而非 ink-2 拉开层次——一段里现在有三级:
+   问题(12px 灰) / 答案一句话(13px 深) / 正文(12.5px 次深)。眼睛的落点是中间那行。 */
+#panel .q-item .q-h { display: block; font-size: 13px; font-weight: 600; color: var(--ink); line-height: 1.5; margin: 1px 0 3px; }
 #panel .p-tl { margin-top: 13px; border-top: 1px solid var(--grid); padding-top: 10px; }
 #panel .p-tl h3 { font-size: 12px; color: var(--muted); margin: 0 0 7px; font-weight: 600; letter-spacing: .05em; }
 #panel .tl-item { display: flex; gap: 9px; margin: 0 0 7px; }
@@ -871,9 +874,16 @@ const CIVS = [
   q:{ born:['尼罗河的泛滥是全世界少有的可预测事件:每年夏末涨水,退去后留下一层肥泥,不必修复杂的堤坝就能种出余粮。两侧是沙漠、北面是海,外敌不易进来,河流本身又是南北通行的高速路——粮食稳定、边界安全、交通顺畅这三件事同时具备,统一的王权在公元前3100年前后出现,此后虽三度分裂又三度重整,这套框架延续了三千年。','The Nile\'s flood was one of the few truly predictable events in the ancient world: it rose each late summer and left a layer of fertile silt, yielding surplus grain without elaborate dikes. Desert on both sides and sea to the north kept invaders out, while the river itself was a north-south highway. Stable food, safe borders and easy transport arrived together, and a unified kingship emerged around 3100 BCE and lasted three thousand years.'],
       rule:['法老不是被神选中的人,他本身就被视为神在人间的形态——维持宇宙秩序(玛阿特)是他的职责,所以反对他等于放任世界失序。真正让这套神学落地的是书吏:他们识字、会算、掌管粮仓与土地登记,构成一个不靠血统而靠考试般训练进入的官僚层,王朝换了三十多次而这套班子始终在。','Pharaoh was not a man chosen by the gods; he was regarded as divinity in human form, charged with maintaining maat, cosmic order — so opposing him meant letting the world slide into chaos. What made that theology work in practice was the scribes: literate, numerate, running granaries and land registers, they formed a bureaucracy entered through training rather than birth, and it survived through more than thirty changes of dynasty.'],
       money:['埃及三千年间基本没有铸币(硬币要到很晚才随波斯和希腊人进来),经济靠国家计量与实物调拨运转:粮食是工资,谷仓是国库,大工程的工人领的是面包和啤酒。洪水每年抹掉田界,于是国家每年重新丈量土地并据此定税,埃及的几何学就是从这件年年要办的差事里长出来的。','For most of three thousand years Egypt had no coinage — coins arrived late, with the Persians and Greeks. The economy ran on state measurement and payment in kind: grain was the wage, granaries were the treasury, and workers on the great projects were paid in bread and beer. Each flood erased the field boundaries, so the state re-surveyed the land every year and set taxes from it, and Egyptian geometry grew out of that annual chore.'],
-      power:['埃及的强大更多是「组织能力」而非常备武力:能在农闲时把成千上万人调去采石、运石、建陵墓的国家,同样能把他们调去打仗。新王国时期从西亚学来马拉战车和复合弓后转为进攻姿态,向南控制努比亚金矿、向北进入叙利亚-巴勒斯坦,鼎盛时疆域约一百万平方公里、人口约四百万,占当时全世界的百分之八左右。','Egypt\'s power was organizational more than military: a state that could move tens of thousands of people in the farming off-season to quarry, haul and build tombs could move them to war just as easily. In the New Kingdom, after adopting the chariot and composite bow from West Asia, Egypt turned outward — taking the Nubian goldfields to the south and pushing into Syria-Palestine to the north. At its height it held roughly a million square kilometres and about four million people, some eight percent of humanity at the time.'],
+      power:['埃及的强大更多是「组织能力」而非常备武力:能在农闲时把成千上万人调去采石、运石、建陵墓的国家,同样能把他们调去打仗。新王国时期从西亚学来马拉战车和复合弓后转为进攻姿态,向南控制努比亚金矿、向北进入叙利亚-巴勒斯坦。','Egypt\'s power was organizational more than military: a state that could move tens of thousands of people in the farming off-season to quarry, haul and build tombs could move them to war just as easily. In the New Kingdom, after adopting the chariot and composite bow from West Asia, Egypt turned outward — taking the Nubian goldfields to the south and pushing into Syria-Palestine to the north.'],
       fall:['埃及没有一个「灭亡之日」,而是被一次比一次大的外部帝国逐层吸收。主流看法是多因叠加:公元前12世纪的地中海东部普遍动荡切断了贸易与属地,阿蒙神庙的祭司集团积累了大量土地与人力、与王权分权,王位继承争斗使国家周期性分裂;此后利比亚人、库施人、亚述人、波斯人先后入主,公元前332年亚历山大到来,托勒密王朝之末公元前30年埃及并入罗马。','Egypt has no single date of death; it was absorbed layer by layer by ever larger outside empires. The mainstream view is convergent causes: the wide upheaval across the eastern Mediterranean in the twelfth century BCE cut trade and stripped away dependencies, the priesthood of Amun accumulated so much land and manpower that it shared power with the throne, and succession fights split the country periodically. Libyans, Kushites, Assyrians and Persians ruled in turn, Alexander arrived in 332 BCE, and with the end of the Ptolemies Egypt became Roman in 30 BCE.'],
       legacy:['一年365天的太阳历经罗马改造成为今天公历的骨架;象形文字借罗塞塔石碑在1822年被商博良破译,让人类重新读懂一个已经沉默一千多年的文明。金字塔、纸莎草文书、医学与数学纸草留下的不只是奇观,还有一个证明:高度组织的国家可以在青铜时代、在没有铸币的条件下运转两千多年。','The 365-day solar calendar, reworked by Rome, is the skeleton of the calendar we still use. Hieroglyphs were deciphered by Champollion in 1822 with the help of the Rosetta Stone, letting humanity read a civilization that had been silent for more than a thousand years. The pyramids, papyrus archives and medical and mathematical texts left more than wonders — they proved that a highly organized state could run for three millennia without iron and without money.'] },
+  /* qh = 六问钩子句(v134 样板)。同唐:全部从 q 正文提取,不新增事实。 */
+  qh:{ born:['河水每年准时来,粮食就有富余','The flood came on time, and there was grain to spare'],
+       rule:['法老是神,真正管事的是书吏','Pharaoh was a god; the scribes ran the country'],
+       money:['工钱发的是面包和啤酒','Wages were paid in bread and beer'],
+       power:['能调人建陵墓,就能调人打仗','Move men to build tombs, or to war'],
+       fall:['没有灭亡之日,是被一层层吸收掉的','No day of extinction — absorbed one empire at a time'],
+       legacy:['今天公历的骨架,是埃及的太阳历','The calendar we use is built on the Egyptian solar year'] },
   d:'尼罗河年复一年的泛滥给了埃及罕见的稳定:三千年间王朝更迭三十余次而文明底色不改。金字塔属于古王国,卡尔纳克神庙和图坦卡蒙属于新王国——两者相隔一千多年。一个常被忽略的时间感:金字塔建成之时距克娄巴特拉,比她距今天还要遥远。埃及先后被波斯、希腊、罗马接管,最终随托勒密王朝谢幕并入罗马版图。' },
 { l:'me', s:'mideast', v:1, n:'赫梯', k:[[-1650,0],[-1350,.5],[-1180,0]], b:'安纳托利亚的战车强国,最早大规模冶铁的文明之一。',
   e:{ n:'Hittites', b:'Anatolian chariot power; early masters of iron.', d:'The Hittites fought Egypt to a draw at Kadesh and signed the oldest surviving peace treaty. When the Bronze Age collapse destroyed the kingdom, its ironworking scattered — opening the Iron Age.', f:{ 'Peak':'14th c. BCE', 'Center':'Hattusa', 'Figures':'Muwatalli II', 'Legacy':'Ironworking, first international treaty' } },
@@ -1710,9 +1720,18 @@ const CIVS = [
   q:{ born:['隋统一了天下却透支了民力,运河与征辽把百姓逼反;李唐接住这份家业,继承隋的制度、避开隋的错误。','The Sui reunified China but spent its people too hard — canal works and the Korean wars drove them to revolt. The Tang caught the falling estate, keeping Sui institutions while avoiding Sui mistakes.'],
       rule:['三省六部把决策、审核、执行分开;科举在门阀之外开出一条做官的路;《唐律疏议》成了整个东亚的法律范本。','The Three Departments split policy, review and execution; the examinations opened an official career beyond the great clans; and the Tang Code became the legal model for all East Asia.'],
       money:['前期均田制配租庸调:国家分地,农民纳粮服役;安史之乱后改两税法按资产征税,财政靠江南漕运撑起。','Early on, state-allotted land paired with grain-and-service dues; after the An Lushan rebellion the Two-Tax reform taxed property instead, and the treasury leaned on the Yangtze grain fleets.'],
-      power:['开放本身就是国力:突厥降将带兵,丝路商人云集长安,科举吸纳寒门——不断把外部的势能变成自己的。','Openness was itself the engine: surrendered Turkic generals led Tang armies, Silk Road merchants crowded the capital, and the exams drew talent from humble homes — outside energy converted into Tang strength.'],
+      /* v134:钩子句取的就是这段原本的第一句,正文里随之删掉——不删就是同一句连写两遍(截图里一眼看得出)。 */
+      power:['突厥降将带兵,丝路商人云集长安,科举吸纳寒门——不断把外部的势能变成自己的。','Surrendered Turkic generals led Tang armies, Silk Road merchants crowded the capital, and the exams drew talent from humble homes — outside energy converted into Tang strength.'],
       fall:['均田制在人口增长与土地兼并下失灵,府兵随之枯竭;改募兵又让边镇节度使拥兵自重,安史之乱砍断王朝脊梁;此后中央与藩镇共治一百五十年,黄巢起义烧完了财政根基。','Land allotment failed as population grew and estates swallowed farms, and the militia dried up; the paid frontier armies then belonged to their governors, and the An Lushan rebellion broke the spine of the dynasty. For a century and a half the court shared power with the warlord provinces, until the Huang Chao rising burned out the fiscal base.'],
       legacy:['科举成为此后一千三百年的选官制度;唐诗是中文的高峰;长安的棋盘格规划影响了日本京都;海外华人至今自称「唐人」。','The examinations chose officials for the next 1,300 years; Tang poetry remains the summit of Chinese verse; the grid plan of the capital shaped Kyoto; and overseas Chinese still call themselves the people of Tang.'] },
+  /* qh = 六问的钩子句(v134 样板)。纪律:**从 q 正文里提取,不新增事实**——新事实要走核查流程。
+     ≤20 字,直接回答那一问;读不下去的人至少带走这一行。唐的六条全部有正文原句可对。 */
+  qh:{ born:['接住隋朝的家业,避开隋朝的死法','Took over the Sui inheritance, avoided the Sui fate'],
+       rule:['权力拆成三块,当官不只看出身','Power split three ways; birth no longer the only road to office'],
+       money:['先分地收粮,后按家产收税','Land for grain first, a property tax later'],
+       power:['开放本身就是国力','Openness was itself the engine'],
+       fall:['兵制先垮,边将才变成藩镇','The militia failed first; then the generals owned the armies'],
+       legacy:['科举管了一千三百年;华人至今自称唐人','Exams for 1,300 years; overseas Chinese still call themselves Tang'] },
   d:'太宗被草原尊为"天可汗",长安百万人口,胡商、遣唐使与留学僧云集——一个真正的世界帝国。安史之乱腰斩盛世,此后藩镇割据、宦官废立,黄巢之乱后名存实亡;但科举、律令与唐诗已输出至整个东亚,塑造至今。',
   gl:[ { a:700, b:770, k:'art', t:['盛唐气象','High Tang poetry'], d:['李白杜甫王维同时在世——中文诗歌的最高峰。','Li Bai, Du Fu and Wang Wei alive at once.'] },
        { a:780, b:880, k:'econ', t:['中晚唐商业化','Late-Tang commerce'], d:['两税法后市坊松动,扬州益州繁华胜昔。','After the tax reform, Yangzhou and Chengdu boom.'] },
@@ -8021,13 +8040,16 @@ function videoHTML(c) {
 }
 /* 兴衰六问:机制层的深挖,默认收起 —— 7 岁的默认视图保持干净,想深一层的人才展开。
    口径纪律(spec 定的,继承 v26.1 人物卡教训):写主流共识、不写单因论、有争议标「主流看法」。 */
+/* v134:中文六条改成能念出口的问句。旧版是「靠什么统治/靠什么赚钱/靠什么变强」——
+   三个「靠什么 X」连排是模板不是人话,且六条一个问号都没有,读起来像目录而不像提问,
+   与「六问」这个名字名实不符。口径对齐六个故事页(「唐朝在哪里?」)。英文原本就没这毛病,不动。 */
 const QT = [
-  ['born',   '① 为什么出现', '① Why it arose'],
-  ['rule',   '② 靠什么统治', '② How it was governed'],
-  ['money',  '③ 靠什么赚钱', '③ Where the wealth came from'],
-  ['power',  '④ 靠什么变强', '④ Why it grew strong'],
-  ['fall',   '⑤ 为什么衰落', '⑤ Why it declined'],
-  ['legacy', '⑥ 留下什么',   '⑥ What it left behind'],
+  ['born',   '① 怎么起来的?',   '① Why it arose'],
+  ['rule',   '② 怎么管的?',     '② How it was governed'],
+  ['money',  '③ 钱从哪儿来?',   '③ Where the wealth came from'],
+  ['power',  '④ 强在哪儿?',     '④ Why it grew strong'],
+  ['fall',   '⑤ 后来怎么不行了?', '⑤ Why it declined'],
+  ['legacy', '⑥ 留下了什么?',   '⑥ What it left behind'],
 ];
 function qHTML(c) {
   if (!c.q) return '';
@@ -8038,10 +8060,15 @@ function qHTML(c) {
   const alive = c.k[c.k.length - 1][0] >= 2025;
   const rows = QT.map(([k, zh, en]) => {
     if (!c.q[k]) return '';
-    if (alive && k === 'fall') { zh = '⑤ 最近一次大的转折'; en = '⑤ The last great turning point'; }
-    return `<div class="q-item"><b>${li ? en : zh}</b><p>${c.q[k][li]}</p></div>`;
+    /* v134:旧版是「⑤ 最近一次大的转折」——名词短语混在五个问句里,体例当场断掉。改成问句。 */
+    if (alive && k === 'fall') { zh = '⑤ 最近一次大转折是什么?'; en = '⑤ The last great turning point'; }
+    /* v134 样板:qh 是可选的钩子句,有就在正文上面单起一行。目前只有唐与古埃及有,
+       其余 138 个文明照旧只出正文——所以这是加法,不是替换,没有半成品状态。 */
+    const h = c.qh && c.qh[k];
+    return `<div class="q-item"><b>${li ? en : zh}</b>${h ? `<strong class="q-h">${h[li]}</strong>` : ''}<p>${c.q[k][li]}</p></div>`;
   }).join('');
-  const title = alive ? T('这个国家的六问', 'Six questions about this country')
+  /* v134:alive 的旧标题「这个国家的六问」中文别扭;「六个问题」又和「六个麻烦」同形,索性用「六问」。 */
+  const title = alive ? T('六问', 'Six questions about this country')
                       : T('兴衰六问', 'Six questions of rise and fall');
   return `<details class="p-q"><summary>${title}</summary>${rows}</details>`;
 }

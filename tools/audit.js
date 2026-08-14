@@ -943,6 +943,24 @@ EVENTS.forEach(e => {
   if (!Array.isArray(e.n) || e.n.length !== 2 || !e.n[0] || !e.n[1]) P.push(`[事件标题非双语] ${Array.isArray(e.n) ? e.n[0] : e.n}`);
   if (!Array.isArray(e.d) || e.d.length !== 2 || !e.d[0] || !e.d[1]) P.push(`[事件描述非双语] ${Array.isArray(e.n) ? e.n[0] : e.n}`);
 });
+/* 规则 49(v134):六问钩子句 qh。可选字段——没有 qh 的文明照旧只出正文,不算问题;
+ * 但**一旦有 qh,它就得是完整、成对、且钩在真实存在的那一问上**。三件事各拦一类事故:
+ *   ① 孤儿键:qh.fall 存在而 q.fall 不存在 → 渲染时永远不出现,写了等于没写(静默失效)
+ *   ② 非双语:只写中文就上线,英文视图会突然少一行,层次断掉
+ *   ③ 超长:钩子句的全部价值是「一眼扫到」,写成第二段正文就把层次又抹平了。
+ *      30 字是硬上限(设计目标 ≤20),中英分别按字/词计——英文按 12 词。 */
+CIVS.forEach(c => {
+  if (!c.qh) return;
+  if (!c.q) { P.push(`[钩子句无正文] ${c.n} 有 qh 但没有 q`); return; }
+  for (const [k, v] of Object.entries(c.qh)) {
+    if (!c.q[k]) { P.push(`[钩子句孤儿键] ${c.n} qh.${k} —— q 里没有这一问,渲染不出来`); continue; }
+    if (!Array.isArray(v) || v.length !== 2 || !v[0] || !v[1]) { P.push(`[钩子句非双语] ${c.n} qh.${k}`); continue; }
+    if (v[0].length > 30) P.push(`[钩子句过长] ${c.n} qh.${k} 中文 ${v[0].length} 字(上限 30,目标 ≤20)`);
+    const w = v[1].trim().split(/\s+/).length;
+    if (w > 12) P.push(`[钩子句过长] ${c.n} qh.${k} 英文 ${w} 词(上限 12)`);
+  }
+});
+
 const laneIds = new Set(LANES.map(l => l.id));
 CIVS.forEach(c => { if (!laneIds.has(c.l)) P.push(`[泳道 id 不存在] ${c.n} → ${c.l}`); });
 EVENTS.forEach(e => e.ls.forEach(l => { if (!laneIds.has(l)) P.push(`[事件泳道 id 不存在] ${e.n[0]} → ${l}`); }));
