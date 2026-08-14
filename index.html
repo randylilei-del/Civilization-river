@@ -8076,8 +8076,11 @@ function zoomTicks() {
 /* 用 var 而非 const:buildChart 在初始化时就会跑,那时下面的 PB 还在暂时性死区里,
    直接引用会 ReferenceError(连 typeof 都救不了)。var 提升后是 undefined,安全。 */
 var pbCleanup;
+/* 标签几何表:下标 = CIVS 索引。buildChart 每次重建,placeLabels 每次滚动读它 */
+let labelGeom = [];
 function buildChart() {
   if (pbCleanup) pbCleanup();
+  labelGeom = [];
   const XS = Array.from({length: NS}, (_, i) => i * STEP);
   const YRS = XS.map(yearAt);
   const stacks = {};
@@ -8159,6 +8162,8 @@ function buildChart() {
         /* 高原整段都放不下(窄带贴着边缘)时,退回最厚点再夹进可放区间 */
         if (bi < 0) bi = Math.min(Math.max(Math.round(Math.min(Math.max(XS[mi], xlo), xhi) / STEP), a), b);
         labels.push(`<text class="blabel" data-ci="${ci}" x="${XS[bi]}" y="${(st.tops[j][bi]+st.bots[j][bi])/2 + 4}" text-anchor="middle" font-size="${fs}">${nm}</text>`);
+        /* 记下几何,供横向滚动时把标签拉回视野(v147 的 placeLabels 用) */
+        labelGeom[ci] = { a, b, homeX: XS[bi], halfW, tops: st.tops[j], bots: st.bots[j] };
       }
     }
   });
@@ -8230,6 +8235,37 @@ function buildChart() {
   if (hlSphere) chart.querySelectorAll('.band').forEach(b => b.classList.toggle('hit', b.dataset.sphere === hlSphere));
   chart.classList.toggle('no-ev', !document.getElementById('ck-ev').checked);
   chart.classList.toggle('tr', curTrace != null);
+  placeLabels();
+}
+/* 标签跟着横向滚动走(v147)。画布 2300px、视口通常只有 1100 上下,**近代视图实测
+   38 条标签里有 20 条落在视口外**——Ray 看到「清朝色带上没有名字,得点进去才知道
+   是什么」就是这个:标签在的,只是被滚动窗口甩在了右边。
+   规则:本来的位置(v145 算出的那个)如果在视口内就不动;滑出去了就夹回
+   「这条色带 ∩ 当前视口」的范围里,y 跟着色带中线走。整条带都不在视口里就藏起来。
+   只改属性、不重建 DOM,rAF 节流,滚动时不掉帧。 */
+function placeLabels() {
+  if (!chart) return;
+  const sc = document.getElementById('scroller');
+  const lo = sc.scrollLeft, hi = lo + sc.clientWidth;
+  chart.querySelectorAll('text.blabel').forEach(t => {
+    const g = labelGeom[+t.dataset.ci];
+    if (!g) return;
+    const XS0 = STEP;
+    const xlo = Math.max(g.a * XS0, lo + g.halfW + 6, g.halfW + 2);
+    const xhi = Math.min(g.b * XS0, hi - g.halfW - 6, INNER_W - g.halfW - 2);
+    if (xlo > xhi) { t.style.display = 'none'; return; }
+    t.style.display = '';
+    const x = Math.min(Math.max(g.homeX, xlo), xhi);
+    const i = Math.min(Math.max(Math.round(x / XS0), g.a), g.b);
+    t.setAttribute('x', x.toFixed(1));
+    t.setAttribute('y', ((g.tops[i] + g.bots[i]) / 2 + 4).toFixed(1));
+  });
+}
+{
+  const sc = document.getElementById('scroller');
+  let tick = 0;
+  sc.addEventListener('scroll', () => { if (tick) return; tick = requestAnimationFrame(() => { tick = 0; placeLabels(); }); }, { passive: true });
+  addEventListener('resize', () => placeLabels());
 }
 /* 全景时才提示怎么放大;已经放大了说明用户会了,再挂着是噪音 */
 function axHint() {
@@ -8803,6 +8839,26 @@ function peakYear(c) {
   for (const p of c.k) if (p[1] > best[1]) best = p;
   return best[0];
 }
+/* 跨日界线的海岸线环要拆开画(v147)。LAND 是平面经纬度多边形,楚科奇半岛与斐济都横跨
+   ±180°;环绕回去时会产生一条「从图最左扫到图最右」的长边(环32 实测两条:
+   [-180,65]→[180,65] 与 [178.6,69.4]→[-180,69])。两条这样的扫描线之间的填充被
+   缠绕规则抵消,于是渲染出一条横贯全图的空白带——**缝的上下边界正好就是那两条边的
+   纬度 65 与 69**,这就是 Ray 看到的「地图上半部有个白色长条」。
+   做法:相邻两点经度差超过 180° 就断开,各段自行闭合成独立子路径。
+   南极那个环只有一条跨界边(单数,绕极点的拓扑),拆不出两段;但它在 -84.5°,
+   远在两张地图的可视纬度之外,不影响显示,保持原样。 */
+function landRuns(ring) {
+  const n = ring.length, brk = [];
+  for (let i = 0; i < n; i++) if (Math.abs(ring[(i + 1) % n][0] - ring[i][0]) > 180) brk.push((i + 1) % n);
+  if (brk.length < 2) return [ring];
+  const runs = [];
+  for (let b = 0; b < brk.length; b++) {
+    const e = brk[(b + 1) % brk.length]; const run = []; let i = brk[b];
+    do { run.push(ring[i]); i = (i + 1) % n; } while (i !== e);
+    if (run.length > 2) runs.push(run);
+  }
+  return runs;
+}
 function mapHTML(c) {
   const g = GEO[c.n]; if (!g) return '';
   const py = peakYear(c);
@@ -8837,7 +8893,7 @@ function mapHTML(c) {
   /* 只画与视野相交的地理要素;全在视野外的直接跳过,省得画一堆被裁掉的路径 */
   const inView = pts => pts.some(([x, y]) => x >= minx && x <= maxx && y >= miny && y <= maxy);
   let s = `<svg width="${W}" height="${Hm}" viewBox="0 0 ${W} ${Hm}" aria-label="版图示意图" style="background:var(--wash);border-radius:8px">`;
-  for (const r of LAND) s += `<path d="${path(r)}" fill="var(--geo-land)"/>`;
+  for (const r of LAND) for (const run of landRuns(r)) s += `<path d="${path(run)}" fill="var(--geo-land)"/>`;
   for (const d of DESERTS) if (inView(d.p)) s += `<path d="${path(d.p)}" fill="var(--geo-desert)" opacity=".55"/>`;
   for (const m of RANGES) if (inView(m.p)) s += `<path d="${path(m.p)}" fill="var(--geo-range)" opacity=".5"/>`;
   for (const r of RIVERS) if (inView(r.p)) s += `<path d="${line(r.p)}" fill="none" stroke="var(--geo-river)" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/>`;
@@ -9493,7 +9549,7 @@ function renderGvMap() {
   const path = poly => 'M' + poly.map(p => sx(p[0]).toFixed(1) + ',' + sy(p[1]).toFixed(1)).join('L') + 'Z';
   const line = pts => 'M' + pts.map(p => sx(p[0]).toFixed(1) + ',' + sy(p[1]).toFixed(1)).join('L');
   let s = `<svg width="${W}" height="${Hm.toFixed(0)}" aria-label="${T('世界地图', 'World map')}">`;
-  for (const r of LAND) s += `<path d="${path(r)}" fill="var(--geo-land)"/>`;
+  for (const r of LAND) for (const run of landRuns(r)) s += `<path d="${path(run)}" fill="var(--geo-land)"/>`;
   /* 今日国界(虚线)。只在这张定位地图上画,卡片里的版图小地图不画——那里画了会被当成
      那个年代的边界。线宽与虚线间隔随缩放反向收窄,否则放大档虚线糊成实线。 */
   const bw = (GV.zoom > 2.5 ? .6 : .7).toFixed(2), dash = GV.zoom > 2.5 ? '2.5,2.5' : '2,2';
