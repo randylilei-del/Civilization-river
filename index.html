@@ -461,7 +461,14 @@ svg.no-ev .evg { display: none; }
   #panel { left: 8px; right: 8px; width: auto; top: auto; bottom: 8px; max-height: 88vh; transform: translateY(115%); }
   #panel.open { transform: none; }
 }
-#panel .p-head { display: flex; align-items: center; gap: 8px; }
+/* v175(Ray:滚到深处要翻回顶部才能关卡):表头吸顶——标题和 × 始终可见。
+   负 margin 抵掉 panel 内边距让底色铺满全宽,滚动内容从它底下穿过。 */
+#panel .p-head {
+  display: flex; align-items: center; gap: 8px;
+  position: sticky; top: -18px; z-index: 5;
+  margin: -18px -20px 0; padding: 14px 20px 8px;
+  background: var(--surface); border-bottom: 1px solid var(--grid);
+}
 #panel h2 { font-size: 1.31em; margin: 0; flex: 1; }
 #panel .p-close {
   /* v161:26px 手指点不中,而这是孩子关卡片的主出口(点卡外也能关,但他不知道) */
