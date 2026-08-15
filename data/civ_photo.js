@@ -564,4 +564,9 @@ const CIV_PHOTO = {
  { f:'Flinders_Station_and_trams.jpg', h:'9/99', t:['弗林德斯街车站','Flinders Street Station'], by:'Created by Philip Mallis in 2021; cropped by HappyWaldo', lic:'CC BY-SA 3.0' },
  { f:'Sydney_Australia._(21339175489).jpg', h:'a/a0', t:['悉尼歌剧院','the Sydney Opera House'], by:'Bernard Spragg. NZ from Christchurch, New Zealand', lic:'CC0' },
 ],
+'现代欧洲诸国': [
+ { f:'SF_maig_2_cropped.jpg', h:'e/ef', t:['圣家堂','the Sagrada Família'], by:'Canaan', lic:'CC BY-SA 4.0' },
+ { f:'Casa_Milà,_general_view.jpg', h:'d/de', t:['米拉之家','Casa Milà'], by:'Thomas Ledl', lic:'CC BY-SA 4.0' },
+ { f:'Royal_Castle_in_Warsaw,_Poland,_2022,_03.jpg', h:'b/bb', t:['华沙王宫','the Royal Castle'], by:'Chris Olszewski', lic:'CC BY-SA 4.0' },
+],
 };
