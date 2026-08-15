@@ -13,7 +13,7 @@ try { D = require('./load')(); } catch (e) {
 }
 const fs = require('fs');
 const path = require('path');
-const { LANES, SPHERES, ERAS, EV_NAME, CIVS, EVENTS, GEO, CHRONO, GL, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME, PEAK, ACHV, AGLYPH, GEO_CITY, PLACE_LORE, UNIONS, SEARCH_ALIAS, CITY_VIDEO } = D;
+const { LANES, SPHERES, ERAS, EV_NAME, CIVS, EVENTS, GEO, CHRONO, GL, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME, PEAK, ACHV, AGLYPH, GEO_CITY, PLACE_LORE, UNIONS, SEARCH_ALIAS, CITY_VIDEO, CITY_LORE } = D;
 
 const P = [];
 const KINDS = ['econ', 'art', 'tech', 'thought'];
@@ -1156,6 +1156,24 @@ CIVS.forEach(c => {
     if (other.length) P.push(`[钩子句钩错槽位] ${c.n} qh.${k} —— 「${v[0]}」的实词只出现在 q.${other.join('/')} 里,不在 q.${k}`);
   });
 });
+
+/* 规则 58(v194):城市总结段。键必须是 GEO_CITY 里真实存在的中文城市名(城市改名/删除时
+ * 最容易断),值必须是双语两条且都非空。表为空或不全都是合法状态——没条目的城市什么都不渲染。
+ * 另查:这一层不该重复下面的文明行与 PLACE_LORE,所以拦「整段只是罗列朝代名」的退化写法——
+ * 判据取该城已命中的文明名,若一段话里出现三个以上、且没有一句超过 20 字的叙述,多半写成了年表。 */
+{
+  const cityNames = new Set(GEO_CITY.map(g => g[0]));
+  Object.entries(CITY_LORE || {}).forEach(([k, v]) => {
+    const tag = `[城市总结段] ${k}`;
+    if (!cityNames.has(k)) P.push(`${tag} 不是 GEO_CITY 里的城市名`);
+    if (!Array.isArray(v) || v.length !== 2 || !v[0] || !v[1]) { P.push(`${tag} 非双语或有空串`); return; }
+    if (v[0].length < 30) P.push(`${tag} 中文过短(${v[0].length} 字),这一层要的是两三句总结`);
+    if (v[0].length > 200) P.push(`${tag} 中文过长(${v[0].length} 字,上限 200)——凝练是这一层的全部意义`);
+    const dyn = CIVS.filter(c => c.n.length >= 2 && v[0].includes(c.n)).map(c => c.n);
+    if (dyn.length >= 3 && !/[^。;!?]{20,}/.test(v[0]))
+      P.push(`${tag} 疑似退化成朝代罗列(出现 ${dyn.join('、')}),这一层不该重复下面的文明行`);
+  });
+}
 
 const laneIds = new Set(LANES.map(l => l.id));
 CIVS.forEach(c => { if (!laneIds.has(c.l)) P.push(`[泳道 id 不存在] ${c.n} → ${c.l}`); });
