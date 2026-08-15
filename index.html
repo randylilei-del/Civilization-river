@@ -8864,11 +8864,14 @@ const ACHV = {
 /*__DATA:achv:end__*/
 /* ---------- 详情面板 ---------- */
 const panel = document.getElementById('panel');
+/* v163(Ray 裁决):四领域不再各配一色。v11 起借用文明圈四色,但那和「颜色只承载
+   文明圈语义」的铁律打架——孩子刚在图例学会「黄=中东」,翻开卡片看到黄条写着「经济」。
+   条退成中性衬底,领域靠文字区分(顺 v158「视觉主体是字」的方向走完最后一步)。 */
 const GL_KIND = {
-  econ:    { c:'var(--c-mideast)', n:['经济','Economy'] },
-  art:     { c:'var(--c-meso)',    n:['艺术','Arts'] },
-  tech:    { c:'var(--c-indic)',   n:['科技','Sci-Tech'] },
-  thought: { c:'var(--c-africa)',  n:['思想','Thought'] },
+  econ:    { n:['经济','Economy'] },
+  art:     { n:['艺术','Arts'] },
+  tech:    { n:['科技','Sci-Tech'] },
+  thought: { n:['思想','Thought'] },
 };
 /* v156:曲线与鼎盛条合成**一张 SVG**(Ray 指出两块脱节:年份标注把它们隔开、
    条区行高被 viewBox 拉伸放大后占满版面却没多少信息)。合并后:曲线在上、
@@ -8930,7 +8933,7 @@ function chartHTML(c) {
        合并行后同一行可能有两段,盖满整行会互相抢点击。 */
     s += `<g class="gl-row" data-gl="${i}" role="button" tabindex="0" aria-label="${attr(r.label)}"><title>${r.label}</title>`
        + `<rect class="gl-hit" x="${Math.max(0, r.lo - 4).toFixed(1)}" y="${y - 1}" width="${(Math.min(W, r.hi + 4) - Math.max(0, r.lo - 4)).toFixed(1)}" height="16" fill="transparent"/>`
-       + `<rect class="gl-bar" x="${r.xa.toFixed(1)}" y="${y + 1}" width="${Math.max(6, r.xb - r.xa).toFixed(1)}" height="14" rx="4" fill="${GL_KIND[r.g2.k].c}" opacity=".38"/>`
+       + `<rect class="gl-bar" x="${r.xa.toFixed(1)}" y="${y + 1}" width="${Math.max(6, r.xb - r.xa).toFixed(1)}" height="14" rx="4" fill="var(--baseline)" opacity=".38"/>`
        + `<text class="gl-lab" x="${r.tx.toFixed(1)}" y="${y + 11.5}" font-size="9.5" fill="var(--ink)" stroke="var(--surface)" stroke-width="2.5" paint-order="stroke">${r.label}</text>`
        + `</g>`;
   });
@@ -8955,7 +8958,7 @@ function chartHTML(c) {
     `<p class="gl-d" data-gl="${i}" hidden><b>${r.label}</b>${r.g2.d[li]}</p>`).join('');
   /* v157:说明覆盖两种可点元素——圆点此前没有任何提示,没人会想到去点(Ray) */
   const cap = `<div class="cap">${rows.length
-    ? T('圆点 = 大事，点一下看；彩条 = 领域鼎盛，点一段看详情', 'Dots = key moments, tap one; colored spans = golden ages, tap for detail')
+    ? T('圆点 = 大事，点一下看；长条 = 领域鼎盛，点一段看详情', 'Dots = key moments, tap one; bars = golden ages, tap for detail')
     : T('圆点 = 大事，点一下看', 'Dots = key moments, tap one')}</div>`;
   return `<div class="p-gl">${s}<div class="gl-ds">${ds}</div>${cap}</div>`;
 }
