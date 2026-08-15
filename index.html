@@ -344,6 +344,17 @@ svg.no-ev .evg { display: none; }
 }
 #bandPick button:hover { background: var(--grid); }
 #bandPick .dot { flex: none; width: 10px; height: 10px; border-radius: 3px; }
+/* v157 圆点小卡:与 #bandPick 同一族浮层 */
+#evPop {
+  position: fixed; z-index: 30; max-width: 300px; padding: 10px 12px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.16); display: none;
+}
+#evPop.open { display: block; }
+#evPop b { display: block; font-size: 13px; }
+#evPop p { margin: 4px 0 0; font-size: 12.5px; color: var(--ink-2); line-height: 1.5; }
+#evPop button { margin-top: 8px; border: 0; background: none; color: var(--muted); font-size: 12px; cursor: pointer; padding: 0; }
+#evPop button:hover { color: var(--ink); }
 /* v151 开场条:一行 muted 小字,不与图表抢眼。今日文明是按钮但长得像一句话 */
 .start-strip { max-width: 1200px; margin: 2px auto 6px; padding: 0 20px; display: flex; flex-wrap: wrap; gap: 4px 18px; align-items: baseline; font-size: 12.5px; color: var(--muted); }
 .start-strip #civToday { border: 0; background: none; padding: 0; font: inherit; color: var(--muted); cursor: pointer; text-align: left; }
@@ -8873,47 +8884,65 @@ function chartHTML(c) {
     dots += `<circle class="sp-dot" cx="${xx.toFixed(1)}" cy="${cy}" r="2.3" fill="var(--surface)" stroke="${fill(c)}" stroke-width="1.4"/>`
           + `<circle class="sp-hit" data-ev="${yy}" cx="${xx.toFixed(1)}" cy="${cy}" r="11" fill="transparent" role="button" tabindex="0"><title>${fmtY(yy)}</title></circle>`;
   }
-  /* 鼎盛条:标签右边放得下就放右,否则试左;两边都放不下的,单独占一行放到色条上方
-     (压在色条上靠描边晕圈硬读,在 iPad 上就是"被紫条挡住了"——宁可多占一行)。 */
+  /* 鼎盛条(v157 原型):文字直接写在条上——条加高到 14px,标签起笔在条内左端,
+     条太短就带晕圈溢出条外。永远单行,「标签放条上方再占一行」的分支整个消失。 */
   const gl = GL[c.n] || c.gl || [];
   const rows = gl.map(g2 => {
     const xa = Math.max(0, (g2.a - y0) / (y1 - y0) * W);
     const xb = Math.min(W, (g2.b - y0) / (y1 - y0) * W);
     const label = `${GL_KIND[g2.k].n[li]} · ${g2.t[li]}`;
     const est = label.length * (LANG === 'zh' ? 10 : 5.6) + 12;
-    let place = 'right', tx = xb + 5;
-    if (tx + est > W) {
-      if (xa - 5 - est >= 0) { place = 'left'; tx = xa - 5; }
-      else { place = 'above'; tx = Math.max(2, Math.min(xa, W - est)); }
-    }
-    return { g2, xa, xb, label, place, tx, h: place === 'above' ? 22 : 12 };
+    const tx = Math.max(2, Math.min(xa + 5, W - est));
+    /* 占位区间 = 条 ∪ 标签(标签可能溢出条外),合并行时按这个算,不按条算 */
+    return { g2, xa, xb, label, tx, lo: Math.min(xa, tx), hi: Math.max(xb, tx + est) };
   });
-  const glH = rows.reduce((a, r) => a + r.h, 0);
+  /* 行合并(Ray 拍板):时间上不重叠的段挤进同一行,间距 ≥10px 才算不重叠。
+     贪心装箱,保持数据原序;data-gl 仍指原始下标,只有 y 坐标变了。 */
+  const lanes = [];
+  for (const r of rows) {
+    let L = lanes.find(l => l.every(o => r.lo > o.hi + 10 || r.hi < o.lo - 10));
+    if (!L) { L = []; lanes.push(L); }
+    L.push(r); r.lane = lanes.indexOf(L);
+  }
+  const glH = lanes.length * 16;
   const H = base + 3 + glH + 15;             // 曲线区 + 条区 + 年份行
   let s = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-label="${T('影响力曲线与领域鼎盛区间','Influence curve and golden-age spans')}">
     <line x1="0" y1="${base}" x2="${W}" y2="${base}" stroke="var(--baseline)" stroke-width="1"/>
     <polygon points="0,${base} ${pts}${W},${base}" fill="${fill(c)}" opacity=".8"/>
     ${dots}`;
-  let y = base + 3;
   rows.forEach((r, i) => {
-    const by = r.place === 'above' ? y + 11 : y + 1;
-    /* 整行包一个 <g>:命中区、色条、标签同属一组,悬停高亮与点击匹配都落在这一层。
-       透明命中区盖满整行——7px 的色条与 9.5px 的字手指都点不中(与 .sp-hit 同理)。 */
+    const y = base + 3 + r.lane * 16;
+    /* 整段包一个 <g>:命中区、色条、标签同属一组。命中区只盖本段占位区间——
+       合并行后同一行可能有两段,盖满整行会互相抢点击。 */
     s += `<g class="gl-row" data-gl="${i}" role="button" tabindex="0" aria-label="${attr(r.label)}"><title>${r.label}</title>`
-       + `<rect class="gl-hit" x="0" y="${y - 1}" width="${W}" height="${r.h}" fill="transparent"/>`
-       + `<rect class="gl-bar" x="${r.xa.toFixed(1)}" y="${by}" width="${Math.max(6, r.xb - r.xa).toFixed(1)}" height="7" rx="3.5" fill="${GL_KIND[r.g2.k].c}" opacity=".72"/>`
-       + `<text class="gl-lab" x="${r.tx.toFixed(1)}" y="${y + 7.5}"${r.place === 'left' ? ' text-anchor="end"' : ''} font-size="9.5" fill="var(--ink-2)" stroke="var(--surface)" stroke-width="2.5" paint-order="stroke">${r.label}</text>`
+       + `<rect class="gl-hit" x="${Math.max(0, r.lo - 4).toFixed(1)}" y="${y - 1}" width="${(Math.min(W, r.hi + 4) - Math.max(0, r.lo - 4)).toFixed(1)}" height="16" fill="transparent"/>`
+       + `<rect class="gl-bar" x="${r.xa.toFixed(1)}" y="${y + 1}" width="${Math.max(6, r.xb - r.xa).toFixed(1)}" height="14" rx="4" fill="${GL_KIND[r.g2.k].c}" opacity=".72"/>`
+       + `<text class="gl-lab" x="${r.tx.toFixed(1)}" y="${y + 11.5}" font-size="9.5" fill="var(--ink)" stroke="var(--surface)" stroke-width="2.5" paint-order="stroke">${r.label}</text>`
        + `</g>`;
-    y += r.h;
   });
-  s += `<text x="0" y="${H - 3}" font-size="10" fill="var(--muted)">${fmtY(y0)}</text>
+  /* v157:轴只有一头一尾时,巅峰落在哪个年代段读不出来(Ray)。四分位补三个刻度,
+     取整到整齐年份;取整后撞车或太靠两端(±45px)就跳过,不硬塞。 */
+  const span = y1 - y0;
+  const nice = span > 2000 ? 500 : span > 800 ? 200 : span > 400 ? 100 : span > 150 ? 50 : span > 60 ? 20 : 10;
+  let ticks = '', used = new Set([y0, y1]);
+  for (const f of [.25, .5, .75]) {
+    const yr = Math.round((y0 + span * f) / nice) * nice;
+    const x = (yr - y0) / span * W;
+    if (x < 45 || x > W - 45 || used.has(yr)) continue;
+    used.add(yr);
+    ticks += `<text x="${x.toFixed(1)}" y="${H - 3}" font-size="10" text-anchor="middle" fill="var(--muted)">${fmtY(yr)}</text>`;
+  }
+  s += `<text x="0" y="${H - 3}" font-size="10" fill="var(--muted)">${fmtY(y0)}</text>${ticks}
     <text x="${W}" y="${H - 3}" font-size="10" text-anchor="end" fill="var(--muted)">${fmtY(y1)}</text>
   </svg>`;
   /* d 正文预先渲染在这里、默认折叠 —— 不走查表,切语言时整块重渲染自然跟着换。
      v11 建这个功能起 d 就从来没显示过(v71 用哨兵字符串确认),Ray 拍板改为点开。 */
   const ds = rows.map((r, i) =>
     `<p class="gl-d" data-gl="${i}" hidden><b>${r.label}</b>${r.g2.d[li]}</p>`).join('');
-  const cap = rows.length ? `<div class="cap">${T('彩条 = 该领域的鼎盛区间,点一段看详情', 'Colored spans = golden ages; tap one for detail')}</div>` : '';
+  /* v157:说明覆盖两种可点元素——圆点此前没有任何提示,没人会想到去点(Ray) */
+  const cap = `<div class="cap">${rows.length
+    ? T('圆点 = 大事,点一下看;彩条 = 领域鼎盛,点一段看详情', 'Dots = key moments, tap one; colored spans = golden ages, tap for detail')
+    : T('圆点 = 大事,点一下看', 'Dots = key moments, tap one')}</div>`;
   return `<div class="p-gl">${s}<div class="gl-ds">${ds}</div>${cap}</div>`;
 }
 function peakYear(c) {
@@ -9584,6 +9613,35 @@ pcard.addEventListener('click', e => {
 /* 一次只展开一段:同时摊开四段会把卡片撑得很长,而这块本来是给曲线做注脚的。
    再点同一段即收起。SVG 元素不继承 HTMLElement,没有 .click(),所以键盘那条
    单独走 keydown(坑⑨)。 */
+/* v157 原型:点曲线圆点不再瞬移到页面底部的大事记(太远、断上下文——Ray),
+   改为就地弹小卡显示「年份 · 标题 · 一句话」;想看前后文的人点小卡里的「↓」才滚过去。 */
+const evPop = document.createElement('div');
+evPop.id = 'evPop';
+document.body.appendChild(evPop);
+function hideEvPop() { evPop.classList.remove('open'); }
+function showEvPop(y, x, cy) {
+  if (!cur || cur.type !== 'civ') return;
+  const it = chronoOf(cur.obj).find(e2 => String(e2[0]) === String(y));
+  if (!it) return;
+  evPop.innerHTML = `<b>${fmtY(it[0])} · ${it[1]}</b>${it[2] ? `<p>${it[2]}</p>` : ''}` +
+    `<button data-evy="${it[0]}">${T('↓ 在大事记里看前后', '↓ See it in the timeline')}</button>`;
+  evPop.classList.add('open');
+  const r = evPop.getBoundingClientRect();
+  evPop.style.left = Math.max(6, Math.min(x - 30, innerWidth - r.width - 10)) + 'px';
+  evPop.style.top = Math.max(6, Math.min(cy + 12, innerHeight - r.height - 10)) + 'px';
+}
+evPop.addEventListener('click', e => {
+  const b = e.target.closest('[data-evy]');
+  if (!b) return;
+  hideEvPop();
+  const li = panel.querySelector(`.tl-item[data-evy="${b.dataset.evy}"]`);
+  if (li) {
+    li.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    li.classList.remove('tl-hit'); void li.offsetWidth; li.classList.add('tl-hit');
+  }
+});
+document.addEventListener('pointerdown', e => { if (!evPop.contains(e.target)) hideEvPop(); }, true);
+
 function toggleGL(box, i) {
   if (!box) return;
   const want = box.querySelector(`.gl-d[data-gl="${i}"]`);
@@ -9611,14 +9669,7 @@ panel.addEventListener('click', e => {
   if (glr) { toggleGL(glr.closest('.p-gl'), glr.dataset.gl); return; }
   /* 曲线上的小圆点 → 跳到下面对应的那条大事记并高亮一下 */
   const dot = e.target.closest && e.target.closest('.sp-hit');
-  if (dot) {
-    const li = panel.querySelector(`.tl-item[data-evy="${dot.dataset.ev}"]`);
-    if (li) {
-      li.scrollIntoView({ block: 'center', behavior: 'smooth' });
-      li.classList.remove('tl-hit'); void li.offsetWidth; li.classList.add('tl-hit');
-    }
-    return;
-  }
+  if (dot) { showEvPop(dot.dataset.ev, e.clientX, e.clientY); return; }
   /* 卡内漫游:点同期文明(地图圆点/视野外列表)跳到那个文明的卡片 */
   const go = e.target.closest && e.target.closest('[data-goto]');
   if (go) {
