@@ -12773,6 +12773,18 @@ traceSel.addEventListener('change', () => {
     const a = Math.min(...ys), b = Math.max(...ys);
     const pad = Math.max(80, (b - a) * 0.18);
     zoomTo(a - pad, b + pad);          // zoomTo 自带重建,不必再 buildChart
+    /* v205(Ray):横向跳到年代了,竖向没跟上——在页首选「基督教」,轨迹画在下面几条泳道里,
+       视口里什么都没变,像是点了没反应。重建后把站点的竖向范围滚进视口:
+       放得下就居中,放不下就让第一站(上游起点,动画从它开始流)靠上可见。 */
+    setTimeout(() => {   // 不用 rAF:后台标签页里 rAF 不跑,setTimeout 照跑;重建是同步的,等一拍只为让布局落定
+      const rs = [...chart.querySelectorAll('.trstop')].map(g => g.getBoundingClientRect());
+      if (!rs.length) return;
+      const top = Math.min(...rs.map(r => r.top)), bot = Math.max(...rs.map(r => r.bottom));
+      const vh = window.innerHeight, span = bot - top;
+      if (top >= 70 && bot <= vh - 10) return;   // 已经全在视口里,别乱动
+      const target = span < vh - 140 ? window.scrollY + top - (vh - span) / 2 : window.scrollY + top - 90;
+      window.scrollTo({ top: Math.max(0, target), behavior: 'smooth' });
+    }, 30);
   } else buildChart();
 });
 /* ---------- 人物卡 ----------
