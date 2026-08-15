@@ -13,7 +13,7 @@ try { D = require('./load')(); } catch (e) {
 }
 const fs = require('fs');
 const path = require('path');
-const { LANES, SPHERES, ERAS, EV_NAME, CIVS, EVENTS, GEO, CHRONO, GL, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME, PEAK, ACHV, AGLYPH, GEO_CITY, PLACE_LORE, UNIONS, SEARCH_ALIAS, CITY_VIDEO, CITY_LORE, CITY_NAMES, RIVERS, RANGES, DESERTS, LAKES } = D;
+const { LANES, SPHERES, ERAS, EV_NAME, CIVS, EVENTS, GEO, CHRONO, GL, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME, PEAK, ACHV, AGLYPH, GEO_CITY, PLACE_LORE, UNIONS, SEARCH_ALIAS, CITY_VIDEO, CITY_LORE, CITY_NAMES, CITY_SITES, RIVERS, RANGES, DESERTS, LAKES } = D;
 
 const P = [];
 const KINDS = ['econ', 'art', 'tech', 'thought'];
@@ -1222,6 +1222,34 @@ CIVS.forEach(c => {
         return Math.min(c.k[c.k.length - 1][0], x.b) > Math.max(c.k[0][0], x.a);
       });
       if (!covers) P.push(`${t} 「${x.n[0]}」${x.a}—${x.b} 与该城任何一条文明行都不重叠,页面上永远显示不出来`);
+    });
+  });
+}
+
+/* 规则 61(v198):城市代表古迹。键必须是 GEO_CITY 里真实存在的中文城市名;名字与朝代都双语;
+ * 年份在图幅时间轴内;每城最多三处(这一层是引子不是清单);同城不重名。
+ */
+{
+  const cityByZh = Object.fromEntries((GEO_CITY || []).map(c => [c[0], c]));
+  Object.entries(CITY_SITES || {}).forEach(([k, arr]) => {
+    const tag = `[城市古迹] ${k}`;
+    const city = cityByZh[k];
+    if (!city) { P.push(`${tag} 不是 GEO_CITY 里的城市名`); return; }
+    if (!Array.isArray(arr) || !arr.length) { P.push(`${tag} 值应为非空数组`); return; }
+    if (arr.length > 3) P.push(`${tag} 超过三处(${arr.length}),这一层是引子不是清单`);
+    const seen = new Set();
+    arr.forEach((x, i) => {
+      const t = `${tag}[${i}]`;
+      if (!Array.isArray(x.n) || x.n.length !== 2 || !x.n[0] || !x.n[1]) { P.push(`${t} 名字非双语`); return; }
+      if (!Array.isArray(x.e) || x.e.length !== 2 || !x.e[0] || !x.e[1]) P.push(`${t} 朝代非双语`);
+      if (seen.has(x.n[0])) P.push(`${t} 同城古迹重名:${x.n[0]}`); else seen.add(x.n[0]);
+      if (typeof x.y !== 'number') { P.push(`${t} 缺年份`); return; }
+      if (x.y < -3500 || x.y > 2025) P.push(`${t} 年份出图幅范围:${x.y}`);
+      /* **写过一条「年份落在该城所有文明行之外 → 可能抄错」,做废了。**
+         它报出 9 条(莫高窟 366、卢浮宫 1546、圣彼得 1626、勃兰登堡门 1791、法尼尔厅 1742 等),
+         逐个核完**年份全是对的**——它其实在报「站里那个年代没有色带覆盖这座城」,
+         而古迹列表本来就不依赖色带,照样渲染。0% 准确率的规则只会训练人无视 audit,
+         同规则 56 的教训。这些覆盖缺口值得单独整理,但不该在这里当错误拦。 */
     });
   });
 }
