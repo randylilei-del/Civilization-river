@@ -562,14 +562,31 @@ a.bk:hover { border-color: var(--ink-2); }
 /* 地图区:世界档整图缩放到容器宽,放大档在容器里拖动(touch-action 别忘了 pan-x,v80 的坑) */
 /* touch-action:none = 浏览器手势整个接管过来自己管(单指拖/双指捏合/双击都是手写的);
    v80 的教训是 pan-y 吃掉横向拖,这里干脆一半也不留给浏览器 */
-#geoview .gv-map { flex: none; height: 44vh; overflow: auto; background: var(--wash);
+#geoview .gv-mapw { position: relative; flex: none; }
+#geoview .gv-map { height: 44vh; overflow: auto; background: var(--wash);
   touch-action: none; overscroll-behavior: contain; position: relative; }
+/* v199(Ray):打开一座城之后,上面那张世界地图就没多大价值了,却固定占着近半个屏。
+   现在选中任一处地图自动收成一条窄带,以那座城为中心放大、大红点+名字落在带子正中——
+   「我在地球哪儿」一眼可见,核心内容拿到约 4/5 屏。要换地方:点带子或右下角的按钮展开。 */
+#geoview.mini .gv-map { height: clamp(112px, 18vh, 168px); cursor: pointer; overflow: hidden; }   /* 窄带不出滚动条:定位靠代码滚,不靠手 */
+#geoview.mini .gv-map svg { cursor: pointer; }
+#geoview .gv-tog { position: absolute; right: 10px; bottom: 9px; z-index: 2; font: inherit; font-size: 12px;
+  font-weight: 600; padding: 5px 12px; border: 1px solid var(--border); border-radius: 999px;
+  background: var(--surface); color: var(--ink); cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,.12); }
+#geoview .gv-tog:hover { background: var(--wash); }
 #geoview .gv-map svg { display: block; cursor: crosshair; }
 #geoview .gv-map .gc-dot { fill: var(--ink-2); stroke: var(--surface); stroke-width: 1; }
 #geoview .gv-map .gc-hit { fill: transparent; cursor: pointer; }
-#geoview .gv-map .gc-on { fill: #c0392b; }
+/* v199 选中标记:原先只是把 2.6px 的小点从灰改红,125 个点里挑不出来(Ray)。
+   现在是大红点 + 白描边 + 向外扩散的呼吸圈,并且不管哪一档缩放都带名字。 */
+#geoview .gv-map .gc-on { fill: #c0392b; stroke: var(--surface); stroke-width: 2; }
+#geoview .gv-map .gc-halo { fill: none; stroke: #c0392b; stroke-width: 2; pointer-events: none;
+  transform-box: fill-box; transform-origin: center; animation: gcPulse 1.8s ease-out infinite; }
+@keyframes gcPulse { 0% { transform: scale(.5); opacity: .95; } 100% { transform: scale(2.6); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { #geoview .gv-map .gc-halo { animation: none; opacity: .6; } }
 #geoview .gv-map .gc-lab { font-size: 10px; fill: var(--ink-2); pointer-events: none;
   paint-order: stroke; stroke: var(--surface); stroke-width: 2.6; }
+#geoview .gv-map .gc-lab.gc-labon { font-size: 12.5px; font-weight: 700; fill: #c0392b; stroke-width: 3.2; }
 #geoview .gv-res { flex: 1; overflow-y: auto; padding: 12px 14px 20px; }
 #geoview .gv-place { font-size: 16px; font-weight: 700; margin: 2px 0 1px; }
 #geoview .gv-sub { font-size: 12px; color: var(--ink-2); margin-bottom: 10px; }
@@ -807,7 +824,7 @@ td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; ma
     <span class="gv-zoom"><button data-z="1" class="on">世界</button><button data-z="2.2">放大</button><button data-z="4">更大</button></span>
     <button class="gv-x" id="gvClose" aria-label="关闭">×</button>
   </div>
-  <div class="gv-map" id="gvMap"></div>
+  <div class="gv-mapw"><div class="gv-map" id="gvMap"></div><button class="gv-tog" id="gvTog">展开地图 · 换个地方</button></div>
   <div class="gv-res" id="gvRes"></div>
 </div>
 
@@ -11405,7 +11422,7 @@ renderTable();
    数据零新增:全部由现有 GEO 版图做点在多边形内判定得出,所以 v82 那轮版图修正
    是这个功能的前置条件——边界画歪,这里就会当着孩子的面漏掉泉州的宋元。 */
 const gv = document.getElementById('geoview'), gvMap = document.getElementById('gvMap'), gvRes = document.getElementById('gvRes');
-const GV = { zoom: 1, last: null };   // last = { lon, lat, ci } ci=GEO_CITY 下标或 -1
+const GV = { zoom: 1, last: null, mini: true };   // last = { lon, lat, ci } ci=GEO_CITY 下标或 -1;mini = 地图收成窄带(v199)
 const gvPip = (x, y, poly) => {
   let ins = false;
   for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
@@ -11429,7 +11446,10 @@ const gvX = y => {
 const GV_LAT0 = -55, GV_LAT1 = 72, GV_COS0 = Math.cos(35 * Math.PI / 180);
 function renderGvMap() {
   /* 每次换档整张重画,坐标全用像素:字号与点径不随缩放走样,点击换算也只剩一次除法 */
-  const W = Math.round(Math.max(320, gvMap.clientWidth) * GV.zoom);
+  /* v199 窄带模式下至少放大到 3.2 档(容器只有十几 vh 高,世界档里一座城只是个点),
+     但不改 GV.zoom——展开回去还是用户自己选的那一档 */
+  const Z = GV.mini ? Math.max(GV.zoom, 3.2) : GV.zoom;
+  const W = Math.round(Math.max(320, gvMap.clientWidth) * Z);
   const Hm = W * (GV_LAT1 - GV_LAT0) / 360 / GV_COS0;
   const sx = lon => (lon + 180) / 360 * W, sy = lat => (GV_LAT1 - lat) / (GV_LAT1 - GV_LAT0) * Hm;
   const path = poly => 'M' + poly.map(p => sx(p[0]).toFixed(1) + ',' + sy(p[1]).toFixed(1)).join('L') + 'Z';
@@ -11438,18 +11458,24 @@ function renderGvMap() {
   for (const r of LAND) for (const run of landRuns(r)) s += `<path d="${path(run)}" fill="var(--geo-land)"/>`;
   /* 今日国界(虚线)。只在这张定位地图上画,卡片里的版图小地图不画——那里画了会被当成
      那个年代的边界。线宽与虚线间隔随缩放反向收窄,否则放大档虚线糊成实线。 */
-  const bw = (GV.zoom > 2.5 ? .6 : .7).toFixed(2), dash = GV.zoom > 2.5 ? '2.5,2.5' : '2,2';
+  const bw = (Z > 2.5 ? .6 : .7).toFixed(2), dash = Z > 2.5 ? '2.5,2.5' : '2,2';
   for (const l of BORDERS) s += `<path d="${line(l)}" fill="none" stroke="var(--geo-border)" stroke-width="${bw}" stroke-dasharray="${dash}" stroke-linecap="round"/>`;
+  let selS = '';   // 选中标记最后画,压在所有点和标签之上
   GEO_CITY.forEach(([zh, en, lon, lat], i) => {
     const x = sx(lon).toFixed(1), y = sy(lat).toFixed(1);
     const on = GV.last && GV.last.ci === i;
-    s += `<circle class="gc-dot${on ? ' gc-on' : ''}" data-gd="${i}" cx="${x}" cy="${y}" r="2.6"/>`;
-    if (GV.zoom > 1.5) s += `<text class="gc-lab" x="${+x + 4}" y="${+y - 3}">${LANG === 'zh' ? zh : en}</text>`;
+    if (on) {
+      selS += `<circle class="gc-halo" cx="${x}" cy="${y}" r="7"/><circle class="gc-dot gc-on" data-gd="${i}" cx="${x}" cy="${y}" r="5"/>` +
+        `<text class="gc-lab gc-labon" x="${+x + 8}" y="${+y - 6}">${LANG === 'zh' ? zh : en}</text>`;
+    } else {
+      s += `<circle class="gc-dot" data-gd="${i}" cx="${x}" cy="${y}" r="2.6"/>`;
+      if (Z > 1.5) s += `<text class="gc-lab" x="${+x + 4}" y="${+y - 3}">${LANG === 'zh' ? zh : en}</text>`;
+    }
     s += `<circle class="gc-hit" data-gc="${i}" cx="${x}" cy="${y}" r="10"><title>${LANG === 'zh' ? zh : en}</title></circle>`;
   });
-  /* 自由点击的落点标记,平时藏在画布外 */
+  /* 自由点击的落点标记(与城市点同一套醒目做法),没有自由落点时藏在画布外 */
   const mk = GV.last && GV.last.ci < 0 ? [sx(GV.last.lon), sy(GV.last.lat)] : [-99, -99];
-  s += `<circle id="gvMark" cx="${mk[0]}" cy="${mk[1]}" r="4.5" fill="none" stroke="#c0392b" stroke-width="2"/></svg>`;
+  s += selS + `<circle class="gc-halo" cx="${mk[0]}" cy="${mk[1]}" r="7"/><circle id="gvMark" cx="${mk[0]}" cy="${mk[1]}" r="5.5" fill="none" stroke="#c0392b" stroke-width="2.5"/></svg>`;
   gvMap.innerHTML = s;
   /* 图比容器矮时(窄屏 + 世界档就会这样),容器要跟着收，否则下面留一条空白带——
      这是 Ray 反馈「地图上面有个白条」的第二个成因(第一个是没裁掉的北冰洋)。
@@ -11679,21 +11705,24 @@ function gvQuery(lon, lat, ci) {
       'Territories are peak-era sketches with imprecise borders; the dotted lines are today\'s national borders, shown only to help you find your way. Years are each civilization\'s full span, not its time at this spot. Tap a row for details.')}</div>
     ${cvHtml}`;
   gvRes.scrollTop = 0;
-  /* 同步地图上的选中点 */
-  gvMap.querySelectorAll('.gc-on').forEach(d => d.classList.remove('gc-on'));
-  if (ci >= 0) { const d = gvMap.querySelector(`.gc-dot[data-gd="${ci}"]`); if (d) d.classList.add('gc-on'); }
-  const mk = gvMap.querySelector('#gvMark');
-  if (mk) {
-    const svg = gvMap.querySelector('svg'), W = +svg.getAttribute('width'), Hm = +svg.getAttribute('height');
-    if (ci < 0) { mk.setAttribute('cx', (lon + 180) / 360 * W); mk.setAttribute('cy', (GV_LAT1 - lat) / (GV_LAT1 - GV_LAT0) * Hm); }
-    else { mk.setAttribute('cx', -99); mk.setAttribute('cy', -99); }
-  }
+  /* v199:选中即收窄地图并整张重画——标记、名字、呼吸圈跟着落点走,落点滚到带子正中 */
+  setGvMini(true);
 }
+/* v199 地图窄带/展开切换。收起时地图不再吃手势(点它就是展开);展开后回到用户自己的缩放档 */
+function setGvMini(m) {
+  GV.mini = !!m;
+  gv.classList.toggle('mini', GV.mini);
+  document.getElementById('gvTog').textContent = GV.mini ? T('展开地图 · 换个地方', 'Open map · go elsewhere') : T('收起地图', 'Shrink map');
+  renderGvMap();
+}
+document.getElementById('gvTog').addEventListener('click', () => setGvMini(!GV.mini));
+gvMap.addEventListener('click', () => { if (GV.mini) setGvMini(false); });
 function gvHeadTexts() {
   document.getElementById('gvTitle').textContent = T('点地图上任意一处，看这里从古到今住过哪些文明', 'Tap anywhere on the map to see who has lived there through history');
   document.getElementById('gvRand').textContent = T('随便去个地方', 'Surprise me');
   const zb = gv.querySelectorAll('.gv-zoom button');
   zb[0].textContent = T('世界', 'World'); zb[1].textContent = T('放大', 'Zoom'); zb[2].textContent = T('更大', 'More');
+  document.getElementById('gvTog').textContent = GV.mini ? T('展开地图 · 换个地方', 'Open map · go elsewhere') : T('收起地图', 'Shrink map');
 }
 /* v176:随机城市——避开与上一次相同;沿用 gvQuery,城市点/列表/高亮全套现成 */
 document.getElementById('gvRand').addEventListener('click', () => {
@@ -11729,7 +11758,7 @@ gv.querySelector('.gv-zoom').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   GV.zoom = +b.dataset.z;
   gv.querySelectorAll('.gv-zoom button').forEach(x => x.classList.toggle('on', x === b));
-  renderGvMap();
+  if (GV.mini) setGvMini(false); else renderGvMap();   // v199 点缩放档 = 想看地图,顺手展开
 });
 /* ---- 触摸手势(Ray 2026-08-08 反馈:要单指拖动 + 双指捏合) ----
    全手写,不引外部库(铁律)。手势结束才按新倍率重画(捏合过程中只做 CSS 缩放
@@ -11757,6 +11786,7 @@ let gvMoved = false;
     syncZoomBtns();
   }
   gvMap.addEventListener('pointerdown', e => {
+    if (GV.mini) return;   // v199 窄带不吃手势,click 监听负责展开
     PTS.set(e.pointerId, { x: e.clientX, y: e.clientY });
     try { gvMap.setPointerCapture(e.pointerId); } catch (err) {}   // 合成事件没有活跃指针,会抛
     if (PTS.size === 1) {
@@ -11829,7 +11859,7 @@ let gvMoved = false;
   gvMap.addEventListener('pointercancel', endPt);
   /* 桌面触控板捏合走 ctrl+wheel */
   gvMap.addEventListener('wheel', e => {
-    if (!e.ctrlKey) return;
+    if (!e.ctrlKey || GV.mini) return;
     e.preventDefault();
     zoomAt(e.clientX, e.clientY, GV.zoom * (e.deltaY < 0 ? 1.15 : .87));
   }, { passive: false });
