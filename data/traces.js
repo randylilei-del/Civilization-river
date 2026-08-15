@@ -71,24 +71,24 @@ const TRACES = [
 ] },
 /* ---- v179 扩容批(Ray 全选 A–G):补齐四大发明的指南针 + 数学 + 四条生活风物 + 马镫 ---- */
 { g:'tech', n:['指南针','The Compass'], stops:[
-  { y:-250, l:'ea', t:['司南','The south-pointer'], d:['战国方士用磁石琢成勺形司南——人类先知道磁石认得方向,几百年后才想到带它出海。','A lodestone spoon that points south; centuries pass before anyone takes it to sea.'] },
+  { y:-250, l:'ea', t:['司南','The south-pointer'], d:['战国文献里已有「司南」之名,汉代书里说它是勺形磁石——但从没挖出过一件实物,它长什么样、灵不灵,今天只能猜。可以确定的是:人类先知道磁石认方向,一千多年后才带它出海。','Ancient texts describe a lodestone \'south-pointer\' — though none has ever been dug up. What is certain: people knew lodestones point the way long before anyone took a needle to sea.'] },
   { y:1100, l:'ea', t:['磁针上船','Needles go to sea'], d:['沈括记下磁针制法,广州海船「阴晦观指南针」——航海罗盘的世界最早记载在北宋。','Shen Kuo describes the needle; Song ships steer by it in overcast weather — the first record of marine compasses.'] },
   { y:1190, l:'eu', t:['地中海','The Mediterranean'], d:['12 世纪末欧洲文献开始提到磁针;它怎么走完中间这段路,史料没留下细节。','European texts mention the needle by the late 12th century; how it crossed the middle stretch, the sources never say.'] },
   { y:1492, l:'eu', t:['大航海','The Age of Sail'], d:['罗盘加海图让远洋成为常规;哥伦布的横渡从这里接上「哥伦布大交换」那条轨迹。','Compass plus chart makes ocean crossings routine — this trace hands off to the Columbian Exchange.'] },
 ] },
 { g:'tech', n:['「零」的旅行','The Journey of Zero'], stops:[
-  { y:500, l:'sa', t:['印度:零与十进制','India: zero and place value'], d:['印度数学家把「没有」写成一个数,配上十进制位值——今天全世界写数字的方式在这里定型。','Indian mathematicians write "nothing" as a number; the way the whole world writes numbers is set here.'] },
+  { y:500, l:'sa', t:['印度:零与十进制','India: zero and place value'], d:['印度人先让「没有」在数位里占住一个位,628 年婆罗摩笈多又写下它的运算规则——零成了真正的数,今天全世界写数字的方式在这里定型。','India first lets "nothing" hold a place, then Brahmagupta (628) writes the rules for it as a number — the way the whole world writes numbers is set here.'] },
   { y:820, l:'me', t:['巴格达的算术书','Baghdad arithmetic'], d:['花拉子米把印度数字写进算术书,阿拉伯学界全面采用——「代数」一词就出自他的书名。','Al-Khwarizmi puts the Indian numerals into his arithmetic; "algebra" comes from his book title.'] },
   { y:1202, l:'eu', t:['斐波那契带回欧洲','Fibonacci brings it home'], d:['比萨商人之子在北非学会新数字,写成《计算之书》;欧洲账房又抵抗了两百年才放下罗马数字。','A Pisan merchant\'s son learns the numerals in North Africa; Europe\'s counting houses resist for two more centuries.'] },
 ] },
 { g:'tech', n:['马镫','The Stirrup'], stops:[
-  { y:300, l:'ea', t:['中国:最早的实物','China: the first stirrups'], d:['最早的马镫实物出土于中国;一个踏环让骑手解放双手,骑射与冲锋都变了样。','The earliest surviving stirrups are Chinese; a foot-ring frees the rider\'s hands and changes riding itself.'] },
+  { y:300, l:'ea', t:['中国:最早的证据','China: the earliest evidence'], d:['最早的马镫证据都出自中国——先是约 300 年骑俑上的脚镫,随后有了出土实物;一个踏环让骑手解放双手。','The earliest evidence of stirrups is Chinese — first on rider figurines, then surviving iron pairs; a foot-ring frees the rider\'s hands.'] },
   { y:560, l:'st', t:['草原西传','West across the steppe'], d:['阿瓦尔人带着马镫西迁,草原骑兵把它一路带到欧洲门口。','The Avars carry stirrups west; steppe cavalry delivers them to Europe\'s doorstep.'] },
   { y:730, l:'eu', t:['欧洲骑兵','European cavalry'], d:['法兰克军队采用马镫,人马合一的冲击骑兵从此可行——它对骑士时代有多大功劳,史学家至今还在争。','Frankish armies adopt it and shock cavalry becomes possible — how much it made the age of knights, historians still debate.'] },
 ] },
 { g:'life', n:['瓷器','Porcelain'], stops:[
-  { y:200, l:'ea', t:['中国:瓷器烧成','China fires true porcelain'], d:['东汉的窑火里烧出真正的瓷——比陶更硬、更白、敲起来有金石声,配方保密一千五百年。','True porcelain emerges from Han kilns — harder and whiter than pottery, its recipe a secret for 1,500 years.'] },
-  { y:850, l:'me', t:['一船瓷器去巴格达','A shipload for Baghdad'], d:['「黑石号」沉船装着五万件长沙窑瓷器驶向阿拔斯;伊斯兰陶工仿不出瓷胎,就画上钴蓝——后来青花的蓝料反而从波斯来。','The Belitung wreck carries 50,000 pieces toward the Abbasids; Islamic potters, unable to match the body, answer with cobalt blue.'] },
+  { y:200, l:'ea', t:['中国:瓷器烧成','China fires true porcelain'], d:['东汉的窑火里烧出最早的瓷——比陶更硬、更致密、敲起来有金石声,配方保密一千五百年。','China fires its first porcelain in Han-era kilns — harder and denser than pottery, its recipe a secret for 1,500 years.'] },
+  { y:830, l:'me', t:['一船瓷器去巴格达','A shipload for Baghdad'], d:['「黑石号」沉船装着五万件长沙窑瓷器驶向阿拔斯;伊斯兰陶工仿不出瓷胎,就画上钴蓝——这抹蓝后来又回到中国,成了青花。','The Belitung wreck carries 50,000 pieces toward the Abbasids; Islamic potters, unable to match the body, answer with cobalt blue — a blue that later returns to China as blue-and-white.'] },
   { y:1600, l:'eu', t:['欧洲的瓷器热','Europe\'s porcelain fever'], d:['明代外销青花让欧洲王室痴迷两百年,英语干脆管瓷器叫 china。','Ming export blue-and-white obsesses Europe for two centuries — English simply calls it "china".'] },
   { y:1708, l:'eu', t:['迈森破解配方','Meissen cracks the recipe'], d:['德累斯顿的工匠终于烧出欧洲第一炉硬质瓷,千年技术秘密就此揭晓。','Dresden craftsmen fire Europe\'s first true porcelain; the millennium-old secret is out.'] },
 ] },
@@ -100,7 +100,7 @@ const TRACES = [
 ] },
 { g:'life', n:['国际象棋','Chess'], stops:[
   { y:600, l:'sa', t:['印度:恰图兰卡','India: chaturanga'], d:['笈多时代的「四军棋」:车、马、象、兵,四个兵种摆上棋盘。','The Gupta-era "four divisions" game: chariots, horses, elephants and foot soldiers take the board.'] },
-  { y:650, l:'me', t:['波斯与阿拉伯世界','Persia and the Caliphate'], d:['波斯宫廷把它改成 shatranj,阿拉伯征服后风靡整个伊斯兰世界——「将军」的说法来自波斯语 shah。','Persia refines it into shatranj and the Islamic world falls for it — "checkmate" descends from the Persian shah.'] },
+  { y:650, l:'me', t:['波斯与阿拉伯世界','Persia and the Caliphate'], d:['波斯宫廷把它改成 shatranj,阿拉伯征服后风靡整个伊斯兰世界——英语里的 checkmate(将死)就来自波斯语 shāh māt:「王完了」。','Persia refines it into shatranj and the Islamic world falls for it — "checkmate" descends from the Persian shah.'] },
   { y:1000, l:'eu', t:['进入欧洲','Into Europe'], d:['经西班牙与西西里传入欧洲宫廷,成了骑士教育的一部分。','Via Spain and Sicily it enters Europe\'s courts and a knight\'s education.'] },
   { y:1475, l:'eu', t:['王后觉醒','The queen awakes'], d:['原本一步一格的「维齐尔」变成横冲直撞的王后——当时的人叫它「疯王后的棋」,那就是今天的国际象棋。','The plodding vizier becomes the rampaging queen — players called it "mad queen\'s chess"; it is the game we play today.'] },
 ] },
