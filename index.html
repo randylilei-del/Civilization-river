@@ -12468,7 +12468,7 @@ function gvQuery(lon, lat, ci) {
     }).join('');
     /* 不加 loading="lazy":实测插进刚 unhide 的容器里时 Chrome 一直不触发加载(currentSrc 为空),
        而这层本来就是点了才插,没有再懒一层的必要 */
-    box.hidden = false; phb.remove();
+    box.hidden = false; phb.hidden = true;   // v202.2:按钮藏而不删,点空白要还原回来
     box.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   });
   /* v199:选中即收窄地图并整张重画——标记、名字、呼吸圈跟着落点走,落点滚到带子正中 */
@@ -12486,6 +12486,16 @@ gvRes.addEventListener('click', e => {
   gvLb.hidden = false;
 });
 gvLb.addEventListener('click', () => { gvLb.hidden = true; });
+/* v202.2(Ray:「点击屏幕空白,这 3 个图片又回到刚加载的原始状态」):照片展开着的时候,
+   点面板里任何**不是交互件**的地方(文明行 / 展开的小段 / 链接 / 按钮 / 照片本身除外),
+   照片条收起、「看照片」按钮回来——面板回到刚打开这座城时的样子。 */
+gvRes.addEventListener('click', e => {
+  const box = document.getElementById('gvPh'), phb = document.getElementById('gvPhB');
+  if (!box || box.hidden) return;
+  if (e.target.closest('.gv-ph, .gv-row, .gv-det, a, button, .gv-phb')) return;
+  box.hidden = true; box.innerHTML = '';
+  if (phb) phb.hidden = false;
+});
 /* v199 地图窄带/展开切换。收起时地图不再吃手势(点它就是展开);展开后回到用户自己的缩放档 */
 function setGvMini(m) {
   GV.mini = !!m;
