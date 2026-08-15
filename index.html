@@ -9315,11 +9315,18 @@ scrollerEl.addEventListener('click', e => {
   if (eraEl) { const er = ERAS[+eraEl.dataset.era]; zoomTo(er.a, er.b); return; }
   if (t.classList && t.classList.contains('band')) {
     const ci = +t.dataset.ci;
-    const up = bandAt(e.clientX, e.clientY - 8), dn = bandAt(e.clientX, e.clientY + 8);
-    if (up && dn && +up.dataset.ci === ci && +dn.dataset.ci === ci) { openCiv(CIVS[ci]); return; }
-    const cands = bandCandidates(e.clientX, e.clientY);
+    /* v154:厚带判定从「±8 都是同一条」放宽为「向上或向下 14px 内仍是同一条」。
+       旧判定在厚带**边缘** 8px 内会失败而弹选单(核查指出的毛边)——点在 30px 厚的
+       明带上沿 2px 处,y+14 仍在带内,现在直开;几像素的细带三对采样都不可能通过。 */
+    const same = (a, b) => {
+      const e1 = bandAt(e.clientX, a), e2 = bandAt(e.clientX, b);
+      return e1 && e2 && +e1.dataset.ci === ci && +e2.dataset.ci === ci;
+    };
+    const y = e.clientY;
+    if (same(y - 8, y + 8) || same(y - 14, y) || same(y, y + 14)) { openCiv(CIVS[ci]); return; }
+    const cands = bandCandidates(e.clientX, y);
     if (cands.length <= 1) { openCiv(CIVS[ci]); return; }
-    showBandPick(cands, e.clientX, e.clientY);
+    showBandPick(cands, e.clientX, y);
     return;
   }
   const ug = t.closest && t.closest('.ung');
