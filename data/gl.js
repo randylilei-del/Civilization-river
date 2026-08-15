@@ -125,7 +125,7 @@ const GL = {
  { a:1000, b:1070, k:'econ', t:['印度洋海权','Sea power in the Indian Ocean'], d:['远征三佛齐,商船直抵中国。','Fleets strike Srivijaya; merchants reach China.'] },
  { a:985, b:1070, k:'art', t:['青铜与石庙','Bronzes and stone temples'], d:['舞王湿婆像与坦贾武尔大庙。','The dancing Shiva and the Thanjavur temple.'] } ],
 '斯里兰卡诸王国': [
- { a:-250, b:1200, k:'tech', t:['水库与水渠','Tanks and canals'], d:['旱区里几千座人工湖存下雨季的水,养活大人口;波罗迦罗摩海周长十多公里,今天还在灌溉。','Thousands of man-made lakes in the dry zone stored the monsoon and fed a large population; the Sea of Parakrama, over ten kilometres round, still waters the fields.'] },
+ { a:-250, b:1200, k:'tech', t:['水库与水渠','Tanks and canals'], d:['旱区里几千座人工湖存下雨季的水,养活大人口;波罗迦罗摩海堤坝长十多公里,今天还在灌溉。','Thousands of man-made lakes in the dry zone stored the monsoon and fed a large population; the Sea of Parakrama, its embankment over ten kilometres long, still waters the fields.'] },
  { a:-100, b:500, k:'thought', t:['把佛经写下来,把历史写下来','Scriptures and history put in writing'], d:['南传佛经约前 1 世纪首次写在贝叶上;5 世纪起的《大史》是亚洲连续最长的史书之一。','The Theravada canon was first written on palm leaves around the first century BC; the Mahavamsa, begun in the fifth century, is among the longest continuous histories in Asia.'] } ],
 '德里苏丹国': [ { a:1206, b:1350, k:'art', t:['印度-伊斯兰建筑','Indo-Islamic architecture'], d:['顾特卜塔:波斯的拱与印度的石匠。','The Qutb Minar: Persian arch, Indian masons.'] } ],
 '英属印度': [ { a:1853, b:1900, k:'tech', t:['铁路与电报','Railways and telegraph'], d:['为统治铺的网,后来成了独立运动的血管。','Built to rule; later the arteries of independence.'] } ],
