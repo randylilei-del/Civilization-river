@@ -76,9 +76,28 @@ const VIDEO = {
   /* 以下三条按 Ray 要求补英文片源,均经 YouTube oEmbed 核实频道与标题。
      蒙古帝国同时给了 B 站版(带你看历史,162年从成吉思汗讲起),中文界面用 B 站、
      英文界面用 YouTube——渲染逻辑会按语言自动挑。 */
-  '罗马帝国': [ { y:'PV3r6BINlsM', t:['44 分钟看完罗马史(英)','The Entire History of Rome in 44 Minutes'] } ],
+  '罗马帝国': [ { y:'PV3r6BINlsM', t:['44 分钟看完罗马史(英)','The Entire History of Rome in 44 Minutes'] },
+    { b:'BV1wX6mY5Env', t:['20 小时一口气看完罗马帝国史','The Roman Empire in 20 hours'] } ],
   '阿拉伯哈里发': [ { y:'O8hhwSn1iaU', t:['阿拔斯:伊斯兰黄金时代(英)',"The Abbasids: Islam's Golden Age"] } ],
-  '蒙古帝国': [ { b:'BV1N14y1M72V', y:'bzatw32j-i4', t:['蒙古帝国 162 年','Mongols: from Genghis to Kublai'] } ],
+  '蒙古帝国': [ { b:'BV1N14y1M72V', y:'bzatw32j-i4', t:['蒙古帝国 162 年','Mongols: from Genghis to Kublai'] },
+    { b:'BV1bu4y1w7Ew', t:['蒙古帝国(上)','The Mongol Empire, part 1'] } ],
   '南北朝': [ { b:'BV1w3411v7jd', t:['一口气看完 170 年的乱世南北朝','170 years of division'] } ],
   '东晋·十六国': [ { b:'BV1N7411M7wA', t:['两晋十六国:后三国时代 174 年','Jin and the Sixteen Kingdoms'] } ],
+  /* ---- 2026-08-15 Ray 第二批(v210):每条经 B 站公开接口核实标题 / UP 主 / 播放量(均百万级或接近)。
+     单里另有两条「世界通史」公开课(71h / 146h)——没有对应色带、也不是给 7 岁看的,不入表;
+     「维京」那条(狼群与长船)等维京·北欧色带建起来再挂。 ---- */
+  '古埃及': [ { b:'BV1GV411p79Y', t:['一口气看完古埃及的历史','Ancient Egypt in one sitting'] } ],
+  '罗马共和国': [ { b:'BV1wd4y1h7pP', t:['罗马史合集:从城邦到帝国','Rome: from city-state to empire'] } ],
+  '波斯(阿契美尼德)': [
+    { b:'BV1Sf4y167yD', t:['一个视频看懂波斯崛起','The rise of Persia in one video'] },
+    { b:'BV19o4y1D71a', t:['一口气看完伊朗(波斯)的历史','Iran (Persia) in one sitting'] },
+  ],
+  '帕提亚·萨珊': [ { b:'BV19o4y1D71a', t:['一口气看完伊朗(波斯)的历史','Iran (Persia) in one sitting'] } ],
+  '萨法维·波斯': [ { b:'BV19o4y1D71a', t:['一口气看完伊朗(波斯)的历史','Iran (Persia) in one sitting'] } ],
+  '日本': [ { b:'BV1qP4y1J7iw', t:['一口气看完日本历史','Japanese history in one sitting'] } ],
+  '大英帝国·英国': [ { b:'BV1TQ4y1n7kK', t:['英国:从边缘岛国到世界霸主再到退缩','Britain: island, empire, and after'] } ],
+  '中世纪西欧': [ { b:'BV1ip411Z7yG', t:['纪录片:英国玫瑰战争','Documentary: the Wars of the Roses'] } ],
+  '莫卧儿帝国': [ { b:'BV1th4y1T7q2', t:['一口气看完《莫卧儿帝国》','The Mughal Empire in one sitting'] } ],
+  '奥斯曼帝国': [ { b:'BV1Qt411d7SR', t:['土耳其见闻:奥斯曼帝国的崛起与没落(上)','The Ottomans: rise and fall, part 1'] } ],
+  '古希腊': [ { b:'BV1As411m7U2', t:['奥林匹斯星传(古希腊神话动画)','Olympus Guardian (Greek myth animation)'] } ],
 };
