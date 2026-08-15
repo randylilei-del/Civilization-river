@@ -1035,10 +1035,10 @@ CIVS.forEach(c => {
   });
 })();
 
-/* 规则 54(v179):传播轨迹分组。每条必须带 g 且 ∈ {tech,life,faith}——漏 g 或拼错的
+/* 规则 54(v179 建,v182 改五流):传播轨迹分组。每条必须带 g 且 ∈ 五流——漏 g 或拼错的
    表现是那条轨迹从下拉列表里静默消失(按组渲染时挂不进任何组),页面不报任何错。 */
 (() => {
-  const G = new Set(['tech', 'life', 'faith']);
+  const G = new Set(['goods', 'knowledge', 'beliefs', 'people', 'institutions']);
   TRACES.forEach(tr => { if (!G.has(tr.g)) P.push(`[轨迹分组] ${tr.n[0]} 的 g 缺失或无效:${tr.g}`); });
 })();
 
