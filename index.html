@@ -508,6 +508,13 @@ a.bk:hover { border-color: var(--ink-2); }
 #geoview .gv-zoom button.on { background: var(--ink); color: var(--surface); border-color: var(--ink); }
 #geoview .gv-x { font: inherit; font-size: 20px; line-height: 1; padding: 2px 9px; border: none;
   background: none; color: var(--ink-2); cursor: pointer; flex: none; }
+/* v177 城市视频入口:与文明卡 .vid-play 同形态的整行按钮 */
+#geoview .gv-vid { display: flex; flex-direction: column; gap: 5px; margin: 8px 0 10px; max-width: 560px; }
+#geoview .gvv { display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  font-size: 12.5px; font-weight: 600; color: var(--surface); background: var(--ink);
+  border-radius: 8px; padding: 9px 12px; text-decoration: none; }
+#geoview .gvv span { font-weight: 400; font-size: 11.5px; opacity: .7; }
+#geoview .gvv:hover { opacity: .85; }
 /* v176 随机城市:与主按钮同族的实心胶囊,在地图里要一眼被看到 */
 #geoview .gv-rand { font: inherit; font-size: 12.5px; font-weight: 600; padding: 6px 14px;
   border: 0; border-radius: 999px; background: var(--ink); color: var(--surface); cursor: pointer; flex: none; }
@@ -3833,6 +3840,15 @@ const VIDEO = {
   '东晋·十六国': [ { b:'BV1N7411M7wA', t:['两晋十六国:后三国时代 174 年','Jin and the Sixteen Kingdoms'] } ],
 };
 /*__DATA:video:end__*/
+/*__DATA:city_video:start__*/
+/* 城市介绍视频(v177,Ray 提议):地理视角选中某座城时,在城市名下方给视频入口——
+   「这座城的前世今生」。键 = GEO_CITY 的中文城市名(audit 规则 53 拦孤儿键与结构),
+   值与 VIDEO 表同构:[{ b:BV号, y?:YouTube ID, t:[zh,en] }],可多条。
+   ⚠ 与 VIDEO 同一条铁律:**只填人工核实过的链接,绝不可凭印象生成 ID**。
+   表可以为空——没条目的城市什么都不渲染,不出空按钮。 */
+const CITY_VIDEO = {
+};
+/*__DATA:city_video:end__*/
 /*__DATA:rivers:start__*/
 /* ---------- 地理底图:河流 / 山脉 / 沙漠 ----------
    地理常常比政治更能解释文明为什么在这里起、又为什么停在那里。
@@ -10025,7 +10041,16 @@ function gvQuery(lon, lat, ci) {
       <span class="nm">${cN(h.c)}</span>${h.core ? `<span class="core">${T('核心地带', 'heartland')}</span>` : ''}
       <span class="tb"><i style="left:${(gvX(h.a) * 100).toFixed(1)}%;width:${Math.max(1.2, (gvX(h.b) - gvX(h.a)) * 100).toFixed(1)}%;background:${fill(h.c)}"></i></span>
     </div><div class="gv-det" data-rd="${ri}" hidden></div>`).join('');
+  /* v177:城市介绍视频(CITY_VIDEO,人工核实)。中文优先 B 站、英文优先 YouTube,
+     没条目的城市不渲染任何东西——与文明卡 VIDEO 同一套纪律。 */
+  const cv = city ? CITY_VIDEO[city[0]] : null;
+  const cvHtml = cv && cv.length ? `<div class="gv-vid">${cv.map(v => {
+    const useY = (LANG !== 'zh' && v.y) || !v.b;
+    const href = useY ? 'https://www.youtube.com/watch?v=' + v.y : 'https://www.bilibili.com/video/' + v.b;
+    return `<a class="gvv" href="${href}" target="_blank" rel="noopener noreferrer">▶ ${v.t[LANG === 'zh' ? 0 : 1]}<span>${useY ? 'YouTube ↗' : T('B 站 ↗', 'Bilibili ↗')}</span></a>`;
+  }).join('')}</div>` : '';
   gvRes.innerHTML = `<div class="gv-place">${name}</div>
+    ${cvHtml}
     <div class="gv-sub">${hits.length
       ? T(`从古到今,${hits.length} 条文明的版图先后覆盖过这里`, `${hits.length} civilizations have covered this spot over time`)
       : T('这里还没有收录的文明版图——换个地方点点看', 'No recorded civilization here yet — try another spot')}</div>

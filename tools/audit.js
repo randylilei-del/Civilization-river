@@ -11,7 +11,7 @@ let D;
 try { D = require('./load')(); } catch (e) {
   console.error('数据加载失败:', e.message); process.exit(1);
 }
-const { LANES, SPHERES, ERAS, EV_NAME, CIVS, EVENTS, GEO, CHRONO, GL, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME, PEAK, ACHV, AGLYPH, GEO_CITY, PLACE_LORE, UNIONS, SEARCH_ALIAS } = D;
+const { LANES, SPHERES, ERAS, EV_NAME, CIVS, EVENTS, GEO, CHRONO, GL, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME, PEAK, ACHV, AGLYPH, GEO_CITY, PLACE_LORE, UNIONS, SEARCH_ALIAS, CITY_VIDEO } = D;
 
 const P = [];
 const KINDS = ['econ', 'art', 'tech', 'thought'];
@@ -1032,6 +1032,21 @@ CIVS.forEach(c => {
     });
     if (!names.has(a.c)) P.push(`${tag} 指向不存在的文明:${a.c}`);
     if (!Array.isArray(a.why) || a.why.length !== 2 || !a.why[0] || !a.why[1]) P.push(`${tag} why 非双语`);
+  });
+})();
+
+/* 规则 53(v177):城市介绍视频。键必须是 GEO_CITY 里真实存在的中文城市名(城市改名/删除时
+   最容易断);每条 b/y 至少一个,t 双语。表为空是合法状态(机制先行,内容等人工核实的链接)。 */
+(() => {
+  const cityNames = new Set(GEO_CITY.map(g => g[0]));
+  Object.entries(CITY_VIDEO).forEach(([k, arr]) => {
+    const tag = `[城市视频] ${k}`;
+    if (!cityNames.has(k)) P.push(`${tag} 不是 GEO_CITY 里的城市名`);
+    if (!Array.isArray(arr) || !arr.length) { P.push(`${tag} 值应为非空数组`); return; }
+    arr.forEach((v, i) => {
+      if (!v.b && !v.y) P.push(`${tag}[${i}] b/y 至少给一个`);
+      if (!Array.isArray(v.t) || v.t.length !== 2 || !v.t[0] || !v.t[1]) P.push(`${tag}[${i}] t 非双语`);
+    });
   });
 })();
 
