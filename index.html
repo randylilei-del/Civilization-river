@@ -170,10 +170,10 @@ h1 { font-size: 24px; margin: 0 0 2px; letter-spacing: .01em; }
   max-width: 1200px; margin: 14px auto 10px; padding: 0 20px;
   font-size: 12.5px;
 }
-.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip {
   display: inline-flex; align-items: center; gap: 6px;
-  padding: 3px 10px; border: 1px solid var(--border); border-radius: 999px;
+  padding: 6px 12px; border: 1px solid var(--border); border-radius: 999px;
   background: var(--surface); color: var(--ink-2); cursor: pointer;
   font: inherit; font-size: 12px;
 }
@@ -294,8 +294,9 @@ svg.no-ev .evg { display: none; }
    标示时代边界;名字与跳转都归这一排。 */
 .eras::-webkit-scrollbar { display: none; }
 .eras button {
-  font: inherit; font-size: 11px; line-height: 1.7; white-space: nowrap; cursor: pointer;
-  padding: 0 8px; border-radius: 999px; backdrop-filter: blur(2px);
+  /* v161:原 11px 字 + 零纵向 padding ≈ 20px 高,是儿童最主要的导航却最难点中 */
+  font: inherit; font-size: 12px; line-height: 1.7; white-space: nowrap; cursor: pointer;
+  padding: 6px 12px; border-radius: 999px; backdrop-filter: blur(2px);
   color: var(--ink-2); background: var(--surface-82); border: 1px solid var(--border);
 }
 .eras button:hover { color: var(--ink); border-color: var(--muted); }
@@ -431,8 +432,9 @@ svg.no-ev .evg { display: none; }
 #panel .p-head { display: flex; align-items: center; gap: 8px; }
 #panel h2 { font-size: 1.31em; margin: 0; flex: 1; }
 #panel .p-close {
+  /* v161:26px 手指点不中,而这是孩子关卡片的主出口(点卡外也能关,但他不知道) */
   border: 1px solid var(--border); background: none; color: var(--ink-2);
-  border-radius: 7px; width: 26px; height: 26px; cursor: pointer; font-size: 15px; line-height: 1;
+  border-radius: 9px; width: 40px; height: 40px; cursor: pointer; font-size: 18px; line-height: 1;
 }
 #panel .p-close:hover { color: var(--ink); border-color: var(--muted); }
 #panel .p-meta { color: var(--muted); font-size: 0.92em; margin: 3px 0 10px; font-variant-numeric: tabular-nums; }
@@ -447,7 +449,8 @@ a.bk:hover { border-color: var(--ink-2); }
 #pcard .pc-foot a.bk { margin-left: 0; }
 /* 站内弹卡的人名:浅底小片、无 ↗——与 a.wk 的"要跳走"形成对比,一眼分得开 */
 .pn {
-  cursor: pointer; padding: 1px 5px; border-radius: 5px;
+  /* nowrap:片内断名(「司马/迁」)比整片换行难看得多 */
+  cursor: pointer; padding: 4px 8px; border-radius: 6px; white-space: nowrap; display: inline-block;
   background: var(--pn-bg);
   box-shadow: inset 0 -1px 0 var(--pn-line);
 }
@@ -530,7 +533,7 @@ a.bk:hover { border-color: var(--ink-2); }
 #pcard .pc-sub { color: var(--muted); font-size: 11.5px; margin-top: 2px; font-variant-numeric: tabular-nums; }
 #pcard .pc-x {
   margin-left: auto; flex: none; background: none; border: 1px solid var(--border); color: var(--muted);
-  border-radius: 7px; width: 26px; height: 26px; cursor: pointer; font-size: 15px; line-height: 1;
+  border-radius: 9px; width: 40px; height: 40px; cursor: pointer; font-size: 18px; line-height: 1;
 }
 #pcard .pc-x:hover { color: var(--ink); border-color: var(--muted); }
 #pcard .pc-t { margin: 11px 0 0; font-weight: 600; }
@@ -8280,7 +8283,7 @@ function buildChart() {
     const y0 = laneTop(Math.min(...idxs)) + 8, y1 = laneTop(Math.max(...idxs) + 1) - 8;
     svg.push(`<g class="evg" data-ev="${ei}">
       <line x1="${x}" y1="${y0+6}" x2="${x}" y2="${y1}" stroke="var(--ink-2)" stroke-width="1" stroke-dasharray="2 4" opacity=".55"/>
-      <circle cx="${x}" cy="${y0}" r="16" fill="transparent"/>
+      <circle cx="${x}" cy="${y0}" r="22" fill="transparent"/>
       <circle cx="${x}" cy="${y0}" r="8" fill="var(--surface)" stroke="var(--ink-2)" stroke-width="1"/>
       <text x="${x}" y="${y0+3.5}" text-anchor="middle" font-size="9" fill="var(--ink-2)">${EV_GLYPH[e.t]}</text>
     </g>`);
