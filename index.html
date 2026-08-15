@@ -11716,7 +11716,10 @@ function setGvMini(m) {
   renderGvMap();
 }
 document.getElementById('gvTog').addEventListener('click', () => setGvMini(!GV.mini));
-gvMap.addEventListener('click', () => { if (GV.mini) setGvMini(false); });
+/* ⚠ 窄带的「点它展开」不能用 click 监听(v199 首版就栽在这):真手指点城市时事件顺序是
+   pointerdown → pointerup(tapAt 选中并收窄)→ click,那个 click 紧跟着到达、看到 mini=true
+   又把地图展开——于是「西安能收、敦煌不能」(西安是 openGeoView 直接选的,没经过点击)。
+   合成事件测试不产生 click,所以当时没测出来。现在展开也走 pointer 事件,见下面手势段。 */
 function gvHeadTexts() {
   document.getElementById('gvTitle').textContent = T('点地图上任意一处，看这里从古到今住过哪些文明', 'Tap anywhere on the map to see who has lived there through history');
   document.getElementById('gvRand').textContent = T('随便去个地方', 'Surprise me');
@@ -11766,7 +11769,7 @@ gv.querySelector('.gv-zoom').addEventListener('click', e => {
 let gvMoved = false;
 {
   const PTS = new Map();
-  let pan0 = null, pinch0 = null, lastTap = { t: 0, x: 0, y: 0 };
+  let pan0 = null, pinch0 = null, lastTap = { t: 0, x: 0, y: 0 }, miniDown = null;
   const clampZ = z => Math.max(1, Math.min(6, z));
   const syncZoomBtns = () => gv.querySelectorAll('.gv-zoom button')
     .forEach(b => b.classList.toggle('on', Math.abs(+b.dataset.z - GV.zoom) / GV.zoom < .15));
@@ -11786,7 +11789,7 @@ let gvMoved = false;
     syncZoomBtns();
   }
   gvMap.addEventListener('pointerdown', e => {
-    if (GV.mini) return;   // v199 窄带不吃手势,click 监听负责展开
+    if (GV.mini) { miniDown = { x: e.clientX, y: e.clientY }; return; }   // v199 窄带不吃手势,抬手不动即展开(见 endPt)
     PTS.set(e.pointerId, { x: e.clientX, y: e.clientY });
     try { gvMap.setPointerCapture(e.pointerId); } catch (err) {}   // 合成事件没有活跃指针,会抛
     if (PTS.size === 1) {
@@ -11833,6 +11836,10 @@ let gvMoved = false;
     gvQuery(+lon.toFixed(2), +lat.toFixed(2), -1);
   }
   const endPt = e => {
+    if (GV.mini) {   // v199 窄带:这次按下是在窄带上开始的、且没滑动 → 展开;刚被 tapAt 收窄的那次抬手不会进来(它按下时还不是 mini)
+      if (miniDown && e.type === 'pointerup' && Math.hypot(e.clientX - miniDown.x, e.clientY - miniDown.y) < 12) setGvMini(false);
+      miniDown = null; return;
+    }
     if (!PTS.has(e.pointerId)) return;
     PTS.delete(e.pointerId);
     if (pinch0 && PTS.size < 2) {
