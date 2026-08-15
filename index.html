@@ -11715,6 +11715,33 @@ const wiki = t => LANG === 'zh'
   ? 'https://www.zgbk.com/ecph/search/result?SiteID=1&Alias=all&Query=' + encodeURIComponent(String(t).replace(/·/g, ' '))
   : 'https://www.britannica.com/search?query=' + encodeURIComponent(t);
 const wkA = (text, term) => `<a class="wk" href="${wiki(term || text)}" target="_blank" rel="noopener">${text}</a>`;
+/* v206(Ray:「法显访印」在大百科搜不到,「法显」就有):大事记 / 事件的标题是叙述句,不是词条名,
+   直接当查询词经常零命中。这里把标题**压成最可能是词条的那个词**再去搜(只对中文/大百科;英文 Britannica 检索本身够宽):
+   ① 标题里含事件词(之战/之乱/条约/变法/起义……)→ 截到该词为止(「巨鹿之战·秦亡」→「巨鹿之战」);
+   ② 标题里有动作(即位/称帝/西行/访/建/灭……)→ 取动作前面那一截,里面若有人物卡的人名就用人名(「法显访印」→「法显」,
+      「郑和下西洋」→「郑和」,「隋炀帝开凿大运河」→「隋炀帝」);
+   ③ 没动作但够长(≥6 字)且含人名 → 人名;
+   ④ 其余原样。1071 条大事记实测改写 403 条,抽样人眼过了两轮;规则宁可保守——原样至少不比现在差。
+   动词表只收多字词 + 少量单字,且多字在前——单字「入」曾把「字母传入希腊」切成「字母传」。 */
+const BK_SUFFIX = /(之战|之乱|之变|之围|之治|之盟|之役|之约|之死|条约|战争|起义|会议|运动|革命|事件|法典|宪法|改革|变法|维新|改新|战役|会战|海战|大捷|协定|和约|同盟|联盟|公约|宣言|决议|法案|敕令|诏书|大典|工程|运河|长城|石窟|之路|大火|地震|瘟疫|饥荒|屠杀|政变|起事|兵变|新政|复辟|中兴|盛世|奥运|世博|大爆发|大流行|大迁徙|大分裂|大和解)/;
+const BK_VERB = new RegExp('(' + ('变迁 衰落 宣布 宣告 焚弃 废弃 焚毁 传入 传播 传到 传至 落成 建成 建立 成立 创立 创办 设立 自立 拥立 建都 定都 迁都 即位 登基 称帝 称王 称汗 称制 去世 逝世 病逝 被杀 遇刺 被害 被俘 退位 逊位 统一 灭亡 覆亡 败亡 逃亡 覆灭 消灭 被灭 攻灭 剿灭 亡于 平定 颁布 开凿 开通 完成 通车 独立 发现 抵达 到达 出使 东渡 西行 南下 北伐 北上 南征 北征 西征 东征 远征 出征 亲征 登陆 开始 结束 复国 复位 归附 归降 回归 投降 议和 讲和 结盟 分裂 合并 兼并 吞并 割让 割地 赔款 开港 开埠 受洗 皈依 改宗 继位 嗣位 摄政 执政 掌权 上台 下台 发动 爆发 失败 胜利 大败 大胜 解围 陷落 失守 失陷 收复 光复 沦陷 沦为 并入 编入 纳入 进入 侵入 攻入 加入 参加 加盟 入主 定鼎 贯通 编成 编纂 成书 刊行 出版 问世 首演 首航 出海 下西洋 入华 入藏 入关 入侵 进攻 攻陷 攻占 攻取 夺取 收取 攻破 击破 围攻 击败 击退 击溃 战胜 大破 兴建 修建 营建 扩建 重建 改建 新建 始建 创建 掠夺 争夺 出生 诞生 发生 出走 逃走 屠 攻 占 征 伐 访 遣 渡 围 灭 入 亡 陷 取 破 夺 焚 毁 建 迁 卒 崩 薨 通').split(' ').sort((a, b) => b.length - a.length).join('|') + ')');
+const BK_TRAIL = /(被迫|首次|正式|重新|先后|相继|起兵|举兵|率军|领军|挥师|开始|大|被|所|已|又|再|遂|亦|也|即|遭|获|自|亲|率)$/;
+let BK_PEOPLE = null;
+function bkTerm(t) {
+  if (LANG !== 'zh' || !t) return t;
+  if (!BK_PEOPLE) BK_PEOPLE = Object.keys(PEOPLE).filter(n => n.length >= 2).sort((a, b) => b.length - a.length);
+  t = t.replace(/[《》「」『』“”"]/g, '').trim();
+  const ms = t.match(BK_SUFFIX);
+  if (ms) return t.slice(0, ms.index + ms[0].length);
+  const m = t.match(BK_VERB);
+  if (m && m.index >= 2) {
+    const pre = t.slice(0, m.index).replace(BK_TRAIL, '').replace(/[、,，:：]$/, '').trim();
+    for (const n of BK_PEOPLE) if (pre.includes(n)) return n;
+    if (pre.length >= 2) return pre;
+  }
+  if (t.length >= 6) for (const n of BK_PEOPLE) if (t.includes(n) && n !== t) return n;
+  return t;
+}
 /* 国内出口(v174 起主出口已是国内可达的大百科,B 站链接作为**视频向补充**保留)。
    中文模式下在**两个主出口**(文明卡标题、人物卡底部)另给一条 B 站搜索链接,
    与 VIDEO 那块「中文优先 B 站」同一口径;两类读者各得其所。
@@ -12480,7 +12507,7 @@ function openCiv(c) {
     ${coHTML(c)}
     ${qHTML(c)}
     ${ch.length ? `<div class="p-tl"><h3>${T('大事记（曲线上的小圆点）','Key moments (dots on the curve)')}</h3>${ch.map(([y, t2, d2]) =>
-      `<div class="tl-item" data-evy="${y}"><span class="tl-y">${fmtY(y)}</span><div><b>${wkA(t2, stripParen(t2))}</b>${d2 ? `<p>${d2}</p>` : ''}</div></div>`).join('')}</div>` : ''}
+      `<div class="tl-item" data-evy="${y}"><span class="tl-y">${fmtY(y)}</span><div><b>${wkA(t2, bkTerm(stripParen(t2)))}</b>${d2 ? `<p>${d2}</p>` : ''}</div></div>`).join('')}</div>` : ''}
     ${worldHTML(c, evs)}
     ${videoHTML(c)}`;
   panel.classList.add('open');
@@ -12489,7 +12516,7 @@ function openEvent(ev) {
   cur = { type: 'ev', obj: ev };
   panel.style.removeProperty('--civ'); panel.style.removeProperty('--civ-t');
   panel.innerHTML = `
-    <div class="p-head"><h2>${EV_GLYPH[ev.t]} ${wkA(evTitle(ev))}</h2>
+    <div class="p-head"><h2>${EV_GLYPH[ev.t]} ${wkA(evTitle(ev), bkTerm(evTitle(ev)))}</h2>
       <button class="p-close" aria-label="${T('关闭','Close')}">×</button></div>
     <div class="p-meta">${T('约 ','c. ')}${fmtY(ev.y)}${T(' 年','')} · ${evType(ev.t)} · ${T('波及:','Regions: ')}${ev.ls.map(lName).join(T('、',', '))}</div>
     <div class="p-body">${evDesc(ev)}</div>`;
