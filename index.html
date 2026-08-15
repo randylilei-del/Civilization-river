@@ -375,10 +375,19 @@ svg.no-ev .evg { display: none; }
 #evPop button { margin-top: 8px; border: 0; background: none; color: var(--muted); font-size: 12px; cursor: pointer; padding: 0; }
 #evPop button:hover { color: var(--ink); }
 /* v151 开场条:一行 muted 小字,不与图表抢眼。今日文明是按钮但长得像一句话 */
-.start-strip { max-width: 1200px; margin: 2px auto 6px; padding: 0 20px; display: flex; flex-wrap: wrap; gap: 4px 18px; align-items: baseline; font-size: 12.5px; color: var(--muted); }
-.start-strip #civToday { border: 0; background: none; padding: 0; font: inherit; color: var(--muted); cursor: pointer; text-align: left; }
-.start-strip #civToday b { color: var(--ink); font-weight: 600; margin-right: 6px; }
-.start-strip #civToday:hover { color: var(--ink); }
+.start-strip { max-width: 1200px; margin: 4px auto 8px; padding: 0 20px; display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; font-size: 12.5px; color: var(--muted); }
+/* v170(Ray:没人注意到这是每天更新的):从一行灰字升成小卡片——黑徽章「今日文明」+
+   该文明的圈色圆点 + 加粗名字。圆点用圈色不违反颜色铁律,它标的就是这个文明所属的圈。 */
+.start-strip #civToday {
+  display: inline-flex; align-items: center; gap: 8px; max-width: 100%;
+  border: 1px solid var(--border); background: var(--wash); border-radius: 999px;
+  padding: 6px 16px 6px 7px; font: inherit; font-size: 13px; color: var(--ink-2);
+  cursor: pointer; text-align: left;
+}
+.start-strip #civToday:hover { border-color: var(--muted); background: var(--surface); }
+.start-strip #civToday .ct-badge { flex: none; background: var(--ink); color: var(--surface); font-size: 11.5px; font-weight: 600; padding: 4px 10px; border-radius: 999px; }
+.start-strip #civToday .dot { flex: none; width: 10px; height: 10px; border-radius: 3px; }
+.start-strip #civToday b { color: var(--ink); font-weight: 700; font-size: 14px; }
 #firstHint { display: inline-flex; gap: 8px; align-items: baseline; }
 #firstHint button { border: 0; background: none; color: var(--muted); cursor: pointer; font-size: 14px; padding: 0 2px; line-height: 1; }
 #firstHint button:hover { color: var(--ink); }
@@ -10289,7 +10298,7 @@ function renderStrip() {
     if (keys.length) hook = c.qh[keys[TODAY_C.qi % keys.length]][li];
   }
   document.getElementById('civToday').innerHTML =
-    `<b>${T('今日文明', 'Civilization of the day')}</b>${cN(c)}${hook ? ` · ${hook}` : ''} →`;
+    `<span class="ct-badge">${T('今日文明', 'Civ of the day')}</span><span class="dot" style="background:${fill(c)}"></span><b>${cN(c)}</b>${hook ? `<span>${hook}</span>` : ''}<span>→</span>`;
   document.getElementById('fhTxt').textContent = T(
     '第一次来？点「▶ 时光穿梭」看历史自己流过；点「换个地方看」找找你住的地方以前住着谁。',
     'First time? Tap ▶ Time travel to watch history flow, or 🌍 Pick a place to see who lived where you live.');
