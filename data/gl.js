@@ -185,6 +185,8 @@ const GL = {
 '汤加帝国': [
  { a:1200, b:1500, k:'econ', t:['靠船运转的朝贡网','A tribute network run on canoes'], d:['斐济出硬木与独木舟、萨摩亚出细编席,汤加是中心节点;这张网靠季风与洋流,不靠道路与仓库。','Fiji sent hardwood and canoes, Samoa fine mats, and Tonga was the hub — a network run on winds and currents rather than roads and warehouses.'] },
  { a:1200, b:1300, k:'tech', t:['巨石门与石砌王陵','The trilithon and the terraced tombs'], d:['哈阿蒙加的立柱重约三四十吨,石材从海边采出运来;穆阿的朗吉用切割拼接的珊瑚石灰岩垒成。','The uprights of the Haʻamonga weigh perhaps thirty to forty tonnes, quarried at the shore and hauled inland; the langi at Muʻa are built of cut and fitted coral limestone.'] } ],
+'南马都尔': [
+ { a:1180, b:1500, k:'tech', t:['礁盘上垒起的玄武岩城','A basalt city stacked on the reef'], d:['柱状玄武岩横竖交叠、像搭木屋一样垒成高墙,九十多座人工小岛立在潮间礁坪上;没有金属工具、轮子和役畜。','Columnar basalt laid crosswise like a log cabin into high walls, over ninety man-made islets standing on the tidal reef — with no metal tools, wheels or draught animals.'] } ],
 '拉帕努伊·复活节岛': [
  { a:1250, b:1600, k:'art', t:['摩艾','The moai'], d:['近千尊石像,最大的一尊立起来约十米、近八十吨,面朝内陆守着自己的村子。','Close to a thousand figures, the largest about ten metres and eighty tonnes standing, all facing inland to watch over their own village.'] } ],
 '毛利': [
@@ -192,6 +194,8 @@ const GL = {
  { a:1975, b:2025, k:'thought', t:['条约清账与语言复兴','Settling the treaty, reviving the language'], d:['怀唐伊仲裁庭审理历史索赔并促成附带道歉的和解;1987年毛利语成为官方语言,「语言巢」把它教回给孩子。','The Waitangi Tribunal hears historical claims and drives settlements that come with apologies; te reo became official in 1987 and language nests teach it back to children.'] } ],
 '夏威夷王国': [
  { a:1840, b:1887, k:'thought', t:['宪法与国际承认','A constitution, and recognition'], d:['1840年起有成文宪法、议会与最高法院,1840年代获英法美承认,与二十多国签约——按当时国际法是个正常的主权国家。','A written constitution, legislature and supreme court from 1840, recognition by Britain, France and the United States in that decade, and treaties with over twenty states — an ordinary sovereign state by the law of the day.'] } ],
+'汤加王国': [
+ { a:1862, b:1875, k:'thought', t:['解放法典与成文宪法','An emancipation code and a written constitution'], d:['1862年解除平民对酋长的人身依附,1875年立宪设议会——太平洋岛屿上很早的一部成文宪法,至今仍在用。','Commoners freed from personal bondage to the chiefs in 1862, a constitution and parliament in 1875 — an early written constitution among the Pacific islands, and still in force.'] } ],
 '欧洲殖民大洋洲': [
  { a:1860, b:1900, k:'econ', t:['种植园与劳工贸易','Plantations and the labour trade'], d:['昆士兰与斐济的甘蔗园要人手,1863年起约六万二千人被运往昆士兰、两万七千人以上被运往斐济,有受雇的也有被掳的;这条产业链改变了美拉尼西亚的人口与语言。','The cane fields of Queensland and Fiji needed hands, and from 1863 some sixty-two thousand were carried to Queensland and twenty-seven thousand more to Fiji, some hired and many taken; the trade changed the population and the languages of Melanesia.'] } ],
 '澳新与太平洋岛国': [

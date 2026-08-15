@@ -100,6 +100,8 @@ const PLACE = {
 '俾斯麦群岛':['巴布亚新几内亚','Papua New Guinea'],
 '汤加·萨摩亚':['汤加与萨摩亚','Tonga and Samoa'],
 '穆阿(汤加塔布岛)':['汤加','Tonga'],
+'南马都尔(波纳佩岛)':['密克罗尼西亚联邦','Federated States of Micronesia'],
+'努库阿洛法(汤加塔布岛)':['汤加','Tonga','努库阿洛法','Nukuʻalofa'],
 '拉帕努伊(复活节岛)':['智利','Chile'],
 '奥特亚罗瓦(新西兰)':['新西兰','New Zealand'],
 '怀唐伊':['新西兰','New Zealand'],
