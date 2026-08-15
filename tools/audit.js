@@ -1019,7 +1019,8 @@ CIVS.forEach(c => {
 (() => {
   const names = new Set(CIVS.map(c => c.n));
   const seen = new Map();
-  (SEARCH_ALIAS || []).forEach(a => {
+  /* 不做 || [] 兜底:整张表消失时这里就该大声崩(exit 1),静默空转是假安全感 */
+  SEARCH_ALIAS.forEach(a => {
     const tag = `[搜索别名] ${(a.t && a.t[0]) || '?'}`;
     if (!Array.isArray(a.t) || !a.t.length || a.t.some(x => !x || typeof x !== 'string')) P.push(`${tag} t 为空或含空项`);
     (a.t || []).forEach(x => {

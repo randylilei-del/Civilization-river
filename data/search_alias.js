@@ -4,18 +4,19 @@
    - c 必须是 data/civs.js 里存在的 n(audit 规则 52 拦);
    - why 双语各一句,写成**给孩子的回答**,不是注释——搜索结果里直接显示这句;
    - 同一个词只许出现在一条里(规则 52 拦重复);英文词一律小写,匹配时统一 lowercase;
-   - 全文已能命中且落点分散得当的词(金字塔→四个文明、奥运会、特洛伊)**不建别名**,
-     别名只救零命中或落点跑偏的词;
+   - 全文已能命中且落点分散得当的词(金字塔→四个文明、奥运会)**不建别名**,
+     别名只救零命中或落点跑偏的词;注意「不建别名 ≠ 搜不到别名」——「特洛伊」因是
+     「特洛伊木马」的子串仍会带出第一条,属预期(别名句排最前,全文命中跟在后面);
    - 新词来源:localStorage `whviz-sq` 里攒的真实搜索记录(零命中的那些就是下一批别名)。 */
 const SEARCH_ALIAS = [
   { t:['奥德赛','木马屠城','特洛伊木马','odyssey','troy','trojan horse','trojan war'], c:'米诺斯·迈锡尼',
-    why:['《奥德赛》和木马屠城讲的都是特洛伊战争——传说就发生在这个时代','The Odyssey and the Trojan Horse both come from the Trojan War, set in this age'] },
+    why:['《奥德赛》和木马屠城的故事都和特洛伊战争有关——传说就发生在这个时代','The Odyssey and the Trojan Horse both come from the Trojan War, set in this age'] },
   { t:['宙斯','奥林匹斯','希腊神话','zeus','olympus','greek gods'], c:'古希腊',
     why:['宙斯是古希腊神话的主神,住在奥林匹斯山','Zeus, king of the ancient Greek gods, lives on Mount Olympus'] },
   { t:['木乃伊','法老','狮身人面像','mummy','pharaoh','sphinx'], c:'古埃及',
     why:['木乃伊、法老和狮身人面像都来自古埃及','Mummies, pharaohs and the Sphinx all come from Ancient Egypt'] },
   { t:['一千零一夜','阿拉丁','辛巴达','aladdin','arabian nights','sinbad'], c:'阿拉伯哈里发',
-    why:['《一千零一夜》的故事发生在哈里发时代的巴格达','The Arabian Nights tales are set in Baghdad under the Caliphate'] },
+    why:['《一千零一夜》里的许多故事发生在哈里发时代的巴格达','Many of the Arabian Nights tales are set in Baghdad under the Caliphate'] },
   { t:['孙悟空','西游记','monkey king','journey to the west'], c:'唐',
     why:['《西游记》是从唐朝玄奘取经的真实旅程里长出来的','Journey to the West grew out of the real journey of the Tang monk Xuanzang'] },
   { t:['花木兰','木兰','mulan'], c:'南北朝',

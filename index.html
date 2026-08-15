@@ -4019,18 +4019,19 @@ const GC_ALIAS = {
    - c 必须是 data/civs.js 里存在的 n(audit 规则 52 拦);
    - why 双语各一句,写成**给孩子的回答**,不是注释——搜索结果里直接显示这句;
    - 同一个词只许出现在一条里(规则 52 拦重复);英文词一律小写,匹配时统一 lowercase;
-   - 全文已能命中且落点分散得当的词(金字塔→四个文明、奥运会、特洛伊)**不建别名**,
-     别名只救零命中或落点跑偏的词;
+   - 全文已能命中且落点分散得当的词(金字塔→四个文明、奥运会)**不建别名**,
+     别名只救零命中或落点跑偏的词;注意「不建别名 ≠ 搜不到别名」——「特洛伊」因是
+     「特洛伊木马」的子串仍会带出第一条,属预期(别名句排最前,全文命中跟在后面);
    - 新词来源:localStorage `whviz-sq` 里攒的真实搜索记录(零命中的那些就是下一批别名)。 */
 const SEARCH_ALIAS = [
   { t:['奥德赛','木马屠城','特洛伊木马','odyssey','troy','trojan horse','trojan war'], c:'米诺斯·迈锡尼',
-    why:['《奥德赛》和木马屠城讲的都是特洛伊战争——传说就发生在这个时代','The Odyssey and the Trojan Horse both come from the Trojan War, set in this age'] },
+    why:['《奥德赛》和木马屠城的故事都和特洛伊战争有关——传说就发生在这个时代','The Odyssey and the Trojan Horse both come from the Trojan War, set in this age'] },
   { t:['宙斯','奥林匹斯','希腊神话','zeus','olympus','greek gods'], c:'古希腊',
     why:['宙斯是古希腊神话的主神,住在奥林匹斯山','Zeus, king of the ancient Greek gods, lives on Mount Olympus'] },
   { t:['木乃伊','法老','狮身人面像','mummy','pharaoh','sphinx'], c:'古埃及',
     why:['木乃伊、法老和狮身人面像都来自古埃及','Mummies, pharaohs and the Sphinx all come from Ancient Egypt'] },
   { t:['一千零一夜','阿拉丁','辛巴达','aladdin','arabian nights','sinbad'], c:'阿拉伯哈里发',
-    why:['《一千零一夜》的故事发生在哈里发时代的巴格达','The Arabian Nights tales are set in Baghdad under the Caliphate'] },
+    why:['《一千零一夜》里的许多故事发生在哈里发时代的巴格达','Many of the Arabian Nights tales are set in Baghdad under the Caliphate'] },
   { t:['孙悟空','西游记','monkey king','journey to the west'], c:'唐',
     why:['《西游记》是从唐朝玄奘取经的真实旅程里长出来的','Journey to the West grew out of the real journey of the Tang monk Xuanzang'] },
   { t:['花木兰','木兰','mulan'], c:'南北朝',
@@ -10001,16 +10002,23 @@ function sQuery(q) {
   const ql = q.toLowerCase();
   const li = LANG === 'zh' ? 0 : 1;
   const best = new Map();
+  const reEsc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  /* 别名匹配(v153 收紧,对抗核查逮到的):拉丁词只许「打字中的前缀(≥3 字符)」或
+     「查询里整词出现」——旧版 ql.includes(t) 无边界,'destroy' 会置顶弹出特洛伊,
+     和全文路径修掉的是同一类 bug。中文保持子串,但 t.includes(ql) 方向要求 ≥2 字,
+     免得单字「木」同时点亮木乃伊/木兰/木马屠城三条。 */
   for (const a of SEARCH_ALIAS) {
-    if (a.t.some(t => t.includes(ql) || ql.includes(t))) {
+    const hit = a.t.some(t => /^[\x20-\x7e]+$/.test(t)
+      ? (ql.length >= 3 && t.startsWith(ql)) || new RegExp('\\b' + reEsc(t) + '\\b').test(ql)
+      : (ql.length >= 2 && t.includes(ql)) || ql.includes(t));
+    if (hit) {
       const c = CIVS.find(c2 => c2.n === a.c);
       if (c) best.set(a.c, { c, score: 100, snip: sEsc(a.why[li]) });
     }
   }
   /* 纯拉丁查询要求词首边界:'troy' 不许命中 'destroyed'(实测撞出来的);
      中文无词边界概念,照旧子串。边界只锁词首不锁词尾,'rom' 打到一半也能出 'Rome'。 */
-  const re = /^[\x20-\x7e]+$/.test(ql)
-    ? new RegExp('\\b' + ql.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) : null;
+  const re = /^[\x20-\x7e]+$/.test(ql) ? new RegExp('\\b' + reEsc(ql)) : null;
   for (const it of SIDX) {
     const i = re ? (m => m ? m.index : -1)(re.exec(it.lo)) : it.lo.indexOf(ql);
     if (i < 0) continue;
@@ -10018,7 +10026,10 @@ function sQuery(q) {
     const score = it.w * 10 + (it.text.length < 40 ? 2 : 0);
     if (prev && prev.score >= score) continue;
     const raw = sSnip(it.text, i, q.length);
-    const j = raw.toLowerCase().indexOf(ql);
+    /* v153:高亮定位复用同一条边界正则——旧版无边界 indexOf 会把 <mark> 标进
+       des**troy**ed,片段选对了、加粗标错处 */
+    const rl = raw.toLowerCase();
+    const j = re ? (m => m ? m.index : -1)(re.exec(rl)) : rl.indexOf(ql);
     const snip = j >= 0
       ? sEsc(raw.slice(0, j)) + '<mark>' + sEsc(raw.slice(j, j + q.length)) + '</mark>' + sEsc(raw.slice(j + q.length))
       : sEsc(raw);
