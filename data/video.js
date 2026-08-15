@@ -15,8 +15,8 @@
    B 站 BV 号在视频链接里 bilibili.com/video/BV1xx411c7mu 的 BV 开头那段。 */
 const VIDEO = {
   /* ---- 2026-08-15 Ray 批量提供的中华文明批(v173):每条经 B 站公开接口核实
-     标题/UP 主/状态当场对得上才入(播放量均百万级)。Ray 单里另有两条未入:
-     三国的「万古史官」(推书频道网文解说)与南宋的「满江红」(影评向),等 Ray 拍板。 ---- */
+     标题/UP 主/状态当场对得上才入(播放量均百万级)。Ray 单里另有两条,经 Ray 拍板**不采用**:
+     三国的「万古史官」(推书频道网文解说)与南宋的「满江红」(影评向)——不适合挂给 7 岁。 ---- */
   '二里头·夏': [ { b:'BV1aB4y1m76o', t:['二里头是夏朝的都城吗','Erlitou: capital of the Xia?'] } ],
   '西周': [ { b:'BV1NTktYwETs', t:['商周之变:礼乐从哪来','The Shang-Zhou transition'] } ],
   '春秋': [ { b:'BV18z421a72k', t:['一口气看懂春秋史','The Spring and Autumn era in one go'] } ],
