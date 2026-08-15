@@ -94,4 +94,17 @@ const PLACE = {
 '华盛顿':['美国','United States','华盛顿','Washington DC'], '纽约':['美国','United States','纽约','New York'],
 '硅谷':['美国加州','California, USA'],
 '圣保罗':['巴西','Brazil','圣保罗','Sao Paulo'], '布宜诺斯艾利斯':['阿根廷','Argentina','布宜诺斯艾利斯','Buenos Aires'],
+/* 大洋洲(v189) */
+'澳大利亚全境':['澳大利亚','Australia'],
+'布吉毕姆(今维多利亚州)':['澳大利亚','Australia','墨尔本以西','west of Melbourne'],
+'俾斯麦群岛':['巴布亚新几内亚','Papua New Guinea'],
+'汤加·萨摩亚':['汤加与萨摩亚','Tonga and Samoa'],
+'穆阿(汤加塔布岛)':['汤加','Tonga'],
+'拉帕努伊(复活节岛)':['智利','Chile'],
+'奥特亚罗瓦(新西兰)':['新西兰','New Zealand'],
+'怀唐伊':['新西兰','New Zealand'],
+'悉尼湾':['澳大利亚','Australia','悉尼','Sydney'],
+'堪培拉':['澳大利亚','Australia','堪培拉','Canberra'],
+'惠灵顿':['新西兰','New Zealand','惠灵顿','Wellington'],
+'夏威夷群岛':['美国','United States','火奴鲁鲁','Honolulu'],
 };

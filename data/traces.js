@@ -4,7 +4,22 @@
    beliefs 信念流(人们为什么这样思考) / people 人口流(谁在流动) / institutions 制度流(社会如何组织)。
    下拉列表按组渲染(TR_GROUP 在 index.html),空组不渲染;audit 规则 54 拦无效分组。
    题材边界(Ray 定):奴隶贸易可做(口径收紧),黑死病这类瘟疫题材不做。
-   口径纪律同六问:主流共识、传播路线有争议处在 d 里写明、不写单因论。 */
+   口径纪律同六问:主流共识、传播路线有争议处在 d 里写明、不写单因论。
+
+   ---- 人口流的入选判据(v189,Ray 认可;四条全中才做) ----
+   1. **改变了目的地的语言或人口构成**——只是军事征服不算,那是色带该讲的事
+   2. **跨至少两条泳道**——只在一个区域内部的移动是某个文明的内政
+   3. **有 3 个以上能给出年份和地点的节点**——给不出就只是一团模糊的箭头
+   4. **能给 7 岁讲成一个动作**:「谁,从哪儿,走到哪儿」
+
+   立这条判据的由来:原来只有两条个案裁决(奴隶贸易做/黑死病不做),没有正面判据,
+   于是每加一条都要重新吵一次,而且会系统性地偏向「当时恰好想到的那条」。
+   回测:班图/突厥/奴隶贸易/下南洋四条全中;黑死病挂在第 1 条(流动的是病不是人),
+   与原裁决一致。用它一扫浮出来的大缺口:印欧语系扩散(四条全中,争议大需写明)、
+   维京扩张(站里连维京色带都没有)、南岛语族向西到马达加斯加、腓尼基与希腊的地中海
+   殖民、日耳曼大迁徙。**加轨迹前先过这四条,过不了就别加。**
+   ⚠ 判据只管「该不该做」,不管「画不画得出来」:停靠站的纵坐标由 l(泳道)决定,
+   目的地没有对应泳道的轨迹画不出移动感(见 v189 大洋洲)。 */
 const TRACES = [
 { g:'knowledge', n:['青铜技术','Bronze metallurgy'], stops:[
   { y:-3300, l:'me', t:['两河冶铜合金','Mesopotamian alloying'], d:['铜锡合金在两河与安纳托利亚成熟,催生武器与礼器革命。','Copper-tin alloys mature in Mesopotamia and Anatolia.'] },
@@ -46,9 +61,9 @@ const TRACES = [
   { y:-250, l:'sa', t:['阿育王传法','Ashoka\'s missions'], d:['羯陵伽之战后皈依,遣使四方传法。','After Kalinga, missions go out in every direction.'] },
   { y:-100, l:'st', t:['中亚绿洲佛国','Central Asian oases'], d:['贵霜治下犍陀罗造像;龟兹、于阗成译经重镇。','Gandhara carves the Buddha; Kucha and Khotan become translation hubs.'] },
   { y:67, l:'ea', t:['传入中国','Enters China'], d:['白马驮经;四百年后深入人心。','The White Horse carries the sutras; four centuries later it is everywhere.'] },
-  { y:372, l:'ea', t:['传入朝鲜半岛','Enters Korea'], d:['经前秦入高句丽,再传百济新罗。','Via the northern kingdoms to Baekje and Silla.'] },
-  { y:552, l:'ea', t:['传入日本','Enters Japan'], d:['百济献佛像经卷;飞鸟时代佛教立国。','Baekje sends images and sutras; Asuka Japan builds on it.'] },
   { y:250, l:'se', t:['南传上座部','Theravada moves south'], d:['经斯里兰卡传入东南亚,至今是中南半岛底色。','Via Sri Lanka into Southeast Asia — the mainland\'s faith to this day.'], p:0 },
+  { y:372, l:'ea', t:['传入朝鲜半岛','Enters Korea'], d:['经前秦入高句丽,再传百济新罗。','Via the northern kingdoms to Baekje and Silla.'], p:2 },
+  { y:552, l:'ea', t:['传入日本','Enters Japan'], d:['百济献佛像经卷;飞鸟时代佛教立国。','Baekje sends images and sutras; Asuka Japan builds on it.'] },
 ] },
 { g:'beliefs', n:['基督教','Christianity'], stops:[
   { y:30, l:'me', t:['诞生于巴勒斯坦','Born in Roman Palestine'], d:['沿罗马道路与航线在帝国内扩散。','Spreads along Roman roads and sea lanes.'] },
@@ -166,5 +181,15 @@ const TRACES = [
   { y:1571, l:'se', t:['马尼拉大帆船','The Manila galleons'], d:['西班牙帆船把美洲白银运到马尼拉,换中国的丝绸与瓷器——太平洋两岸第一次被一条固定航线连了起来。','Spanish galleons carry American silver to Manila for Chinese silk and porcelain — the Pacific\'s first regular trade route.'] },
   { y:1581, l:'ea', t:['白银流入明朝','Silver flows to Ming China'], d:['明朝把赋税折成白银来收(一条鞭法),全国都要用银——世界的白银于是滚滚流向中国。','The Ming converts its taxes to silver (the Single Whip reform); the world\'s silver flows toward China.'] },
   { y:1600, l:'eu', t:['欧洲物价革命','Europe\'s Price Revolution'], d:['白银同样涌入欧洲,物价翻着番涨了一个世纪——史家称之为「物价革命」。','Silver floods Europe too, and prices climb for a century — historians call it the Price Revolution.'] },
+] },
+{ g:'people', n:['波利尼西亚大扩散','The Polynesian Expansion'], stops:[
+  { y:-3000, l:'ea', t:['从台湾出发','Setting out from Taiwan'], d:['南岛语族的最深根系在台湾——今天全世界一千二百多种南岛语言里,分歧最大的几支都在这座岛上,语言学上这通常意味着源头。也有学者主张源头更靠南、过程更缓,争论未定。','The deepest roots of the Austronesian languages are in Taiwan: of the twelve hundred-odd Austronesian languages alive today, the most divergent branches are all on that one island, which in linguistics usually marks the homeland. Some scholars argue for a source further south and a slower process; it is not settled.'] },
+  { y:-1500, l:'se', t:['穿过岛屿东南亚','Through island Southeast Asia'], d:['菲律宾、婆罗洲、苏拉威西一路向南向东。船是带舷外浮杆的独木舟,货是猪、狗、鸡与芋头山药——他们不是去看看,是去住下。','South and east through the Philippines, Borneo and Sulawesi. The boats carried outriggers and the cargo was pigs, dogs, chickens, taro and yam — they were not going to look, they were going to stay.'] },
+  { y:-1000, l:'oc', t:['拉皮塔抵达斐济','Lapita reaches Fiji'], d:['带齿印花纹的陶器从俾斯麦群岛一路铺到瓦努阿图、新喀里多尼亚与斐济,只用了几百年。这一段他们与已在此住了几万年的美拉尼西亚人混居通婚。','The dentate-stamped pottery spread from the Bismarck Archipelago to Vanuatu, New Caledonia and Fiji in only a few centuries. Along this stretch they settled among, and married into, Melanesians who had been there for tens of thousands of years.'] },
+  { y:-800, l:'oc', t:['汤加与萨摩亚:停','Tonga and Samoa: the pause'], d:['再往东是从没有人去过的海。扩散在这里停了约一千八百年——为什么停、为什么又重新开始,是太平洋考古最大的未解问题之一。','East of here lay a sea no human had crossed. The expansion stopped for some eighteen hundred years — why it stopped and why it started again is one of the great open questions of Pacific archaeology.'] },
+  { y:700, l:'af', t:['另一支向西:马达加斯加','The other branch, west to Madagascar'], d:['同一个语族的另一支沿着印度洋一路向西,在公元500至800年间抵达非洲东岸外的马达加斯加。今天马达加斯加语仍属南岛语族,最近的亲戚在婆罗洲——隔着六千公里的大洋。','Another branch of the same family sailed west across the Indian Ocean and reached Madagascar, off the coast of Africa, between about 500 and 800. Malagasy is still an Austronesian language and its closest relatives are in Borneo, six thousand kilometres of ocean away.'], p:1 },
+  { y:1000, l:'oc', t:['东波利尼西亚','East Polynesia'], d:['停顿结束,社会群岛与马克萨斯群岛先后有人。往后三百年,人类把太平洋上几乎每一个能住的点都找到了。','The pause ended and the Society and Marquesas Islands were settled. Over the next three hundred years people found very nearly every habitable speck in the Pacific.'], p:3 },
+  { y:1200, l:'oc', t:['拉帕努伊','Rapa Nui'], d:['复活节岛离最近的有人岛还有两千公里,是世界上最孤立的定居点。能找到这么小的一个点,是这套导航术的极限。','Easter Island lies two thousand kilometres from the nearest inhabited land, the most isolated settlement on earth. Finding a target that small is the limit of what this navigation could do.'] },
+  { y:1300, l:'oc', t:['奥特亚罗瓦收尾','Aotearoa, the last'], d:['新西兰是地球上最后一块被人类住上的大片陆地。从台湾算起,这次扩散走了四千多年、横跨半个地球——1976年复原的双体舟只靠传统导航从夏威夷航抵塔希提,证明它当年确实做得到。','New Zealand was the last sizeable land on earth that people moved into. Counted from Taiwan the expansion took over four thousand years and crossed half the globe — and in 1976 a rebuilt double canoe sailed from Hawaii to Tahiti by traditional navigation alone, proving it could be done.'] },
 ] },
 ];
