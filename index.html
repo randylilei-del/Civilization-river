@@ -207,6 +207,8 @@ h1 { font-size: 24px; margin: 0 0 2px; letter-spacing: .01em; }
   border-radius: 999px; padding: 4px 14px;
 }
 .playbtn:hover { opacity: .85; }
+/* 交流事件按钮的关态:描边而非实心,和「开着」一眼分得开 */
+.evbtn[aria-pressed="false"] { color: var(--muted); background: transparent; border-color: var(--grid); }
 /* display:inline-block 盖掉全局 svg 块级 reset,否则图标独占一行把文字挤下去 */
 .playbtn svg { display: inline-block; vertical-align: -2px; }
 .playbtn.on { color: var(--ink); background: var(--surface); border-color: var(--ink-2); }
@@ -621,15 +623,23 @@ a.bk:hover { border-color: var(--ink-2); }
 #panel .q-item p { margin: 3px 0 0; color: var(--ink-2); font-size: 1.05em; line-height: 1.55; }
 /* v134 钩子句:比正文重、比小标题轻。用 ink 而非 ink-2 拉开层次——一段里现在有三级:
    问题(12px 灰) / 答案一句话(13px 深) / 正文(12.5px 次深)。眼睛的落点是中间那行。 */
-#panel .q-item .q-h { display: block; font-size: 1.15em; font-weight: 600; color: var(--ink); line-height: 1.5; margin: 1px 0 3px; }
+#panel .q-item .q-h { display: block; font-size: 1.15em; font-weight: 600; color: var(--civ-t, var(--ink)); line-height: 1.5; margin: 1px 0 3px; }
 #panel .p-tl { margin-top: 13px; border-top: 1px solid var(--grid); padding-top: 10px; }
 #panel .p-tl h3 { font-size: 0.92em; color: var(--muted); margin: 0 0 7px; font-weight: 600; letter-spacing: .05em; }
 #panel .tl-item { display: flex; gap: 9px; margin: 0 0 7px; }
-#panel .tl-y { flex: none; width: 50px; text-align: right; color: var(--muted); font-size: 0.88em; font-variant-numeric: tabular-nums; padding-top: 1px; }
+#panel .tl-y { flex: none; width: 50px; text-align: right; color: var(--civ-t, var(--muted)); font-weight: 600; font-size: 0.88em; font-variant-numeric: tabular-nums; padding-top: 1px; }
 #panel .tl-item b { font-size: 0.96em; }
 #panel .tl-item p { margin: 0; color: var(--ink-2); font-size: 0.92em; }
 #panel .p-evs { margin-top: 14px; border-top: 1px solid var(--grid); padding-top: 10px; }
 #panel .p-evs h3 { font-size: 0.92em; color: var(--muted); margin: 0 0 6px; font-weight: 600; letter-spacing: .05em; }
+/* 同时代的世界(v165):名字做成可点的小块,块的颜色 = 那个文明自己的圈色,
+   于是「点过去会看到什么颜色」在点之前就知道了 */
+#panel .cw-sub { font-size: .86em; color: var(--muted); margin: 8px 0 5px; }
+#panel .cw-lane { display: flex; flex-wrap: wrap; align-items: baseline; gap: 5px; margin: 0 0 5px; }
+#panel .cw-lane > b { flex: none; width: 4.6em; font-size: .84em; font-weight: 600; color: var(--muted); }
+#panel .cw-c { cursor: pointer; font-size: .92em; line-height: 1.5; padding: 1px 8px; border-radius: 999px;
+  color: var(--civ-t); border: 1px solid var(--civ); background: color-mix(in srgb, var(--civ) 8%, transparent); }
+#panel .cw-c:hover { background: color-mix(in srgb, var(--civ) 18%, transparent); }
 #panel .p-ev { margin: 0 0 8px; }
 #panel .p-ev b { font-size: 0.96em; }
 #panel .p-ev .y { color: var(--muted); font-size: 0.88em; font-variant-numeric: tabular-nums; }
@@ -659,11 +669,15 @@ td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; ma
     <button id="playBtn" class="playbtn">▶ 时光穿梭</button>
     <button id="geoBtn" class="playbtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15.5 15.5 0 0 1 0 18M12 3a15.5 15.5 0 0 0 0 18"/></svg> 换个地方看</button>
     <div class="sbox"><input id="searchIn" type="search" autocomplete="off" enterkeyhint="search"><div id="searchRes" hidden></div></div>
+    <!-- v165:交流事件从次行搬到主行、复选框改按钮。**这不是推翻 v164 的两级分层,是修正一处分类错误**——
+         v164 把主行定为「儿童入口」、次行为「图例与家长向控件」,而交流事件点开是有图标有故事的卡片,
+         本来就是儿童向,却被归进了家长向那一档,还落在次行最右(实测 left=1134/总宽 1160,全屏最易忽略的位置)。
+         形态也一并改:小复选框长得像设置项,做成和「时光穿梭」同款的按钮才像「能玩的东西」。 -->
+    <button id="ck-ev" class="playbtn evbtn" aria-pressed="true">⇄ <span id="evLbl">交流事件</span></button>
     <div class="lang" id="langSw"><button data-l="zh" class="on">中</button><button data-l="en">EN</button></div>
   </div>
   <div class="ctl-sub">
     <div class="chips" id="chips"></div>
-    <label class="ctl"><input type="checkbox" id="ck-ev" checked> <span id="evLbl">交流事件</span></label>
     <select id="traceSel"></select>
   </div>
 </div>
@@ -8353,7 +8367,7 @@ function buildChart() {
   chart = document.getElementById('chart');
   chart.classList.toggle('hl', !!hlSphere);
   if (hlSphere) chart.querySelectorAll('.band').forEach(b => b.classList.toggle('hit', b.dataset.sphere === hlSphere));
-  chart.classList.toggle('no-ev', !document.getElementById('ck-ev').checked);
+  chart.classList.toggle('no-ev', !evOn());
   chart.classList.toggle('tr', curTrace != null);
   placeLabels();
 }
@@ -8427,8 +8441,14 @@ chipsEl.addEventListener('click', e => {
   chart.classList.toggle('hl', !!hlSphere);
   chart.querySelectorAll('.band').forEach(b => b.classList.toggle('hit', b.dataset.sphere === hlSphere));
 });
-document.getElementById('ck-ev').addEventListener('change', e =>
-  chart.classList.toggle('no-ev', !e.target.checked));
+/* v165:交流事件从复选框改成按钮,状态存 aria-pressed(而不是再挂一个隐藏 checkbox
+   —— 隐藏控件是「两个事实源」,以后必然有一处忘了同步) */
+const evBtnEl = document.getElementById('ck-ev');
+const evOn = () => evBtnEl.getAttribute('aria-pressed') === 'true';
+evBtnEl.addEventListener('click', () => {
+  evBtnEl.setAttribute('aria-pressed', evOn() ? 'false' : 'true');
+  chart.classList.toggle('no-ev', !evOn());
+});
 
 /* ---------- 提示框 ---------- */
 const tip = document.getElementById('tip');
@@ -9270,8 +9290,64 @@ function coHTML(c) {
      缺省仍是「同时存在的政权」——绝大多数用例是分裂期。 */
   return `<div class="p-co"><h3>${c.ct ? c.ct[li] : T('同时存在的政权','Coexisting polities')}</h3>${body}${cap}</div>`;
 }
+/* 「同时代还有谁」(v165)。Ray:「每个文明和同周期其他文明的交往写得有点少,唐朝只有一条」。
+   实测确实如此:EVENTS 全站只有 22 条(它本来就是「跨泳道大事件」层,设计上稀疏),
+   **42 个文明匹配到 0 条、40 个只有 1 条 —— 82/140 一条或没有**,唐就是那 1 条(怛罗斯)。
+   这一版不写新内容,先把**已经躺在 CIVS 里的数据**用起来:按年代重叠算同时代文明,
+   唐有 31 个、全站中位 32。故事页第二幕(「唐朝的时候世界上还有谁」)已经验证过这个角度对孩子有效。
+   **按泳道各取最强的,而不是平铺 31 个**——平铺是一张名单,分泳道才是「同一时期,别的地方是谁」,
+   顺带把地理也教了。本泳道多给一个名额(唐同时有吐蕃、渤海国,这是它真实的邻居)。
+   点击复用卡内已有的 `[data-goto]` 漫游机制(地图圆点用的就是它),不另写一套。 */
+function contemporaries(c) {
+  const a = c.k[0][0], b = c.k[c.k.length - 1][0];
+  const byLane = {};
+  for (const o of CIVS) {
+    if (o === c) continue;
+    const oa = o.k[0][0], ob = o.k[o.k.length - 1][0];
+    const lo = Math.max(a, oa), hi = Math.min(b, ob);
+    /* 「重叠够不够久」的门槛不能写死 30 年:秦只存在 14 年,写死 30 就一个同时代都算不出来
+       (实测秦是全站唯一没有这个区块的文明)。改成 min(30, 自身跨度的一半)。 */
+    if (hi - lo < Math.min(30, (b - a) * 0.5)) continue;
+    let peak = 0;
+    for (let y = lo; y <= hi; y += Math.max(1, (hi - lo) / 24)) peak = Math.max(peak, interp(o.k, y));
+    if (peak < 0.12) continue;                        // 那段时间里几乎没有存在感的不列
+    (byLane[o.l] = byLane[o.l] || []).push({ o, peak });
+  }
+  const out = [];
+  for (const l of LANES.map(x => x.id)) {
+    const arr = (byLane[l] || []).sort((x, y) => y.peak - x.peak);
+    if (!arr.length) continue;
+    out.push({ lane: l, items: arr.slice(0, l === c.l ? 3 : 2).map(x => x.o) });
+  }
+  return out;
+}
+function worldHTML(c, evs) {
+  const con = contemporaries(c);
+  if (!con.length && !evs.length) return '';
+  const li = LANG === 'zh' ? 0 : 1;
+  const who = con.length ? `<div class="cw-who">${con.map(g =>
+    `<div class="cw-lane"><b>${lName(g.lane)}</b>${g.items.map(o =>
+      `<span class="cw-c" data-goto="${o.n}" role="button" tabindex="0" style="--civ:${fill(o)};--civ-t:color-mix(in srgb, ${fill(o)} 55%, var(--ink))">${cN(o)}</span>`).join('')}</div>`).join('')}</div>` : '';
+  const what = evs.length ? `<div class="cw-what">${evs.map(e =>
+    `<div class="p-ev"><b>${EV_GLYPH[e.t]} ${wkA(evTitle(e))}</b> <span class="y">${T('约','c. ')}${fmtY(e.y)}${T('年','')}</span><p>${evDesc(e)}</p></div>`).join('')}</div>` : '';
+  return `<div class="p-evs"><h3>${T('同时代的世界','The world at the same time')}</h3>
+    ${who ? `<div class="cw-sub">${T('还有谁 · 点名字可以跳过去','Who else — tap a name to jump')}</div>${who}` : ''}
+    ${what ? `<div class="cw-sub">${T('发生了什么','What happened')}</div>${what}` : ''}</div>`;
+}
 function openCiv(c) {
   cur = { type: 'civ', obj: c };
+  /* v165:把这个文明自己的圈色挂成 --civ,卡内的强调色全部取它。
+     **不引入新颜色**——铁律是「颜色只承载文明圈语义」(v163 把鼎盛条四色去掉就是为这条),
+     而用本圈色反而强化编码:每张卡的体温就是它所属文明圈的颜色。
+     只给两处高频落点上色(六问钩子句 + 大事记年份),它们占了卡片下半 1646px 里的 1356px。 */
+  panel.style.setProperty('--civ', fill(c));
+  /* ⚠ 圈色是**给大色块用的填充色,不能直接当文字色**:实测直接用,140 张卡里 104 张对比度
+     低于 4.5:1、70 张低于 3:1,最差 1.64(中东黄的浅变体配白底,基本读不出来)。
+     派生一个文字色:往圈色里混 40% 的 --ink。浅色主题 ink 近黑 → 压暗;深色主题 ink 是浅的
+     → 提亮 —— **同一个公式在两个主题下自动往正确方向走**,不用维护两套变量。
+     55% 是扫出来的拐点:60% 时浅色还有 7 张(中东黄的浅变体)卡在 4.09 不达标,
+     55% 浅色最差 4.68、深色最差 6.70,两个主题全部过 4.5:1,且保留的色相最多。 */
+  panel.style.setProperty('--civ-t', `color-mix(in srgb, ${fill(c)} 55%, var(--ink))`);
   const f = cF(c);
   const facts = f ? `<div class="p-facts">${Object.entries(f).map(([k, v]) =>
     `<div class="fact"><span>${k}</span><b>${(k === '人物' || k === 'Figures') ? linkNames(v, c) : (k === '成就' || k === 'Legacy') ? linkAchv(v, c) : v}</b>${(k === '中心' || k === 'Center') ? todayHTML(c) : ''}${(k === '鼎盛' || k === 'Peak') ? peakHTML(c) : ''}</div>`).join('')}${PEAK[c.n] ? `<div class="cap pk-cap">${T('版图取历史最大疆域、人口取历史峰值，二者未必同期；占比按当时世界人口估算',
@@ -9291,12 +9367,12 @@ function openCiv(c) {
     ${videoHTML(c)}
     ${ch.length ? `<div class="p-tl"><h3>${T('大事记（曲线上的小圆点）','Key moments (dots on the curve)')}</h3>${ch.map(([y, t2, d2]) =>
       `<div class="tl-item" data-evy="${y}"><span class="tl-y">${fmtY(y)}</span><div><b>${wkA(t2, stripParen(t2))}</b>${d2 ? `<p>${d2}</p>` : ''}</div></div>`).join('')}</div>` : ''}
-    ${evs.length ? `<div class="p-evs"><h3>${T('同期波及本区域的事件','Contemporary cross-regional events')}</h3>${evs.map(e =>
-      `<div class="p-ev"><b>${EV_GLYPH[e.t]} ${wkA(evTitle(e))}</b> <span class="y">${T('约','c. ')}${fmtY(e.y)}${T('年','')}</span><p>${evDesc(e)}</p></div>`).join('')}</div>` : ''}`;
+    ${worldHTML(c, evs)}`;
   panel.classList.add('open');
 }
 function openEvent(ev) {
   cur = { type: 'ev', obj: ev };
+  panel.style.removeProperty('--civ'); panel.style.removeProperty('--civ-t');
   panel.innerHTML = `
     <div class="p-head"><h2>${EV_GLYPH[ev.t]} ${wkA(evTitle(ev))}</h2>
       <button class="p-close" aria-label="${T('关闭','Close')}">×</button></div>
@@ -9309,6 +9385,7 @@ function openEvent(ev) {
    已退出的单独列,不混进名单里:英国 2020 年离开是这条色带最容易被搞错的一处。 */
 function openUnion(u) {
   cur = { type: 'un', obj: u };
+  panel.style.removeProperty('--civ'); panel.style.removeProperty('--civ-t');
   const li = LANG === 'zh' ? 0 : 1;
   const nm = a => a.map(p => p[li]).join(T('、', ', '));
   panel.innerHTML = `
