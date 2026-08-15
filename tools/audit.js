@@ -13,7 +13,7 @@ try { D = require('./load')(); } catch (e) {
 }
 const fs = require('fs');
 const path = require('path');
-const { LANES, SPHERES, ERAS, EV_NAME, CIVS, EVENTS, GEO, CHRONO, GL, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME, PEAK, ACHV, AGLYPH, GEO_CITY, PLACE_LORE, UNIONS, SEARCH_ALIAS, CITY_VIDEO, CITY_LORE, RIVERS, RANGES, DESERTS, LAKES } = D;
+const { LANES, SPHERES, ERAS, EV_NAME, CIVS, EVENTS, GEO, CHRONO, GL, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME, PEAK, ACHV, AGLYPH, GEO_CITY, PLACE_LORE, UNIONS, SEARCH_ALIAS, CITY_VIDEO, CITY_LORE, CITY_NAMES, RIVERS, RANGES, DESERTS, LAKES } = D;
 
 const P = [];
 const KINDS = ['econ', 'art', 'tech', 'thought'];
@@ -1191,6 +1191,37 @@ CIVS.forEach(c => {
         if (!(x >= -180 && x <= 180)) P.push(`[${tag}] ${nm} 经度越界:${x}`);
         if (!(y >= -85 && y <= 85)) P.push(`[${tag}] ${nm} 纬度越界:${y} —— 经纬写反了?`);
       });
+    });
+  });
+}
+
+/* 规则 60(v196):城市古称。键必须是 GEO_CITY 里真实存在的中文城市名;每条名字双语、
+ * 起止年递增且落在图幅时间轴内;**古称不能与今名相同**(那说明这条是白写的);
+ * 同一座城的古称不重名。另拦一类错:古称年代与该城任何一条文明行都不重叠——
+ * 那样它在页面上永远显示不出来,多半是年代抄错了。 */
+{
+  const cityByZh = Object.fromEntries((GEO_CITY || []).map(c => [c[0], c]));
+  Object.entries(CITY_NAMES || {}).forEach(([k, arr]) => {
+    const tag = `[城市古称] ${k}`;
+    const city = cityByZh[k];
+    if (!city) { P.push(`${tag} 不是 GEO_CITY 里的城市名`); return; }
+    if (!Array.isArray(arr) || !arr.length) { P.push(`${tag} 值应为非空数组`); return; }
+    const seen = new Set();
+    arr.forEach((x, i) => {
+      const t = `${tag}[${i}]`;
+      if (!Array.isArray(x.n) || x.n.length !== 2 || !x.n[0] || !x.n[1]) { P.push(`${t} 名字非双语`); return; }
+      if (x.n[0] === city[0]) P.push(`${t} 古称与今名相同(${x.n[0]}),这条是白写的`);
+      if (seen.has(x.n[0])) P.push(`${t} 同城古称重复:${x.n[0]}`); else seen.add(x.n[0]);
+      if (!(typeof x.a === 'number' && typeof x.b === 'number')) { P.push(`${t} 起止年缺失`); return; }
+      if (x.a >= x.b) P.push(`${t} 起年不早于止年:${x.a} → ${x.b}`);
+      if (x.a < -3500 || x.b > 2025) P.push(`${t} 年代出图幅范围:${x.a}—${x.b}`);
+      /* 与该城命中的文明行是否有重叠——没有就永远显示不出来 */
+      const covers = CIVS.some(c => {
+        const g = GEO[c.n];
+        if (!g || !g.p || !g.p.some(poly => pip(city[2], city[3], poly))) return false;
+        return Math.min(c.k[c.k.length - 1][0], x.b) > Math.max(c.k[0][0], x.a);
+      });
+      if (!covers) P.push(`${t} 「${x.n[0]}」${x.a}—${x.b} 与该城任何一条文明行都不重叠,页面上永远显示不出来`);
     });
   });
 }
