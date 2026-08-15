@@ -174,6 +174,13 @@ h1 { font-size: 24px; margin: 0 0 2px; letter-spacing: .01em; }
 .ctl-main .playbtn { font-size: 14px; padding: 9px 18px; }
 .ctl-main .sbox input { padding: 8px 12px; font-size: 13.5px; }
 .ctl-sub { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-top: 9px; }
+/* v166:传播追踪升主行,样式对齐 evbtn 家族;开着(选了某条轨迹)时反色成「进行中」 */
+.ctl-main #traceSel {
+  font: inherit; font-size: 13.5px; font-weight: 600; color: var(--ink);
+  background: var(--surface); border: 1px solid var(--ink-2); border-radius: 999px;
+  padding: 8px 14px; cursor: pointer;
+}
+.ctl-main #traceSel.on { background: var(--ink); color: var(--surface); border-color: var(--ink); }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip {
   display: inline-flex; align-items: center; gap: 6px;
@@ -674,11 +681,13 @@ td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; ma
          本来就是儿童向,却被归进了家长向那一档,还落在次行最右(实测 left=1134/总宽 1160,全屏最易忽略的位置)。
          形态也一并改:小复选框长得像设置项,做成和「时光穿梭」同款的按钮才像「能玩的东西」。 -->
     <button id="ck-ev" class="playbtn evbtn" aria-pressed="true">⇄ <span id="evLbl">交流事件</span></button>
+    <!-- v166(Ray):传播追踪也搬进主行——它是「看造纸术怎么走遍世界」的动画,和交流事件
+         同属「能玩的东西」,窝在次行的小下拉里没人会去开。样式对齐 evbtn 家族,开着时反色。 -->
+    <select id="traceSel"></select>
     <div class="lang" id="langSw"><button data-l="zh" class="on">中</button><button data-l="en">EN</button></div>
   </div>
   <div class="ctl-sub">
     <div class="chips" id="chips"></div>
-    <select id="traceSel"></select>
   </div>
 </div>
 
@@ -9352,7 +9361,11 @@ function openCiv(c) {
   const facts = f ? `<div class="p-facts">${Object.entries(f).map(([k, v]) =>
     `<div class="fact"><span>${k}</span><b>${(k === '人物' || k === 'Figures') ? linkNames(v, c) : (k === '成就' || k === 'Legacy') ? linkAchv(v, c) : v}</b>${(k === '中心' || k === 'Center') ? todayHTML(c) : ''}${(k === '鼎盛' || k === 'Peak') ? peakHTML(c) : ''}</div>`).join('')}${PEAK[c.n] ? `<div class="cap pk-cap">${T('版图取历史最大疆域、人口取历史峰值，二者未必同期；占比按当时世界人口估算',
     'Area = greatest extent, population = peak; not necessarily the same year. Share is of estimated world population at the time.')}</div>` : ''}</div>` : '';
-  const evs = EVENTS.filter(e => e.ls.includes(c.l) && e.y >= c.k[0][0] - 30 && e.y <= c.k[c.k.length-1][0] + 30);
+  /* v166(Ray:「发生了什么」太单薄):去掉本泳道限制——这一块自 v165 起叫「同时代的世界」,
+     全球同期的交流事件本来就在题内(明 1→7 条、罗马 1→3);按年排序讲成一条时间线。
+     古代段仍薄(唐 2、西汉 1)是 EVENTS 层前 1000 年数据稀,v167 内容扩容解决。 */
+  const evs = EVENTS.filter(e => e.y >= c.k[0][0] - 30 && e.y <= c.k[c.k.length-1][0] + 30)
+    .sort((a2, b2) => a2.y - b2.y);
   const ch = chronoOf(c);
   panel.innerHTML = `
     <div class="p-head"><span class="t-dot" style="background:${fill(c)}"></span><h2>${wkA(cN(c), LANG === 'zh' ? WIKI_NAME[c.n] : (c.e && c.e.w))}${bkA(WIKI_NAME[c.n] || c.n)}</h2>
@@ -9647,6 +9660,7 @@ pbCleanup = () => { if (PB.line) pbStop(); };
 const traceSel = document.getElementById('traceSel');
 traceSel.addEventListener('change', () => {
   curTrace = traceSel.value === '' ? null : +traceSel.value;
+  traceSel.classList.toggle('on', curTrace !== null);   // v166:开着时反色
   buildChart();
 });
 /* ---------- 人物卡 ----------
@@ -10290,7 +10304,7 @@ function applyLang() {
   if (!gv.hidden) { gvHeadTexts(); renderGvMap(); if (GV.last) gvQuery(GV.last.lon, GV.last.lat, GV.last.ci); }
   document.getElementById('pbNowLab').textContent = T('此刻在场', 'On stage now');
   document.getElementById('pbFeedLab').textContent = T('最近发生', 'Recently');
-  traceSel.innerHTML = `<option value="">${T('传播追踪:关', 'Trace: off')}</option>` +
+  traceSel.innerHTML = `<option value="">${T('⇢ 传播追踪', '⇢ Trace routes')}</option>` +
     TRACES.map((tr, i) => `<option value="${i}"${curTrace === i ? ' selected' : ''}>${tr.n[LANG === 'zh' ? 0 : 1]}</option>`).join('');
   renderLanes(); renderChips(); renderTable(); buildChart();
   renderEraJump(); renderStrip();
