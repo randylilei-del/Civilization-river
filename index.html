@@ -2,7 +2,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>文明长河 · 世界文明兴衰图</title>
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#fcfcfb">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fcfcfb">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1a1a19">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -16,7 +17,9 @@
   --page: #f9f9f7;
   --ink: #0b0b0b;
   --ink-2: #52514e;
-  --muted: #898781;
+  /* v159:#898781 在浅色纸面上只有 ~3.4:1,低于 WCAG 4.5:1,而它承载的全是最小字号
+     (开场条/六问问题行/大事记年份/口径说明)。深色两处保持 #898781(4.9:1 过线)。 */
+  --muted: #6e6c66;
   --grid: #e1e0d9;
   --baseline: #c3c2b7;
   --border: rgba(11,11,11,0.10);
@@ -401,7 +404,8 @@ svg.no-ev .evg { display: none; }
    真实用户是 iPad 上的小孩,没有悬停这一步。 */
 #panel .gl-row { cursor: pointer; }
 #panel .gl-row:focus-visible { outline: 2px solid var(--ink-2); outline-offset: -2px; }
-#panel .gl-lab { text-decoration: underline dotted; text-underline-offset: 2px; text-decoration-color: var(--line); }
+/* v159:原写 var(--line)——这个变量从未定义过,回退成 currentColor,「比文字轻一档」的意图落空 */
+#panel .gl-lab { text-decoration: underline dotted; text-underline-offset: 2px; text-decoration-color: var(--muted); }
 #panel .gl-bar { transition: opacity .12s ease; }
 /* v158:静默 .38、点亮 .8——底色退成文字的衬底,视觉主体是字不是色块(Ray) */
 #panel .gl-row:hover .gl-bar, #panel .gl-row.gl-on .gl-bar { opacity: .8; }
