@@ -3845,8 +3845,39 @@ const VIDEO = {
    「这座城的前世今生」。键 = GEO_CITY 的中文城市名(audit 规则 53 拦孤儿键与结构),
    值与 VIDEO 表同构:[{ b:BV号, y?:YouTube ID, t:[zh,en] }],可多条。
    ⚠ 与 VIDEO 同一条铁律:**只填人工核实过的链接,绝不可凭印象生成 ID**。
-   表可以为空——没条目的城市什么都不渲染,不出空按钮。 */
+   表可以为空——没条目的城市什么都不渲染,不出空按钮。
+
+   v185 首批 11 条(Ray 提供片单):2026-08-15 逐条走 bilibili view API 核实
+   (code=0、标题与片名相符、分 P 数记录在案)。片名取纪录片正式名,
+   不抄搬运者标题里的「【1080P】【全X集】」等前缀。
+   ⚠ 这批全部是搬运稿件而非官方号,存在被下架的可能——链接失效时整条删掉,
+   不要留死链给孩子点。 */
 const CITY_VIDEO = {
+  '西安': [
+    { b: 'BV1jW411C7DD', t: ['望长安（10 集）', 'Gazing at Chang\'an (10 eps)'] },
+    { b: 'BV1A44y1b7Lt', t: ['大明宫（6 集）', 'Daming Palace (6 eps)'] },
+    { b: 'BV1aX4y1w7DB', t: ['西汉帝陵（12 集）', 'Imperial Tombs of the Western Han (12 eps)'] },
+  ],
+  '北京': [
+    { b: 'BV1vs41147ib', t: ['故宫「看门人」探访紫禁城未开放区', 'The Forbidden City\'s Gatekeeper: Behind the Closed Doors'] },
+  ],
+  '洛阳': [
+    { b: 'BV1Hs411d7zA', t: ['天地洛阳（9 集）', 'Luoyang Between Heaven and Earth (9 eps)'] },
+  ],
+  '开封': [
+    { b: 'BV1xW411e7ha', t: ['追寻宋金时代的别样生活（4 集）', 'Everyday Life in the Song and Jin Era (4 eps)'] },
+  ],
+  '杭州': [
+    { b: 'BV1NW411Z77Y', t: ['西湖（11 集）', 'West Lake (11 eps)'] },
+    { b: 'BV1Sb411m7zU', t: ['南宋（8 集）', 'The Southern Song (8 eps)'] },
+  ],
+  '敦煌': [
+    { b: 'BV1Gx411T7sF', t: ['敦煌（10 集）', 'Dunhuang (10 eps)'] },
+    { b: 'BV19x411y7mt', t: ['莫高窟·美的全貌（NHK，2 集）', 'Mogao Caves: The Whole of Its Beauty (NHK, 2 eps)'] },
+  ],
+  '泉州': [
+    { b: 'BV17Z4y137qB', t: ['重返刺桐城（3 集）', 'Return to Zayton (3 eps)'] },
+  ],
 };
 /*__DATA:city_video:end__*/
 /*__DATA:rivers:start__*/
@@ -8203,7 +8234,8 @@ const TRACES = [
 ] },
 { g:'people', n:['突厥人的西迁','The Turkic Migrations'], stops:[
   { y:552, l:'st', t:['金山起家','Smiths of the Altai'], d:['突厥人在阿尔泰山一带以锻铁起家,推翻柔然建立汗国,疆域横贯草原。','Iron-smiths of the Altai overthrow the Rouran and stretch a khaganate across the steppe.'] },
-  { y:1000, l:'st', t:['西移与皈依','Westward and converted'], d:['汗国崩解后各部陆续西移,河中一带渐渐改说突厥语;皈依伊斯兰之后,突厥人反而成了它的武力担当。','After the khaganate breaks up the tribes drift west; Transoxiana turns Turkic-speaking, and the converts become Islam\'s sword.'] },
+  { y:960, l:'st', t:['喀喇汗人皈依','The Karakhanids convert'], d:['汗国崩解后各部陆续西移。天山两侧的喀喇汗人改信伊斯兰教,又在 999 年从萨曼人手里拿下布哈拉;此后几百年,河中的统治者一个接一个说突厥语。','After the khaganate breaks up the tribes drift west. The Karakhanids astride the Tianshan take up Islam, then take Bukhara from the Samanids in 999; for centuries after, Transoxiana\'s rulers are Turkic-speaking, one dynasty upon another.'] },
+  { y:1055, l:'me', t:['塞尔柱人进巴格达','The Seljuks enter Baghdad'], d:['乌古斯部出身的塞尔柱人 1040 年击败伽色尼王朝拿下呼罗珊,又进巴格达替哈里发掌兵。往后几百年,伊斯兰世界的兵权多半握在突厥人手里。','The Seljuks, out of the Oghuz tribes, beat the Ghaznavids in 1040 to take Khurasan, then enter Baghdad to command the caliph\'s armies. For centuries after, the sword of the Islamic world is mostly in Turkic hands.'] },
   { y:1071, l:'me', t:['进入安纳托利亚','Into Anatolia'], d:['塞尔柱人在曼齐刻尔特俘虏拜占庭皇帝,安纳托利亚此后逐渐突厥化。','At Manzikert the Seljuks capture the Byzantine emperor; Anatolia slowly turns Turkic.'] },
   { y:1453, l:'me', t:['奥斯曼收尾','The Ottoman finale'], d:['这场近五千公里的迁徙以奥斯曼人攻下君士坦丁堡收尾——「土耳其」这个国名里,至今装着「突厥」。','The 5,000-km migration ends with the Ottomans taking Constantinople — \'Turkey\' still carries the name \'Türk\'.'] },
 ] },

@@ -122,7 +122,8 @@ const TRACES = [
 ] },
 { g:'people', n:['突厥人的西迁','The Turkic Migrations'], stops:[
   { y:552, l:'st', t:['金山起家','Smiths of the Altai'], d:['突厥人在阿尔泰山一带以锻铁起家,推翻柔然建立汗国,疆域横贯草原。','Iron-smiths of the Altai overthrow the Rouran and stretch a khaganate across the steppe.'] },
-  { y:1000, l:'st', t:['西移与皈依','Westward and converted'], d:['汗国崩解后各部陆续西移,河中一带渐渐改说突厥语;皈依伊斯兰之后,突厥人反而成了它的武力担当。','After the khaganate breaks up the tribes drift west; Transoxiana turns Turkic-speaking, and the converts become Islam\'s sword.'] },
+  { y:960, l:'st', t:['喀喇汗人皈依','The Karakhanids convert'], d:['汗国崩解后各部陆续西移。天山两侧的喀喇汗人改信伊斯兰教,又在 999 年从萨曼人手里拿下布哈拉;此后几百年,河中的统治者一个接一个说突厥语。','After the khaganate breaks up the tribes drift west. The Karakhanids astride the Tianshan take up Islam, then take Bukhara from the Samanids in 999; for centuries after, Transoxiana\'s rulers are Turkic-speaking, one dynasty upon another.'] },
+  { y:1055, l:'me', t:['塞尔柱人进巴格达','The Seljuks enter Baghdad'], d:['乌古斯部出身的塞尔柱人 1040 年击败伽色尼王朝拿下呼罗珊,又进巴格达替哈里发掌兵。往后几百年,伊斯兰世界的兵权多半握在突厥人手里。','The Seljuks, out of the Oghuz tribes, beat the Ghaznavids in 1040 to take Khurasan, then enter Baghdad to command the caliph\'s armies. For centuries after, the sword of the Islamic world is mostly in Turkic hands.'] },
   { y:1071, l:'me', t:['进入安纳托利亚','Into Anatolia'], d:['塞尔柱人在曼齐刻尔特俘虏拜占庭皇帝,安纳托利亚此后逐渐突厥化。','At Manzikert the Seljuks capture the Byzantine emperor; Anatolia slowly turns Turkic.'] },
   { y:1453, l:'me', t:['奥斯曼收尾','The Ottoman finale'], d:['这场近五千公里的迁徙以奥斯曼人攻下君士坦丁堡收尾——「土耳其」这个国名里,至今装着「突厥」。','The 5,000-km migration ends with the Ottomans taking Constantinople — \'Turkey\' still carries the name \'Türk\'.'] },
 ] },
