@@ -5556,7 +5556,8 @@ const CITY_PHOTO = {
       年份与图都已过 v201/v202 两轮核查——唐→大雁塔、明→紫禁城、奥斯曼→托普卡帕宫。这一路 76 条文明。
    ② 剩下的文明手工点名「拍得到的实物」(成就字段里的东西:乌尔塔庙、汉谟拉比法典、桑奇大塔、摩艾……),取英文维基条目首图,
       Commons 查许可,缩略图人眼过一遍(剔地图 / 黑白远景 / 糊图 10 张)。抽象成就(科举、法典条文)不配图;不配人像。
-   覆盖不到的文明留空(柔然、匈人、嚈哒、西辽、准噶尔、俄国治下中亚、西晋、卡涅姆·博尔努、三国等),没条目就不渲染按钮,不硬凑。
+   覆盖不到的文明留空(v209 时点 11 条:匈奴、柔然、匈人、嚈哒、准噶尔、俄国治下中亚、西晋、渤海国、卡涅姆·博尔努、加纳帝国、拉皮塔——
+   要么真没有拿得出手的实物,要么维基条目首图是地图),没条目就不渲染按钮,不硬凑。第二批手工清单见 tools/civ_photo_curated_titles2.json。
    ⚠ 缩略图宽度只能用 960(Commons 对站外只出标准档),同 city_photo.js。 */
 const CIV_PHOTO = {
 '米诺斯·迈锡尼': [
@@ -5595,6 +5596,7 @@ const CIV_PHOTO = {
 ],
 '波兰-立陶宛': [
  { f:'Royal_Castle_in_Warsaw,_Poland,_2022,_03.jpg', h:'b/bb', t:['华沙王宫','the Royal Castle'], by:'Chris Olszewski', lic:'CC BY-SA 4.0' },
+ { f:'Wawel_(4).jpg', h:'8/87', t:['瓦维尔城堡','Wawel Castle'], by:'Monika Towiańska', lic:'CC BY-SA 4.0' },
 ],
 '西班牙·葡萄牙帝国': [
  { f:'Belém_Tower_in_Lisbon,_Portugal.jpg', h:'f/fa', t:['贝伦塔','the Belem Tower'], by:'Lisbon Photoshoots', lic:'CC BY-SA 4.0' },
@@ -5603,6 +5605,7 @@ const CIV_PHOTO = {
 ],
 '奥地利·哈布斯堡': [
  { f:'Wien_-_Schloss_Schönbrunn.JPG', h:'c/c9', t:['美泉宫','Schonbrunn Palace'], by:'C.Stadler/Bwag', lic:'CC BY-SA 4.0' },
+ { f:'Wien_-_Neue_Hofburg.JPG', h:'3/31', t:['霍夫堡宫','the Hofburg'], by:'C.Stadler/Bwag', lic:'CC BY-SA 3.0 at' },
 ],
 '荷兰共和国': [
  { f:'Amsterdam_(NL),_Westerkerk_--_2015_--_7186.jpg', h:'a/a0', t:['西教堂','the Westerkerk'], by:'Dietmar Rabich', lic:'CC BY-SA 4.0' },
@@ -5610,9 +5613,12 @@ const CIV_PHOTO = {
 ],
 '法兰西': [
  { f:'Tour_Eiffel_Wikimedia_Commons_(cropped).jpg', h:'8/85', t:['埃菲尔铁塔','the Eiffel Tower'], by:'Benh LIEU SONG', lic:'Public domain' },
+ { f:'Vue_aérienne_du_domaine_de_Versailles_par_ToucanWings_-_Creative_Commons_By_Sa_3.0_-_081_(cropped).jpg', h:'9/95', t:['凡尔赛宫','the Palace of Versailles'], by:'ToucanWings', lic:'CC BY-SA 3.0' },
+ { f:'Arc_de_Triomphe,_Paris_21_October_2010.jpg', h:'7/79', t:['凯旋门','the Arc de Triomphe'], by:'Jiuguang Wang', lic:'CC BY-SA 2.0' },
 ],
 '瑞典帝国': [
  { f:'The_Vasa_from_the_Bow.jpg', h:'1/15', t:['瓦萨号战舰','the warship Vasa'], by:'JavierKohen', lic:'CC BY-SA 3.0' },
+ { f:'The_Royal_Palace_(15891592359).jpg', h:'3/30', t:['斯德哥尔摩王宫','Stockholm Palace'], by:'Magnus Johansson', lic:'CC BY-SA 2.0' },
 ],
 '大英帝国·英国': [
  { f:'St_Pauls_aerial_(cropped).jpg', h:'c/cb', t:['圣保罗大教堂','St Paul\'s Cathedral'], by:'Mark Fosh', lic:'CC BY 2.0' },
@@ -5621,6 +5627,8 @@ const CIV_PHOTO = {
 ],
 '德意志': [
  { f:'Brandenburger_Tor_abends.jpg', h:'a/a6', t:['勃兰登堡门','the Brandenburg Gate'], by:'Thomas Wolf, www.foto-tw.de', lic:'CC BY-SA 3.0' },
+ { f:'Kölner_Dom_-_Westfassade_2022_ohne_Gerüst-0968_b.jpg', h:'0/04', t:['科隆大教堂','Cologne Cathedral'], by:'Raimond Spekking', lic:'CC BY-SA 4.0' },
+ { f:'Schloss_Neuschwanstein_2013.jpg', h:'f/f8', t:['新天鹅堡','Neuschwanstein Castle'], by:'Thomas Wolf, www.foto-tw.de', lic:'CC BY-SA 3.0 de' },
 ],
 '俄罗斯·苏联': [
  { f:'Moscow_Kremlin_from_Kamenny_bridge.jpg', h:'a/a6', t:['克里姆林宫城墙','the Kremlin walls'], by:'Минеева Ю. (Julmin) (retouched by Surendil)', lic:'CC BY-SA 1.0' },
@@ -5633,10 +5641,16 @@ const CIV_PHOTO = {
 ],
 '古埃及': [
  { f:'Pyramids_of_the_Giza_Necropolis.jpg', h:'9/96', t:['吉萨金字塔','the Pyramids of Giza'], by:'KennyOMG', lic:'CC BY-SA 4.0' },
+ { f:'Sphinx_with_the_third_pyramid.jpg', h:'4/42', t:['狮身人面像','the Great Sphinx'], by:'Hesham Ebaid', lic:'CC0' },
+ { f:'CairoEgMuseumTaaMaskMostlyPhotographed.jpg', h:'2/27', t:['图坦卡蒙金面具','the mask of Tutankhamun'], by:'Roland Unger', lic:'Public domain' },
 ],
 '赫梯': [
  { f:'Lion_Gate,_Hattusa_13_(cropped).jpg', h:'1/14', t:['哈图沙狮子门','the Lion Gate at Hattusa'], by:'Carole Raddato from FRANKFURT, Germany', lic:'CC BY-SA 2.0' },
  { f:'Yazilikaya_Kammer_A.jpg', h:'5/58', t:['亚兹勒卡亚岩刻','Yazılıkaya'], by:'Klaus-Peter Simon', lic:'CC BY 3.0' },
+],
+'古巴比伦': [
+ { f:'F0182_Louvre_Code_Hammourabi_Bas-relief_Sb8_rwk.jpg', h:'9/98', t:['汉谟拉比像','Hammurabi'], by:'Mbzt', lic:'CC BY 3.0' },
+ { f:'Berlín,_Museo_de_Pérgamo_05.jpg', h:'1/1f', t:['伊什塔尔门(柏林复原)','the Ishtar Gate (reconstructed in Berlin)'], by:'LBM1948', lic:'CC BY-SA 4.0' },
 ],
 '亚述': [
  { f:'Iraqi_Museum.jpg', h:'0/02', t:['人首翼牛像','a lamassu'], by:'MohammadHuzam', lic:'CC BY-SA 4.0' },
@@ -5647,9 +5661,11 @@ const CIV_PHOTO = {
 ],
 '新巴比伦': [
  { f:'Ishtar_Gate.jpg', h:'e/e6', t:['伊什塔尔门遗址','the Ishtar Gate'], by:'David Stanley', lic:'CC BY-SA 3.0' },
+ { f:'Berlín,_Museo_de_Pérgamo_05.jpg', h:'1/1f', t:['伊什塔尔门(柏林复原)','the Ishtar Gate (reconstructed in Berlin)'], by:'LBM1948', lic:'CC BY-SA 4.0' },
 ],
 '迦太基': [
  { f:'Maison_punique_byrsa.jpg', h:'f/f5', t:['迦太基比尔萨山遗址','Byrsa hill, Carthage'], by:'Pradigue', lic:'CC BY-SA 3.0' },
+ { f:'Montage_ville_de_Carthage.png', h:'3/34', t:['迦太基遗址','the ruins of Carthage'], by:'ELEL09, montage', lic:'CC BY-SA 3.0' },
 ],
 '波斯(阿契美尼德)': [
  { f:'Cyrus_Cylinder_front.jpg', h:'e/e5', t:['居鲁士圆柱','the Cyrus Cylinder'], by:'Prioryman', lic:'CC BY-SA 3.0' },
@@ -5658,6 +5674,7 @@ const CIV_PHOTO = {
 ],
 '希腊化王朝': [
  { f:'Pergamon_Museum_in_Berlin.jpg', h:'7/72', t:['帕加马祭坛','the Pergamon Altar'], by:'SALTOnline', lic:'No restrictions' },
+ { f:'Ephesus_Celsus_Library_Façade.jpg', h:'8/84', t:['以弗所塞尔苏斯图书馆','the Library of Celsus'], by:'Benh LIEU SONG', lic:'CC BY-SA 3.0' },
 ],
 '罗马治下近东': [
  { f:'Westernwall2.jpg', h:'1/17', t:['西墙','the Western Wall'], by:'Golasso', lic:'CC BY-SA 4.0' },
@@ -5668,6 +5685,7 @@ const CIV_PHOTO = {
 ],
 '法蒂玛王朝': [
  { f:'Mosquée_Al-Azhar.jpg', h:'4/47', t:['爱资哈尔清真寺','al-Azhar Mosque'], by:'Wildoo78', lic:'CC BY-SA 4.0' },
+ { f:'Cairo,_porte_settentrionali,_01.JPG', h:'2/21', t:['开罗征服门','Bab al-Futuh, Cairo'], by:'Sailko', lic:'CC BY 3.0' },
 ],
 '阿拉伯哈里发': [
  { f:'Quba_Mosque_Full_Picture_(2024).jpg', h:'9/98', t:['库巴清真寺','the Quba Mosque'], by:'Kaliper1', lic:'CC BY-SA 4.0' },
@@ -5680,9 +5698,11 @@ const CIV_PHOTO = {
 ],
 '阿尤布王朝': [
  { f:'Flickr_-_HuTect_ShOts_-_Citadel_of_Salah_El.Din_and_Masjid_Muhammad_Ali_قلعة_صلاح_الدين_الأيوبي_ومسجد_محمد_علي_-_Cairo_-_Egypt_-_17_04_2010_(4).jpg', h:'9/93', t:['萨拉丁城堡','the Citadel of Saladin'], by:'Ahmed Al.Badawy from Cairo, Egypt', lic:'CC BY-SA 2.0' },
+ { f:'Citadel_of_Aleppo.jpg', h:'5/54', t:['阿勒颇城堡','the Citadel of Aleppo'], by:'Memorino', lic:'CC BY-SA 3.0' },
 ],
 '马穆鲁克': [
  { f:'قلعة_قايتباي_من_الجو.jpg', h:'f/f1', t:['盖贝依城堡(灯塔旧址)','the Qaitbay Citadel'], by:'Hmkree', lic:'CC BY-SA 4.0' },
+ { f:'Flickr_-_archer10_(Dennis)_-_Egypt-13A-061_(cropped).jpg', h:'8/84', t:['苏丹哈桑清真寺','the Sultan Hassan mosque'], by:'Dennis G. Jarvis', lic:'CC BY-SA 2.0' },
 ],
 '伊尔汗国': [
  { f:'Gonbad_Soltaniye.jpg', h:'9/93', t:['完者都陵(苏丹尼耶)','the Dome of Soltaniyeh'], by:'Farzad Yousefian', lic:'CC BY-SA 4.0' },
@@ -5701,6 +5721,9 @@ const CIV_PHOTO = {
  { f:'Вадим_Чуприна-Кабул_VADIM_CHUPRINA_©_Kabul_09.jpg', h:'3/3a', t:['达鲁拉曼宫','the Darul Aman Palace'], by:'ВАДИМ ЧУПРИНА', lic:'CC BY-SA 4.0' },
  { f:'Ataturk\'s_Mausoleum_(6225341313).jpg', h:'c/ca', t:['凯末尔陵','Anıtkabir'], by:'William Neuheisel from DC, US', lic:'CC BY 2.0' },
 ],
+'斯基泰': [
+ { f:'Vas_d\'or_amb_representació_d\'escites,_kurgan_de_Kul-Oba,_segona_meitat_del_segle_IV_aC.JPG', h:'6/6b', t:['库尔奥巴出土金器','gold from Kul-Oba'], by:'Joanbanjo', lic:'CC BY-SA 3.0' },
+],
 '粟特': [
  { f:'Panjakent,RudakiMuseum.jpg', h:'a/ab', t:['片治肯特遗址','Panjakent'], by:'Bertramz', lic:'CC BY-SA 3.0' },
 ],
@@ -5709,6 +5732,7 @@ const CIV_PHOTO = {
 ],
 '回鹘': [
  { f:'Turpan-bezeklik-cuevas-d01.jpg', h:'8/87', t:['柏孜克里克千佛洞','the Bezeklik caves'], by:'', lic:'CC BY-SA 2.5 es' },
+ { f:'Kizil_sky.jpg', h:'5/5c', t:['克孜尔千佛洞','the Kizil caves'], by:'Hiroki Ogawa', lic:'CC BY 3.0' },
 ],
 '萨曼王朝': [
  { f:'UZ_Bukhara_Samanid-mausoleum.jpg', h:'5/58', t:['萨曼王陵','the Samanid Mausoleum'], by:'Apfel51', lic:'Public domain' },
@@ -5720,8 +5744,12 @@ const CIV_PHOTO = {
  { f:'Kutlug_Timur_minaret.JPG', h:'e/ea', t:['库特鲁格·帖木儿宣礼塔','the Kutlug Timur minaret'], by:'Tim Williams', lic:'CC BY-SA 3.0' },
  { f:'Urgench.jpg', h:'0/01', t:['库尼亚-乌尔根奇','Konye-Urgench'], by:'The original uploader was Atilin at French Wikipedia.', lic:'CC BY-SA 3.0', s:1 },
 ],
+'西辽·哈剌契丹': [
+ { f:'Burana_Tower,_Kyrgyzstan.jpg', h:'1/12', t:['布拉纳塔(八剌沙衮故城)','the Burana tower at Balasagun'], by:'Bernard Gagnon', lic:'CC0' },
+],
 '蒙古帝国': [
  { f:'Świątynia_Zachodnia_w_klasztorze_Erdene_Dzuu_01.jpg', h:'4/4c', t:['额尔德尼召','Erdene Zuu Monastery'], by:'Marcin Konsek', lic:'CC BY-SA 4.0' },
+ { f:'Genghis_Khan_Equestrian_Statue,_photo_by_Vaiz_Ha.jpg', h:'9/93', t:['成吉思汗骑马像','the Genghis Khan equestrian statue'], by:'Vaiz Ha', lic:'CC BY 2.0' },
 ],
 '帖木儿帝国': [
  { f:'ShrineofAmirTimur.jpg', h:'5/5d', t:['古尔·埃米尔陵','the Gur-e-Amir'], by:'Willard84', lic:'CC BY-SA 4.0' },
@@ -5730,12 +5758,18 @@ const CIV_PHOTO = {
 ],
 '哈萨克汗国': [
  { f:'Маузолеј_Ходже_Ахмеда_Јасавија_(град_Туркестан,_Казахстан).jpg', h:'c/c2', t:['亚萨维陵','the Mausoleum of Khoja Ahmed Yasawi'], by:'Petar Milošević', lic:'CC BY-SA 3.0' },
+ { f:'Mausoleum_of_Khoja_Ahmed_Yasawi_in_Hazrat-e_Turkestan,_Kazakhstan.jpg', h:'6/6c', t:['突厥斯坦城','Turkistan'], by:'Petar Milošević', lic:'CC BY-SA 4.0' },
 ],
 '布哈拉·希瓦·浩罕三汗国': [
  { f:'Kukeldash_Madrasah_inner_yard.jpg', h:'3/31', t:['库克尔达什经学院','the Kukeldash Madrasah'], by:'Ymblanter', lic:'CC BY-SA 4.0' },
+ { f:'Islam_Khodja_Madrasa_01.jpg', h:'c/c3', t:['希瓦内城','Itchan Kala, Khiva'], by:'Bgag', lic:'CC0' },
+],
+'现代中亚': [
+ { f:'Astana_Esil_view.jpg', h:'3/34', t:['阿斯塔纳','Astana'], by:'Dauren Nabijan', lic:'CC0' },
 ],
 '印度河文明': [
  { f:'Mohenjodaro_Sindh.jpeg', h:'9/9a', t:['大浴场','the Great Bath'], by:'The original uploader was M.Imran at English Wikipedia', lic:'CC SA 1.0', s:1 },
+ { f:'Mohenjodaro_-_view_of_the_stupa_mound.JPG', h:'0/03', t:['摩亨佐达罗','Mohenjo-daro'], by:'Saqib Qayyum', lic:'CC BY-SA 3.0' },
 ],
 '吠陀时代': [
  { f:'Rigveda_MS2097.jpg', h:'0/02', t:['梨俱吠陀写本','a Rigveda manuscript'], by:'Unknown authorUnknown author', lic:'Public domain' },
@@ -5792,6 +5826,9 @@ const CIV_PHOTO = {
  { f:'LotusDelhi.jpg', h:'f/fc', t:['莲花寺','the Lotus Temple'], by:'Vandelizer', lic:'CC BY 2.0' },
  { f:'Independence_Commemoration_Hall.jpg', h:'d/d7', t:['独立纪念堂','Independence Memorial Hall'], by:'Charaka Ranasinghe', lic:'CC BY 2.0' },
 ],
+'扶南': [
+ { f:'Angkor_Borei_01.jpg', h:'6/63', t:['吴哥波雷遗址','Angkor Borei'], by:'Stefan Fussan', lic:'CC BY-SA 3.0', s:1 },
+],
 '三佛齐': [
  { f:'Candi_Muaro_Jambi_di_siang_hari.jpg', h:'6/60', t:['穆阿罗占碑寺庙群','the Muaro Jambi temple compounds'], by:'Ryan Wijaya', lic:'CC BY-SA 4.0' },
 ],
@@ -5832,8 +5869,13 @@ const CIV_PHOTO = {
 '三星堆·古蜀': [
  { f:'Gold_Mask_(黄金面罩).jpg', h:'c/c2', t:['三星堆青铜像','a Sanxingdui bronze'], by:'momo', lic:'CC BY 2.0' },
 ],
+'二里头·夏': [
+ { f:'20240815_Erlitou_Site_05.jpg', h:'a/a2', t:['二里头遗址','the Erlitou site'], by:'Windmemories', lic:'CC BY-SA 4.0' },
+],
 '商': [
  { f:'金沙遗址_Jinsha_Site_2018.jpg', h:'8/8e', t:['金沙遗址','the Jinsha site'], by:'xiquinhosilva', lic:'CC BY 2.0' },
+ { f:'HouMuWuDingFullView.jpg', h:'c/c2', t:['司母戊鼎(后母戊鼎)','the Houmuwu ding'], by:'Mlogic', lic:'CC BY-SA 3.0' },
+ { f:'Orakelknochen.JPG', h:'c/c9', t:['甲骨文','an oracle bone'], by:'', lic:'CC BY-SA 3.0', s:1 },
 ],
 '西周': [
  { f:'Da_Yu_ding.jpg', h:'8/84', t:['大盂鼎','the Da Yu ding'], by:'', lic:'CC BY-SA 4.0' },
@@ -5841,19 +5883,28 @@ const CIV_PHOTO = {
 ],
 '春秋': [
  { f:'Land_Gate_of_Pan_Men.jpg', h:'d/d2', t:['盘门','the Pan Gate'], by:'钉钉', lic:'CC BY-SA 4.0' },
+ { f:'湖北博物館曾侯乙編鐘.jpg', h:'c/c0', t:['曾侯乙编钟','the bells of Marquis Yi of Zeng'], by:'YouTable', lic:'CC BY-SA 4.0' },
 ],
 '战国': [
  { f:'Dujiang_Weir.jpg', h:'a/a7', t:['都江堰','the Dujiangyan irrigation works'], by:'星星', lic:'CC BY-SA 4.0' },
+ { f:'20230208_Bronze_sword_used_by_King_Goujian_of_Yue_01.jpg', h:'2/25', t:['越王勾践剑','the Sword of Goujian'], by:'Windmemories', lic:'CC BY-SA 4.0' },
 ],
 '秦': [
  { f:'51714-Terracota-Army.jpg', h:'8/88', t:['秦始皇兵马俑','the Terracotta Army'], by:'xiquinhosilva', lic:'CC BY 2.0' },
+ { f:'Tomb_of_the_First_Emperor_Qin_Shi_Huang_Di,_Xi\'an,_China_-_panoramio.jpg', h:'7/73', t:['秦始皇陵','the Mausoleum of the First Qin Emperor'], by:'Aaron Zhu', lic:'CC BY-SA 3.0' },
+ { f:'The_Great_Wall_of_China_at_Jinshanling-edit.jpg', h:'2/23', t:['长城','the Great Wall'], by:'Severin.stalder', lic:'CC BY-SA 3.0' },
 ],
 '西汉': [
  { f:'Lacquer_Coffin_Unearthed_from_the_2nd-century-BC_Han_Tomb_No.1_at_Mawangdui_2011-07.JPG', h:'c/c9', t:['马王堆汉墓','the Mawangdui tombs'], by:'猫猫的日记本', lic:'CC BY-SA 4.0' },
  { f:'Dunhuang.yumenguan.jpg', h:'a/af', t:['玉门关','the Jade Gate'], by:'Popolon', lic:'CC BY-SA 3.0' },
+ { f:'Xihan_Tomb_1_Jade_Burial_Suit.JPG', h:'2/27', t:['金缕玉衣','a jade burial suit'], by:'Zcm11', lic:'CC BY-SA 3.0' },
 ],
 '东汉': [
  { f:'Image-HK_LeiChengUkHanTombMuseum_Outside.jpg', h:'e/e0', t:['李郑屋汉墓','the Lei Cheng Uk Han tomb'], by:'Chong Fat', lic:'Public domain' },
+ { f:'Kinemetrics_seismograph.jpg', h:'0/0f', t:['张衡地动仪(复原)','Zhang Heng\'s seismoscope (reconstruction)'], by:'', lic:'CC BY-SA 3.0' },
+],
+'三国': [
+ { f:'20250913_Gao_Mausoleum_of_Cao_Cao_05.jpg', h:'5/52', t:['曹操高陵','the tomb of Cao Cao'], by:'Windmemories', lic:'CC BY-SA 4.0' },
 ],
 '东晋·十六国': [
  { f:'Lingyin_Temple,_Hangzhou_20161003.jpg', h:'6/66', t:['灵隐寺','the Lingyin Temple'], by:'Tyg728', lic:'CC BY-SA 4.0' },
@@ -5870,6 +5921,7 @@ const CIV_PHOTO = {
 '唐': [
  { f:'Huaisheng_Mosque_Dec_2007.jpg', h:'7/7f', t:['怀圣寺光塔','the Huaisheng Mosque minaret'], by:'Ismaila1977', lic:'Public domain' },
  { f:'Giant_Wild_Goose_Pagoda.jpg', h:'1/13', t:['大雁塔','the Giant Wild Goose Pagoda'], by:'Alex Kwok', lic:'CC BY-SA 3.0' },
+ { f:'Naitou-topparna.JPG', h:'d/d5', t:['乾陵','the Qianling Mausoleum'], by:'Bairuilong', lic:'CC BY-SA 4.0' },
 ],
 '南诏·大理': [
  { f:'20240502_Chongshengsi_Santa_(131232).jpg', h:'d/df', t:['崇圣寺三塔','the Three Pagodas of Dali'], by:'Yumeto', lic:'CC BY-SA 4.0' },
@@ -5887,9 +5939,12 @@ const CIV_PHOTO = {
 ],
 '南宋': [
  { f:'Quanzhou_Kaiyuan_Temple-the_Hall_of_Mahavira.jpg', h:'4/4a', t:['开元寺双塔','the twin pagodas of Kaiyuan Temple'], by:'Tom@HK', lic:'CC BY 2.0' },
+ { f:'Yue_Fei_temple_13.jpg', h:'5/58', t:['岳王庙','the Yue Fei Temple'], by:'This illustration was made by Peter Potrowl. Please credit t', lic:'CC BY 3.0' },
 ],
 '辽': [
  { f:'Datong_Huayan_Si_2013.08.29_08-24-19.jpg', h:'7/7a', t:['华严寺','the Huayan Temple'], by:'Zhangzhugang', lic:'CC BY-SA 3.0' },
+ { f:'Dingzhou_Liaodi_Pagoda_3.jpg', h:'4/43', t:['开元寺料敌塔','the Liaodi Pagoda'], by:'User:Zeus1234', lic:'CC BY-SA 3.0' },
+ { f:'Pagodaoffogongtemple2019.jpg', h:'2/26', t:['应县木塔','the wooden pagoda of Fogong Temple'], by:'Charlie fong', lic:'CC BY-SA 4.0' },
 ],
 '西夏': [
  { f:'Xi_Xia_Imperial_Tombs_(54154641924).jpg', h:'5/54', t:['西夏王陵','the Western Xia mausoleums'], by:'xiquinhosilva', lic:'CC BY 2.0' },
@@ -5921,6 +5976,9 @@ const CIV_PHOTO = {
  { f:'Kiyomizu.jpg', h:'3/3c', t:['清水寺','Kiyomizu-dera'], by:'Jordy Meow', lic:'CC BY-SA 3.0' },
  { f:'Phoenix_Hall,_Byodo-in,_November_2016_-01.jpg', h:'6/69', t:['平等院凤凰堂','the Phoenix Hall of Byodo-in'], by:'Martin Falbisoner', lic:'CC BY-SA 4.0' },
 ],
+'韩国': [
+ { f:'Dongdaemun_Design_Plaza_at_night,_Seoul,_Korea.jpg', h:'8/8f', t:['东大门设计广场','Dongdaemun Design Plaza'], by:'Eugene Lim', lic:'CC BY 2.0' },
+],
 '民国': [
  { f:'Sun_Yat-sen_Mausoleum_-_54400198691.jpg', h:'6/64', t:['中山陵','the Sun Yat-sen Mausoleum'], by:'xiquinhosilva', lic:'CC BY 2.0' },
  { f:'中华民国总统府·南京·航拍.jpg', h:'2/25', t:['南京总统府','the Presidential Palace, Nanjing'], by:'Legolas1024', lic:'CC BY-SA 4.0' },
@@ -5947,6 +6005,7 @@ const CIV_PHOTO = {
 ],
 '马里帝国': [
  { f:'2007_Sankore_Mosque_Timbuktu_02.jpg', h:'1/1d', t:['桑科雷清真寺','the Sankore Mosque'], by:'Anne and David', lic:'Public domain' },
+ { f:'Djenne_great_mud_mosque.jpg', h:'7/75', t:['杰内大清真寺','the Great Mosque of Djenné'], by:'Ruud Zwart', lic:'CC BY-SA 3.0' },
 ],
 '阿散蒂': [
  { f:'Manhyia_Palace_Museum.jpg', h:'0/0a', t:['曼希亚王宫','the Manhyia Palace'], by:'Nkansahrexford', lic:'CC BY-SA 3.0', s:1 },
@@ -5956,6 +6015,7 @@ const CIV_PHOTO = {
 ],
 '桑海帝国': [
  { f:'Askia.jpg', h:'a/ab', t:['阿斯基亚陵','the Tomb of Askia'], by:'Taguelmoust', lic:'CC BY-SA 3.0', s:1 },
+ { f:'2007_Sankore_Mosque_Timbuktu_02.jpg', h:'1/1d', t:['桑科雷清真寺','the Sankoré Madrasah'], by:'Anne and David', lic:'Public domain' },
 ],
 '欧洲殖民非洲': [
  { f:'Castle_of_Good_Hope,_Cape_Town_01.jpg', h:'a/ae', t:['好望角城堡','the Castle of Good Hope'], by:'Bernard Gagnon', lic:'CC BY-SA 4.0' },
@@ -5968,6 +6028,7 @@ const CIV_PHOTO = {
 ],
 '奥尔梅克': [
  { f:'San_Lorenzo_Monument_4_crop.jpg', h:'3/31', t:['奥尔梅克巨石头像','an Olmec colossal head'], by:'Marshall Astor (Life on the Edge)', lic:'CC BY-SA 2.0' },
+ { f:'La_Venta_Pirámide_cara_norte.jpg', h:'f/f9', t:['拉本塔遗址','La Venta'], by:'Alfonsobouchot', lic:'Public domain' },
 ],
 '查文文化': [
  { f:'Chavín_de_Huántar_-_51149086708.jpg', h:'6/60', t:['查文德万塔尔遗址','Chavín de Huántar'], by:'Apollo⠀', lic:'CC BY 2.0' },
@@ -5976,6 +6037,7 @@ const CIV_PHOTO = {
 '玛雅': [
  { f:'Tikal_Temple1_2006_08_11.JPG', h:'0/06', t:['一号神庙','Temple I'], by:'Raymond Ostertag', lic:'CC BY-SA 2.5' },
  { f:'Chichen_Itza_3.jpg', h:'5/51', t:['库库尔坎金字塔','El Castillo'], by:'Daniel Schwen', lic:'CC BY-SA 4.0' },
+ { f:'Palenque_Collage.jpg', h:'9/90', t:['帕伦克','Palenque'], by:'Ricraider', lic:'CC BY-SA 3.0', s:1 },
 ],
 '特奥蒂瓦坎': [
  { f:'2020-02-11_Teotihuacan_la_Avenida_de_los_Muertos_y_la_Pirámide_del_Sol.jpg', h:'3/3b', t:['太阳金字塔','the Pyramid of the Sun'], by:'Burkhard Mücke', lic:'CC BY-SA 4.0' },
@@ -5990,15 +6052,19 @@ const CIV_PHOTO = {
 ],
 '奇穆': [
  { f:'Chan_chan_view1.jpg', h:'e/e0', t:['昌昌古城','Chan Chan'], by:'Håkan Svensson', lic:'CC BY-SA 3.0' },
+ { f:'Huaca_Arco_Iris_Archaeological_site_-_wall.jpg', h:'0/04', t:['龙神庙(奇穆)','the Huaca del Dragón'], by:'AgainErick', lic:'CC BY-SA 3.0' },
 ],
 '密西西比文化·卡霍基亚': [
  { f:'Monks_Mound_in_July.JPG', h:'2/2d', t:['僧侣丘','Monks Mound'], by:'Skubasteve834', lic:'CC BY-SA 3.0' },
+ { f:'Monks_Mound_-_Summer_2024.jpg', h:'a/a4', t:['卡霍基亚僧侣丘','Cahokia'], by:'Skubasteve834', lic:'CC BY 4.0' },
 ],
 '阿兹特克': [
  { f:'Monolito_de_la_Piedra_del_Sol.jpg', h:'6/65', t:['太阳石','the Aztec sun stone'], by:'El Comandante', lic:'CC BY-SA 3.0' },
+ { f:'Vista_completa_de_Tenochtitlán.jpg', h:'0/07', t:['特诺奇蒂特兰(复原模型)','Tenochtitlan (model)'], by:'thomas kole', lic:'CC BY 4.0' },
 ],
 '印加': [
  { f:'Sacsayhuamán,_Cusco,_Perú,_2015-07-31,_DD_27.JPG', h:'6/60', t:['萨克塞华曼','Sacsayhuaman'], by:'Diego Delso', lic:'CC BY-SA 4.0' },
+ { f:'Machu_Picchu,_2023_(012).jpg', h:'b/bb', t:['马丘比丘','Machu Picchu'], by:'Draceane', lic:'CC BY-SA 4.0' },
 ],
 '西葡殖民美洲': [
  { f:'Catedral_y_Sagrario_Metropolitano_33.jpg', h:'0/0c', t:['大教堂','the Metropolitan Cathedral'], by:'Ulisesmorales', lic:'CC BY-SA 3.0' },
@@ -6031,9 +6097,11 @@ const CIV_PHOTO = {
 ],
 '毛利': [
  { f:'One_Tree_Hill,_Auckland,_March_2015.jpg', h:'8/88', t:['一树山毛利要塞遗迹','the Maungakiekie pa terraces'], by:'Techno246', lic:'CC BY-SA 3.0' },
+ { f:'Marae,_Raiatea_2.jpg', h:'e/ee', t:['毛利集会所','a marae'], by:'Michel-georges bernard', lic:'CC BY-SA 3.0' },
 ],
 '夏威夷王国': [
  { f:'Iolani_Palace_(51872681413).jpg', h:'8/8e', t:['伊奥拉尼宫','ʻIolani Palace'], by:'Gage Skidmore from Surprise, AZ, United States of America', lic:'CC BY-SA 2.0' },
+ { f:'King_Kamehameha_statue_(51872601941).jpg', h:'6/64', t:['卡美哈梅哈一世像','the Kamehameha statue'], by:'Gage Skidmore from Surprise, AZ, United States of America', lic:'CC BY-SA 2.0' },
 ],
 '汤加王国': [
  { f:'Royal_Palace,_Nuku\'alofa,_Nov_18.jpg', h:'9/94', t:['汤加王宫','the Royal Palace, Tonga'], by:'Uhooep', lic:'CC BY-SA 4.0' },
