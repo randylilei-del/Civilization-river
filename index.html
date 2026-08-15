@@ -561,6 +561,15 @@ a.bk:hover { border-color: var(--ink-2); }
 #geoview .gv-ph figcaption { font-size: 12px; margin-top: 4px; line-height: 1.45; }
 #geoview .gv-ph figcaption b { font-weight: 600; }
 #geoview .gv-ph figcaption span { display: block; font-size: 10.5px; color: var(--ink-2); }
+/* v202.1(Ray):点图放大、再点缩回。放大态是一层全屏黑底叠层,图按视口等比铺满,
+   点任意处(或按 Esc)关掉;不做捏合缩放——一层就够,别把简单事做复杂 */
+#geoview .gv-ph img { cursor: zoom-in; }
+#gvLb { position: fixed; inset: 0; z-index: 60; background: rgba(0,0,0,.88); display: flex; flex-direction: column;
+  align-items: center; justify-content: center; padding: 14px; cursor: zoom-out; animation: pcFade .15s ease; }
+#gvLb[hidden] { display: none; }
+#gvLb img { max-width: 100%; max-height: calc(100% - 44px); object-fit: contain; border-radius: 6px; }
+#gvLb figcaption { color: #fff; font-size: 13px; margin-top: 10px; text-align: center; line-height: 1.45; }
+#gvLb figcaption span { display: block; font-size: 11px; opacity: .7; }
 #geoview .gv-vid { display: flex; flex-direction: column; gap: 5px; margin: 14px 0 10px; max-width: 560px; }
 #geoview .gvv { display: flex; align-items: center; justify-content: space-between; gap: 8px;
   font-size: 12.5px; font-weight: 600; color: var(--surface); background: var(--ink);
@@ -839,6 +848,8 @@ td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; ma
   <div class="gv-mapw"><div class="gv-map" id="gvMap"></div><button class="gv-tog" id="gvTog">展开地图 · 换个地方</button></div>
   <div class="gv-res" id="gvRes"></div>
 </div>
+<!-- v202.1 城市照片放大层:点图放大、再点缩回 -->
+<figure id="gvLb" hidden><img alt=""><figcaption></figcaption></figure>
 
 <div id="playbar" hidden aria-live="polite">
   <div class="pb-year"><b id="pbYear">—</b><span id="pbEra"></span></div>
@@ -12463,6 +12474,18 @@ function gvQuery(lon, lat, ci) {
   /* v199:选中即收窄地图并整张重画——标记、名字、呼吸圈跟着落点走,落点滚到带子正中 */
   setGvMini(true);
 }
+/* v202.1(Ray:「再点击下图片后又缩回到原始的大小」):点照片放大到全屏叠层,再点任意处缩回。
+   用同一张 960px 的图(已在缓存里,秒开),不再多发一次请求。 */
+const gvLb = document.getElementById('gvLb');
+gvRes.addEventListener('click', e => {
+  const im = e.target.closest('.gv-ph img'); if (!im) return;
+  const fc = im.parentElement.querySelector('figcaption');
+  gvLb.querySelector('img').src = im.src;
+  gvLb.querySelector('img').alt = im.alt;
+  gvLb.querySelector('figcaption').innerHTML = fc ? fc.innerHTML : '';
+  gvLb.hidden = false;
+});
+gvLb.addEventListener('click', () => { gvLb.hidden = true; });
 /* v199 地图窄带/展开切换。收起时地图不再吃手势(点它就是展开);展开后回到用户自己的缩放档 */
 function setGvMini(m) {
   GV.mini = !!m;
@@ -12510,6 +12533,7 @@ document.querySelectorAll('.viewsw').forEach(sw => sw.addEventListener('click', 
 }));
 document.getElementById('gvClose').addEventListener('click', closeGeoView);
 document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !gvLb.hidden) { gvLb.hidden = true; return; }   // v202.1 先关照片放大层
   if (e.key === 'Escape' && !gv.hidden && !panel.classList.contains('open') && pcard.hidden) closeGeoView();
 });
 gv.querySelector('.gv-zoom').addEventListener('click', e => {
