@@ -794,8 +794,8 @@ a.bk:hover { border-color: var(--ink-2); }
 #tableview td.tv-f { max-width: 220px; }
 #tableview td.tv-n { white-space: nowrap; font-weight: 600; }
 /* v207.1(Ray:「中心」列的城市要能跳到地图视角的那座城):虚线下划线 = 站内跳转,与文明卡里的 .gv-go 同一语法 */
-#tableview a.tv-city { color: var(--ink); text-decoration: underline dotted; text-underline-offset: 3px; cursor: pointer; }
-#tableview a.tv-city:hover { color: var(--civ-t, var(--ink)); }
+#tableview a.tv-city, #panel a.tv-city { color: inherit; text-decoration: underline dotted; text-underline-offset: 3px; cursor: pointer; }
+#tableview a.tv-city:hover, #panel a.tv-city:hover { color: var(--civ-t, var(--ink)); }
 @media (max-width: 640px) { #tableview .gv-head b { display: none; } }
 table { border-collapse: collapse; min-width: 640px; }
 th, td { text-align: left; padding: 5px 12px; border-bottom: 1px solid var(--grid); }
@@ -12340,8 +12340,10 @@ function todayHTML(c) {
     if (city && !arr.includes(city)) arr.push(city);
   });
   if (!order.length) return '';
+  /* v207.2(Ray):今名能对上 GEO_CITY 的变成站内链接,点了跳地图视角的那座城 */
+  const idxOf = name => GEO_CITY.findIndex(g => g[li] === name);
   const parts = order.map(k => {
-    const cities = byCountry.get(k);
+    const cities = byCountry.get(k).map(n => { const i = idxOf(n); return i >= 0 ? `<a class="tv-city" data-city="${i}">${n}</a>` : n; });
     return cities.length ? `${k}${T('：', ': ')}${cities.join(T('、', ', '))}` : k;
   });
   return `<i class="today">${T('今 ', 'now ')}${parts.join(' · ')}</i>`;
@@ -12512,7 +12514,7 @@ function openCiv(c) {
   panel.style.setProperty('--civ-t', `color-mix(in srgb, ${fill(c)} 55%, var(--ink))`);
   const f = cF(c);
   const facts = f ? `<div class="p-facts">${Object.entries(f).map(([k, v]) =>
-    `<div class="fact"><span>${k}</span><b>${(k === '人物' || k === 'Figures') ? linkNames(v, c) : (k === '成就' || k === 'Legacy') ? linkAchv(v, c) : v}</b>${(k === '中心' || k === 'Center') ? todayHTML(c) : ''}${(k === '鼎盛' || k === 'Peak') ? peakHTML(c) : ''}</div>`).join('')}${PEAK[c.n] ? `<div class="cap pk-cap">${T('版图取历史最大疆域、人口取历史峰值，二者未必同期；占比按当时世界人口估算',
+    `<div class="fact"><span>${k}</span><b>${(k === '人物' || k === 'Figures') ? linkNames(v, c) : (k === '成就' || k === 'Legacy') ? linkAchv(v, c) : (k === '中心' || k === 'Centre' || k === 'Center') ? centreLinks(v) : v}</b>${(k === '中心' || k === 'Center') ? todayHTML(c) : ''}${(k === '鼎盛' || k === 'Peak') ? peakHTML(c) : ''}</div>`).join('')}${PEAK[c.n] ? `<div class="cap pk-cap">${T('版图取历史最大疆域、人口取历史峰值，二者未必同期；占比按当时世界人口估算',
     'Area = greatest extent, population = peak; not necessarily the same year. Share is of estimated world population at the time.')}</div>` : ''}</div>` : '';
   /* v166(Ray:「发生了什么」太单薄):去掉本泳道限制——这一块自 v165 起叫「同时代的世界」,
      全球同期的交流事件本来就在题内(明 1→7 条、罗马 1→3);按年排序讲成一条时间线。
@@ -12956,6 +12958,9 @@ panel.addEventListener('keydown', e => {
 });
 panel.addEventListener('click', e => {
   if (e.target.classList.contains('p-close')) panel.classList.remove('open');
+  /* v207.2 卡上「中心」的城市 → 关卡、切地图视角、开那座城 */
+  const cityA = e.target.closest && e.target.closest('a.tv-city');
+  if (cityA) { const i = +cityA.dataset.city; panel.classList.remove('open'); closeTableView(); openGeoView(); gvQuery(GEO_CITY[i][2], GEO_CITY[i][3], i); return; }
   /* v204 文明卡照片:按钮展开 / 点图放大 / 点空白收回(与城市面板同一套) */
   const phb = e.target.closest && e.target.closest('#pPhB');
   if (phb && cur && cur.type === 'civ') {
