@@ -572,7 +572,8 @@ a.bk:hover { border-color: var(--ink-2); }
 #panel .p-gl .cap { color: var(--muted); font-size: 0.85em; margin-top: 1px; }
 #panel .p-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; margin: 0 0 12px; }
 #panel .fact .today { display: block; margin-top: 2px; font-style: normal; font-size: 0.88em; line-height: 1.35; color: var(--muted); }
-#panel .p-vid { margin: 0 0 12px; display: flex; flex-direction: column; gap: 5px; }
+/* v169:视频区挪到整卡最底(Ray)——站内内容全部讲完才轮到出口;补顶部分隔线与间距 */
+#panel .p-vid { margin: 14px 0 4px; padding-top: 12px; border-top: 1px solid var(--grid); display: flex; flex-direction: column; gap: 5px; }
 #panel .vid-play {
   display: flex; align-items: center; justify-content: space-between; gap: 8px; box-sizing: border-box;
   width: 100%; font: inherit; font-size: 0.96em; font-weight: 600; cursor: pointer; text-decoration: none;
@@ -9396,10 +9397,10 @@ function openCiv(c) {
     ${facts}
     ${coHTML(c)}
     ${qHTML(c)}
-    ${videoHTML(c)}
     ${ch.length ? `<div class="p-tl"><h3>${T('大事记（曲线上的小圆点）','Key moments (dots on the curve)')}</h3>${ch.map(([y, t2, d2]) =>
       `<div class="tl-item" data-evy="${y}"><span class="tl-y">${fmtY(y)}</span><div><b>${wkA(t2, stripParen(t2))}</b>${d2 ? `<p>${d2}</p>` : ''}</div></div>`).join('')}</div>` : ''}
-    ${worldHTML(c, evs)}`;
+    ${worldHTML(c, evs)}
+    ${videoHTML(c)}`;
   panel.classList.add('open');
 }
 function openEvent(ev) {
