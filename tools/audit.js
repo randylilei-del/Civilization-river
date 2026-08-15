@@ -13,7 +13,7 @@ try { D = require('./load')(); } catch (e) {
 }
 const fs = require('fs');
 const path = require('path');
-const { LANES, SPHERES, ERAS, EV_NAME, CIVS, EVENTS, GEO, CHRONO, GL, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME, PEAK, ACHV, AGLYPH, GEO_CITY, PLACE_LORE, UNIONS, SEARCH_ALIAS, CITY_VIDEO, CITY_LORE } = D;
+const { LANES, SPHERES, ERAS, EV_NAME, CIVS, EVENTS, GEO, CHRONO, GL, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME, PEAK, ACHV, AGLYPH, GEO_CITY, PLACE_LORE, UNIONS, SEARCH_ALIAS, CITY_VIDEO, CITY_LORE, RIVERS, RANGES, DESERTS, LAKES } = D;
 
 const P = [];
 const KINDS = ['econ', 'art', 'tech', 'thought'];
@@ -1172,6 +1172,26 @@ CIVS.forEach(c => {
     const dyn = CIVS.filter(c => c.n.length >= 2 && v[0].includes(c.n)).map(c => c.n);
     if (dyn.length >= 3 && !/[^。;!?]{20,}/.test(v[0]))
       P.push(`${tag} 疑似退化成朝代罗列(出现 ${dyn.join('、')}),这一层不该重复下面的文明行`);
+  });
+}
+
+/* 规则 59(v195):地理底图四张表(河流/山地高原/沙漠/湖泊)此前**一条校验都没有**,
+ * 而 v195 一次手写进去 175 个要素——名字双语、坐标在合法范围、折线至少两点、
+ * 多边形至少三点、名字不重复。经纬度写反(把 [34.3,108.9] 写成 [108.9,34.3] 的反面)
+ * 是这类手写坐标最常见的错,纬度越界能把它逮住。 */
+{
+  const seen = new Map();
+  [['RIVERS', RIVERS, 2], ['RANGES', RANGES, 3], ['DESERTS', DESERTS, 3], ['LAKES', LAKES, 3]].forEach(([tag, tbl, minPts]) => {
+    (tbl || []).forEach(g => {
+      const nm = g.n && g.n[0];
+      if (!Array.isArray(g.n) || g.n.length !== 2 || !g.n[0] || !g.n[1]) { P.push(`[${tag}] 名字非双语: ${JSON.stringify(g.n)}`); return; }
+      if (seen.has(nm)) P.push(`[${tag}] 名字重复: ${nm}(也出现在 ${seen.get(nm)})`); else seen.set(nm, tag);
+      if (!Array.isArray(g.p) || g.p.length < minPts) { P.push(`[${tag}] ${nm} 点数不足(${g.p ? g.p.length : 0} < ${minPts})`); return; }
+      g.p.forEach(([x, y]) => {
+        if (!(x >= -180 && x <= 180)) P.push(`[${tag}] ${nm} 经度越界:${x}`);
+        if (!(y >= -85 && y <= 85)) P.push(`[${tag}] ${nm} 纬度越界:${y} —— 经纬写反了?`);
+      });
+    });
   });
 }
 
