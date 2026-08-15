@@ -13,6 +13,8 @@
    3. 朝代/时期用建成时那个,不用后来重修的——西安城墙是明代的,尽管唐代那圈更大。
    4. 最多三处:这一层是引子不是清单,给孩子三个抓手就够了。
    5. 拿不准年代或朝代的宁可不收。
+   6. (v201.1 核查后定)**毁后重建的加「(现建筑)」**,y 取现建筑年;**创建至今连续但原物无存的宗教场所加「(始建)」**,y 取创建年;
+      没建完的加「(动工)」。不标就是「今天看到的基本是那一年的东西」。
 
    ⚠ 顺带查出来的**站内年表覆盖缺口**(古迹年份是对的,是站里那一年没有色带盖住这座城;
    audit 曾为此写过一条规则,因 0% 准确率做废,把结论记在这里):
@@ -360,7 +362,7 @@ const CITY_SITES = {
 ],
 '平壤': [
  { n:['高句丽古墓群','the Koguryo tombs'], y:500, e:['高句丽','Goguryeo'], ca:1 },
- { n:['大同门','the Taedong Gate'], y:1635, e:['朝鲜王朝','Joseon'] },
+ { n:['大同门(现建筑)','the Taedong Gate (present gate)'], y:1635, e:['朝鲜王朝','Joseon'] },
 ],
 '巨港': [
  { n:['巨港大清真寺','the Great Mosque of Palembang'], y:1748, e:['巨港苏丹国','Palembang Sultanate'] },
@@ -407,11 +409,11 @@ const CITY_SITES = {
  { n:['麦加皇家钟塔','the Makkah Clock Tower'], y:2012, e:['沙特阿拉伯','Saudi Arabia'] },
 ],
 '麦地那': [
- { n:['库巴清真寺','the Quba Mosque'], y:622, e:['伊斯兰初期','early Islam'] },
- { n:['先知清真寺','the Prophet\'s Mosque'], y:622, e:['伊斯兰初期','early Islam'] },
+ { n:['库巴清真寺(始建)','the Quba Mosque (founded)'], y:622, e:['伊斯兰初期','early Islam'] },
+ { n:['先知清真寺(始建)','the Prophet\'s Mosque (founded)'], y:622, e:['伊斯兰初期','early Islam'] },
 ],
 '特拉布宗': [
- { n:['苏美拉修道院','Sumela Monastery'], y:386, e:['罗马帝国末期','late Roman'], ca:1 },
+ { n:['苏美拉修道院(现建筑)','Sumela Monastery (present buildings)'], y:1250, e:['特拉比松帝国','Empire of Trebizond'], ca:1 },
  { n:['特拉布宗圣索菲亚教堂','Hagia Sophia of Trebizond'], y:1260, e:['特拉比松帝国','Empire of Trebizond'], ca:1 },
 ],
 '德黑兰': [
@@ -424,7 +426,7 @@ const CITY_SITES = {
 ],
 '突尼斯': [
  { n:['迦太基安东尼浴场','the Antonine Baths of Carthage'], y:162, e:['罗马帝国','Roman'] },
- { n:['宰图纳大清真寺','the Zaytuna Mosque'], y:864, e:['阿格拉布','Aghlabid'] },
+ { n:['宰图纳大清真寺(现建筑)','the Zaytuna Mosque (present building)'], y:864, e:['阿格拉布','Aghlabid'] },
 ],
 '喀布尔': [
  { n:['巴布尔花园','the Gardens of Babur'], y:1528, e:['莫卧儿','Mughal'], ca:1 },
@@ -435,7 +437,7 @@ const CITY_SITES = {
  { n:['哈利法塔','the Burj Khalifa'], y:2010, e:['阿联酋','United Arab Emirates'] },
 ],
 '华沙': [
- { n:['华沙王宫','the Royal Castle'], y:1619, e:['波兰-立陶宛','Polish-Lithuanian Commonwealth'] },
+ { n:['华沙王宫(战后复建)','the Royal Castle (rebuilt after the war)'], y:1619, e:['波兰-立陶宛','Polish-Lithuanian Commonwealth'] },
  { n:['瓦津基宫','Łazienki Palace'], y:1793, e:['波兰-立陶宛末期','late Commonwealth'] },
  { n:['文化科学宫','the Palace of Culture and Science'], y:1955, e:['波兰人民共和国','communist Poland'] },
 ],
@@ -450,7 +452,7 @@ const CITY_SITES = {
  { n:['王宫(原市政厅)','the Royal Palace (old town hall)'], y:1655, e:['荷兰共和国','Dutch Republic'] },
 ],
 '米兰': [
- { n:['圣安布罗焦教堂(现建筑)','the Basilica of Sant\'Ambrogio (present church)'], y:1099, e:['罗马式时期','Romanesque'] },
+ { n:['圣安布罗焦教堂(现建筑)','the Basilica of Sant\'Ambrogio (present church)'], y:1099, e:['中世纪米兰','medieval Milan'] },
  { n:['米兰大教堂(动工)','the Duomo (begun)'], y:1386, e:['维斯孔蒂时期','Visconti Milan'] },
  { n:['《最后的晚餐》壁画','The Last Supper mural'], y:1498, e:['斯福尔扎时期','Sforza Milan'] },
 ],
@@ -463,7 +465,7 @@ const CITY_SITES = {
  { n:['阿斯基亚陵','the Tomb of Askia'], y:1495, e:['桑海帝国','Songhai'] },
 ],
 '卡诺': [
- { n:['卡诺古城墙','the Kano city walls'], y:1150, e:['豪萨城邦','Hausa city-states'], ca:1 },
+ { n:['卡诺古城墙','the Kano city walls'], y:1350, e:['豪萨城邦','Hausa city-states'], ca:1 },
  { n:['埃米尔宫(吉丹·伦法)','the Emir\'s Palace (Gidan Rumfa)'], y:1480, e:['豪萨城邦','Hausa city-states'], ca:1 },
 ],
 '亚的斯亚贝巴': [
@@ -479,7 +481,7 @@ const CITY_SITES = {
  { n:['肯雅塔国际会议中心','the Kenyatta International Convention Centre'], y:1973, e:['肯尼亚','Kenya'] },
 ],
 '约翰内斯堡': [
- { n:['老堡垒(宪法山)','the Old Fort on Constitution Hill'], y:1893, e:['德兰士瓦共和国','South African Republic'] },
+ { n:['老堡垒(宪法山)','the Old Fort on Constitution Hill'], y:1899, e:['德兰士瓦共和国','South African Republic'] },
  { n:['曼德拉故居(索韦托)','Mandela House in Soweto'], y:1945, e:['南非联邦','Union of South Africa'] },
 ],
 '波哥大': [
@@ -501,7 +503,7 @@ const CITY_SITES = {
  { n:['莫内达宫','La Moneda'], y:1805, e:['西属美洲','Spanish colonial'] },
 ],
 '洛杉矶': [
- { n:['老广场天使女王教堂','the Plaza Church'], y:1822, e:['墨西哥时期','Mexican California'] },
+ { n:['老广场天使女王教堂(始建)','the Plaza Church (founded)'], y:1822, e:['墨西哥时期','Mexican California'] },
  { n:['好莱坞标志','the Hollywood Sign'], y:1923, e:['美国','United States'] },
  { n:['格里菲斯天文台','Griffith Observatory'], y:1935, e:['美国','United States'] },
 ],
@@ -513,7 +515,7 @@ const CITY_SITES = {
 '芝加哥': [
  { n:['芝加哥水塔','the Chicago Water Tower'], y:1869, e:['美国','United States'] },
  { n:['罗比之家','the Robie House'], y:1910, e:['美国','United States'] },
- { n:['威利斯大厦(原西尔斯大厦)','the Willis (Sears) Tower'], y:1973, e:['美国','United States'] },
+ { n:['威利斯大厦(原西尔斯大厦)','the Willis (Sears) Tower'], y:1974, e:['美国','United States'] },
 ],
 '西雅图': [
  { n:['派克市场','Pike Place Market'], y:1907, e:['美国','United States'] },

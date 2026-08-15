@@ -186,7 +186,7 @@ const GL = {
  { a:1200, b:1500, k:'econ', t:['靠船运转的朝贡网','A tribute network run on canoes'], d:['斐济出硬木与独木舟、萨摩亚出细编席,汤加是中心节点;这张网靠季风与洋流,不靠道路与仓库。','Fiji sent hardwood and canoes, Samoa fine mats, and Tonga was the hub — a network run on winds and currents rather than roads and warehouses.'] },
  { a:1200, b:1300, k:'tech', t:['巨石门与石砌王陵','The trilithon and the terraced tombs'], d:['哈阿蒙加的立柱重约三四十吨,石材从海边采出运来;穆阿的朗吉用切割拼接的珊瑚石灰岩垒成。','The uprights of the Haʻamonga weigh perhaps thirty to forty tonnes, quarried at the shore and hauled inland; the langi at Muʻa are built of cut and fitted coral limestone.'] } ],
 '南马都尔': [
- { a:1180, b:1500, k:'tech', t:['礁盘上垒起的玄武岩城','A basalt city stacked on the reef'], d:['柱状玄武岩横竖交叠、像搭木屋一样垒成高墙,九十多座人工小岛立在潮间礁坪上;没有金属工具、轮子和役畜。','Columnar basalt laid crosswise like a log cabin into high walls, over ninety man-made islets standing on the tidal reef — with no metal tools, wheels or draught animals.'] } ],
+ { a:1180, b:1500, k:'tech', t:['礁盘上垒起的玄武岩城','A basalt city stacked on the reef'], d:['柱状玄武岩横竖交叠、像搭木屋一样垒成高墙,近百座人工小岛立在潮间礁坪上;没有金属工具、轮子和役畜。','Columnar basalt laid crosswise like a log cabin into high walls, close to a hundred man-made islets standing on the tidal reef — with no metal tools, wheels or draught animals.'] } ],
 '拉帕努伊·复活节岛': [
  { a:1250, b:1600, k:'art', t:['摩艾','The moai'], d:['近千尊石像,最大的一尊立起来约十米、近八十吨,面朝内陆守着自己的村子。','Close to a thousand figures, the largest about ten metres and eighty tonnes standing, all facing inland to watch over their own village.'] } ],
 '毛利': [
