@@ -1186,9 +1186,13 @@ CIVS.forEach(c => {
   const crypto = require('crypto');
   const cityNames = new Set(GEO_CITY.map(g => g[0]));
   const okLic = /^(CC|Public domain|FAL|GFDL|KOGL)/;
-  Object.entries(typeof CITY_PHOTO !== 'undefined' ? CITY_PHOTO : {}).forEach(([k, arr]) => {
-    const tag = `[城市照片] ${k}`;
-    if (!cityNames.has(k)) P.push(`${tag} 不是 GEO_CITY 里的城市名`);
+  /* 规则 63(v204):文明照片同一套校验,键改为 CIVS.n */
+  const civNames = new Set(CIVS.map(c => c.n));
+  const both = [...Object.entries(typeof CITY_PHOTO !== 'undefined' ? CITY_PHOTO : {}).map(([k, arr]) => ['[城市照片]', cityNames, k, arr, 'GEO_CITY 里的城市名']),
+                ...Object.entries(typeof CIV_PHOTO !== 'undefined' ? CIV_PHOTO : {}).map(([k, arr]) => ['[文明照片]', civNames, k, arr, '现存色带名'])];
+  both.forEach(([lab, nameSet, k, arr, what]) => {
+    const tag = `${lab} ${k}`;
+    if (!nameSet.has(k)) P.push(`${tag} 不是${what}`);
     if (!Array.isArray(arr) || !arr.length) { P.push(`${tag} 值必须是非空数组`); return; }
     if (arr.length > 3) P.push(`${tag} 超过三张(${arr.length})`);
     arr.forEach(x => {

@@ -10,7 +10,7 @@
 
 ```
 index.html            # 交付产物 + 代码手写源:样式、渲染器、config 常量(数据表已全部迁出)
-data/                 # 全部 29 张内容表的正本(.js 文本片段,性质分类见 docs/DATA.md)
+data/                 # 全部 30 张内容表的正本(.js 文本片段,性质分类见 docs/DATA.md)
 tools/build.js        # 把 data/*.js 注入回 index.html 的标记区间;改 data 后必跑
 tools/load.js         # audit/coverage/peakgap/refs 共用的数据加载器(含 GL_X 合并镜像)
 manifest.webmanifest  # PWA 清单
@@ -44,7 +44,7 @@ docs/CHANGELOG.md     # 版本史
 - **泳道顺序**:按经度自东向西,新泳道按经度插位,不要随手排
 - **双语**:改中文必改英文——v119–v123 起**英文与中文同条目成对**(EVENTS/CHRONO 的 [zh,en]、CIVS 的 e 块、config 的 en 字段),没有独立的英文字典,也没有「按索引对齐」这回事了;audit 查双语完整性
 - **维基链接**:统一搜索跳转(zh/en 随语言);歧义名进 WIKI_NAME(中文)/ CIVS 条目的 e.w(英文)消歧
-- **不引入外部资源**:Artifact CSP 与离线场景都不允许;新数据一律内嵌。仅有的两个例外都是「**点了才发请求**」:城市/文明视频(iframe/外链)与城市照片(v202,Wikimedia Commons `<img>`,`data/city_photo.js`)——不点则页面对外零请求
+- **不引入外部资源**:Artifact CSP 与离线场景都不允许;新数据一律内嵌。仅有的两个例外都是「**点了才发请求**」:城市/文明视频(iframe/外链)与城市/文明照片(v202/v204,Wikimedia Commons `<img>`,`data/city_photo.js` / `data/civ_photo.js`)——不点则页面对外零请求
 
 ## Roadmap
 
