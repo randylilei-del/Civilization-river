@@ -10,7 +10,7 @@
 |---|---|---|
 | **fact** | 受众无关的历史事实,未来任何受众/页面直接复用 | `CHRONO`(年份+事件;v121 起原 CHRONO_X 已并入) · `PEAK`(版图人口,`as`/`an` 记出处与口径) · `GEO` `GEO_CITY` `GC_ALIAS` `PLACE`(地理) · `LAND` `BORDERS` `RIVERS` `RANGES` `DESERTS`(底图) · `CIVS.k`(影响力曲线,半主观但口径统一) |
 | **interpretation** | 经拍板的历史理解(结论受众无关,语言已偏儿童) | 六问(`CIVS.q`) · `GL` `GL_X`(领域鼎盛判断) · `EVENTS` `TRACES`(文明间关系) · `co`/`ct`(并存政权判断) · audit 的 `SETTLED` 表(已裁决说法) |
-| **presentation** | 当前 age-7 版本的具体表达 | `PLACE_LORE`(地点小段叙事) · `PEOPLE` `ACHV`(卡片文案) · `CIVS.b/.d/.f` 的措辞 · `WIKI_NAME` `CIVS.e.w`(消歧) · `VIDEO` · `SEARCH_ALIAS`(搜索别名,v152) · 各条目内联的英文(翻译) |
+| **presentation** | 当前 age-7 版本的具体表达 | `PLACE_LORE`(地点小段叙事) · `PEOPLE` `ACHV`(卡片文案) · `CIVS.b/.d/.f` 的措辞 · `WIKI_NAME`(v174 起中文值只服务大百科搜索) `CIVS.e.w`(en.wikipedia 消歧) · `VIDEO` · `SEARCH_ALIAS`(搜索别名,v152) · 各条目内联的英文(翻译) |
 | **config** | 渲染参数,不是历史数据,**永远不迁出** | `LANES` `SPHERES` `ERAS` `EV_GLYPH` `EV_NAME` `PGLYPH` `PGNAME` `AGLYPH` `AGNAME` `GL_KIND` `QT` 及 `INNER_W`/`BP`/`UNIT`/`STEP`/`ZOOM_MIN_SPAN`/`AY_GAP`/`NSPLIT`/`PB`/`GV*` 等标量 |
 
 **Phase 2 已完成(v117)**:23 张内容表全部迁到 `data/`,`CIVS` `EN` 于 v117 收口。config 类(`PGLYPH` `PGNAME` `AGLYPH` `AGNAME` `LANES` `SPHERES` `ERAS` 及渲染标量)按设计留在 index.html。**Phase 3 已完成(v118)**:audit / coverage / peakgap / refs 四个工具统一走 `tools/load.js`(数据表按目录枚举 data/、config 表按名抽取),「从 LANES 切到 TRACES」的位置切片已删除。**注意 load.js 镜像了 index.html 的 GL_X 合并逻辑**——index.html 那边改合并,load.js 要跟(两处都有注释互指)。
@@ -45,7 +45,7 @@
 | `PGLYPH` / `PGNAME` | {类别: 字形} / {类别: [zh,en]} | 八类:king 帝王/state 政治/war 征战/mind 思想/sci 科学/art 艺术/faith 宗教/sail 航海。「思想」只给真正的思想家,治国者归「政治」 |
 | `PEAK` | {'文明名': {a?, ay?, an?, p?, py?, pc?, w?}} | 鼎盛期硬数字。a=版图(万 km²) **ay**=该面积对应年份 **an**=面积口径说明(双语,如民国的「法理疆域」);p=人口(万,**拿不准写成 [下限,上限] 区间,不要取单一高值**) **py**=人口对应年份 **pc**=1 表示官方户口数(缺省为学界估算);w=占当时世界人口(0~1,渲染成百分比)。**版图取历史最大疆域、人口取历史峰值,二者通常不在同一年**,卡片上会把 ay/py 显示出来。**as**=面积数字的出处(双语,只在偏离主序列时标,如「非 Taagepera 序列」「Turchin 数据」——未标的即出自主序列)。口径一致比单个数字精确更重要:版图统一用 Taagepera 序列,w 的分母按 py 年取 McEvedy & Jones 的世界人口 |
 | `BORDERS` | [[[lon,lat]..]..] | 今日陆上国界折线(Natural Earth 110m 简化,333 段 1374 点约 17KB)。**只画在地理视角的世界地图上**——卡片版图小地图不画,免得被当成那个年代的边界。与 LAND 一样是压缩底图(数据在 `data/borders.js`) |
-| `GEO_CITY` | [[zh, en, lon, lat]..] | 地理视角的 91 个可点城市。坐标必须命中 ≥1 条 GEO 版图(audit 规则 37);挑选按历史重要性。纬度显示范围 [-56,78],出界画在画布外 |
+| `GEO_CITY` | [[zh, en, lon, lat]..] | 地理视角的可点城市(v174 时点 101 个;早期文档写 91 已过期)。坐标必须命中 ≥1 条 GEO 版图(audit 规则 37);挑选按历史重要性。纬度显示范围 [-56,78],出界画在画布外 |
 | `GC_ALIAS` | {'城市名': [古称..]} | 城市古称别名,供地理视角从大事记筛「发生在这里的事」。只收同一城址(或紧邻如咸阳之于西安);歧义名不收(「东京」不给开封);civ 名含别名时该别名对该 civ 失效 |
 | `SEARCH_ALIAS` | [{t:[词..], c:'文明名', why:[zh,en]}] | 搜索别名(v152,IDEAS 001 层一):孩子嘴里的词(奥德赛/木乃伊)→ 站内文明,why 是搜索结果里直接显示的**给孩子的回答**。四条纪律:c 必须存在于 CIVS(规则 52,改色带名时最易断);同词不得进两条(后写的会静默吃掉先写的);英文词全小写;**全文已能命中且落点得当的词不建别名**(金字塔四个文明的分散落点本身是教学);注意不建别名 ≠ 搜不到别名——「特洛伊」因是「特洛伊木马」的子串仍会带出该条,属预期。匹配规则(v153):拉丁词只认「≥3 字符前缀」或「查询里整词出现」(防 destroy→troy 类误命中),中文子串、t 含 ql 方向要求 ≥2 字(防单字点亮多条)。新词来源:localStorage `whviz-sq` 攒的真实搜索记录,零命中词就是下一批别名 |
 | `PLACE_LORE` | {'城市\|文明': [zh,en]} | 地点小段手写层:「那个朝代这个地方是什么样」,两三句硬事实,双语。城市与文明都必须真实存在且城市落在该文明版图内(audit 规则 38);年代拿不准用「前后/传为」hedge |
