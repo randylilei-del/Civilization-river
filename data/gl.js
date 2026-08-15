@@ -176,7 +176,7 @@ const GL = {
 '拉丁美洲诸国': [ { a:1955, b:1990, k:'art', t:['魔幻现实主义','Magical realism'], d:['马尔克斯们把本地经验写成了世界文学。','Garcia Marquez and company make local experience world literature.'] } ],
 /* 大洋洲(v189) */
 '澳大利亚原住民': [
- { a:-3500, b:1788, k:'tech', t:['养鳗水渠与火棒农业','Eel channels and fire-stick farming'], d:['布吉毕姆的水渠与鱼笼可追到约六千六百年前,比金字塔早;有计划的小面积焚烧既引来猎物,又压住大火的燃料。','The channels and traps at Budj Bim go back some 6,600 years, older than the pyramids; planned small burns drew game and kept fuel from building up.'] },
+ { a:-3500, b:1788, k:'tech', t:['养鳗水渠与火棒农业','Eel channels and fire-stick farming'], d:['布吉毕姆的水渠与鱼笼可追到约六千六百年前——远早于这条带在图上的起点,也比金字塔早;有计划的小面积焚烧既引来猎物,又压住大火的燃料。','The channels and traps at Budj Bim go back some 6,600 years — far earlier than where this band starts on the chart, and older than the pyramids; planned small burns drew game and kept fuel from building up.'] },
  { a:-3500, b:2025, k:'thought', t:['歌之途','The songlines'], d:['按顺序唱下来的歌,每一句对应路上一处地形——地图、法典与史书是同一件东西。','A song sung in order, each verse a feature on the route — map, law and history all at once.'] },
  { a:1967, b:2025, k:'thought', t:['清账的半个世纪','Half a century of reckoning'], d:['1967年公投、1992年马博案、2008年道歉;语言正被教回给孩子。','The 1967 referendum, the Mabo judgment of 1992, the apology of 2008 — and the languages being taught back to children.'] } ],
 '拉皮塔·南岛航海者': [
@@ -193,7 +193,7 @@ const GL = {
 '夏威夷王国': [
  { a:1840, b:1887, k:'thought', t:['宪法与国际承认','A constitution, and recognition'], d:['1840年起有成文宪法、议会与最高法院,1840年代获英法美承认,与二十多国签约——按当时国际法是个正常的主权国家。','A written constitution, legislature and supreme court from 1840, recognition by Britain, France and the United States in that decade, and treaties with over twenty states — an ordinary sovereign state by the law of the day.'] } ],
 '欧洲殖民大洋洲': [
- { a:1860, b:1900, k:'econ', t:['种植园与劳工贸易','Plantations and the labour trade'], d:['昆士兰与斐济的甘蔗园要人手,1863年起约六万岛民被运去,有受雇的也有被掳的;这条产业链改变了美拉尼西亚的人口与语言。','The cane fields of Queensland and Fiji needed hands, and from 1863 some sixty thousand islanders were carried there, some hired and many taken; the trade changed the population and the languages of Melanesia.'] } ],
+ { a:1860, b:1900, k:'econ', t:['种植园与劳工贸易','Plantations and the labour trade'], d:['昆士兰与斐济的甘蔗园要人手,1863年起约六万二千人被运往昆士兰、两万七千人以上被运往斐济,有受雇的也有被掳的;这条产业链改变了美拉尼西亚的人口与语言。','The cane fields of Queensland and Fiji needed hands, and from 1863 some sixty-two thousand were carried to Queensland and twenty-seven thousand more to Fiji, some hired and many taken; the trade changed the population and the languages of Melanesia.'] } ],
 '澳新与太平洋岛国': [
  { a:1990, b:2025, k:'thought', t:['小国的气候外交','Climate diplomacy from small states'], d:['人口一万多的国家,管辖的海域比印度还大;巴黎协定里那句 1.5℃ 主要是它们推进去的——对图瓦卢来说那不是模型,是国家还在不在。','States of a few thousand people administer ocean larger than India; the 1.5°C line in the Paris Agreement is there largely because they pushed it in — for Tuvalu that is not a model but whether the country still exists.'] } ],
 };

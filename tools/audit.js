@@ -1094,6 +1094,44 @@ CIVS.forEach(c => {
   });
 })();
 
+/* 规则 55(v191,核查员指出的盲区):英文块里残留中文。`index.html:8663` 的 cF 在英文模式下
+ * 直接渲染 c.e.f,不过 PLACE 翻译——所以 e 块里任何一个中日韩字符都会原样出现在英文卡上。
+ * v189 有三条大洋洲色带的 e.f.Centre 忘了译,而 audit 当时全绿。 */
+CIVS.forEach(c => {
+  if (!c.e) return;
+  const walk = (v, path) => {
+    if (typeof v === 'string') {
+      /* 允许专名里的音标符号,只查汉字 */
+      if (/[\u4e00-\u9fff\u3040-\u30ff]/.test(v)) P.push(`[英文块残留中文] ${c.n} e.${path}: ${v.slice(0, 40)}`);
+    } else if (v && typeof v === 'object') Object.entries(v).forEach(([k, x]) => walk(x, path ? `${path}.${k}` : k));
+  };
+  walk(c.e, '');
+});
+
+/* 规则 56(v191,核查员指出的盲区):六问钩子句钩到了别的问题的答案上。
+ * v189 的澳新色带 qh.legacy 挂的是 2008 年道歉,而那句在 q.fall 里。
+ * 判据必须窄,否则全是假阳性——钩子是用大白话改写而不是摘抄,**初版按 3 字实词
+ * 直接查词面重合,报了 586 条,八成以上是正确的钩子被误伤**,那种规则只会训练人无视它。
+ * 收窄到:5 字以上的实词,在**别的**槽位正文里逐字找得到、在**自己**这一问里一个都找不到。
+ * 全库 888 条钩子里只剩 2 条报警,其中 1 条真、1 条假,假的那条列白名单说明理由。 */
+const QH_SLOT_OK = {
+  /* 「只能去外面卖」确实是 q.power 里「用出口逼企业跟世界一流对标」的大白话改写,
+     只是没有一个字重合。规则查的是词面,这类改写它分辨不了。 */
+  '韩国': ['power'],
+};
+CIVS.forEach(c => {
+  if (!c.qh || !c.q) return;
+  Object.entries(c.qh).forEach(([k, v]) => {
+    if (!c.q[k] || !Array.isArray(v)) return;
+    if ((QH_SLOT_OK[c.n] || []).includes(k)) return;
+    const toks = (v[0].match(/[\u4e00-\u9fff]{5,}/g) || []);
+    if (!toks.length) return;
+    if (toks.some(t => c.q[k][0].includes(t))) return;
+    const other = Object.keys(c.q).filter(x => x !== k && toks.some(t => c.q[x][0].includes(t)));
+    if (other.length) P.push(`[钩子句钩错槽位] ${c.n} qh.${k} —— 「${v[0]}」的实词只出现在 q.${other.join('/')} 里,不在 q.${k}`);
+  });
+});
+
 const laneIds = new Set(LANES.map(l => l.id));
 CIVS.forEach(c => { if (!laneIds.has(c.l)) P.push(`[泳道 id 不存在] ${c.n} → ${c.l}`); });
 EVENTS.forEach(e => e.ls.forEach(l => { if (!laneIds.has(l)) P.push(`[事件泳道 id 不存在] ${e.n[0]} → ${l}`); }));
