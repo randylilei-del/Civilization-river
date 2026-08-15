@@ -61,7 +61,7 @@ const TRACES = [
 { g:'beliefs', n:['伊斯兰教','Islam'], stops:[
   { y:622, l:'me', t:['希吉拉','The Hijra'], d:['从麦地那出发,一个世纪横跨三洲。','From Medina, three continents in a century.'] },
   { y:711, l:'eu', t:['伊比利亚','Iberia'], d:['安达卢斯八百年,直到 1492。','Al-Andalus endures eight centuries, until 1492.'], p:0 },
-  { y:751, l:'st', t:['中亚','Central Asia'], d:['河中地区渐次伊斯兰化,突厥人皈依后成为其武力担当。','Transoxiana converts; the Turks become Islam\'s sword.'], p:0 },
+  { y:751, l:'st', t:['中亚','Central Asia'], d:['中亚渐次伊斯兰化;两百年后突厥人也皈依,伊斯兰世界从此有了突厥兵。','Central Asia converts; two centuries on the Turks convert too, and Turkic soldiers enter the Islamic world.'], p:0 },
   { y:1000, l:'af', t:['跨撒哈拉','Across the Sahara'], d:['随驼队与黄金贸易南传西非。','South with the caravans and the gold trade.'], p:0 },
   { y:1206, l:'sa', t:['德里苏丹国','Delhi Sultanate'], d:['伊斯兰政权统治北印,南亚信仰版图从此双轨。','Muslim rule in north India; the subcontinent\'s faiths run twin tracks.'], p:0 },
   { y:1400, l:'se', t:['马六甲改宗','Malacca converts'], d:['随印度洋商路东传;今日印尼是穆斯林第一大国。','East on the ocean trade; Indonesia is now the largest Muslim nation.'], p:0 },
@@ -121,11 +121,11 @@ const TRACES = [
   { y:400, l:'af', t:['南部非洲','Southern Africa'], d:['约 400 年前后抵达今南非东部——今天非洲中部、东部和南部的多数语言,都属于班图语族。','By about 400 CE they reach today\'s eastern South Africa — most languages of central, eastern and southern Africa belong to the Bantu family.'] },
 ] },
 { g:'people', n:['突厥人的西迁','The Turkic Migrations'], stops:[
-  { y:552, l:'st', t:['金山起家','Smiths of the Altai'], d:['突厥人在阿尔泰山一带以锻铁起家,推翻柔然建立汗国,疆域横贯草原。','Iron-smiths of the Altai overthrow the Rouran and stretch a khaganate across the steppe.'] },
-  { y:960, l:'st', t:['喀喇汗人皈依','The Karakhanids convert'], d:['汗国崩解后各部陆续西移。天山两侧的喀喇汗人改信伊斯兰教,又在 999 年从萨曼人手里拿下布哈拉;此后几百年,河中的统治者一个接一个说突厥语。','After the khaganate breaks up the tribes drift west. The Karakhanids astride the Tianshan take up Islam, then take Bukhara from the Samanids in 999; for centuries after, Transoxiana\'s rulers are Turkic-speaking, one dynasty upon another.'] },
-  { y:1055, l:'me', t:['塞尔柱人进巴格达','The Seljuks enter Baghdad'], d:['乌古斯部出身的塞尔柱人 1040 年击败伽色尼王朝拿下呼罗珊,又进巴格达替哈里发掌兵。往后几百年,伊斯兰世界的兵权多半握在突厥人手里。','The Seljuks, out of the Oghuz tribes, beat the Ghaznavids in 1040 to take Khurasan, then enter Baghdad to command the caliph\'s armies. For centuries after, the sword of the Islamic world is mostly in Turkic hands.'] },
+  { y:552, l:'st', t:['金山起家','Smiths of the Altai'], d:['突厥人在阿尔泰山一带以锻铁起家,推翻柔然建立汗国,不到二十年就横贯草原。','Iron-smiths of the Altai overthrow the Rouran; within twenty years their khaganate stretches across the steppe.'] },
+  { y:960, l:'st', t:['喀喇汗人成群皈依','The Karakhanids convert en masse'], d:['汗国崩解后各部陆续西移,各走各的。天山两侧的喀喇汗人改信伊斯兰教,999 年从萨曼人手里拿下布哈拉——中亚这一片从此多由讲突厥语的君主统治。','After the khaganate breaks up the tribes drift west, each on its own. The Karakhanids astride the Tianshan take up Islam and take Bukhara from the Samanids in 999 — from then on Central Asia is mostly ruled by Turkic-speaking kings.'] },
+  { y:1055, l:'me', t:['塞尔柱人进巴格达','The Seljuks enter Baghdad'], d:['乌古斯部出身的塞尔柱人 1040 年击败伽色尼王朝拿下呼罗珊,又进巴格达替哈里发掌兵。往后几百年,从中亚到西亚,兵权多半握在突厥人手里。','The Seljuks, out of the Oghuz tribes, beat the Ghaznavids in 1040 to take Khurasan, then enter Baghdad to command the caliph\'s armies. For centuries after, from Central Asia to the Near East, the sword is mostly in Turkic hands.'] },
   { y:1071, l:'me', t:['进入安纳托利亚','Into Anatolia'], d:['塞尔柱人在曼齐刻尔特俘虏拜占庭皇帝,安纳托利亚此后逐渐突厥化。','At Manzikert the Seljuks capture the Byzantine emperor; Anatolia slowly turns Turkic.'] },
-  { y:1453, l:'me', t:['奥斯曼收尾','The Ottoman finale'], d:['这场近五千公里的迁徙以奥斯曼人攻下君士坦丁堡收尾——「土耳其」这个国名里,至今装着「突厥」。','The 5,000-km migration ends with the Ottomans taking Constantinople — \'Turkey\' still carries the name \'Türk\'.'] },
+  { y:1453, l:'me', t:['奥斯曼收尾','The Ottoman finale'], d:['这场近五千公里的迁徙以奥斯曼人攻下君士坦丁堡收尾——「土耳其」这个国名里,至今装着「突厥」。','A migration of nearly 5,000 km ends with the Ottomans taking Constantinople — \'Turkey\' still carries the name \'Türk\'.'] },
 ] },
 { g:'people', n:['大西洋奴隶贸易','The Atlantic Slave Trade'], stops:[
   { y:1520, l:'af', t:['被掳走的人','The taken'], d:['欧洲船开始从西非海岸成批运走被掳的人;此后三百多年,上千万非洲人被迫横渡大西洋。','European ships begin carrying off captives from the West African coast; over three centuries more than ten million Africans are forced across the Atlantic.'] },
