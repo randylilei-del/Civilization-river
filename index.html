@@ -381,7 +381,7 @@ svg.no-ev .evg { display: none; }
 #panel.open { transform: none; }
 /* 卡片里的曲线/区间条/地图都按 330 的内部坐标系画,靠 viewBox 缩放到面板实际宽度。
    这样面板一放大,图和字一起变大,不用改任何绘制代码里的尺寸计算。 */
-#panel .p-spark svg, #panel .p-gl svg, #panel .p-map svg { width: 100%; height: auto; display: block; }
+#panel .p-gl svg, #panel .p-map svg { width: 100%; height: auto; display: block; }
 #panel .sp-hit { cursor: pointer; }
 #panel .sp-hit:hover + .sp-dot, #panel .sp-dot { transition: r .12s ease; }
 #panel .sp-hit:hover, #panel .sp-hit:focus-visible { outline: none; }
@@ -523,7 +523,6 @@ a.bk:hover { border-color: var(--ink-2); }
 #pcard .pc-foot { display: flex; align-items: center; gap: 14px; margin-top: 13px; padding-top: 10px; border-top: 1px solid var(--border); font-size: 12px; }
 #pcard .pc-civ { cursor: pointer; color: var(--ink-2); text-decoration: underline dotted; }
 #pcard .pc-civ:hover { color: var(--ink); }
-#panel .p-spark { margin: 4px 0 10px; }
 #panel .p-map { margin: 2px 0 12px; }
 /* v155:.cap 补通用规则——此前只有 .p-map/.p-gl 两个作用域有样式,落在速览区(pk-cap)、
    并存政权、共同体卡里的口径说明全按正文字号渲染,被读成正文(Ray 在西汉卡上发现)。 */
@@ -532,7 +531,7 @@ a.bk:hover { border-color: var(--ink-2); }
 #panel .p-map .cap { color: var(--muted); font-size: 11px; margin-top: 3px; }
 #panel .cap span.peer-go { cursor: pointer; text-decoration: underline dotted; color: var(--ink-2); }
 #panel .cap span.peer-go:hover { color: var(--ink); }
-#panel .p-gl { margin: -4px 0 10px; }
+#panel .p-gl { margin: 8px 0 10px; }   /* v156:曲线+鼎盛条合并后的单一图块 */
 #panel .p-gl .cap { color: var(--muted); font-size: 11px; margin-top: 1px; }
 #panel .p-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; margin: 0 0 12px; }
 #panel .fact .today { display: block; margin-top: 2px; font-style: normal; font-size: 10.5px; line-height: 1.35; color: var(--muted); }
@@ -7799,7 +7798,7 @@ const PEOPLE = {
    这里只追加,不改动上面 GL 与 CIVS.gl 里的既有条目;合并后按起始年重排,
    保证区间条从上到下按时间先后出现。
    有的文明把 gl 写在 CIVS 条目里(c.gl),有的写在 GL 表里,两种都要合并到位——
-   只往 GL 里塞会让 glHTML 的 "GL[c.n] || c.gl" 短路,把内联的那批整个吞掉。 */
+   只往 GL 里塞会让 chartHTML(原 glHTML,v156 起并入曲线) 的 "GL[c.n] || c.gl" 短路,把内联的那批整个吞掉。 */
 const GL_X = {
 '吐蕃':[{a:750,b:842,k:'thought',t:['译经与藏文定型','Translation and the Tibetan canon'],d:['桑耶寺设译场,定下梵藏对译规范;有些梵文原本后来失传,只能靠藏译回溯。','Translation workshops at Samye fixed the standards for rendering Sanskrit; where the originals were later lost, the Tibetan is the way back to them.']},
  {a:670,b:820,k:'econ',t:['河西与西域的过境税','Tolls on the corridor'],d:['控制河西走廊与塔里木诸城,商路的税与贡赋归它所有;与唐的绢马互市延续到王朝解体之后。','Holding the Hexi Corridor and the Tarim oases meant the transit trade paid it, and the silk-for-horses exchange with Tang outlasted the state itself.']}],
@@ -7906,7 +7905,7 @@ const GL_X = {
 };
 /*__DATA:gl_x:end__*/
 /* 合并:有的写在 GL 表、有的写在 CIVS 条目的 gl 字段,两处都要就地追加。
-   只往 GL 塞会让 glHTML 的 "GL[c.n] || c.gl" 短路,把内联的那批整个吞掉。 */
+   只往 GL 塞会让 chartHTML 的 "GL[c.n] || c.gl" 短路,把内联的那批整个吞掉。 */
 for (const [n, v] of Object.entries(GL_X)) {
   const c = CIVS.find(x => x.n === n);
   const arr = GL[n] || (c && c.gl);
@@ -8840,15 +8839,26 @@ const ACHV = {
 /*__DATA:achv:end__*/
 /* ---------- 详情面板 ---------- */
 const panel = document.getElementById('panel');
-function sparkSVG(c) {
+const GL_KIND = {
+  econ:    { c:'var(--c-mideast)', n:['经济','Economy'] },
+  art:     { c:'var(--c-meso)',    n:['艺术','Arts'] },
+  tech:    { c:'var(--c-indic)',   n:['科技','Sci-Tech'] },
+  thought: { c:'var(--c-africa)',  n:['思想','Thought'] },
+};
+/* v156:曲线与鼎盛条合成**一张 SVG**(Ray 指出两块脱节:年份标注把它们隔开、
+   条区行高被 viewBox 拉伸放大后占满版面却没多少信息)。合并后:曲线在上、
+   鼎盛条紧贴基线下方、年份标注垫底给整根时间轴——"同一时间轴"不再靠文字说明,
+   图本身就在说。行高 15→12、条高 9→7,四条的区块总高约省三分之一。 */
+function chartHTML(c) {
   const y0 = c.k[0][0], y1 = c.k[c.k.length-1][0];
+  const li = LANG === 'zh' ? 0 : 1;
   const maxP = Math.max(...c.k.map(p => p[1]), .01);
-  const W = 330, Hs = 56, N = 90;
+  const W = 330, Hs = 56, N = 90, base = Hs - 8;
   let pts = '';
   for (let i = 0; i <= N; i++) {
     const y = y0 + (y1 - y0) * i / N;
     const p = interp(c.k, y);
-    pts += `${(i / N * W).toFixed(1)},${(Hs - 8 - p / maxP * (Hs - 14)).toFixed(1)} `;
+    pts += `${(i / N * W).toFixed(1)},${(base - p / maxP * (Hs - 14)).toFixed(1)} `;
   }
   let dots = '';
   const ch = chronoOf(c);
@@ -8856,35 +8866,16 @@ function sparkSVG(c) {
     if (yy <= y0 || yy >= y1) continue;
     const xx = (yy - y0) / (y1 - y0) * W;
     const pv = interp(c.k, yy);
-    const cy = (Hs - 8 - pv / maxP * (Hs - 14)).toFixed(1);
+    const cy = (base - pv / maxP * (Hs - 14)).toFixed(1);
     /* 圆点原本是纯装饰,但它长得像按钮 —— Ray 在 iPad 上点了点不动。改成可点:
        点一下跳到下面对应的那条大事记。半径 2.3 手指绝对点不中,所以另叠一个
        半径 11 的透明圆当命中区(与「时光穿梭」竖线 ±22px 的做法同理)。 */
     dots += `<circle class="sp-dot" cx="${xx.toFixed(1)}" cy="${cy}" r="2.3" fill="var(--surface)" stroke="${fill(c)}" stroke-width="1.4"/>`
           + `<circle class="sp-hit" data-ev="${yy}" cx="${xx.toFixed(1)}" cy="${cy}" r="11" fill="transparent" role="button" tabindex="0"><title>${fmtY(yy)}</title></circle>`;
   }
-  return `<svg width="${W}" height="${Hs + 16}" viewBox="0 0 ${W} ${Hs + 16}" aria-label="影响力曲线">
-    <line x1="0" y1="${Hs - 8}" x2="${W}" y2="${Hs - 8}" stroke="var(--baseline)" stroke-width="1"/>
-    <polygon points="0,${Hs - 8} ${pts}${W},${Hs - 8}" fill="${fill(c)}" opacity=".8"/>
-    ${dots}
-    <text x="0" y="${Hs + 12}" font-size="10" fill="var(--muted)">${fmtY(y0)}</text>
-    <text x="${W}" y="${Hs + 12}" font-size="10" text-anchor="end" fill="var(--muted)">${fmtY(y1)}</text>
-  </svg>`;
-}
-const GL_KIND = {
-  econ:    { c:'var(--c-mideast)', n:['经济','Economy'] },
-  art:     { c:'var(--c-meso)',    n:['艺术','Arts'] },
-  tech:    { c:'var(--c-indic)',   n:['科技','Sci-Tech'] },
-  thought: { c:'var(--c-africa)',  n:['思想','Thought'] },
-};
-function glHTML(c) {
-  const gl = GL[c.n] || c.gl; if (!gl || !gl.length) return '';
-  const y0 = c.k[0][0], y1 = c.k[c.k.length-1][0];
-  const li = LANG === 'zh' ? 0 : 1;
-  const W = 330;
-  /* 先给每段定标签位置:右边放得下就放右,否则试左;两边都放不下的,单独占一行放到
-     色条上方。旧做法是压在色条上、靠描边晕圈硬读——占满宽的区间(约四成)都会这样,
-     在 iPad 上看就是"被紫条挡住了"。宁可多占一行,也不要叠着。 */
+  /* 鼎盛条:标签右边放得下就放右,否则试左;两边都放不下的,单独占一行放到色条上方
+     (压在色条上靠描边晕圈硬读,在 iPad 上就是"被紫条挡住了"——宁可多占一行)。 */
+  const gl = GL[c.n] || c.gl || [];
   const rows = gl.map(g2 => {
     const xa = Math.max(0, (g2.a - y0) / (y1 - y0) * W);
     const xb = Math.min(W, (g2.b - y0) / (y1 - y0) * W);
@@ -8895,30 +8886,35 @@ function glHTML(c) {
       if (xa - 5 - est >= 0) { place = 'left'; tx = xa - 5; }
       else { place = 'above'; tx = Math.max(2, Math.min(xa, W - est)); }
     }
-    return { g2, xa, xb, label, place, tx, h: place === 'above' ? 25 : 15 };
+    return { g2, xa, xb, label, place, tx, h: place === 'above' ? 22 : 12 };
   });
-  const Hg = rows.reduce((a, r) => a + r.h, 0) + 4;
-  let s = `<svg width="${W}" height="${Hg}" viewBox="0 0 ${W} ${Hg}" aria-label="${T('领域鼎盛区间','Golden-age spans')}">`;
-  let y = 2;
+  const glH = rows.reduce((a, r) => a + r.h, 0);
+  const H = base + 3 + glH + 15;             // 曲线区 + 条区 + 年份行
+  let s = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-label="${T('影响力曲线与领域鼎盛区间','Influence curve and golden-age spans')}">
+    <line x1="0" y1="${base}" x2="${W}" y2="${base}" stroke="var(--baseline)" stroke-width="1"/>
+    <polygon points="0,${base} ${pts}${W},${base}" fill="${fill(c)}" opacity=".8"/>
+    ${dots}`;
+  let y = base + 3;
   rows.forEach((r, i) => {
-    const by = r.place === 'above' ? y + 13 : y;
-    /* 整行包一个 <g>:命中区、色条、标签同属一组,悬停高亮与点击匹配都落在这一层,
-       不必用兄弟选择器(命中区排在色条之后,`~` 会选到下一行去)。
-       透明命中区盖满整行,与曲线圆点的 .sp-hit(r=11) 同一套做法——9px 的色条与
-       9.5px 的字手指都点不中,而 iPad 上没有悬停可以先探。 */
+    const by = r.place === 'above' ? y + 11 : y + 1;
+    /* 整行包一个 <g>:命中区、色条、标签同属一组,悬停高亮与点击匹配都落在这一层。
+       透明命中区盖满整行——7px 的色条与 9.5px 的字手指都点不中(与 .sp-hit 同理)。 */
     s += `<g class="gl-row" data-gl="${i}" role="button" tabindex="0" aria-label="${attr(r.label)}"><title>${r.label}</title>`
        + `<rect class="gl-hit" x="0" y="${y - 1}" width="${W}" height="${r.h}" fill="transparent"/>`
-       + `<rect class="gl-bar" x="${r.xa.toFixed(1)}" y="${by}" width="${Math.max(6, r.xb - r.xa).toFixed(1)}" height="9" rx="4.5" fill="${GL_KIND[r.g2.k].c}" opacity=".72"/>`
-       + `<text class="gl-lab" x="${r.tx.toFixed(1)}" y="${y + 8}"${r.place === 'left' ? ' text-anchor="end"' : ''} font-size="9.5" fill="var(--ink-2)" stroke="var(--surface)" stroke-width="2.5" paint-order="stroke">${r.label}</text>`
+       + `<rect class="gl-bar" x="${r.xa.toFixed(1)}" y="${by}" width="${Math.max(6, r.xb - r.xa).toFixed(1)}" height="7" rx="3.5" fill="${GL_KIND[r.g2.k].c}" opacity=".72"/>`
+       + `<text class="gl-lab" x="${r.tx.toFixed(1)}" y="${y + 7.5}"${r.place === 'left' ? ' text-anchor="end"' : ''} font-size="9.5" fill="var(--ink-2)" stroke="var(--surface)" stroke-width="2.5" paint-order="stroke">${r.label}</text>`
        + `</g>`;
     y += r.h;
   });
-  s += '</svg>';
+  s += `<text x="0" y="${H - 3}" font-size="10" fill="var(--muted)">${fmtY(y0)}</text>
+    <text x="${W}" y="${H - 3}" font-size="10" text-anchor="end" fill="var(--muted)">${fmtY(y1)}</text>
+  </svg>`;
   /* d 正文预先渲染在这里、默认折叠 —— 不走查表,切语言时整块重渲染自然跟着换。
      v11 建这个功能起 d 就从来没显示过(v71 用哨兵字符串确认),Ray 拍板改为点开。 */
   const ds = rows.map((r, i) =>
     `<p class="gl-d" data-gl="${i}" hidden><b>${r.label}</b>${r.g2.d[li]}</p>`).join('');
-  return `<div class="p-gl">${s}<div class="gl-ds">${ds}</div><div class="cap">${T('领域鼎盛区间(与曲线同一时间轴;点一段看详情)','Golden-age spans (same time axis as the curve; tap a span for detail)')}</div></div>`;
+  const cap = rows.length ? `<div class="cap">${T('彩条 = 该领域的鼎盛区间,点一段看详情', 'Colored spans = golden ages; tap one for detail')}</div>` : '';
+  return `<div class="p-gl">${s}<div class="gl-ds">${ds}</div>${cap}</div>`;
 }
 function peakYear(c) {
   let best = c.k[0];
@@ -9231,8 +9227,7 @@ function openCiv(c) {
       <button class="p-close" aria-label="${T('关闭','Close')}">×</button></div>
     <div class="p-meta">${civSpan(c)} · ${lName(c.l)} · ${sName(c.s)}${T('文明圈',' sphere')}</div>
     <div class="p-body">${cD(c)}</div>
-    <div class="p-spark">${sparkSVG(c)}</div>
-    ${glHTML(c)}
+    ${chartHTML(c)}
     ${mapHTML(c)}
     ${facts}
     ${coHTML(c)}

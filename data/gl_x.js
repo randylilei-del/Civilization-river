@@ -3,7 +3,7 @@
    这里只追加,不改动上面 GL 与 CIVS.gl 里的既有条目;合并后按起始年重排,
    保证区间条从上到下按时间先后出现。
    有的文明把 gl 写在 CIVS 条目里(c.gl),有的写在 GL 表里,两种都要合并到位——
-   只往 GL 里塞会让 glHTML 的 "GL[c.n] || c.gl" 短路,把内联的那批整个吞掉。 */
+   只往 GL 里塞会让 chartHTML(原 glHTML,v156 起并入曲线) 的 "GL[c.n] || c.gl" 短路,把内联的那批整个吞掉。 */
 const GL_X = {
 '吐蕃':[{a:750,b:842,k:'thought',t:['译经与藏文定型','Translation and the Tibetan canon'],d:['桑耶寺设译场,定下梵藏对译规范;有些梵文原本后来失传,只能靠藏译回溯。','Translation workshops at Samye fixed the standards for rendering Sanskrit; where the originals were later lost, the Tibetan is the way back to them.']},
  {a:670,b:820,k:'econ',t:['河西与西域的过境税','Tolls on the corridor'],d:['控制河西走廊与塔里木诸城,商路的税与贡赋归它所有;与唐的绢马互市延续到王朝解体之后。','Holding the Hexi Corridor and the Tarim oases meant the transit trade paid it, and the silk-for-horses exchange with Tang outlasted the state itself.']}],

@@ -7,7 +7,7 @@
  *
  * Phase 3 起数据经 tools/load.js 加载,行号直接在对应的 data/<表>.js 里搜——
  * 旧版为防跨表误报做的「declAt 开窗限定」整个不需要了:一表一文件,天然隔离。
- * 注意 load 会镜像 GL_X 合并,所以「GL」一栏是合并后的口径(与站内 glHTML 一致);
+ * 注意 load 会镜像 GL_X 合并,所以「GL」一栏是合并后的口径(与站内 chartHTML 一致);
  * 只存在于 GL_X 的键在 data/gl.js 里搜不到行号,会显示 ?,看 GL_X 那一栏即可。
  *
  * 用法: node tools/refs.js 亚述·巴比伦
@@ -72,6 +72,6 @@ console.log('  ' + '─'.repeat(64));
 for (const [label, line, note] of hits) {
   console.log('  ' + label.padEnd(12) + String(line).padEnd(20) + note);
 }
-console.log('\n提醒:GL / GL_X / CIVS.gl 是三个独立来源,glHTML 用 "GL[c.n] || c.gl" 取值,');
+console.log('\n提醒:GL / GL_X / CIVS.gl 是三个独立来源,chartHTML 用 "GL[c.n] || c.gl" 取值,');
 console.log('     GL_X 再追加上去。只改其中一处会留下孤儿键或让另一处被静默吞掉。');
 console.log('     改完数据文件记得跑 node tools/build.js。\n');
