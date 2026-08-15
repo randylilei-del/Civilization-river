@@ -11,6 +11,8 @@ let D;
 try { D = require('./load')(); } catch (e) {
   console.error('数据加载失败:', e.message); process.exit(1);
 }
+const fs = require('fs');
+const path = require('path');
 const { LANES, SPHERES, ERAS, EV_NAME, CIVS, EVENTS, GEO, CHRONO, GL, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME, PEAK, ACHV, AGLYPH, GEO_CITY, PLACE_LORE, UNIONS, SEARCH_ALIAS, CITY_VIDEO } = D;
 
 const P = [];
@@ -1093,6 +1095,29 @@ CIVS.forEach(c => {
     });
   });
 })();
+
+/* 规则 57(v193):文明圈的 -a / -b 色阶必须齐全,且每个主题块里都要有。
+ * v189 加第 9 圈时只定义了 --c-oceania,没定义 --c-oceania-a / -b,而 v=1 / v=2 的色带
+ * 直接引用这两个变量——**CSS 变量不存在时整个 fill 属性失效,SVG 回退成纯黑**,
+ * 五条大洋洲色带在页面上是黑的,而 audit 与「148 卡 × 中英」全量扫描都查不出来
+ * (它们查文字内容,不查填充色)。index.html 里同一套调色板出现在多个主题块中,
+ * 漏掉任何一块就是那个主题下的黑带,所以这里按出现次数比对而不只查存在性。 */
+{
+  const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
+  const cnt = v => (html.match(new RegExp('--c-' + v + ':', 'g')) || []).length;
+  const cntSuffix = (v, sfx) => (html.match(new RegExp('--c-' + v + '-' + sfx + ':', 'g')) || []).length;
+  const vars = Object.values(SPHERES).map(sp => sp.v.replace(/^--c-/, ''));
+  /* 基色与色阶在文件里的出现次数本就不同(基色 3 处、色阶 6 处),所以不拿两者相比,
+     只要求「所有圈的色阶出现次数彼此一致」——某一圈少一处,就是它在某个主题块下缺定义。 */
+  const as = vars.map(v => cntSuffix(v, 'a')), bs = vars.map(v => cntSuffix(v, 'b'));
+  const expect = Math.max(...as, ...bs);
+  vars.forEach((v, i) => {
+    if (!cnt(v)) P.push(`[文明圈缺基色] --c-${v} 未定义`);
+    if (!as[i] || !bs[i]) P.push(`[文明圈缺色阶] --c-${v}-a/-b 未定义 —— v=1/v=2 的色带会因 CSS 变量不存在而渲染成纯黑`);
+    else if (as[i] !== expect || bs[i] !== expect)
+      P.push(`[文明圈色阶主题块不齐] --c-${v}: -a ${as[i]} 处、-b ${bs[i]} 处,其余圈是 ${expect} 处 —— 缺的那个主题块下会出现黑带`);
+  });
+}
 
 /* 规则 55(v191,核查员指出的盲区):英文块里残留中文。`index.html:8663` 的 cF 在英文模式下
  * 直接渲染 c.e.f,不过 PLACE 翻译——所以 e 块里任何一个中日韩字符都会原样出现在英文卡上。

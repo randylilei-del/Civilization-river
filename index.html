@@ -32,9 +32,13 @@
   --c-steppe: #008300;
   --c-africa: #4a3aa7;
   --c-sea: #e34948;
-  /* v189 第 9 圈大洋洲原生:深土棕。色盲校验实测最小 ΔE 23.1(浅色/红绿色盲,最接近
-     东南亚红),而现有 8 色彼此的最小 ΔE 只有 2.0(深色/绿色盲,印度青-美洲品红)。 */
-  --c-oceania: #5c3a1e;
+  /* v193 第 9 圈大洋洲原生。**v189 初版 #5c3a1e 被 Ray 指出「太深了」,量下来确实是**:
+     它的 L*(明度)只有 27.8,而其余 8 色的 L* 区间是 32.4~71.9、中位 59.7——它比最暗的
+     非洲紫还暗,满色渲染的色带因此像块板砖,不是配色难看,是明度整个掉在区间外。
+     提亮到 L*=47.5(与草原绿 47.3 齐平),代价是色盲最小 ΔE 从 23.1 降到 13.1——
+     仍是现有 8 色彼此地板(2.0)的六倍多。挑选经全色相 × 全饱和 × 全明度扫描,
+     棕系在这个明度带最优;更高的解全在紫色系,但非洲已占紫,图例上两个紫更难分。 */
+  --c-oceania: #936658;
   /* 每圈的浅档(-a)与深档(-b)。原先用 color-mix() 现算,但 Safari 要 16.2 才支持它 ——
      不支持时整个 fill 属性失效、SVG 回退成纯黑,全站 71 条色带(v=1/v=2)在旧 iPad 上
      全是黑的。这是 Ray 在 iPad 上实际撞到的问题,所以改成写死十六进制,零特性依赖。 */
@@ -46,6 +50,7 @@
   --c-steppe-a: #64a95f;  --c-steppe-b: #156812;
   --c-africa-a: #7976c4;  --c-africa-b: #3c3283;
   --c-sea-a: #f2867e;     --c-sea-b: #b03e3c;
+  --c-oceania-a: #b39287; --c-oceania-b: #735146;
   /* 地理底图三层:比文明色低一个视觉层级,任何情况下都不该抢过版图 */
   /* 每圈的浅档(-a)与深档(-b),预先算好的十六进制 —— 不用 color-mix() 现算:
      Safari 要 16.2 才支持它,不支持时 fill 属性整个失效、SVG 回退成纯黑,
@@ -58,6 +63,7 @@
   --c-steppe-a: #64a95f;  --c-steppe-b: #156812;
   --c-africa-a: #7976c4;  --c-africa-b: #3c3283;
   --c-sea-a: #f2867e;     --c-sea-b: #b03e3c;
+  --c-oceania-a: #b39287; --c-oceania-b: #735146;
   --geo-land: #e6e6e5;
   --geo-border: #b9b9b4;
   --surface-82: rgba(252,252,251,.82);
@@ -86,7 +92,9 @@
     --c-steppe: #008300;
     --c-africa: #9085e9;
     --c-sea: #e66767;
-    --c-oceania: #d0c3a4;   /* 深色模式改沙色:深棕在深底上看不见;实测最小 ΔE 13.9 */
+    --c-oceania: #b5926b;   /* v193:深色模式原为沙色 #d0c3a4,L*=79.1 比该模式最亮的还亮 15.5,
+       在深底上是块惨白板子——与浅色模式恰好相反的毛病。同色系压到 L*=62.9(区间 47.3~63.6),
+       ΔE 5.4;为保持同一个圈在深浅两套里是同一种颜色,没有采用 ΔE 更高但偏赭黄的 #ba914a。 */
     --c-west-a: #78acef;    --c-west-b: #326bb1;
     --c-sino-a: #ea8e6e;    --c-sino-b: #a84925;
     --c-indic-a: #76c8a1;   --c-indic-b: #248861;
@@ -95,6 +103,7 @@
     --c-steppe-a: #64a95f;  --c-steppe-b: #156812;
     --c-africa-a: #afaaf2;  --c-africa-b: #7169b4;
     --c-sea-a: #f29793;     --c-sea-b: #b25353;
+    --c-oceania-a: #cbb296; --c-oceania-b: #8d7357;
     --c-west-a: #78acef;    --c-west-b: #326bb1;
     --c-sino-a: #ea8e6e;    --c-sino-b: #a84925;
     --c-indic-a: #76c8a1;   --c-indic-b: #248861;
@@ -103,6 +112,7 @@
     --c-steppe-a: #64a95f;  --c-steppe-b: #156812;
     --c-africa-a: #afaaf2;  --c-africa-b: #7169b4;
     --c-sea-a: #f29793;     --c-sea-b: #b25353;
+    --c-oceania-a: #cbb296; --c-oceania-b: #8d7357;
     --geo-land: #292928;
     --geo-border: #4a4a47;
     --surface-82: rgba(26,26,25,.82);
@@ -131,7 +141,7 @@
   --c-steppe: #008300;
   --c-africa: #9085e9;
   --c-sea: #e66767;
-  --c-oceania: #d0c3a4;
+  --c-oceania: #b5926b;
   --c-west-a: #78acef;  --c-west-b: #326bb1;
   --c-sino-a: #ea8e6e;  --c-sino-b: #a84925;
   --c-indic-a: #76c8a1;   --c-indic-b: #248861;
@@ -140,6 +150,7 @@
   --c-steppe-a: #64a95f;  --c-steppe-b: #156812;
   --c-africa-a: #afaaf2;  --c-africa-b: #7169b4;
   --c-sea-a: #f29793;   --c-sea-b: #b25353;
+  --c-oceania-a: #cbb296; --c-oceania-b: #8d7357;
   --c-west-a: #78acef;    --c-west-b: #326bb1;
   --c-sino-a: #ea8e6e;    --c-sino-b: #a84925;
   --c-indic-a: #76c8a1;   --c-indic-b: #248861;
@@ -148,6 +159,7 @@
   --c-steppe-a: #64a95f;  --c-steppe-b: #156812;
   --c-africa-a: #afaaf2;  --c-africa-b: #7169b4;
   --c-sea-a: #f29793;     --c-sea-b: #b25353;
+  --c-oceania-a: #cbb296; --c-oceania-b: #8d7357;
   --geo-land: #292928;
   --geo-border: #4a4a47;
   --surface-82: rgba(26,26,25,.82);
