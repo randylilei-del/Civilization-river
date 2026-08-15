@@ -538,4 +538,13 @@ const CITY_SITES = {
  { n:['皇家展览馆','the Royal Exhibition Building'], y:1880, e:['维多利亚殖民地','Colony of Victoria'] },
  { n:['弗林德斯街车站','Flinders Street Station'], y:1910, e:['澳大利亚联邦','Australia'] },
 ],
+'奥斯陆': [
+ { n:['阿克斯胡斯城堡','Akershus Fortress'], y:1300, e:['中世纪挪威','medieval Norway'], ca:1 },
+ { n:['奥斯陆歌剧院','the Oslo Opera House'], y:2008, e:['挪威','Norway'] },
+],
+'哥本哈根': [
+ { n:['罗森堡宫','Rosenborg Castle'], y:1624, e:['丹麦-挪威','Denmark-Norway'] },
+ { n:['圆塔','the Round Tower'], y:1642, e:['丹麦-挪威','Denmark-Norway'] },
+ { n:['小美人鱼像','the Little Mermaid'], y:1913, e:['丹麦','Denmark'] },
+],
 };

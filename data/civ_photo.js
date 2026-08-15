@@ -569,4 +569,9 @@ const CIV_PHOTO = {
  { f:'Casa_Milà,_general_view.jpg', h:'d/de', t:['米拉之家','Casa Milà'], by:'Thomas Ledl', lic:'CC BY-SA 4.0' },
  { f:'Royal_Castle_in_Warsaw,_Poland,_2022,_03.jpg', h:'b/bb', t:['华沙王宫','the Royal Castle'], by:'Chris Olszewski', lic:'CC BY-SA 4.0' },
 ],
+'维京·北欧': [
+ { f:'Osebergskipet_2016.jpg', h:'0/0b', t:['奥塞贝格船','the Oseberg ship'], by:'Petter Ulleland', lic:'CC BY-SA 4.0' },
+ { f:'Gokstadskipet1.jpg', h:'5/53', t:['戈克斯塔德船','the Gokstad ship'], by:'Karamell', lic:'CC BY-SA 2.5' },
+ { f:'Runesten_i_Jelling.jpg', h:'8/81', t:['耶灵石碑','the Jelling stones'], by:'Alicudi', lic:'CC BY-SA 3.0' },
+],
 };

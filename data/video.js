@@ -100,4 +100,5 @@ const VIDEO = {
   '莫卧儿帝国': [ { b:'BV1th4y1T7q2', t:['一口气看完《莫卧儿帝国》','The Mughal Empire in one sitting'] } ],
   '奥斯曼帝国': [ { b:'BV1Qt411d7SR', t:['土耳其见闻:奥斯曼帝国的崛起与没落(上)','The Ottomans: rise and fall, part 1'] } ],
   '古希腊': [ { b:'BV1As411m7U2', t:['奥林匹斯星传(古希腊神话动画)','Olympus Guardian (Greek myth animation)'] } ],
+  '维京·北欧': [ { b:'BV1FE4m1d7hM', t:['狼群与长船:维京人的战争文化','Wolves and longships: how the Vikings fought'] } ],   // v212,Ray 单里的那条
 };

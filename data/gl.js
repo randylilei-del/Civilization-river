@@ -28,6 +28,9 @@ const GL = {
 '莫卧儿帝国': [
  { a:1560, b:1660, k:'art', t:['泰姬陵与细密画','Taj & miniatures'], d:['印度-波斯美学的合流。','Indo-Persian aesthetics converge.'] },
  { a:1580, b:1700, k:'econ', t:['棉纺织出口','Cotton exports'], d:['印度棉布行销全球。','Indian cottons clothe the world.'] } ],
+'维京·北欧': [
+ { a:800, b:1000, k:'tech', t:['长船','The longship'], d:['叠板造船,吃水不到一米,横渡北海也能划进内河;奥塞贝格船与戈克斯塔德船至今完整。','Clinker-built, drawing under a metre, able to cross the North Sea and row up rivers; the Oseberg and Gokstad ships survive whole.'] },
+ { a:800, b:1000, k:'econ', t:['从波罗的海到巴格达的贸易网','A trade network from the Baltic to Baghdad'], d:['毛皮、蜜蜡与奴隶顺俄罗斯河流南下,阿拉伯银币成万枚地流回瑞典。','Furs, wax and slaves went south down the Russian rivers, and Arab silver flowed back to Sweden by the tens of thousands.'] } ],
 '文艺复兴意大利': [
  { a:1400, b:1500, k:'econ', t:['银行与商业','Banking & commerce'], d:['美第奇银行与复式记账。','The Medici bank and double-entry books.'] },
  { a:1480, b:1530, k:'art', t:['盛期文艺复兴','High Renaissance'], d:['达芬奇、米开朗基罗、拉斐尔同城竞技。','Leonardo, Michelangelo and Raphael in rivalry.'] } ],

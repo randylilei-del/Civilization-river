@@ -481,4 +481,12 @@ const CITY_PHOTO = {
 '奥克兰': [
  { f:'One_Tree_Hill,_Auckland,_March_2015.jpg', h:'8/88', t:['一树山毛利要塞遗迹','the Maungakiekie pa terraces'], by:'Techno246', lic:'CC BY-SA 3.0' },
 ],
+'奥斯陆': [
+ { f:'14-09-02-oslo-RalfR-370.jpg', h:'9/99', t:['阿克斯胡斯城堡','Akershus Fortress'], by:'Ralf Roletschek', lic:'GFDL 1.2' },
+ { f:'Oslo_Opera_House_-_2025.jpg', h:'3/39', t:['奥斯陆歌剧院','the Oslo Opera House'], by:'Pierre Blaché', lic:'CC0' },
+],
+'哥本哈根': [
+ { f:'Rosenborg_cph.jpg', h:'3/37', t:['罗森堡宫','Rosenborg Castle'], by:'Elgaard', lic:'CC BY-SA 3.0', s:1 },
+ { f:'Copenhagen_-_Rundetårn_-_2013.jpg', h:'f/f6', t:['圆塔','the Round Tower'], by:'Avda', lic:'CC BY-SA 3.0' },
+],
 };

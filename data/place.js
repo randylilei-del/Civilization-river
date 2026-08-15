@@ -109,4 +109,7 @@ const PLACE = {
 '堪培拉':['澳大利亚','Australia','堪培拉','Canberra'],
 '惠灵顿':['新西兰','New Zealand','惠灵顿','Wellington'],
 '夏威夷群岛':['美国','United States','火奴鲁鲁','Honolulu'],
+/* v212 维京·北欧 */
+'丹麦':['丹麦','Denmark','哥本哈根','Copenhagen'], '挪威':['挪威','Norway','奥斯陆','Oslo'], '瑞典':['瑞典','Sweden','斯德哥尔摩','Stockholm'],
+'都柏林':['爱尔兰','Ireland','都柏林','Dublin'], '约克':['英国','United Kingdom','约克','York'], '诺曼底':['法国','France'], '冰岛':['冰岛','Iceland','雷克雅未克','Reykjavik'],
 };
