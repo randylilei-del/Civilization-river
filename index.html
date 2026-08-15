@@ -508,6 +508,10 @@ a.bk:hover { border-color: var(--ink-2); }
 #geoview .gv-zoom button.on { background: var(--ink); color: var(--surface); border-color: var(--ink); }
 #geoview .gv-x { font: inherit; font-size: 20px; line-height: 1; padding: 2px 9px; border: none;
   background: none; color: var(--ink-2); cursor: pointer; flex: none; }
+/* v176 随机城市:与主按钮同族的实心胶囊,在地图里要一眼被看到 */
+#geoview .gv-rand { font: inherit; font-size: 12.5px; font-weight: 600; padding: 6px 14px;
+  border: 0; border-radius: 999px; background: var(--ink); color: var(--surface); cursor: pointer; flex: none; }
+#geoview .gv-rand:hover { opacity: .85; }
 /* 地图区:世界档整图缩放到容器宽,放大档在容器里拖动(touch-action 别忘了 pan-x,v80 的坑) */
 /* touch-action:none = 浏览器手势整个接管过来自己管(单指拖/双指捏合/双击都是手写的);
    v80 的教训是 pan-y 吃掉横向拖,这里干脆一半也不留给浏览器 */
@@ -751,6 +755,8 @@ td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; ma
     <!-- v172:地理视角是全屏覆盖层,顶部切换器被盖住——这里放一份同步的,随时能切回时间视角 -->
     <div class="viewsw viewsw-sm"><button data-v="time">按时间看</button><button data-v="geo" class="on">按地方看</button></div>
     <b id="gvTitle">点地图上任意一处，看这里从古到今住过哪些文明</b>
+    <!-- v176(Ray):随机跳一座城,探索它的前世今生——地图版的「今日文明」 -->
+    <button class="gv-rand" id="gvRand">随便去个地方</button>
     <span class="gv-zoom"><button data-z="1" class="on">世界</button><button data-z="2.2">放大</button><button data-z="4">更大</button></span>
     <button class="gv-x" id="gvClose" aria-label="关闭">×</button>
   </div>
@@ -10039,9 +10045,16 @@ function gvQuery(lon, lat, ci) {
 }
 function gvHeadTexts() {
   document.getElementById('gvTitle').textContent = T('点地图上任意一处，看这里从古到今住过哪些文明', 'Tap anywhere on the map to see who has lived there through history');
+  document.getElementById('gvRand').textContent = T('随便去个地方', 'Surprise me');
   const zb = gv.querySelectorAll('.gv-zoom button');
   zb[0].textContent = T('世界', 'World'); zb[1].textContent = T('放大', 'Zoom'); zb[2].textContent = T('更大', 'More');
 }
+/* v176:随机城市——避开与上一次相同;沿用 gvQuery,城市点/列表/高亮全套现成 */
+document.getElementById('gvRand').addEventListener('click', () => {
+  let i = Math.floor(Math.random() * GEO_CITY.length);
+  if (GV.last && GV.last.ci === i) i = (i + 1) % GEO_CITY.length;
+  gvQuery(GEO_CITY[i][2], GEO_CITY[i][3], i);
+});
 /* v171:开/关地理视角统一走这两个函数,视角切换器的高亮跟着状态走
    (v172 起切换器有两份:页头一份 + 地理视角顶栏一份,全部按 data-v 同步) */
 function setViewTabs() {
