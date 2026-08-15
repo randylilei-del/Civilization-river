@@ -36,7 +36,7 @@ docs/CHANGELOG.md     # 版本史
      `for (const lang of ['zh','en']) { document.querySelector('[data-l='+lang+']').click(); for (const c of CIVS) openCiv(c) }`
      每次检查 `panel.innerHTML` 是否出现 undefined/NaN/[object
 5. commit + push → Vercel 自动部署
-6. 同步:Ray 的 Plans 库 `learning/world-history-viz.md` 记录方案级变更
+6. 记录:每版写进 `docs/CHANGELOG.md`(判断依据也写在那里),设计决策进 `docs/DESIGN.md`。(2026-08-15 起不再指向 Plans 库——`06 Plans/learning/world-history-viz.md` 从未建立,原指针失效)
 
 ## 铁律
 
