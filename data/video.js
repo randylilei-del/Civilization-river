@@ -14,23 +14,43 @@
    加法:确认视频确实在讲这个文明、时长与画质过得去之后,照下面的样子加一行。
    B 站 BV 号在视频链接里 bilibili.com/video/BV1xx411c7mu 的 BV 开头那段。 */
 const VIDEO = {
+  /* ---- 2026-08-15 Ray 批量提供的中华文明批(v173):每条经 B 站公开接口核实
+     标题/UP 主/状态当场对得上才入(播放量均百万级)。Ray 单里另有两条未入:
+     三国的「万古史官」(推书频道网文解说)与南宋的「满江红」(影评向),等 Ray 拍板。 ---- */
+  '二里头·夏': [ { b:'BV1aB4y1m76o', t:['二里头是夏朝的都城吗','Erlitou: capital of the Xia?'] } ],
+  '西周': [ { b:'BV1NTktYwETs', t:['商周之变:礼乐从哪来','The Shang-Zhou transition'] } ],
+  '春秋': [ { b:'BV18z421a72k', t:['一口气看懂春秋史','The Spring and Autumn era in one go'] } ],
+  '战国': [ { b:'BV1DnCLBKEVU', t:['九小时看完战国时代','The Warring States, in nine hours'] } ],
+  '秦': [ { b:'BV1gx4y1P7M9', t:['秦并天下:始皇的权力暗战','How Qin swallowed the world'] } ],
+  '三国': [ { b:'BV1nQ4y1H7Eb', t:['三国归晋','Three Kingdoms become Jin'] } ],
+  '五代十国': [ { b:'BV1oa411F77o', t:['十小时还原五代十国','The Five Dynasties, in ten hours'] } ],
   // 一分钟讲史。短链 b23.tv/pGp8G31 解析得,标题与 UP 主当场核实
-  '西汉': [ { b:'BV1SV411K7eW', t:['一口气看完西汉 210 年','Western Han in one sitting'] } ],
+  '西汉': [
+    { b:'BV1SV411K7eW', t:['一口气看完西汉 210 年','Western Han in one sitting'] },
+    { b:'BV1Hs4y1Q7M4', t:['鸿门宴:项羽为何不杀刘邦','The Hongmen banquet'] },
+    { b:'BV14myuB7EPv', t:['王莽:汉祚何绝','Wang Mang\'s strange empire'] },
+  ],
   // 以下均为 UP 主「安州牧」(UID 7481602,255 万粉、2023 百大),标题逐条核实。
   // 唐的跨度 618—907 太长,他没有单个视频通讲,故按三个阶段各给一个入口。
   '唐': [
     { b:'BV1na4y1V7so', t:['大唐创业:晋阳起兵到玄武门','The founding of Tang'] },
     { b:'BV1cE9mYyEgG', t:['从初唐走向盛唐:八年四场政变','Four coups in eight years'] },
+    { b:'BV1Rs57zFEfW', t:['还原一个不一样的武则天','Wu Zetian, reconsidered'] },
     { b:'BV1QP4iz6EDA', t:['安史之乱:盛世掘墓人','An Lushan: the gravedigger'] },
+    { b:'BV1Hj41187V4', t:['安史之乱名将篇:郭子仪','Guo Ziyi, pillar of the Tang'] },
   ],
   // 御史房(非安州牧,出现在相关推荐里),228 分钟完整合集,已核实
-  '东汉': [ { b:'BV1cK4y1W77n', t:['汉末风云:大汉亡了','How the Han fell'] } ],
+  '东汉': [
+    { b:'BV1cK4y1W77n', t:['汉末风云:大汉亡了','How the Han fell'] },
+    { b:'BV1Z24y1K7nX', t:['一个视频看懂汉朝四百年','Four Han centuries in one video'] },
+  ],
   '隋': [ { b:'BV1cB4y1E7vU', t:['一口气看懂隋朝的兴盛与衰亡','The rise and fall of Sui'] } ],
   /* 思维实验室的"宋"三部曲讲的是整个两宋(制度、经济、军事、民变),不按北宋/南宋
      分界,故两条色带各挂全套:上=为何富裕却挨打,中=北宋之亡,下=为何民变不成革命。 */
   '北宋': [
     { b:'BV1kt4y1J7LH', t:['宋有多富裕,又为何这么惨(上)','How rich, and how badly it fared (1)'] },
     { b:'BV1HG41157Ba', t:['北宋是怎么亡的(中)','How the Northern Song fell (2)'] },
+    { b:'BV1m6x1eYEks', t:['苏轼的璀璨一生','The life of Su Shi'] },
   ],
   '南宋': [
     { b:'BV1wd4y167AF', t:['为何民变不成革命(下)','Why the revolts never became revolution (3)'] },
@@ -38,11 +58,21 @@ const VIDEO = {
   ],
   // 带你看历史。元朝取"98年"那版(1271-1368,与色带一致);"162年从成吉思汗起"
   // 那版跨到蒙古帝国,故挂到蒙古帝国那条色带上
-  '元': [ { b:'BV1FBTEzRESa', t:['16 分钟看完元朝 98 年','The Yuan in 16 minutes'] } ],
+  '元': [
+    { b:'BV1FBTEzRESa', t:['16 分钟看完元朝 98 年','The Yuan in 16 minutes'] },
+    { b:'BV18RxyeNEZ8', t:['十小时看完元末乱世','The Yuan collapse, in ten hours'] },
+  ],
   // 徐大寿,Ray 提供
-  '明': [ { b:'BV1pz421o7Ye', t:['大明十六帝','The sixteen Ming emperors'] } ],
+  '明': [
+    { b:'BV1pz421o7Ye', t:['大明十六帝','The sixteen Ming emperors'] },
+    { b:'BV1qLkZYTEUD', t:['朱元璋:千古逆袭第一人','Zhu Yuanzhang, the great underdog'] },
+  ],
   // 带你看历史,Ray 提供(替换掉此前我自己从相关推荐里找的那条)
-  '清': [ { b:'BV1pa4y137H7', t:['一口气看完清朝 276 年','The Qing in one sitting'] } ],
+  '清': [
+    { b:'BV1pa4y137H7', t:['一口气看完清朝 276 年','The Qing in one sitting'] },
+    { b:'BV13u41117r8', t:['九子夺嫡:雍正怎么赢的','How Yongzheng won the throne'] },
+    { b:'BV1yV411G7Lx', t:['兆惠平回:乾隆收复新疆','Qianlong retakes Xinjiang'] },
+  ],
   /* 以下三条按 Ray 要求补英文片源,均经 YouTube oEmbed 核实频道与标题。
      蒙古帝国同时给了 B 站版(带你看历史,162年从成吉思汗讲起),中文界面用 B 站、
      英文界面用 YouTube——渲染逻辑会按语言自动挑。 */
