@@ -10962,9 +10962,14 @@ function cityMapHTML(ci) {
     }
     if (best) cand.push({ d: lineKm(r.p), n: r.n[li], px: sx(best[0]), py: sy(best[1]) - 3, cls: 'gm-r' });
   }
+  /* 除了「最多五个」,还要有一个**距离上限**:取景框 22° 宽,在低纬度约 2300km,
+     远处的东西会挤进来——奇琴伊察一度标出「古巴中西部山地」和「佛罗里达大沼泽」,
+     隔着海几百公里,那不是「这一带」。600km 是实测挑的:平均标注从 5.4 降到 3.8,
+     而**没有任何一座城因此变空**(再紧到 400km 就有城掉光了)。 */
+  const NEAR_CAP = 600;
   cand.sort((a, b) => a.d - b.d);
   let labels = '', nLab = 0;
-  for (const c2 of cand.slice(0, 5)) { const t = put(c2.n, c2.px, c2.py, c2.cls); if (t) { labels += t; nLab++; } }
+  for (const c2 of cand.filter(x => x.d <= NEAR_CAP).slice(0, 5)) { const t = put(c2.n, c2.px, c2.py, c2.cls); if (t) { labels += t; nLab++; } }
   GV.nLab = nLab;
   s += labels;
   /* 城市点最后画,压在所有标签之上——它是这张图的主语 */
