@@ -788,9 +788,14 @@ a.bk:hover { border-color: var(--ink-2); }
 #tableview th { position: sticky; top: 0; background: var(--page); z-index: 1; }
 #tableview tbody tr { cursor: pointer; }
 #tableview tbody tr:hover { background: var(--wash); }
-#tableview td.tv-b { font-size: 12px; color: var(--ink-2); max-width: 360px; }
-#tableview td.tv-f { font-size: 12px; max-width: 220px; }
+/* v207.1(Ray:字号不一致):全表统一 13px,只用颜色区分主次,不用字号 */
+#tableview td, #tableview th { font-size: 13px; }
+#tableview td.tv-b { color: var(--ink-2); max-width: 360px; }
+#tableview td.tv-f { max-width: 220px; }
 #tableview td.tv-n { white-space: nowrap; font-weight: 600; }
+/* v207.1(Ray:「中心」列的城市要能跳到地图视角的那座城):虚线下划线 = 站内跳转,与文明卡里的 .gv-go 同一语法 */
+#tableview a.tv-city { color: var(--ink); text-decoration: underline dotted; text-underline-offset: 3px; cursor: pointer; }
+#tableview a.tv-city:hover { color: var(--civ-t, var(--ink)); }
 @media (max-width: 640px) { #tableview .gv-head b { display: none; } }
 table { border-collapse: collapse; min-width: 640px; }
 th, td { text-align: left; padding: 5px 12px; border-bottom: 1px solid var(--grid); }
@@ -13010,16 +13015,42 @@ function renderTable() {
     CIVS.map((c, i) => { const o = f(c); return `<tr data-ci="${i}"><td>${lName(c.l)}</td>
       <td class="tv-n"><span class="dot" style="background:${fill(c)}"></span>${cN(c)}</td>
       <td>${civSpan(c)}</td>
-      <td>${sName(c.s)}</td><td class="tv-f">${g(o, K[0])}</td><td class="tv-f">${g(o, K[1])}</td><td class="tv-f">${g(o, K[2])}</td><td class="tv-f">${g(o, K[3])}</td><td class="tv-b">${cB(c)}</td></tr>`; }).join('') + '</tbody>';
+      <td>${sName(c.s)}</td><td class="tv-f">${g(o, K[0])}</td><td class="tv-f">${centreLinks(g(o, K[1]))}</td><td class="tv-f">${g(o, K[2])}</td><td class="tv-f">${g(o, K[3])}</td><td class="tv-b">${cB(c)}</td></tr>`; }).join('') + '</tbody>';
   tvApplyFilter();
 }
 const tv = document.getElementById('tableview'), tvFilter = document.getElementById('tvFilter');
+/* v207.1:「中心」列里能对上 GEO_CITY 的地名变成站内链接,点了切到地图视角、直接打开那座城。
+   对得上的三种情况:①就是城市名(罗马 / 雅典)②古地名,PLACE 表给了今名(长安→西安、君士坦丁堡→伊斯坦布尔)
+   ③英文界面按 GEO_CITY 的英文名整词匹配。对不上的原样输出。 */
+function centreLinks(v) {
+  if (!v) return '';
+  const byZh = new Map(GEO_CITY.map((g, i) => [g[0], i]));
+  if (LANG === 'zh') {
+    return v.split(/([、,;；→])/).map(part => {
+      const p = part.trim(); if (!p || /^[、,;；→]$/.test(p)) return part;
+      const q = stripParen(p);
+      let ci = byZh.has(q) ? byZh.get(q) : (PLACE[p] && PLACE[p][2] && byZh.has(PLACE[p][2])) ? byZh.get(PLACE[p][2]) : (PLACE[q] && PLACE[q][2] && byZh.has(PLACE[q][2])) ? byZh.get(PLACE[q][2]) : -1;
+      return ci >= 0 ? `<a class="tv-city" data-city="${ci}">${part}</a>` : part;
+    }).join('');
+  }
+  const byEn = GEO_CITY.map((g, i) => [g[1], i]).sort((a, b) => b[0].length - a[0].length);
+  let out = v;
+  for (const [en, i] of byEn) {
+    const re = new RegExp('(^|[^A-Za-z])(' + en.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')(?![A-Za-z])');
+    if (re.test(out) && !out.includes('data-city="' + i + '"')) out = out.replace(re, `$1<a class="tv-city" data-city="${i}">$2</a>`);
+  }
+  return out;
+}
 function tvApplyFilter() {
   const q = tvFilter.value.trim().toLowerCase();
   document.querySelectorAll('#dataTable tbody tr').forEach(tr => { tr.hidden = !!q && !tr.textContent.toLowerCase().includes(q); });
 }
 tvFilter.addEventListener('input', tvApplyFilter);
 document.getElementById('dataTable').addEventListener('click', e => {
+  const cityA = e.target.closest('a.tv-city');
+  if (cityA) {   // v207.1 跳地图视角的那座城
+    const i = +cityA.dataset.city; closeTableView(); openGeoView(); gvQuery(GEO_CITY[i][2], GEO_CITY[i][3], i); return;
+  }
   const tr = e.target.closest('tr[data-ci]'); if (!tr) return;
   openCiv(CIVS[+tr.dataset.ci]); panel.scrollTop = 0;
 });
