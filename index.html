@@ -166,10 +166,14 @@ header { max-width: 1200px; margin: 0 auto; padding: 28px 20px 10px; }
 h1 { font-size: 24px; margin: 0 0 2px; letter-spacing: .01em; }
 .sub { color: var(--ink-2); font-size: 13.5px; margin: 0; }
 .controls {
-  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px;
   max-width: 1200px; margin: 14px auto 10px; padding: 0 20px;
   font-size: 12.5px;
 }
+/* v164 两级分层:主行大按钮(≈40px 高)是孩子的行动路径,次行图例与家长向控件降一档 */
+.ctl-main { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.ctl-main .playbtn { font-size: 14px; padding: 9px 18px; }
+.ctl-main .sbox input { padding: 8px 12px; font-size: 13.5px; }
+.ctl-sub { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-top: 9px; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip {
   display: inline-flex; align-items: center; gap: 6px;
@@ -648,14 +652,20 @@ td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; ma
   <p class="sub" id="subT">从史前到现代：各区域主导文明的兴衰与往来。厚度 = 区域内相对影响力（示意），颜色 = 所属文明圈，同色的深浅只为区分相邻色带、没有含义。点击任意色带查看详情。</p>
 </header>
 
+<!-- v164 两级分层:主行 = 孩子的三个入口(时光穿梭/换个地方看/搜索)+语言;
+     次行 = 图例与家长向控件(chips 兼任图例,常显但降一档)。信息层级 = 行动优先级 -->
 <div class="controls">
-  <button id="playBtn" class="playbtn">▶ 时光穿梭</button>
-  <button id="geoBtn" class="playbtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15.5 15.5 0 0 1 0 18M12 3a15.5 15.5 0 0 0 0 18"/></svg> 换个地方看</button>
-  <div class="chips" id="chips"></div>
-  <label class="ctl"><input type="checkbox" id="ck-ev" checked> <span id="evLbl">交流事件</span></label>
-  <select id="traceSel"></select>
-  <div class="sbox"><input id="searchIn" type="search" autocomplete="off" enterkeyhint="search"><div id="searchRes" hidden></div></div>
-  <div class="lang" id="langSw"><button data-l="zh" class="on">中</button><button data-l="en">EN</button></div>
+  <div class="ctl-main">
+    <button id="playBtn" class="playbtn">▶ 时光穿梭</button>
+    <button id="geoBtn" class="playbtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15.5 15.5 0 0 1 0 18M12 3a15.5 15.5 0 0 0 0 18"/></svg> 换个地方看</button>
+    <div class="sbox"><input id="searchIn" type="search" autocomplete="off" enterkeyhint="search"><div id="searchRes" hidden></div></div>
+    <div class="lang" id="langSw"><button data-l="zh" class="on">中</button><button data-l="en">EN</button></div>
+  </div>
+  <div class="ctl-sub">
+    <div class="chips" id="chips"></div>
+    <label class="ctl"><input type="checkbox" id="ck-ev" checked> <span id="evLbl">交流事件</span></label>
+    <select id="traceSel"></select>
+  </div>
 </div>
 
 <!-- v151 开场条:今日文明常驻;首访提示只出一次,点过 时光穿梭/换个地方看 或 × 就不再出 -->
