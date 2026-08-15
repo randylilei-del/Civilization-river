@@ -525,6 +525,10 @@ a.bk:hover { border-color: var(--ink-2); }
 #pcard .pc-civ:hover { color: var(--ink); }
 #panel .p-spark { margin: 4px 0 10px; }
 #panel .p-map { margin: 2px 0 12px; }
+/* v155:.cap 补通用规则——此前只有 .p-map/.p-gl 两个作用域有样式,落在速览区(pk-cap)、
+   并存政权、共同体卡里的口径说明全按正文字号渲染,被读成正文(Ray 在西汉卡上发现)。 */
+#panel .cap { color: var(--muted); font-size: 11.5px; line-height: 1.5; }
+#panel .pk-cap { margin-top: 6px; }
 #panel .p-map .cap { color: var(--muted); font-size: 11px; margin-top: 3px; }
 #panel .cap span.peer-go { cursor: pointer; text-decoration: underline dotted; color: var(--ink-2); }
 #panel .cap span.peer-go:hover { color: var(--ink); }
@@ -557,7 +561,8 @@ a.bk:hover { border-color: var(--ink-2); }
    写成后代选择器会把人名也变成 block,三个名字各占一行、顿号单独一行 */
 #panel .fact > span { display: block; color: var(--muted); font-size: 11px; }
 #panel .fact b { font-weight: 600; font-size: 12px; }
-#panel .p-body { color: var(--ink-2); font-size: 13px; }
+/* v155:总结段挪到卡片最顶(紧跟 meta 行)当概览——进来先一句话看懂,再细细展开 */
+#panel .p-body { color: var(--ink-2); font-size: 13px; margin: 8px 0 2px; }
 /* 分裂时期的并存政权。与 .p-tl 同一套区块骨架(细线+小标题),视觉上归为同类信息 */
 #panel .p-co { margin-top: 13px; border-top: 1px solid var(--grid); padding-top: 10px; }
 #panel .p-co h3 { font-size: 12px; color: var(--muted); margin: 0 0 7px; font-weight: 600; letter-spacing: .05em; }
@@ -9225,12 +9230,12 @@ function openCiv(c) {
     <div class="p-head"><span class="t-dot" style="background:${fill(c)}"></span><h2>${wkA(cN(c), LANG === 'zh' ? WIKI_NAME[c.n] : (c.e && c.e.w))}${bkA(WIKI_NAME[c.n] || c.n)}</h2>
       <button class="p-close" aria-label="${T('关闭','Close')}">×</button></div>
     <div class="p-meta">${civSpan(c)} · ${lName(c.l)} · ${sName(c.s)}${T('文明圈',' sphere')}</div>
+    <div class="p-body">${cD(c)}</div>
     <div class="p-spark">${sparkSVG(c)}</div>
     ${glHTML(c)}
     ${mapHTML(c)}
     ${facts}
     ${coHTML(c)}
-    <div class="p-body">${cD(c)}</div>
     ${qHTML(c)}
     ${videoHTML(c)}
     ${ch.length ? `<div class="p-tl"><h3>${T('大事记(曲线上的小圆点)','Key moments (dots on the curve)')}</h3>${ch.map(([y, t2, d2]) =>
