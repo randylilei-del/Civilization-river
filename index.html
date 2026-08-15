@@ -203,6 +203,8 @@ h1 { font-size: 24px; margin: 0 0 2px; letter-spacing: .01em; }
   border-radius: 999px; padding: 4px 14px;
 }
 .playbtn:hover { opacity: .85; }
+/* display:inline-block 盖掉全局 svg 块级 reset,否则图标独占一行把文字挤下去 */
+.playbtn svg { display: inline-block; vertical-align: -2px; }
 .playbtn.on { color: var(--ink); background: var(--surface); border-color: var(--ink-2); }
 /* 时光穿梭:底部信息带。三段固定布局,内容再多也不会把年份挤走 */
 /* 必须显式写:display:grid 的优先级高于浏览器默认的 [hidden]{display:none},
@@ -643,12 +645,12 @@ td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; ma
 
 <header>
   <h1 id="h1T">文明长河</h1>
-  <p class="sub" id="subT">从史前到现代:各区域主导文明的兴衰与往来。厚度 = 区域内相对影响力(示意),颜色 = 所属文明圈,同色的深浅只为区分相邻色带、没有含义。点击任意色带查看详情。</p>
+  <p class="sub" id="subT">从史前到现代：各区域主导文明的兴衰与往来。厚度 = 区域内相对影响力（示意），颜色 = 所属文明圈，同色的深浅只为区分相邻色带、没有含义。点击任意色带查看详情。</p>
 </header>
 
 <div class="controls">
   <button id="playBtn" class="playbtn">▶ 时光穿梭</button>
-  <button id="geoBtn" class="playbtn">🌍 换个地方看</button>
+  <button id="geoBtn" class="playbtn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15.5 15.5 0 0 1 0 18M12 3a15.5 15.5 0 0 0 0 18"/></svg> 换个地方看</button>
   <div class="chips" id="chips"></div>
   <label class="ctl"><input type="checkbox" id="ck-ev" checked> <span id="evLbl">交流事件</span></label>
   <select id="traceSel"></select>
@@ -681,7 +683,7 @@ td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; ma
      z-index 低于 #panel(20)与 #pcard(40),点结果行开出的文明卡直接盖在上面,关卡即返回。 -->
 <div id="geoview" hidden>
   <div class="gv-head">
-    <b id="gvTitle">点地图上任意一处,看这里从古到今住过哪些文明</b>
+    <b id="gvTitle">点地图上任意一处，看这里从古到今住过哪些文明</b>
     <span class="gv-zoom"><button data-z="1" class="on">世界</button><button data-z="2.2">放大</button><button data-z="4">更大</button></span>
     <button class="gv-x" id="gvClose" aria-label="关闭">×</button>
   </div>
@@ -702,8 +704,8 @@ td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; ma
 </details>
 
 <div class="notes" id="notesT">
-  <p>· 时间轴为非线性:史前与上古压缩,近 500 年放大。点击文明圈图例可高亮该文明圈在所有区域的分布(如 1500 年后蓝色涌入美洲,13 世纪绿色横扫欧亚)。</p>
-  <p>· 影响力厚度为主观示意估计,用于呈现兴衰节奏与同期对比,非精确度量。数据手工编写,难免疏漏,欢迎指正。</p>
+  <p>· 时间轴为非线性：史前与上古压缩，近 500 年放大。点击文明圈图例可高亮该文明圈在所有区域的分布（如 1500 年后蓝色涌入美洲，13 世纪绿色横扫欧亚）。</p>
+  <p>· 影响力厚度为主观示意估计，用于呈现兴衰节奏与同期对比，非精确度量。数据手工编写，难免疏漏，欢迎指正。</p>
 </div>
 
 <script>
@@ -8378,7 +8380,7 @@ function placeLabels() {
 /* 全景时才提示怎么放大;已经放大了说明用户会了,再挂着是噪音 */
 function axHint() {
   const el = document.getElementById('axHint');
-  if (el) el.textContent = VIEW.full ? T('↔ 时间轴上拖选或滚轮,可放大某一段', '↔ drag or scroll on the time axis to zoom in') : '';
+  if (el) el.textContent = VIEW.full ? T('↔ 时间轴上拖选或滚轮，可放大某一段', '↔ drag or scroll on the time axis to zoom in') : '';
 }
 function zoomTo(a, b) {
   if (b - a < 40) { const m = (a + b) / 2; a = m - 20; b = m + 20; }
@@ -8893,7 +8895,7 @@ function chartHTML(c) {
     /* 圆点原本是纯装饰,但它长得像按钮 —— Ray 在 iPad 上点了点不动。改成可点:
        点一下跳到下面对应的那条大事记。半径 2.3 手指绝对点不中,所以另叠一个
        半径 11 的透明圆当命中区(与「时光穿梭」竖线 ±22px 的做法同理)。 */
-    dots += `<circle class="sp-dot" cx="${xx.toFixed(1)}" cy="${cy}" r="2.3" fill="var(--surface)" stroke="${fill(c)}" stroke-width="1.4"/>`
+    dots += `<circle class="sp-dot" cx="${xx.toFixed(1)}" cy="${cy}" r="3.5" fill="var(--surface)" stroke="${fill(c)}" stroke-width="2"/>`
           + `<circle class="sp-hit" data-ev="${yy}" cx="${xx.toFixed(1)}" cy="${cy}" r="11" fill="transparent" role="button" tabindex="0"><title>${fmtY(yy)}</title></circle>`;
   }
   /* 鼎盛条(v157 原型):文字直接写在条上——条加高到 14px,标签起笔在条内左端,
@@ -8953,8 +8955,8 @@ function chartHTML(c) {
     `<p class="gl-d" data-gl="${i}" hidden><b>${r.label}</b>${r.g2.d[li]}</p>`).join('');
   /* v157:说明覆盖两种可点元素——圆点此前没有任何提示,没人会想到去点(Ray) */
   const cap = `<div class="cap">${rows.length
-    ? T('圆点 = 大事,点一下看;彩条 = 领域鼎盛,点一段看详情', 'Dots = key moments, tap one; colored spans = golden ages, tap for detail')
-    : T('圆点 = 大事,点一下看', 'Dots = key moments, tap one')}</div>`;
+    ? T('圆点 = 大事，点一下看；彩条 = 领域鼎盛，点一段看详情', 'Dots = key moments, tap one; colored spans = golden ages, tap for detail')
+    : T('圆点 = 大事，点一下看', 'Dots = key moments, tap one')}</div>`;
   return `<div class="p-gl">${s}<div class="gl-ds">${ds}</div>${cap}</div>`;
 }
 function peakYear(c) {
@@ -9201,12 +9203,12 @@ function videoHTML(c) {
    三个「靠什么 X」连排是模板不是人话,且六条一个问号都没有,读起来像目录而不像提问,
    与「六问」这个名字名实不符。口径对齐六个故事页(「唐朝在哪里?」)。英文原本就没这毛病,不动。 */
 const QT = [
-  ['born',   '① 怎么起来的?',   '① Why it arose'],
-  ['rule',   '② 怎么管的?',     '② How it was governed'],
-  ['money',  '③ 钱从哪儿来?',   '③ Where the wealth came from'],
-  ['power',  '④ 强在哪儿?',     '④ Why it grew strong'],
-  ['fall',   '⑤ 后来怎么不行了?', '⑤ Why it declined'],
-  ['legacy', '⑥ 留下了什么?',   '⑥ What it left behind'],
+  ['born',   '① 怎么起来的？',   '① Why it arose'],
+  ['rule',   '② 怎么管的？',     '② How it was governed'],
+  ['money',  '③ 钱从哪儿来？',   '③ Where the wealth came from'],
+  ['power',  '④ 强在哪儿？',     '④ Why it grew strong'],
+  ['fall',   '⑤ 后来怎么不行了？', '⑤ Why it declined'],
+  ['legacy', '⑥ 留下了什么？',   '⑥ What it left behind'],
 ];
 function qHTML(c) {
   if (!c.q) return '';
@@ -9218,7 +9220,7 @@ function qHTML(c) {
   const rows = QT.map(([k, zh, en]) => {
     if (!c.q[k]) return '';
     /* v134:旧版是「⑤ 最近一次大的转折」——名词短语混在五个问句里,体例当场断掉。改成问句。 */
-    if (alive && k === 'fall') { zh = '⑤ 最近一次大转折是什么?'; en = '⑤ The last great turning point'; }
+    if (alive && k === 'fall') { zh = '⑤ 最近一次大转折是什么？'; en = '⑤ The last great turning point'; }
     /* v134 样板:qh 是可选的钩子句,有就在正文上面单起一行。目前只有唐与古埃及有,
        其余 138 个文明照旧只出正文——所以这是加法,不是替换,没有半成品状态。 */
     const h = c.qh && c.qh[k];
@@ -9259,7 +9261,7 @@ function openCiv(c) {
   cur = { type: 'civ', obj: c };
   const f = cF(c);
   const facts = f ? `<div class="p-facts">${Object.entries(f).map(([k, v]) =>
-    `<div class="fact"><span>${k}</span><b>${(k === '人物' || k === 'Figures') ? linkNames(v, c) : (k === '成就' || k === 'Legacy') ? linkAchv(v, c) : v}</b>${(k === '中心' || k === 'Center') ? todayHTML(c) : ''}${(k === '鼎盛' || k === 'Peak') ? peakHTML(c) : ''}</div>`).join('')}${PEAK[c.n] ? `<div class="cap pk-cap">${T('版图取历史最大疆域、人口取历史峰值,二者未必同期;占比按当时世界人口估算',
+    `<div class="fact"><span>${k}</span><b>${(k === '人物' || k === 'Figures') ? linkNames(v, c) : (k === '成就' || k === 'Legacy') ? linkAchv(v, c) : v}</b>${(k === '中心' || k === 'Center') ? todayHTML(c) : ''}${(k === '鼎盛' || k === 'Peak') ? peakHTML(c) : ''}</div>`).join('')}${PEAK[c.n] ? `<div class="cap pk-cap">${T('版图取历史最大疆域、人口取历史峰值，二者未必同期；占比按当时世界人口估算',
     'Area = greatest extent, population = peak; not necessarily the same year. Share is of estimated world population at the time.')}</div>` : ''}</div>` : '';
   const evs = EVENTS.filter(e => e.ls.includes(c.l) && e.y >= c.k[0][0] - 30 && e.y <= c.k[c.k.length-1][0] + 30);
   const ch = chronoOf(c);
@@ -9274,7 +9276,7 @@ function openCiv(c) {
     ${coHTML(c)}
     ${qHTML(c)}
     ${videoHTML(c)}
-    ${ch.length ? `<div class="p-tl"><h3>${T('大事记(曲线上的小圆点)','Key moments (dots on the curve)')}</h3>${ch.map(([y, t2, d2]) =>
+    ${ch.length ? `<div class="p-tl"><h3>${T('大事记（曲线上的小圆点）','Key moments (dots on the curve)')}</h3>${ch.map(([y, t2, d2]) =>
       `<div class="tl-item" data-evy="${y}"><span class="tl-y">${fmtY(y)}</span><div><b>${wkA(t2, stripParen(t2))}</b>${d2 ? `<p>${d2}</p>` : ''}</div></div>`).join('')}</div>` : ''}
     ${evs.length ? `<div class="p-evs"><h3>${T('同期波及本区域的事件','Contemporary cross-regional events')}</h3>${evs.map(e =>
       `<div class="p-ev"><b>${EV_GLYPH[e.t]} ${wkA(evTitle(e))}</b> <span class="y">${T('约','c. ')}${fmtY(e.y)}${T('年','')}</span><p>${evDesc(e)}</p></div>`).join('')}</div>` : ''}`;
@@ -9336,7 +9338,7 @@ bandPick.id = 'bandPick';
 document.body.appendChild(bandPick);
 function hideBandPick() { bandPick.classList.remove('open'); }
 function showBandPick(cis, x, y) {
-  bandPick.innerHTML = `<b>${T('想看哪个?', 'Which one?')}</b>` + cis.map(ci =>
+  bandPick.innerHTML = `<b>${T('想看哪个？', 'Which one?')}</b>` + cis.map(ci =>
     `<button data-ci="${ci}"><span class="dot" style="background:${fill(CIVS[ci])}"></span>${cN(CIVS[ci])}</button>`).join('');
   bandPick.classList.add('open');
   const r = bandPick.getBoundingClientRect();
@@ -9837,7 +9839,7 @@ function gvQuery(lon, lat, ci) {
   }
 }
 function gvHeadTexts() {
-  document.getElementById('gvTitle').textContent = T('点地图上任意一处,看这里从古到今住过哪些文明', 'Tap anywhere on the map to see who has lived there through history');
+  document.getElementById('gvTitle').textContent = T('点地图上任意一处，看这里从古到今住过哪些文明', 'Tap anywhere on the map to see who has lived there through history');
   const zb = gv.querySelectorAll('.gv-zoom button');
   zb[0].textContent = T('世界', 'World'); zb[1].textContent = T('放大', 'Zoom'); zb[2].textContent = T('更大', 'More');
 }
@@ -10125,7 +10127,7 @@ function sRender() {
   if (!rs.length) {
     /* 零命中静置 1.2s 才记日志:打字打到一半的残词不算数 */
     sZeroTm = setTimeout(() => { if (sIn.value.trim() === q) sLog(q, null); }, 1200);
-    sRes.innerHTML = `<div class="sr-none">${T('没找到「' + sEsc(q) + '」。换个词试试?比如一个人、一个地方、一个朝代',
+    sRes.innerHTML = `<div class="sr-none">${T('没找到「' + sEsc(q) + '」。换个词试试？比如一个人、一个地方、一个朝代',
       'Nothing for "' + sEsc(q) + '". Try another word - a person, a place, a dynasty')}</div>`;
     sRes.hidden = false;
     return;
@@ -10165,7 +10167,7 @@ function renderStrip() {
   document.getElementById('civToday').innerHTML =
     `<b>${T('今日文明', 'Civilization of the day')}</b>${cN(c)}${hook ? ` · ${hook}` : ''} →`;
   document.getElementById('fhTxt').textContent = T(
-    '第一次来?点 ▶ 时光穿梭 看历史自己流过;点 🌍 换个地方看,找找你住的地方以前住着谁。',
+    '第一次来？点「▶ 时光穿梭」看历史自己流过；点「换个地方看」找找你住的地方以前住着谁。',
     'First time? Tap ▶ Time travel to watch history flow, or 🌍 Pick a place to see who lived where you live.');
 }
 document.getElementById('civToday').addEventListener('click', () => openCiv(TODAY_C.c));
@@ -10181,17 +10183,20 @@ document.getElementById('geoBtn').addEventListener('click', fhDismiss);
 function applyLang() {
   document.documentElement.lang = LANG === 'zh' ? 'zh-CN' : 'en';
   document.getElementById('h1T').textContent = T('文明长河', 'A River of Civilizations');
-  document.getElementById('subT').textContent = T('从史前到现代:各区域主导文明的兴衰与往来。厚度 = 区域内相对影响力(示意),颜色 = 所属文明圈,同色的深浅只为区分相邻色带、没有含义。点击任意色带查看详情。',
+  document.getElementById('subT').textContent = T('从史前到现代：各区域主导文明的兴衰与往来。厚度 = 区域内相对影响力（示意），颜色 = 所属文明圈，同色的深浅只为区分相邻色带、没有含义。点击任意色带查看详情。',
     'Prehistory to the present: the rise, fall and exchanges of each region\'s dominant civilizations. Thickness = relative regional influence (illustrative); color = civilizational sphere; lighter and darker shades of one color only tell neighbouring bands apart and carry no meaning. Click any band for details.');
   document.getElementById('evLbl').textContent = T('交流事件', 'Exchange events');
   document.getElementById('tblSum').textContent = T('数据表视图(全部文明)', 'Data table (all civilizations)');
   document.getElementById('notesT').innerHTML = T(
-    '<p>· 时间轴为非线性:史前与上古压缩,近 500 年放大。点击文明圈图例可高亮该文明圈在所有区域的分布(如 1500 年后蓝色涌入美洲,13 世纪绿色横扫欧亚)。</p><p>· 影响力厚度为主观示意估计,用于呈现兴衰节奏与同期对比,非精确度量。数据手工编写,难免疏漏,欢迎指正。</p>',
+    '<p>· 时间轴为非线性：史前与上古压缩，近 500 年放大。点击文明圈图例可高亮该文明圈在所有区域的分布（如 1500 年后蓝色涌入美洲，13 世纪绿色横扫欧亚）。</p><p>· 影响力厚度为主观示意估计，用于呈现兴衰节奏与同期对比，非精确度量。数据手工编写，难免疏漏，欢迎指正。</p>',
     '<p>· The time axis is nonlinear: antiquity is compressed, the last 500 years expanded. Click a sphere in the legend to highlight it across all regions (blue flooding the Americas after 1500, green sweeping Eurasia in the 13th century).</p><p>· Band thickness is a subjective, illustrative estimate — for rhythm and comparison, not precise measurement. Hand-curated data; corrections welcome.</p>');
   document.getElementById('zoomOut').textContent = T('⤺ 全景', '⤺ Full view');
   axHint();
   document.getElementById('playBtn').textContent = PB.on ? T('⏸ 暂停', '⏸ Pause') : T('▶ 时光穿梭', '▶ Time travel');
-  document.getElementById('geoBtn').textContent = T('🌍 换个地方看', '🌍 Pick a place');
+  /* v162:🌍 emoji 是全站唯一不承载文明圈语义的彩色元素,换单色内嵌 SVG,随按钮反色 */
+  document.getElementById('geoBtn').innerHTML =
+    '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15.5 15.5 0 0 1 0 18M12 3a15.5 15.5 0 0 0 0 18"/></svg> '
+    + T('换个地方看', 'Pick a place');
   if (!gv.hidden) { gvHeadTexts(); renderGvMap(); if (GV.last) gvQuery(GV.last.lon, GV.last.lat, GV.last.ci); }
   document.getElementById('pbNowLab').textContent = T('此刻在场', 'On stage now');
   document.getElementById('pbFeedLab').textContent = T('最近发生', 'Recently');
@@ -10199,7 +10204,7 @@ function applyLang() {
     TRACES.map((tr, i) => `<option value="${i}"${curTrace === i ? ' selected' : ''}>${tr.n[LANG === 'zh' ? 0 : 1]}</option>`).join('');
   renderLanes(); renderChips(); renderTable(); buildChart();
   renderEraJump(); renderStrip();
-  sIn.placeholder = T('找什么?如:特洛伊、兵马俑', 'Search: Troy, pyramid…');
+  sIn.placeholder = T('找什么？如：特洛伊、兵马俑', 'Search: Troy, pyramid…');
   SIDX = null; sRes.hidden = true;
   document.querySelectorAll('#langSw button').forEach(b => b.classList.toggle('on', b.dataset.l === LANG));
   /* v143:这里原来只有 civ / ev 两个分支,新增卡片类型必须同步登记——
