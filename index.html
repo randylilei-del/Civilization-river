@@ -163,6 +163,12 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 header { max-width: 1200px; margin: 0 auto; padding: 28px 20px 10px; }
+/* v171 视角切换器:与标题同行,是全页最高层级的导航——时间视角 ⇄ 地点视角 */
+.hd-row { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.viewsw { display: flex; gap: 3px; border: 1px solid var(--border); border-radius: 999px; padding: 3px; background: var(--surface); }
+.viewsw button { border: 0; background: none; color: var(--ink-2); font: inherit; font-size: 14px; font-weight: 600; padding: 7px 18px; border-radius: 999px; cursor: pointer; white-space: nowrap; }
+.viewsw button.on { background: var(--ink); color: var(--surface); }
+.viewsw button:not(.on):hover { color: var(--ink); }
 h1 { font-size: 24px; margin: 0 0 2px; letter-spacing: .01em; }
 .sub { color: var(--ink-2); font-size: 13.5px; margin: 0; }
 .controls {
@@ -675,16 +681,23 @@ td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; ma
 </style>
 
 <header>
-  <h1 id="h1T">文明长河</h1>
+  <!-- v171(Ray):「换个地方看」不是时间视图里的一个按钮,是**另一个展示视角**——
+       升格成页面最顶的视角切换器:按时间看(长河) / 按地方看(地图),当前视角高亮 -->
+  <div class="hd-row">
+    <h1 id="h1T">文明长河</h1>
+    <div class="viewsw" id="viewSw">
+      <button data-v="time" id="vwTime" class="on">按时间看</button>
+      <button data-v="geo" id="vwGeo">按地方看</button>
+    </div>
+  </div>
   <p class="sub" id="subT">从史前到现代：各区域主导文明的兴衰与往来。厚度 = 区域内相对影响力（示意），颜色 = 所属文明圈，同色的深浅只为区分相邻色带、没有含义。点击任意色带查看详情。</p>
 </header>
 
-<!-- v164 两级分层:主行 = 孩子的三个入口(时光穿梭/换个地方看/搜索)+语言;
-     次行 = 图例与家长向控件(chips 兼任图例,常显但降一档)。信息层级 = 行动优先级 -->
+<!-- v164 两级分层(v171 起「换个地方看」升格为顶部视角切换器,不在此行):
+     主行 = 时间视图内的动作(时光穿梭/搜索/交流事件/传播追踪)+语言;次行 = chips 图例 -->
 <div class="controls">
   <div class="ctl-main">
     <button id="playBtn" class="playbtn">▶ 时光穿梭</button>
-    <button id="geoBtn" class="playbtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15.5 15.5 0 0 1 0 18M12 3a15.5 15.5 0 0 0 0 18"/></svg> 换个地方看</button>
     <div class="sbox"><input id="searchIn" type="search" autocomplete="off" enterkeyhint="search"><div id="searchRes" hidden></div></div>
     <!-- v165:交流事件从次行搬到主行、复选框改按钮。**这不是推翻 v164 的两级分层,是修正一处分类错误**——
          v164 把主行定为「儿童入口」、次行为「图例与家长向控件」,而交流事件点开是有图标有故事的卡片,
@@ -701,7 +714,7 @@ td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; ma
   </div>
 </div>
 
-<!-- v151 开场条:今日文明常驻;首访提示只出一次,点过 时光穿梭/换个地方看 或 × 就不再出 -->
+<!-- v151 开场条:今日文明常驻;首访提示只出一次,点过 时光穿梭/按地方看 或 × 就不再出 -->
 <div class="start-strip">
   <button id="civToday"></button>
   <span id="firstHint" hidden><span id="fhTxt"></span><button id="fhX" aria-label="不再显示">×</button></span>
@@ -9976,16 +9989,28 @@ function gvHeadTexts() {
   const zb = gv.querySelectorAll('.gv-zoom button');
   zb[0].textContent = T('世界', 'World'); zb[1].textContent = T('放大', 'Zoom'); zb[2].textContent = T('更大', 'More');
 }
-document.getElementById('geoBtn').addEventListener('click', () => {
+/* v171:开/关地理视角统一走这两个函数,顶部视角切换器的高亮跟着状态走 */
+function setViewTabs() {
+  document.getElementById('vwTime').classList.toggle('on', gv.hidden);
+  document.getElementById('vwGeo').classList.toggle('on', !gv.hidden);
+}
+function openGeoView() {
   gv.hidden = false;
   gvHeadTexts();
   renderGvMap();          // clientWidth 藏着时是 0,必须先显后画
   if (GV.last) gvQuery(GV.last.lon, GV.last.lat, GV.last.ci);
   else gvQuery(GEO_CITY[0][2], GEO_CITY[0][3], 0);   // 默认西安:全站序列最长的地方,开门先见示范
+  setViewTabs();
+}
+function closeGeoView() { gv.hidden = true; setViewTabs(); }
+document.getElementById('viewSw').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.v === 'geo') { if (gv.hidden) openGeoView(); }
+  else closeGeoView();
 });
-document.getElementById('gvClose').addEventListener('click', () => { gv.hidden = true; });
+document.getElementById('gvClose').addEventListener('click', closeGeoView);
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && !gv.hidden && !panel.classList.contains('open') && pcard.hidden) gv.hidden = true;
+  if (e.key === 'Escape' && !gv.hidden && !panel.classList.contains('open') && pcard.hidden) closeGeoView();
 });
 gv.querySelector('.gv-zoom').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
@@ -10300,8 +10325,8 @@ function renderStrip() {
   document.getElementById('civToday').innerHTML =
     `<span class="ct-badge">${T('今日文明', 'Civ of the day')}</span><span class="dot" style="background:${fill(c)}"></span><b>${cN(c)}</b>${hook ? `<span>${hook}</span>` : ''}<span>→</span>`;
   document.getElementById('fhTxt').textContent = T(
-    '第一次来？点「▶ 时光穿梭」看历史自己流过；点「换个地方看」找找你住的地方以前住着谁。',
-    'First time? Tap ▶ Time travel to watch history flow, or 🌍 Pick a place to see who lived where you live.');
+    '第一次来？点「▶ 时光穿梭」看历史自己流过；点最上面的「按地方看」找找你住的地方以前住着谁。',
+    'First time? Tap ▶ Time travel to watch history flow, or switch to By place to see who lived where you live.');
 }
 document.getElementById('civToday').addEventListener('click', () => openCiv(TODAY_C.c));
 function fhDismiss() {
@@ -10311,7 +10336,7 @@ function fhDismiss() {
 try { if (!localStorage.getItem('whviz-hint')) document.getElementById('firstHint').hidden = false; } catch (e) {}
 document.getElementById('fhX').addEventListener('click', fhDismiss);
 document.getElementById('playBtn').addEventListener('click', fhDismiss);
-document.getElementById('geoBtn').addEventListener('click', fhDismiss);
+document.getElementById('vwGeo').addEventListener('click', fhDismiss);
 
 function applyLang() {
   document.documentElement.lang = LANG === 'zh' ? 'zh-CN' : 'en';
@@ -10326,10 +10351,9 @@ function applyLang() {
   document.getElementById('zoomOut').textContent = T('⤺ 全景', '⤺ Full view');
   axHint();
   document.getElementById('playBtn').textContent = PB.on ? T('⏸ 暂停', '⏸ Pause') : T('▶ 时光穿梭', '▶ Time travel');
-  /* v162:🌍 emoji 是全站唯一不承载文明圈语义的彩色元素,换单色内嵌 SVG,随按钮反色 */
-  document.getElementById('geoBtn').innerHTML =
-    '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15.5 15.5 0 0 1 0 18M12 3a15.5 15.5 0 0 0 0 18"/></svg> '
-    + T('换个地方看', 'Pick a place');
+  /* v171:地理视角升格为顶部视角切换器(原 geoBtn 退役) */
+  document.getElementById('vwTime').textContent = T('按时间看', 'By time');
+  document.getElementById('vwGeo').textContent = T('按地方看', 'By place');
   if (!gv.hidden) { gvHeadTexts(); renderGvMap(); if (GV.last) gvQuery(GV.last.lon, GV.last.lat, GV.last.ci); }
   document.getElementById('pbNowLab').textContent = T('此刻在场', 'On stage now');
   document.getElementById('pbFeedLab').textContent = T('最近发生', 'Recently');
