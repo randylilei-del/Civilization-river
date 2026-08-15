@@ -349,4 +349,191 @@ const CITY_SITES = {
 '奥克兰': [
  { n:['一树山毛利要塞遗迹','the Maungakiekie pa terraces'], y:1600, e:['毛利','Maori'], ca:1 },
 ],
+/* v201:补齐余下 43 座(金沙萨有意留空:查不到年代与来历都拿得准的实物,按纪律 5 不收) */
+'乌兰巴托': [
+ { n:['甘丹寺','Gandan Monastery'], y:1838, e:['清代蒙古','Qing-era Mongolia'] },
+ { n:['博格达汗宫','the Bogd Khan Palace'], y:1903, e:['清末','late Qing'] },
+],
+'哈拉和林': [
+ { n:['哈拉和林城遗址','the Karakorum city site'], y:1235, e:['蒙古帝国','Mongol Empire'] },
+ { n:['额尔德尼召','Erdene Zuu Monastery'], y:1585, e:['北元·蒙古','Northern Yuan Mongolia'] },
+],
+'平壤': [
+ { n:['高句丽古墓群','the Koguryo tombs'], y:500, e:['高句丽','Goguryeo'], ca:1 },
+ { n:['大同门','the Taedong Gate'], y:1635, e:['朝鲜王朝','Joseon'] },
+],
+'巨港': [
+ { n:['巨港大清真寺','the Great Mosque of Palembang'], y:1748, e:['巨港苏丹国','Palembang Sultanate'] },
+ { n:['安佩拉大桥','the Ampera Bridge'], y:1965, e:['印度尼西亚','Indonesia'] },
+],
+'新加坡': [
+ { n:['天福宫','Thian Hock Keng Temple'], y:1842, e:['英属海峡殖民地','British Straits Settlements'] },
+ { n:['莱佛士酒店','Raffles Hotel'], y:1887, e:['英属海峡殖民地','British Straits Settlements'] },
+ { n:['鱼尾狮','the Merlion'], y:1972, e:['新加坡共和国','Republic of Singapore'] },
+],
+'吉隆坡': [
+ { n:['苏丹阿都沙末大厦','the Sultan Abdul Samad Building'], y:1897, e:['英属马来亚','British Malaya'] },
+ { n:['占美清真寺','Masjid Jamek'], y:1909, e:['英属马来亚','British Malaya'] },
+ { n:['双子塔','the Petronas Towers'], y:1998, e:['马来西亚','Malaysia'] },
+],
+'胡志明市': [
+ { n:['西贡圣母大教堂','Notre-Dame Cathedral of Saigon'], y:1880, e:['法属印度支那','French Indochina'] },
+ { n:['西贡中央邮局','the Central Post Office'], y:1891, e:['法属印度支那','French Indochina'] },
+ { n:['统一宫','the Reunification Palace'], y:1966, e:['越南共和国','South Vietnam'] },
+],
+'孟买': [
+ { n:['象岛石窟','the Elephanta Caves'], y:550, e:['卡拉丘里王朝','Kalachuri'], ca:1 },
+ { n:['贾特拉帕蒂·希瓦吉终点站','Chhatrapati Shivaji Terminus'], y:1887, e:['英属印度','British India'] },
+ { n:['印度门','the Gateway of India'], y:1924, e:['英属印度','British India'] },
+],
+'加尔各答': [
+ { n:['维多利亚纪念堂','the Victoria Memorial'], y:1921, e:['英属印度','British India'] },
+ { n:['豪拉大桥','the Howrah Bridge'], y:1943, e:['英属印度','British India'] },
+],
+'科伦坡': [
+ { n:['沃尔文达尔教堂','the Wolvendaal Church'], y:1757, e:['荷属锡兰','Dutch Ceylon'] },
+ { n:['独立纪念堂','Independence Memorial Hall'], y:1953, e:['锡兰自治领','Dominion of Ceylon'] },
+],
+'塔什干': [
+ { n:['库克尔达什经学院','the Kukeldash Madrasah'], y:1570, e:['布哈拉汗国','Bukhara Khanate'] },
+ { n:['塔什干电视塔','the Tashkent TV Tower'], y:1985, e:['苏联','Soviet'] },
+],
+'阿拉木图': [
+ { n:['升天大教堂','the Ascension Cathedral'], y:1907, e:['俄罗斯帝国','Russian Empire'] },
+ { n:['麦迪奥高山滑冰场','the Medeu skating rink'], y:1972, e:['苏联','Soviet'] },
+],
+'麦加': [
+ { n:['克尔白·天房(现存墙体)','the Kaaba (present walls)'], y:1630, e:['奥斯曼','Ottoman'], ca:1 },
+ { n:['麦加皇家钟塔','the Makkah Clock Tower'], y:2012, e:['沙特阿拉伯','Saudi Arabia'] },
+],
+'麦地那': [
+ { n:['库巴清真寺','the Quba Mosque'], y:622, e:['伊斯兰初期','early Islam'] },
+ { n:['先知清真寺','the Prophet\'s Mosque'], y:622, e:['伊斯兰初期','early Islam'] },
+],
+'特拉布宗': [
+ { n:['苏美拉修道院','Sumela Monastery'], y:386, e:['罗马帝国末期','late Roman'], ca:1 },
+ { n:['特拉布宗圣索菲亚教堂','Hagia Sophia of Trebizond'], y:1260, e:['特拉比松帝国','Empire of Trebizond'], ca:1 },
+],
+'德黑兰': [
+ { n:['古列斯坦宫','the Golestan Palace'], y:1865, e:['恺加','Qajar'], ca:1 },
+ { n:['自由纪念塔','the Azadi Tower'], y:1971, e:['巴列维','Pahlavi'] },
+],
+'安卡拉': [
+ { n:['奥古斯都神庙','the Temple of Augustus'], y:-25, e:['罗马帝国','Roman'], ca:1 },
+ { n:['凯末尔陵','Anıtkabir'], y:1953, e:['土耳其共和国','Republic of Turkey'] },
+],
+'突尼斯': [
+ { n:['迦太基安东尼浴场','the Antonine Baths of Carthage'], y:162, e:['罗马帝国','Roman'] },
+ { n:['宰图纳大清真寺','the Zaytuna Mosque'], y:864, e:['阿格拉布','Aghlabid'] },
+],
+'喀布尔': [
+ { n:['巴布尔花园','the Gardens of Babur'], y:1528, e:['莫卧儿','Mughal'], ca:1 },
+ { n:['达鲁拉曼宫','the Darul Aman Palace'], y:1927, e:['阿富汗王国','Kingdom of Afghanistan'] },
+],
+'迪拜': [
+ { n:['法希迪堡','Al Fahidi Fort'], y:1787, e:['迪拜建镇之初','early Dubai'] },
+ { n:['哈利法塔','the Burj Khalifa'], y:2010, e:['阿联酋','United Arab Emirates'] },
+],
+'华沙': [
+ { n:['华沙王宫','the Royal Castle'], y:1619, e:['波兰-立陶宛','Polish-Lithuanian Commonwealth'] },
+ { n:['瓦津基宫','Łazienki Palace'], y:1793, e:['波兰-立陶宛末期','late Commonwealth'] },
+ { n:['文化科学宫','the Palace of Culture and Science'], y:1955, e:['波兰人民共和国','communist Poland'] },
+],
+'基辅': [
+ { n:['圣索菲亚大教堂','Saint Sophia Cathedral'], y:1037, e:['基辅罗斯','Kievan Rus'], ca:1 },
+ { n:['洞窟修道院','the Kyiv Pechersk Lavra'], y:1051, e:['基辅罗斯','Kievan Rus'] },
+ { n:['祖国母亲雕像','the Motherland Monument'], y:1981, e:['苏联','Soviet'] },
+],
+'阿姆斯特丹': [
+ { n:['老教堂','the Oude Kerk'], y:1306, e:['荷兰伯国','County of Holland'] },
+ { n:['西教堂','the Westerkerk'], y:1631, e:['荷兰共和国','Dutch Republic'] },
+ { n:['王宫(原市政厅)','the Royal Palace (old town hall)'], y:1655, e:['荷兰共和国','Dutch Republic'] },
+],
+'米兰': [
+ { n:['圣安布罗焦教堂(现建筑)','the Basilica of Sant\'Ambrogio (present church)'], y:1099, e:['罗马式时期','Romanesque'] },
+ { n:['米兰大教堂(动工)','the Duomo (begun)'], y:1386, e:['维斯孔蒂时期','Visconti Milan'] },
+ { n:['《最后的晚餐》壁画','The Last Supper mural'], y:1498, e:['斯福尔扎时期','Sforza Milan'] },
+],
+'巴塞罗那': [
+ { n:['巴塞罗那大教堂','Barcelona Cathedral'], y:1448, e:['阿拉贡王国','Crown of Aragon'] },
+ { n:['圣家堂(动工)','the Sagrada Família (begun)'], y:1882, e:['西班牙王国','Kingdom of Spain'] },
+ { n:['米拉之家','Casa Milà'], y:1912, e:['西班牙王国','Kingdom of Spain'] },
+],
+'加奥': [
+ { n:['阿斯基亚陵','the Tomb of Askia'], y:1495, e:['桑海帝国','Songhai'] },
+],
+'卡诺': [
+ { n:['卡诺古城墙','the Kano city walls'], y:1150, e:['豪萨城邦','Hausa city-states'], ca:1 },
+ { n:['埃米尔宫(吉丹·伦法)','the Emir\'s Palace (Gidan Rumfa)'], y:1480, e:['豪萨城邦','Hausa city-states'], ca:1 },
+],
+'亚的斯亚贝巴': [
+ { n:['圣乔治大教堂','St George\'s Cathedral'], y:1911, e:['埃塞俄比亚帝国','Ethiopian Empire'] },
+ { n:['三一大教堂','Holy Trinity Cathedral'], y:1942, e:['埃塞俄比亚帝国','Ethiopian Empire'] },
+ { n:['非洲联盟会议中心','the African Union headquarters'], y:2012, e:['埃塞俄比亚','Ethiopia'] },
+],
+'拉各斯': [
+ { n:['尼日利亚国家剧院','the National Theatre'], y:1976, e:['尼日利亚','Nigeria'] },
+],
+'内罗毕': [
+ { n:['卡伦·布里克森故居','the Karen Blixen house'], y:1912, e:['英属东非','British East Africa'] },
+ { n:['肯雅塔国际会议中心','the Kenyatta International Convention Centre'], y:1973, e:['肯尼亚','Kenya'] },
+],
+'约翰内斯堡': [
+ { n:['老堡垒(宪法山)','the Old Fort on Constitution Hill'], y:1893, e:['德兰士瓦共和国','South African Republic'] },
+ { n:['曼德拉故居(索韦托)','Mandela House in Soweto'], y:1945, e:['南非联邦','Union of South Africa'] },
+],
+'波哥大': [
+ { n:['波哥大大教堂','the Cathedral of Bogotá'], y:1823, e:['大哥伦比亚','Gran Colombia'] },
+ { n:['蒙塞拉特山圣殿(现建筑)','the Monserrate sanctuary (present church)'], y:1925, e:['哥伦比亚','Colombia'] },
+],
+'布宜诺斯艾利斯': [
+ { n:['卡比尔多市政厅','the Cabildo'], y:1751, e:['西属美洲','Spanish colonial'], ca:1 },
+ { n:['科隆剧院','the Teatro Colón'], y:1908, e:['阿根廷','Argentina'] },
+ { n:['方尖碑','the Obelisk'], y:1936, e:['阿根廷','Argentina'] },
+],
+'里约热内卢': [
+ { n:['圣本笃修道院','the São Bento Monastery'], y:1671, e:['葡属巴西','Portuguese Brazil'] },
+ { n:['卡里奥卡渡槽(拉帕拱桥)','the Carioca Aqueduct (Lapa Arches)'], y:1750, e:['葡属巴西','Portuguese Brazil'] },
+ { n:['救世基督像','Christ the Redeemer'], y:1931, e:['巴西','Brazil'] },
+],
+'圣地亚哥': [
+ { n:['圣地亚哥大教堂','the Metropolitan Cathedral'], y:1800, e:['西属美洲','Spanish colonial'] },
+ { n:['莫内达宫','La Moneda'], y:1805, e:['西属美洲','Spanish colonial'] },
+],
+'洛杉矶': [
+ { n:['老广场天使女王教堂','the Plaza Church'], y:1822, e:['墨西哥时期','Mexican California'] },
+ { n:['好莱坞标志','the Hollywood Sign'], y:1923, e:['美国','United States'] },
+ { n:['格里菲斯天文台','Griffith Observatory'], y:1935, e:['美国','United States'] },
+],
+'旧金山': [
+ { n:['多洛雷斯传教所','Mission Dolores'], y:1791, e:['西属加州','Spanish California'] },
+ { n:['恶魔岛监狱','the Alcatraz cellhouse'], y:1912, e:['美国','United States'] },
+ { n:['金门大桥','the Golden Gate Bridge'], y:1937, e:['美国','United States'] },
+],
+'芝加哥': [
+ { n:['芝加哥水塔','the Chicago Water Tower'], y:1869, e:['美国','United States'] },
+ { n:['罗比之家','the Robie House'], y:1910, e:['美国','United States'] },
+ { n:['威利斯大厦(原西尔斯大厦)','the Willis (Sears) Tower'], y:1973, e:['美国','United States'] },
+],
+'西雅图': [
+ { n:['派克市场','Pike Place Market'], y:1907, e:['美国','United States'] },
+ { n:['太空针塔','the Space Needle'], y:1962, e:['美国','United States'] },
+],
+'迈阿密': [
+ { n:['维兹卡亚庄园','the Vizcaya villa'], y:1916, e:['美国','United States'] },
+ { n:['自由塔','the Freedom Tower'], y:1925, e:['美国','United States'] },
+],
+'多伦多': [
+ { n:['老市政厅','the Old City Hall'], y:1899, e:['加拿大','Canada'] },
+ { n:['卡萨罗马城堡','Casa Loma'], y:1914, e:['加拿大','Canada'] },
+ { n:['加拿大国家电视塔','the CN Tower'], y:1976, e:['加拿大','Canada'] },
+],
+'温哥华': [
+ { n:['海洋大厦','the Marine Building'], y:1930, e:['加拿大','Canada'] },
+ { n:['狮门大桥','the Lions Gate Bridge'], y:1938, e:['加拿大','Canada'] },
+],
+'墨尔本': [
+ { n:['皇家展览馆','the Royal Exhibition Building'], y:1880, e:['维多利亚殖民地','Colony of Victoria'] },
+ { n:['弗林德斯街车站','Flinders Street Station'], y:1910, e:['澳大利亚联邦','Australia'] },
+],
 };
