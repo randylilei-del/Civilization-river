@@ -776,9 +776,22 @@ a.bk:hover { border-color: var(--ink-2); }
 
 .notes { max-width: 1200px; margin: 0 auto 40px; padding: 0 20px; color: var(--muted); font-size: 12px; }
 .notes p { margin: 4px 0; }
-details.tbl { max-width: 1200px; margin: 6px auto 24px; padding: 0 20px; font-size: 13px; }
-details.tbl summary { cursor: pointer; color: var(--ink-2); }
-details.tbl .tbl-scroll { overflow-x: auto; margin-top: 10px; }
+/* v207 列表视角:与地理视角同一套全屏覆盖层骨架(gv-head / gv-x 复用),表格自己滚 */
+#tableview { position: fixed; inset: 0; z-index: 15; display: flex; flex-direction: column; background: var(--page); }
+#tableview[hidden] { display: none; }
+#tableview .gv-head { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--border); background: var(--surface); flex: none; }
+#tableview .gv-head b { font-size: 13.5px; font-weight: 600; flex: 1; min-width: 0; }
+#tableview .gv-x { font: inherit; font-size: 20px; line-height: 1; padding: 2px 9px; border: none; background: none; color: var(--ink-2); cursor: pointer; flex: none; }
+#tableview #tvFilter { font: inherit; font-size: 13px; padding: 5px 10px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); color: var(--ink); width: min(280px, 40vw); }
+#tableview .tv-body { flex: 1; overflow: auto; padding: 8px 14px 24px; font-size: 13px; }
+#tableview table { min-width: 960px; width: 100%; }
+#tableview th { position: sticky; top: 0; background: var(--page); z-index: 1; }
+#tableview tbody tr { cursor: pointer; }
+#tableview tbody tr:hover { background: var(--wash); }
+#tableview td.tv-b { font-size: 12px; color: var(--ink-2); max-width: 360px; }
+#tableview td.tv-f { font-size: 12px; max-width: 220px; }
+#tableview td.tv-n { white-space: nowrap; font-weight: 600; }
+@media (max-width: 640px) { #tableview .gv-head b { display: none; } }
 table { border-collapse: collapse; min-width: 640px; }
 th, td { text-align: left; padding: 5px 12px; border-bottom: 1px solid var(--grid); }
 th { color: var(--muted); font-weight: 600; font-size: 12px; }
@@ -794,6 +807,7 @@ td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; ma
     <div class="viewsw" id="viewSw">
       <button data-v="time" id="vwTime" class="on">按时间看</button>
       <button data-v="geo" id="vwGeo">按地方看</button>
+      <button data-v="table" id="vwTable">列表</button>
     </div>
   </div>
   <p class="sub" id="subT">从史前到现代：各区域主导文明的兴衰与往来。厚度 = 区域内相对影响力（示意），颜色 = 所属文明圈，同色的深浅只为区分相邻色带、没有含义。点击任意色带查看详情。</p>
@@ -846,7 +860,7 @@ td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; ma
 <div id="geoview" hidden>
   <div class="gv-head">
     <!-- v172:地理视角是全屏覆盖层,顶部切换器被盖住——这里放一份同步的,随时能切回时间视角 -->
-    <div class="viewsw viewsw-sm"><button data-v="time">按时间看</button><button data-v="geo" class="on">按地方看</button></div>
+    <div class="viewsw viewsw-sm"><button data-v="time">按时间看</button><button data-v="geo" class="on">按地方看</button><button data-v="table">列表</button></div>
     <b id="gvTitle">点地图上任意一处，看这里从古到今住过哪些文明</b>
     <!-- v176(Ray):随机跳一座城,探索它的前世今生——地图版的「今日文明」 -->
     <button class="gv-rand" id="gvRand">随便去个地方</button>
@@ -855,6 +869,16 @@ td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; ma
   </div>
   <div class="gv-mapw"><div class="gv-map" id="gvMap"></div><button class="gv-tog" id="gvTog">展开地图 · 换个地方</button></div>
   <div class="gv-res" id="gvRes"></div>
+</div>
+<!-- v207(Ray):列表视角——全部文明与关键信息一张表,想用文字方式学的时候点开;平时藏着 -->
+<div id="tableview" hidden>
+  <div class="gv-head">
+    <div class="viewsw viewsw-sm"><button data-v="time">按时间看</button><button data-v="geo">按地方看</button><button data-v="table" class="on">列表</button></div>
+    <b id="tvTitle">全部文明一览 · 点任意一行看详情</b>
+    <input id="tvFilter" type="search" placeholder="筛选:文明 / 人物 / 成就 / 地区…" autocomplete="off">
+    <button class="gv-x" id="tvClose" aria-label="关闭">×</button>
+  </div>
+  <div class="tv-body"><table id="dataTable"></table></div>
 </div>
 <!-- v202.1 城市照片放大层:点图放大、再点缩回 -->
 <figure id="gvLb" hidden><img alt=""><figcaption></figcaption></figure>
@@ -866,10 +890,6 @@ td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; ma
   <button id="pbStop" aria-label="停止">×</button>
 </div>
 
-<details class="tbl">
-  <summary id="tblSum">数据表视图(全部文明)</summary>
-  <div class="tbl-scroll"><table id="dataTable"></table></div>
-</details>
 
 <div class="notes" id="notesT">
   <p>· 时间轴为非线性：史前与上古压缩，近 500 年放大。点击文明圈图例可高亮该文明圈在所有区域的分布（如 1500 年后蓝色涌入美洲，13 世纪绿色横扫欧亚）。</p>
@@ -12978,14 +12998,38 @@ document.addEventListener('keydown', e => {
 });
 
 /* ---------- 数据表 ---------- */
+/* v207(Ray:「所有文明和关键信息在一个类似 Excel 的表里,点了才释放,方便用文字方式学」)。
+   原先页底藏着一个五列的 <details>,几乎没人发现;现在升格成第三个视角「列表」,列出速览四格
+   (鼎盛 / 中心 / 人物 / 成就)+ 一句话,行点了开文明卡,顶栏一个筛选框(文明 / 人物 / 成就 / 地区都搜)。 */
 function renderTable() {
+  const f = c => cF(c) || {};
+  const K = LANG === 'zh' ? ['鼎盛', '中心', '人物', '成就'] : ['Peak', 'Centre', 'Figures', 'Legacy'];
+  const g = (o, k) => (o[k] || (LANG === 'zh' ? '' : o[k === 'Centre' ? 'Center' : k]) || '');
   document.getElementById('dataTable').innerHTML =
-    `<tr><th>${T('区域','Region')}</th><th>${T('文明','Civilization')}</th><th>${T('年代','Period')}</th><th>${T('文明圈','Sphere')}</th><th>${T('简介','Summary')}</th></tr>` +
-    CIVS.map(c => `<tr><td>${lName(c.l)}</td>
-      <td><span class="dot" style="background:${fill(c)}"></span>${cN(c)}</td>
+    `<thead><tr><th>${T('区域','Region')}</th><th>${T('文明','Civilization')}</th><th>${T('年代','Period')}</th><th>${T('文明圈','Sphere')}</th><th>${T('鼎盛','Peak')}</th><th>${T('中心','Centre')}</th><th>${T('人物','Figures')}</th><th>${T('成就','Legacy')}</th><th>${T('一句话','In a line')}</th></tr></thead><tbody>` +
+    CIVS.map((c, i) => { const o = f(c); return `<tr data-ci="${i}"><td>${lName(c.l)}</td>
+      <td class="tv-n"><span class="dot" style="background:${fill(c)}"></span>${cN(c)}</td>
       <td>${civSpan(c)}</td>
-      <td>${sName(c.s)}</td><td style="font-size:12px;color:var(--ink-2)">${cB(c)}</td></tr>`).join('');
+      <td>${sName(c.s)}</td><td class="tv-f">${g(o, K[0])}</td><td class="tv-f">${g(o, K[1])}</td><td class="tv-f">${g(o, K[2])}</td><td class="tv-f">${g(o, K[3])}</td><td class="tv-b">${cB(c)}</td></tr>`; }).join('') + '</tbody>';
+  tvApplyFilter();
 }
+const tv = document.getElementById('tableview'), tvFilter = document.getElementById('tvFilter');
+function tvApplyFilter() {
+  const q = tvFilter.value.trim().toLowerCase();
+  document.querySelectorAll('#dataTable tbody tr').forEach(tr => { tr.hidden = !!q && !tr.textContent.toLowerCase().includes(q); });
+}
+tvFilter.addEventListener('input', tvApplyFilter);
+document.getElementById('dataTable').addEventListener('click', e => {
+  const tr = e.target.closest('tr[data-ci]'); if (!tr) return;
+  openCiv(CIVS[+tr.dataset.ci]); panel.scrollTop = 0;
+});
+function tvHeadTexts() {
+  document.getElementById('tvTitle').textContent = T('全部文明一览 · 点任意一行看详情', 'All civilizations · tap a row for details');
+  tvFilter.placeholder = T('筛选:文明 / 人物 / 成就 / 地区…', 'Filter: name / figure / legacy / region…');
+}
+function openTableView() { tv.hidden = false; tvHeadTexts(); setViewTabs(); }
+function closeTableView() { tv.hidden = true; setViewTabs(); }
+document.getElementById('tvClose').addEventListener('click', closeTableView);
 renderTable();
 
 /* ---------- 语言切换 ---------- */
@@ -13351,8 +13395,8 @@ document.getElementById('gvRand').addEventListener('click', () => {
 /* v171:开/关地理视角统一走这两个函数,视角切换器的高亮跟着状态走
    (v172 起切换器有两份:页头一份 + 地理视角顶栏一份,全部按 data-v 同步) */
 function setViewTabs() {
-  document.querySelectorAll('.viewsw [data-v]').forEach(b =>
-    b.classList.toggle('on', b.dataset.v === (gv.hidden ? 'time' : 'geo')));
+  const curV = !gv.hidden ? 'geo' : !tv.hidden ? 'table' : 'time';   // v207 三个视角
+  document.querySelectorAll('.viewsw [data-v]').forEach(b => b.classList.toggle('on', b.dataset.v === curV));
 }
 function openGeoView() {
   gv.hidden = false;
@@ -13365,13 +13409,15 @@ function openGeoView() {
 function closeGeoView() { gv.hidden = true; setViewTabs(); }
 document.querySelectorAll('.viewsw').forEach(sw => sw.addEventListener('click', e => {
   const b = e.target.closest('[data-v]'); if (!b) return;
-  if (b.dataset.v === 'geo') { if (gv.hidden) openGeoView(); }
-  else closeGeoView();
+  if (b.dataset.v === 'geo') { closeTableView(); if (gv.hidden) openGeoView(); }
+  else if (b.dataset.v === 'table') { closeGeoView(); if (tv.hidden) openTableView(); }
+  else { closeGeoView(); closeTableView(); }
 }));
 document.getElementById('gvClose').addEventListener('click', closeGeoView);
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && !gvLb.hidden) { gvLb.hidden = true; return; }   // v202.1 先关照片放大层
   if (e.key === 'Escape' && !gv.hidden && !panel.classList.contains('open') && pcard.hidden) closeGeoView();
+  if (e.key === 'Escape' && !tv.hidden && !panel.classList.contains('open') && pcard.hidden) closeTableView();
 });
 gv.querySelector('.gv-zoom').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
@@ -13711,7 +13757,7 @@ function applyLang() {
   document.getElementById('subT').textContent = T('从史前到现代：各区域主导文明的兴衰与往来。厚度 = 区域内相对影响力（示意），颜色 = 所属文明圈，同色的深浅只为区分相邻色带、没有含义。点击任意色带查看详情。',
     'Prehistory to the present: the rise, fall and exchanges of each region\'s dominant civilizations. Thickness = relative regional influence (illustrative); color = civilizational sphere; lighter and darker shades of one color only tell neighbouring bands apart and carry no meaning. Click any band for details.');
   document.getElementById('evLbl').textContent = T('交流事件', 'Exchange events');
-  document.getElementById('tblSum').textContent = T('数据表视图(全部文明)', 'Data table (all civilizations)');
+  tvHeadTexts();
   document.getElementById('notesT').innerHTML = T(
     '<p>· 时间轴为非线性：史前与上古压缩，近 500 年放大。点击文明圈图例可高亮该文明圈在所有区域的分布（如 1500 年后蓝色涌入美洲，13 世纪绿色横扫欧亚）。</p><p>· 影响力厚度为主观示意估计，用于呈现兴衰节奏与同期对比，非精确度量。数据手工编写，难免疏漏，欢迎指正。</p>',
     '<p>· The time axis is nonlinear: antiquity is compressed, the last 500 years expanded. Click a sphere in the legend to highlight it across all regions (blue flooding the Americas after 1500, green sweeping Eurasia in the 13th century).</p><p>· Band thickness is a subjective, illustrative estimate — for rhythm and comparison, not precise measurement. Hand-curated data; corrections welcome.</p>');
@@ -13721,6 +13767,7 @@ function applyLang() {
   /* v171:地理视角升格为视角切换器(原 geoBtn 退役);v172 起页头与地理视角顶栏各一份 */
   document.querySelectorAll('.viewsw [data-v="time"]').forEach(b => b.textContent = T('按时间看', 'By time'));
   document.querySelectorAll('.viewsw [data-v="geo"]').forEach(b => b.textContent = T('按地方看', 'By place'));
+  document.querySelectorAll('.viewsw [data-v="table"]').forEach(b => b.textContent = T('列表', 'List'));
   if (!gv.hidden) { gvHeadTexts(); renderGvMap(); if (GV.last) gvQuery(GV.last.lon, GV.last.lat, GV.last.ci); }
   document.getElementById('pbNowLab').textContent = T('此刻在场', 'On stage now');
   document.getElementById('pbFeedLab').textContent = T('最近发生', 'Recently');
