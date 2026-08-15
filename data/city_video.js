@@ -35,4 +35,17 @@ const CITY_VIDEO = {
   '泉州': [
     { b: 'BV17Z4y137qB', t: ['重返刺桐城（3 集）', 'Return to Zayton (3 eps)'] },
   ],
+  '苏州': [
+    { b: 'BV1Qx411Q7bq', t: ['苏园六纪（6 集）', 'Six Chapters on the Gardens of Suzhou (6 eps)'] },
+  ],
+  '大同': [
+    { b: 'BV1if4y167zr', t: ['千年一窟看云冈', 'A Thousand Years in One Grotto: Yungang'] },
+    { b: 'BV1x8X6YFE5A', t: ['晋在眼前·天下大同', 'Shanxi Up Close: Datong'] },
+  ],
+  '太原': [
+    { b: 'BV1m54y1p7Yw', t: ['千年一园看晋祠', 'A Thousand Years in One Garden: the Jinci Temple'] },
+  ],
+  '长沙': [
+    { b: 'BV12x411K7xi', t: ['马王堆传奇', 'The Mawangdui Discovery'] },
+  ],
 };
