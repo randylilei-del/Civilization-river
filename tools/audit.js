@@ -1178,6 +1178,27 @@ CIVS.forEach(c => {
   });
 }
 
+/* 规则 62(v202):城市照片。键必须是 GEO_CITY 里的城市名;每城最多三张;f/h/t/lic 齐全,
+ * h 形如 x/xy 且必须等于 f 的 md5 前缀(URL 就是这么拼的,写错一位图就 404 而页面不报错);
+ * t 双语;lic 必须是 CC / 公有领域一类(这层是给孩子看的,也是对外发布的,不收「合理使用」)。 */
+{
+  const crypto = require('crypto');
+  const cityNames = new Set(GEO_CITY.map(g => g[0]));
+  const okLic = /^(CC|Public domain|FAL|GFDL|KOGL)/;
+  Object.entries(typeof CITY_PHOTO !== 'undefined' ? CITY_PHOTO : {}).forEach(([k, arr]) => {
+    const tag = `[城市照片] ${k}`;
+    if (!cityNames.has(k)) P.push(`${tag} 不是 GEO_CITY 里的城市名`);
+    if (!Array.isArray(arr) || !arr.length) { P.push(`${tag} 值必须是非空数组`); return; }
+    if (arr.length > 3) P.push(`${tag} 超过三张(${arr.length})`);
+    arr.forEach(x => {
+      if (!x.f || !x.h || !x.lic || !Array.isArray(x.t) || x.t.length !== 2 || !x.t[0] || !x.t[1]) { P.push(`${tag} 条目缺 f/h/t/lic 或 t 非双语: ${x.f || '?'}`); return; }
+      const h = crypto.createHash('md5').update(x.f.replace(/ /g, '_'), 'utf8').digest('hex');
+      if (x.h !== h[0] + '/' + h.slice(0, 2)) P.push(`${tag} ${x.f} 的路径哈希 ${x.h} 与 md5 前缀 ${h[0]}/${h.slice(0, 2)} 不符——图会 404`);
+      if (!okLic.test(x.lic)) P.push(`${tag} ${x.f} 许可 "${x.lic}" 不在允许名单`);
+    });
+  });
+}
+
 /* 规则 59(v195):地理底图四张表(河流/山地高原/沙漠/湖泊)此前**一条校验都没有**,
  * 而 v195 一次手写进去 175 个要素——名字双语、坐标在合法范围、折线至少两点、
  * 多边形至少三点、名字不重复。经纬度写反(把 [34.3,108.9] 写成 [108.9,34.3] 的反面)
