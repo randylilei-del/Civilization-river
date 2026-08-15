@@ -56,7 +56,7 @@ const GL = {
  { a:1955, b:1990, k:'econ', t:['经济奇迹','Economic miracle'], d:['从废墟到世界第二。','Ruins to the world\'s second economy.'] },
  { a:1980, b:2025, k:'art', t:['动漫与游戏','Anime & games'], d:['全球流行文化的重要一极。','A pole of global pop culture.'] } ],
 '现代欧洲诸国': [
- { a:1957, b:2004, k:'thought', t:['把主权放到一张桌子上','Sovereignty pooled at one table'], d:['从 1957 年六国的共同市场到 2004 年二十五国的联盟,历史上少见的自愿让渡主权——关税、农业、竞争规则和大部分外交由布鲁塞尔的一张桌子决定。','From the six-nation common market of 1957 to a union of twenty-five in 2004 — a rare voluntary pooling of sovereignty, with tariffs, farming, competition rules and much of foreign policy decided at one table in Brussels.'] },
+ { a:1957, b:2004, k:'thought', t:['把主权放到一张桌子上','Sovereignty pooled at one table'], d:['从 1957 年六国的共同市场到 2004 年二十五国的联盟,历史上少见的自愿让渡主权——关税、农业、竞争规则和一部分外交由布鲁塞尔的一张桌子决定。','From the six-nation common market of 1957 to a union of twenty-five in 2004 — a rare voluntary pooling of sovereignty, with tariffs, farming, competition rules and part of foreign policy decided at one table in Brussels.'] },
  { a:1945, b:1975, k:'econ', t:['战后经济奇迹','The postwar economic miracle'], d:['马歇尔计划与共同市场之下,意大利、荷兰、北欧三十年高速增长,北欧走出高税收高福利的路。','Under the Marshall Plan and the common market Italy, the Netherlands and the Nordics grew fast for thirty years, and the Nordics took the road of high taxes and generous welfare.'] } ],
 '俄罗斯·苏联': [
  { a:1820, b:1880, k:'art', t:['文学黄金时代','Literary golden age'], d:['普希金到托尔斯泰、陀思妥耶夫斯基。','Pushkin to Tolstoy and Dostoevsky.'] },

@@ -15,7 +15,7 @@
 const UNIONS = [
 { id:'eu', l:'eu', a:1957, b:2025, g:'◎',
   n:['欧盟','the European Union'], s:['欧盟','EU'], w:['欧洲联盟','European Union'],
-  /* ⚠ 措辞校准过一次:初稿写「钱也用同一种」是错的——27 个成员里只有 20 个用欧元。
+  /* ⚠ 措辞校准过一次:初稿写「钱也用同一种」是错的——27 个成员里只有 21 个用欧元(2026 起;v211.1 前写 20,保加利亚 2026-01-01 加入后过期)。
      给孩子的话可以短,但不能把「大部分」说成「都」。 */
   d:['它们还是各自的国家,只是很多事情一起决定,大部分成员还用同一种钱。',
      'They are still separate countries; they simply decide many things together, and most of them share one currency.'],
@@ -33,8 +33,8 @@ const UNIONS = [
      ['波兰','Poland'],['葡萄牙','Portugal'],['罗马尼亚','Romania'],['斯洛伐克','Slovakia'],
      ['斯洛文尼亚','Slovenia'],['西班牙','Spain'],['瑞典','Sweden']],
   x:[[['英国','the United Kingdom'],2020]],
-  nt:['27 个成员国里,20 个使用欧元。「人员自由流动」的申根区和欧盟不是同一份名单——挪威、瑞士在申根不在欧盟,爱尔兰在欧盟不在申根。',
-      'Twenty of the 27 members use the euro. The Schengen area is not the same list as the EU: Norway and Switzerland are in Schengen but not the EU, and Ireland is the other way round.'] },
+  nt:['27 个成员国里,21 个使用欧元(2026 年起,保加利亚是最新加入的)。「人员自由流动」的申根区和欧盟不是同一份名单——挪威、瑞士在申根不在欧盟,爱尔兰在欧盟不在申根。',
+      'Twenty-one of the 27 members use the euro (Bulgaria the latest, from 2026). The Schengen area is not the same list as the EU: Norway and Switzerland are in Schengen but not the EU, and Ireland is the other way round.'] },
 { id:'asean', l:'se', a:1967, b:2025, g:'◎',
   n:['东盟','ASEAN'], s:['东盟','ASEAN'], w:['东南亚国家联盟','ASEAN'],
   /* ☠ 写这条时最容易犯的错：把东盟当成「亚洲的欧盟」。它没有共同货币、没有超国家法院，
