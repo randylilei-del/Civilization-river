@@ -579,4 +579,12 @@ const CIV_PHOTO = {
  { f:'SL_Anuradhapura_asv2020-01_img11_Ruwanwelisaya_Stupa.jpg', h:'0/04', t:['鲁梵伐利大塔','the Ruwanwelisaya'], by:'A.Savin', lic:'FAL' },
  { f:'SL_Kandy_asv2020-01_img33_Sacred_Tooth_Temple.jpg', h:'e/eb', t:['康提佛牙寺','the Temple of the Tooth, Kandy'], by:'A.Savin', lic:'FAL' },
 ],
+'蒙古国': [
+ { f:'Chinggis_Square.jpg', h:'c/c9', t:['苏赫巴托尔广场','Sükhbaatar Square'], by:'Zazaa Mongolia', lic:'CC BY-SA 4.0' },
+ { f:'Genghis_Khan_Equestrian_Statue,_photo_by_Vaiz_Ha.jpg', h:'9/93', t:['成吉思汗骑马像','the Genghis Khan equestrian statue'], by:'Vaiz Ha', lic:'CC BY 2.0' },
+],
+'朝鲜': [
+ { f:'Prázdné_slnice_a_rozestavěný_hotel_Ryugyong_-_panoramio.jpg', h:'a/a5', t:['柳京饭店','the Ryugyong Hotel'], by:'Martin Cígler', lic:'CC BY-SA 3.0' },
+ { f:'070401_Panmunjeom3.jpg', h:'e/ea', t:['板门店与非军事区','Panmunjom and the DMZ'], by:'Driedprawns at en.wikipedia', lic:'CC BY 2.5' },
+],
 };

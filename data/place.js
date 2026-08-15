@@ -114,4 +114,5 @@ const PLACE = {
 '都柏林':['爱尔兰','Ireland','都柏林','Dublin'], '约克':['英国','United Kingdom','约克','York'], '诺曼底':['法国','France'], '冰岛':['冰岛','Iceland','雷克雅未克','Reykjavik'],
 /* v213 斯里兰卡 */
 '阿努拉德普勒':['斯里兰卡','Sri Lanka','阿努拉德普勒','Anuradhapura'], '波隆纳鲁沃':['斯里兰卡','Sri Lanka'], '康提':['斯里兰卡','Sri Lanka','康提','Kandy'],
+'乌兰巴托':['蒙古','Mongolia','乌兰巴托','Ulaanbaatar'], '平壤':['朝鲜','North Korea','平壤','Pyongyang'],
 };
