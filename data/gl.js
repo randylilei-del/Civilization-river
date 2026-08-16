@@ -154,6 +154,10 @@ const GL = {
 ],
 '满者伯夷': [ { a:1350, b:1400, k:'econ', t:['群岛贸易网','The archipelago network'], d:['丁香与肉豆蔻只长在马鲁古的几座小岛上,满者伯夷把它们收上来,经爪哇的港口转手卖到中国、印度与波斯。控制转口而不占产地,是这类海上强权的常见做法。','Cloves and nutmeg grew only on a few islands in the Moluccas; Majapahit gathered them and resold them through the ports of Java to China, India and Persia. Controlling the transhipment rather than the source was how sea powers of this kind usually worked.'] } ],
 '库施·努比亚': [ { a:-750, b:-350, k:'econ', t:['尼罗河的金与铁','Nile gold and iron'], d:['麦罗埃的冶铁炉与埃及的黄金来源。','Meroe\'s furnaces, and where Egypt\'s gold came from.'] } ],
+'努比亚诸王国': [
+  { a:652, b:1250, k:'thought', t:['一纸约挡住了六百年','Six centuries held on paper'], d:['打不下来就签约:努比亚送奴隶、埃及回赠粮布,这份 baqt 断续维持约六百年,努比亚也因此比周边晚六百年改信伊斯兰教。','What could not be conquered was contracted: slaves north, grain and cloth south. The baqt held on and off for six centuries, and Nubia stayed Christian six hundred years longer than its neighbours.'] },
+  { a:900, b:1200, k:'art', t:['法拉斯的壁画','The paintings of Faras'], d:['1960 年代阿斯旺高坝蓄水前,整片壁画被切下来运走,今天在华沙与喀土穆;画上的努比亚主教与圣徒都是深色皮肤,教堂本身留在了水下。','Cut from the walls whole before the Aswan lake filled, they now hang in Warsaw and Khartoum. The Nubian bishops and saints on them are dark-skinned; the cathedral itself stayed under the water.'] },
+],
 '阿克苏姆': [ { a:300, b:600, k:'econ', t:['红海贸易','Red Sea trade'], d:['自铸金币,与罗马波斯印度三方通商。','Its own gold coinage, trading with Rome, Persia and India.'] } ],
 '加纳帝国': [ { a:800, b:1150, k:'econ', t:['黄金换食盐','Gold for salt'], d:['南方的金与撒哈拉的盐,等重交换。','Southern gold and Saharan salt, weight for weight.'] } ],
 '斯瓦希里城邦': [ { a:1200, b:1500, k:'econ', t:['季风贸易','The monsoon trade'], d:['借季风往返阿拉伯与印度,基尔瓦富甲一方。','Riding the monsoon to Arabia and India.'] } ],
