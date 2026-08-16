@@ -1139,6 +1139,36 @@ CIVS.forEach(c => {
  * 五条大洋洲色带在页面上是黑的,而 audit 与「148 卡 × 中英」全量扫描都查不出来
  * (它们查文字内容,不查填充色)。index.html 里同一套调色板出现在多个主题块中,
  * 漏掉任何一块就是那个主题下的黑带,所以这里按出现次数比对而不只查存在性。 */
+/* 规则 64(v218):速览「中心」那一格在渲染端被判断了两次——一次决定城市链接(centreLinks),
+ * 一次决定「今属何处」那行(todayHTML)。两处的键集合必须一致。
+ * 2026-08-16 核查发现它们不一致:centreLinks 认 '中心'/'Centre'/'Center',todayHTML 只认前两者中的
+ * '中心'/'Center'——于是 16 条用英式拼写 'Centre' 的色带,英文卡上「今属」整行静默消失。
+ * 数据合法、audit 全绿、页面不报错、全量扫描也查不到(少一行不产生 undefined),
+ * 只有真的点开英文卡逐行看才发现得了。这条规则就是把那个只能靠人眼的检查变成机器检查。 */
+{
+  const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
+  const CENTRE_KEYS = ['中心', 'Center', 'Centre'];
+  const line = (html.split('\n').find(l => l.includes('centreLinks(v)') && l.includes('todayHTML(c)')) || '');
+  if (!line) P.push('[规则 64 失效] 没找到同时含 centreLinks 与 todayHTML 的模板行 —— 渲染端改过结构,这条规则要跟着改');
+  else {
+    /* 必须从 fn 往前切到**最近的** `${`:定长回溯窗口会把前一个分支(centreLinks)的键也框进来,
+       那样 todayHTML 少一个键也检不出——2026-08-16 初版规则就栽在这里,注入反例时没响。 */
+    const seg = (fn) => { const i = line.indexOf(fn); if (i < 0) return ''; const j = line.lastIndexOf('${', i); return line.slice(j, i); };
+    for (const k of CENTRE_KEYS) {
+      if (!seg('centreLinks(v)').includes(`'${k}'`)) P.push(`[中心键渲染不全] centreLinks 分支不认 '${k}',该键的城市链接点不开`);
+      if (!seg('todayHTML(c)').includes(`'${k}'`)) P.push(`[中心键渲染不全] todayHTML 分支不认 '${k}' —— 用这个拼法的色带,卡上「今属」整行会静默消失`);
+    }
+  }
+  /* 数据侧:用到的中心键必须是这三个之一,不能冒出第四种拼法(Capital / 首都 之类) */
+  CIVS.forEach(c => {
+    const zh = Object.keys(c.f || {}), en = Object.keys((c.e && c.e.f) || {});
+    const looksCentre = k => /^(中心|Cent(er|re)|Capital|首都)$/.test(k);
+    [...zh, ...en].filter(looksCentre).forEach(k => {
+      if (!CENTRE_KEYS.includes(k)) P.push(`[中心键拼法不认识] ${c.n} 用了 '${k}',渲染端只认 ${CENTRE_KEYS.join(' / ')}`);
+    });
+  });
+}
+
 {
   const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
   const cnt = v => (html.match(new RegExp('--c-' + v + ':', 'g')) || []).length;
