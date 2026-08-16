@@ -140,6 +140,10 @@ const GL = {
 '三佛齐': [
  { a:700, b:1100, k:'econ', t:['海峡枢纽','Gatekeeper of the Straits'], d:['所有往来中国与印度的船都要在此停靠。','Every ship between China and India put in here.'] },
  { a:671, b:1000, k:'thought', t:['佛学中心','A Buddhist centre'], d:['唐代僧人义净去印度取经,路上在这里停了几年学梵文,他写下巨港「僧众逾千」、佛法之盛与印度不相上下,劝后来的取经人也先在这儿打好底子。','The Tang monk Yijing broke his journey to India here for several years to learn Sanskrit, and wrote that Palembang held over a thousand monks and that Buddhist learning there matched India\'s — advising later pilgrims to prepare here first.'] } ],
+'阿瓦·勃固': [
+  { a:1453, b:1500, k:'art', t:['大金塔的高度','The Shwedagon\'s height'], d:['大金塔始建远早于此,但它今天的规模来自这一时期的加高与贴金:信修浮捐出与自己体重相等的黄金,达摩悉提又加了更多。','The Shwedagon was founded far earlier, but it owes its present scale to raisings and gildings in these decades — Shin Sawbu gave her own weight in gold, and Dhammazedi added more.'] },
+  { a:1287, b:1500, k:'thought', t:['两种文字并行','Two scripts side by side'], d:['缅语文学在阿瓦成熟,勃固的宫廷同时用孟语与巴利语;达摩悉提整顿僧团、与斯里兰卡重新接上戒法。','Burmese literature came of age at Ava while the court at Pegu worked in Mon and Pali; Dhammazedi reformed the order and reconnected its ordination line to Sri Lanka.'] },
+],
 '满者伯夷': [ { a:1350, b:1400, k:'econ', t:['群岛贸易网','The archipelago network'], d:['丁香与肉豆蔻只长在马鲁古的几座小岛上,满者伯夷把它们收上来,经爪哇的港口转手卖到中国、印度与波斯。控制转口而不占产地,是这类海上强权的常见做法。','Cloves and nutmeg grew only on a few islands in the Moluccas; Majapahit gathered them and resold them through the ports of Java to China, India and Persia. Controlling the transhipment rather than the source was how sea powers of this kind usually worked.'] } ],
 '库施·努比亚': [ { a:-750, b:-350, k:'econ', t:['尼罗河的金与铁','Nile gold and iron'], d:['麦罗埃的冶铁炉与埃及的黄金来源。','Meroe\'s furnaces, and where Egypt\'s gold came from.'] } ],
 '阿克苏姆': [ { a:300, b:600, k:'econ', t:['红海贸易','Red Sea trade'], d:['自铸金币,与罗马波斯印度三方通商。','Its own gold coinage, trading with Rome, Persia and India.'] } ],
