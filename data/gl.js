@@ -152,6 +152,10 @@ const GL = {
 '大津巴布韦': [ { a:1300, b:1450, k:'econ', t:['内陆黄金','Inland gold'], d:['无灰浆干砌石墙,黄金经东岸出海。','Mortarless stone walls; gold flowing to the coast.'] } ],
 '桑海帝国': [ { a:1470, b:1590, k:'thought', t:['廷巴克图学术','Timbuktu\'s scholars'], d:['桑科雷清真寺周围聚着学者与学生,讲法学、天文、医学;书商行会把手抄本卖到整个西非。2012 年武装分子占领廷巴克图时,当地人把几十万册手抄本藏进铁皮箱、装船运走,大部分保住了。','Scholars and students gathered around the Sankore mosque to study law, astronomy and medicine, and a guild of booksellers carried manuscripts across West Africa. When armed groups took Timbuktu in 2012, local people packed hundreds of thousands of manuscripts into metal trunks and shipped them out; most were saved.'] } ],
 '特奥蒂瓦坎': [ { a:150, b:450, k:'tech', t:['棋盘城市','The grid city'], d:['十万人口,街道正交,公寓式院落。','A hundred thousand people in planned apartment compounds.'] } ],
+'托尔特克与谷地诸邦': [
+  { a:950, b:1150, k:'art', t:['图拉的石武士','The warriors of Tula'], d:['金字塔顶四根石柱雕成四米多高的武士;一千公里外的奇琴伊察有几乎一样的柱廊与雕刻,谁影响谁争了一百多年。','Four columns carved as warriors over four metres tall crown the pyramid; Chichen Itza a thousand kilometres away has almost the same colonnades — which influenced which has been argued for a century.'] },
+  { a:1200, b:1428, k:'thought', t:['「托尔特克」变成一个褒义词','"Toltec" becomes a compliment'], d:['纳瓦特尔语里它后来指「工匠、有本事的人」;阿兹特克贵族争相自称托尔特克后代,把一座废弃的城当作文明的尺子。','In Nahuatl it came to mean a craftsman, someone of skill; Aztec nobles claimed Toltec descent, taking an abandoned city as the measure of the civilized.'] },
+],
 '阿兹特克': [ { a:1440, b:1519, k:'econ', t:['特拉特洛尔科市场','The great market'], d:['西班牙人说他们从没见过这么大的集市。','The Spaniards said they had never seen its like.'] } ],
 '百乘王朝': [
  { a:1, b:200, k:'econ', t:['印度洋罗马贸易','Rome across the Indian Ocean'], d:['季风直航埃及,南印出土的罗马金币多在此时。','Monsoon runs to Egypt; most Roman gold in south India dates here.'] },

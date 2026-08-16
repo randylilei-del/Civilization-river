@@ -87,7 +87,7 @@ const PLACE = {
 '阿尔及尔':['阿尔及利亚','Algeria','阿尔及尔','Algiers'], '达喀尔':['塞内加尔','Senegal','达喀尔','Dakar'],
 /* 美洲 */
 '圣洛伦索':['墨西哥','Mexico'], '拉文塔':['墨西哥','Mexico'], '帕伦克':['墨西哥','Mexico'], '奇琴伊察':['墨西哥','Mexico'],
-'特奥蒂瓦坎':['墨西哥','Mexico','墨西哥城近郊','near Mexico City'],
+'特奥蒂瓦坎':['墨西哥','Mexico','墨西哥城近郊','near Mexico City'], '图拉':['墨西哥','Mexico','图拉德阿连德','Tula de Allende'], '乔卢拉':['墨西哥','Mexico','乔卢拉','Cholula'],
 '墨西哥城':['墨西哥','Mexico','墨西哥城','Mexico City'], '特诺奇蒂特兰':['墨西哥','Mexico','墨西哥城','Mexico City'],
 '蒂卡尔':['危地马拉','Guatemala'], '瓦里':['秘鲁','Peru'], '查文德万塔尔':['秘鲁','Peru'],
 '库斯科':['秘鲁','Peru','库斯科','Cusco'], '利马':['秘鲁','Peru','利马','Lima'],
