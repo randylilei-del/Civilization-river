@@ -118,6 +118,10 @@ const GL = {
 '孔雀王朝': [
  { a:-528, b:-400, k:'thought', t:['沙门思潮','The shramana ferment'], d:['佛教与耆那教同时兴起,挑战婆罗门。','Buddhism and Jainism rise together against the Brahmins.'] },
  { a:-268, b:-232, k:'thought', t:['阿育王护法','Ashoka\'s dharma'], d:['石柱诏令刻满帝国,使团远至希腊化诸王。','Edicts across the empire, envoys to the Greek kings.'] } ],
+'印度-希腊诸王': [
+  { a:-150, b:-50, k:'art', t:['犍陀罗的前奏','Before Gandhara'], d:['希腊的雕刻手法在这里遇上佛教,几十年后长出有人脸的佛像。','Greek sculptural technique meets Buddhism here; within decades the Buddha has a human face.'] },
+  { a:-160, b:-100, k:'thought', t:['《弥兰陀王问经》','The Milinda Panha'], d:['希腊国王追问「到底是谁在轮回」,僧人拿他自己的马车作答:拆开来哪一件都不是车。','A Greek king presses on who exactly is reborn; the monk answers with the king\'s own chariot — take it apart and no single piece is the chariot.'] },
+],
 '贵霜帝国': [
  { a:100, b:250, k:'art', t:['犍陀罗艺术','Gandharan art'], d:['最早的一批佛像出自犍陀罗与秣菟罗,东亚佛像的祖型。','The earliest Buddha images, from Gandhara and Mathura.'] },
  { a:100, b:200, k:'thought', t:['大乘北传','Mahayana heads north'], d:['经丝路进入中国,此后两千年的东亚底色。','Along the Silk Road into China, and East Asia is changed.'] } ],

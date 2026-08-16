@@ -41,6 +41,7 @@ const PLACE = {
 /* 南亚 */
 '哈拉帕':['巴基斯坦','Pakistan'], '摩亨佐-达罗':['巴基斯坦','Pakistan'],
 '白沙瓦':['巴基斯坦','Pakistan','白沙瓦','Peshawar'],
+'塔克西拉':['巴基斯坦','Pakistan','塔克西拉','Taxila'], '舍羯罗':['巴基斯坦','Pakistan','锡亚尔科特','Sialkot'],
 '印度河—恒河平原':['巴基斯坦与印度北部','Pakistan and northern India'], '德干诸都':['印度中南部','south-central India'],
 '华氏城':['印度','India','巴特那','Patna'], '卡瑙杰':['印度','India','格瑙杰','Kannauj'],
 '普拉蒂什塔纳':['印度','India','派坦','Paithan'], '阿马拉瓦蒂':['印度','India','阿马拉瓦蒂','Amaravati'],
