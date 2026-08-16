@@ -1151,6 +1151,81 @@ CIVS.forEach(c => {
  * 五条大洋洲色带在页面上是黑的,而 audit 与「148 卡 × 中英」全量扫描都查不出来
  * (它们查文字内容,不查填充色)。index.html 里同一套调色板出现在多个主题块中,
  * 漏掉任何一块就是那个主题下的黑带,所以这里按出现次数比对而不只查存在性。 */
+/* 规则 65(v221):`d` 与 `e.d` 的长度比。两侧是分别写的、不是翻译,所以「双语都在、都非空」
+ * (规则 49)完全查不出**一侧偷偷长出一整段**。2026-08-16 核查 v217 时,摩洛哥的英文 e.d 比中文 d
+ * 多出了白图泰的出生地、"as far west as Algiers"、整句非斯老城无车等六组事实,英文读者拿到的是
+ * 一张信息量约两倍的卡——靠人眼逐段对读才发现。长度比把这类漂移变成一个数。
+ * **阈值不是拍脑袋**:实测 158 条的分布是 p5=2.24 / 中位 3.16 / p75=3.62 / p95=5.73(中文比英文
+ * 紧凑,2—3.5 倍是正常的语言差异),所以取 [1.5, 5.0]——比核查员建议的 [2.0,3.6] 宽得多,那个区间
+ * 会报掉四分之一的既有条目,规则一响就没人看了。
+ * 超标的 14 条**全部列入下面的名单**而不是就地改内容:其中 10 条是大洋洲那一批,是同一个写作
+ * 习惯(英文 e.d 当完整介绍写、中文 d 当摘要写)留下的,该单独排一轮补中文,不该混在别的改动里。 */
+const DRATIO = { lo: 1.5, hi: 5.0 };
+/* 已知超标、待补中文 d 的名单。**这不是豁免,是待办清单**——补完就从这里删掉。 */
+const DRATIO_TODO = [
+  '澳大利亚原住民', '汤加王国', '欧洲殖民大洋洲', '毛利', '南马都尔', '拉帕努伊·复活节岛',
+  '拉皮塔·南岛航海者', '夏威夷王国', '澳新与太平洋岛国', '汤加帝国',   /* v199—v201 大洋洲批 */
+  '斯里兰卡诸王国', '朝鲜', '阿富汗', '海湾诸邦',                        /* v213 / v214 / v216 / v219 */
+];
+{
+  const todo = new Set(DRATIO_TODO), seen = new Set();
+  CIVS.forEach(c => {
+    if (!c.d || !c.e || !c.e.d) return;
+    const r = c.e.d.length / c.d.length;
+    const bad = r < DRATIO.lo || r > DRATIO.hi;
+    if (bad) seen.add(c.n);
+    if (bad && !todo.has(c.n))
+      P.push(`[中英信息量不对等] ${c.n} e.d/d = ${r.toFixed(2)}(常态 ${DRATIO.lo}—${DRATIO.hi}) —— 多半是一侧写了另一侧没写的事,逐段对读一遍`);
+  });
+  for (const n of DRATIO_TODO) {
+    if (!CIVS.some(c => c.n === n)) P.push(`[DRATIO_TODO 孤儿键] ${n} 不在 CIVS 里(改色带名时最易断)`);
+    else if (!seen.has(n)) P.push(`[DRATIO_TODO 已过期] ${n} 的长度比现已回到常态,请从 audit.js 的 DRATIO_TODO 里删掉`);
+  }
+}
+
+/* 规则 66(v221):`PEAK.a` 与 GEO 多边形的球面面积**只做数量级校验**。
+ * 核查 v217 时建议的是「偏离超 ±25% 就报」,我按 98 条实测了一遍:**中位偏差就是 31%、p75 是 60%**,
+ * 那个阈值会报掉一半。根因有两条,都不是错:①GEO 按设计是「粗略示意」,顶点少、海岸线简化
+ * ②岛国与海洋型版图的多边形必然把海圈进去(汤加王国 PEAK 0.075 万 km²、多边形 23 万)。
+ * 而 v217 摩洛哥那个真问题(声称 80 / 口径 71 / 画出 94)偏差 32%,**恰好埋在中位数里,这条规则
+ * 抓不到它**——如实记下来:那一类只能靠核查员另写脚本算面积,机器规则在当前建模下做不出。
+ * 所以这里只留数量级这一层:差 10 倍以上基本只有一种成因,`a` 的单位写错(km² 当成万 km²)。 */
+const AREA_OK = [
+  '汤加王国',   /* 多边形是环岛画的,面积绝大部分是海 */
+  /* 日本:PEAK.a=740 取 1942 年最大范围(含占领区),而 GEO **有意只画本土**——日本是延续到今天的
+     国家,把占领区画进鼎盛版图会盖住朝鲜半岛与台湾(v214 立的判据,见 CHANGELOG)。
+     两者讲的本来就不是同一件事,这条规则第一次跑就把它抓出来了,说明规则有效、这一例是有意的。 */
+  '日本',
+];
+{
+  const sphArea = polys => {
+    const R = 6371, rad = Math.PI / 180; let t = 0;
+    for (const poly of polys) {
+      let s = 0;
+      for (let i = 0; i < poly.length; i++) {
+        const [x1, y1] = poly[i], [x2, y2] = poly[(i + 1) % poly.length];
+        s += (x2 - x1) * rad * (2 + Math.sin(y1 * rad) + Math.sin(y2 * rad));
+      }
+      t += Math.abs(s * R * R / 2);
+    }
+    return t / 10000;   /* 万 km²,与 PEAK.a 同单位 */
+  };
+  const ok = new Set(AREA_OK), hit = new Set();
+  CIVS.forEach(c => {
+    const g = GEO[c.n], pk = PEAK[c.n];
+    if (!g || !g.p || !pk || !pk.a) return;
+    const a = sphArea(g.p), ratio = a / pk.a;
+    if (ratio > 10 || ratio < 0.1) {
+      hit.add(c.n);
+      if (!ok.has(c.n)) P.push(`[版图面积与 PEAK 差一个数量级] ${c.n} PEAK.a=${pk.a} 万 km²,多边形约 ${a.toFixed(0)} 万 km²(${ratio.toFixed(1)}×) —— 先查 a 的单位`);
+    }
+  });
+  for (const n of AREA_OK) {
+    if (!CIVS.some(c => c.n === n)) P.push(`[AREA_OK 孤儿键] ${n} 不在 CIVS 里`);
+    else if (!hit.has(n)) P.push(`[AREA_OK 已过期] ${n} 现已回到同一数量级,请从 audit.js 的 AREA_OK 里删掉`);
+  }
+}
+
 /* 规则 64(v218):速览「中心」那一格在渲染端被判断了两次——一次决定城市链接(centreLinks),
  * 一次决定「今属何处」那行(todayHTML)。两处的键集合必须一致。
  * 2026-08-16 核查发现它们不一致:centreLinks 认 '中心'/'Centre'/'Center',todayHTML 只认前两者中的
