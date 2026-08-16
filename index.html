@@ -300,11 +300,55 @@ svg { display: block; }
 .lane-tags { position: absolute; left: 10px; top: 0; pointer-events: none; z-index: 2; }
 .lane-tag {
   position: absolute; left: 0; transform: translateY(-50%);
-  font-size: 11.5px; font-weight: 600; color: var(--ink-2);
+  /* v220:原为 11.5px + --ink-2,是全图最轻的一层字,7 岁读者反映看不清泳道叫什么。
+     提到 13px + 正墨色;不动位置与背板,避免盖住色带。 */
+  font-size: 13px; font-weight: 600; color: var(--ink);
   background: var(--surface-82);
   padding: 1px 7px; border-radius: 5px; backdrop-filter: blur(2px);
   letter-spacing: .04em; white-space: nowrap;
 }
+
+/* ---------- v220 首访引导:三步,页面自己演给你看 ----------
+   为什么不是视频:铁律「不引入外部资源」——视频只能做成点了才跳走的外链,7 岁点出去多半不回来。
+   为什么点哪儿都前进:三步、每步一句话,给 7 岁的东西不该有「点错地方就卡住」这种状态。
+   遮罩用一个巨大的 box-shadow 挖洞,不改动被高亮元素本身(改它就要处理层叠、滚动、主题三件事)。 */
+#tour { position: fixed; inset: 0; z-index: 60; }
+.tour-hole {
+  position: fixed; border-radius: 12px; pointer-events: none;
+  box-shadow: 0 0 0 9999px rgba(0,0,0,.5);
+  transition: top .35s cubic-bezier(.4,0,.2,1), left .35s cubic-bezier(.4,0,.2,1),
+              width .35s cubic-bezier(.4,0,.2,1), height .35s cubic-bezier(.4,0,.2,1);
+}
+.tour-catch { position: fixed; inset: 0; cursor: pointer; }   /* 接住点击 = 下一步 */
+.tour-box {
+  position: fixed; z-index: 2; max-width: min(340px, calc(100vw - 32px));
+  background: var(--surface); color: var(--ink);
+  border-radius: 14px; padding: 14px 16px 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.28);
+  transition: top .35s cubic-bezier(.4,0,.2,1), left .35s cubic-bezier(.4,0,.2,1);
+}
+.tour-box p { margin: 0 0 10px; font-size: 15.5px; line-height: 1.55; }
+.tour-row { display: flex; align-items: center; gap: 10px; }
+.tour-dots { display: flex; gap: 5px; margin-right: auto; }
+.tour-dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--ink-2); opacity: .3; }
+.tour-dots i.on { opacity: .85; }
+.tour-box button {
+  font: inherit; font-size: 13.5px; border-radius: 8px; cursor: pointer;
+  padding: 6px 12px; border: 1px solid var(--ink-2); background: transparent; color: var(--ink-2);
+}
+.tour-box button.pri { background: var(--ink); color: var(--surface); border-color: var(--ink); font-weight: 600; }
+/* 手指:只在第二步出现,指着被高亮的色带 */
+.tour-tap {
+  position: fixed; width: 34px; height: 34px; pointer-events: none; z-index: 1;
+  font-size: 28px; line-height: 1; animation: tapPulse 1.5s ease-in-out infinite;
+}
+@keyframes tapPulse { 0%,100% { transform: translate(0,0) scale(1); opacity: .95 } 50% { transform: translate(0,6px) scale(.9); opacity: .6 } }
+@media (prefers-reduced-motion: reduce) { .tour-tap { animation: none } .tour-hole, .tour-box { transition: none } }
+#tourQ {
+  border: none; background: transparent; color: var(--ink-2); cursor: pointer;
+  font: inherit; font-size: 13px; padding: 1px 6px; border-radius: 5px; opacity: .75;
+}
+#tourQ:hover { opacity: 1; background: var(--surface-82); }
 
 .band { cursor: pointer; transition: opacity .18s, filter .18s; }
 /* hover 抬升:色带浮起来一点,像从纸面上被捏起 */
@@ -843,6 +887,7 @@ td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; ma
 <div class="start-strip">
   <button id="civToday"></button>
   <span id="firstHint" hidden><span id="fhTxt"></span><button id="fhX" aria-label="不再显示">×</button></span>
+  <button id="tourQ" aria-label="怎么玩">? 怎么玩</button>
 </div>
 
 <div class="chart-wrap">
@@ -859,6 +904,21 @@ td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; ma
 <aside id="panel" aria-label="详情面板"></aside>
 <!-- 人物卡:独立于 #panel 的一层,所以弹出/关闭都不动文明卡的滚动位置 -->
 <div id="pcard" hidden><div class="pc-back"></div><div class="pc-box" role="dialog" aria-modal="true" aria-label="人物"></div></div>
+
+<!-- v220 首访引导层。三步:①这条河是时间(同时自动跑一遍时光穿梭)②点色带看故事 ③换成按地方看 -->
+<div id="tour" hidden>
+  <div class="tour-catch" id="tourCatch"></div>
+  <div class="tour-hole" id="tourHole"></div>
+  <div class="tour-tap" id="tourTap" hidden>👆</div>
+  <div class="tour-box" id="tourBox">
+    <p id="tourTxt"></p>
+    <div class="tour-row">
+      <span class="tour-dots" id="tourDots"></span>
+      <button id="tourSkip"></button>
+      <button id="tourNext" class="pri"></button>
+    </div>
+  </div>
+</div>
 
 <!-- 地理视角:主图是「同一时间看全世界」,这层是反过来「同一地点看全部时间」。
      z-index 低于 #panel(20)与 #pcard(40),点结果行开出的文明卡直接盖在上面,关卡即返回。 -->
@@ -12635,6 +12695,11 @@ function mapHTML(c) {
   for (const w of LAKES) if (inView(w.p)) s += `<path d="${path(w.p)}" fill="var(--geo-river)" opacity=".45"/>`;
   for (const m of RANGES) if (inView(m.p)) s += `<path d="${path(m.p)}" fill="var(--geo-range)" opacity=".5"/>`;
   for (const r of RIVERS) if (inView(r.p)) s += `<path d="${line(r.p)}" fill="none" stroke="var(--geo-river)" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/>`;
+  /* v220:今日国界。**原设计有意不画**(DATA.md 记着:免得孩子把今天的边界当成那个年代的),
+     2026-08-16 Ray 拍板加上——他要的是一个"这块地方是今天的哪里"的参照物。
+     配套三件缺一不可:①线比海岸线还淡(0.55px 虚线 + .45 透明),不与版图色块抢
+     ②画在版图**之下**,版图内被色块压住、版图外才看得清 ③注脚明写"细虚线是今天的国界"。 */
+  for (const l of BORDERS) if (inView(l)) s += `<path d="${line(l)}" fill="none" stroke="var(--geo-border)" stroke-width=".55" stroke-dasharray="2.5,2.5" stroke-linecap="round" opacity=".45"/>`;
   for (const poly of g.p) s += `<path d="${path(poly)}" fill="${fill(c)}" opacity=".5" stroke="${fill(c)}" stroke-width="1.2" stroke-linejoin="round"/>`;
   /* 河名只给真正穿过本文明版图的那几条。必须用「点在多边形内」判定,不能图省事
      用外接矩形:版图多是狭长或不规则的,矩形会把邻居的河也框进来——西汉会标上
@@ -12698,7 +12763,7 @@ function mapHTML(c) {
   s += `<text x="${sx(g.c[0]).toFixed(1)}" y="${(sy(g.c[1]) - 4).toFixed(1)}" text-anchor="middle" font-size="10" font-weight="700" fill="var(--ink)" stroke="var(--surface)" stroke-width="3" paint-order="stroke">${cN(c)}</text>`;
   s += '</svg>';
   const far = farPeers.length ? `${T(' · 视野外同期:',' · off-map: ')}${farPeers.map(o => `<span class="peer-go" data-goto="${attr(o.n)}">${cN(o)}</span>`).join(T('、',', '))}` : '';
-  return `<div class="p-map">${s}<div class="cap">${T('约 ','c. ')}${fmtY(py)}${T(' 年前后 · 版图为粗略示意 · 圆点为同期主要文明',' · rough territorial sketch · dots = major contemporaries')}${far}</div></div>`;
+  return `<div class="p-map">${s}<div class="cap">${T('约 ','c. ')}${fmtY(py)}${T(' 年前后 · 版图为粗略示意 · 圆点为同期主要文明 · 细虚线是今天的国界,不是那个年代的',' · rough territorial sketch · dots = major contemporaries · thin dashes are today\'s borders, not those of the period')}${far}</div></div>`;
 }
 let cur = null;
 /* 把"中心"里的古地名换算成今天的位置。始终按中文原文查 PLACE(中英共用一套键),
@@ -14221,6 +14286,98 @@ function fhDismiss() {
   try { localStorage.setItem('whviz-hint', '1'); } catch (e) {}
 }
 try { if (!localStorage.getItem('whviz-hint')) document.getElementById('firstHint').hidden = false; } catch (e) {}
+/* ---------- v220 首访引导:三步 ----------
+   与 v151 开场条的分工:开场条是**常驻**的今日文明 + 一行提示;引导层是**只出一次**的三步演示。
+   跑完/跳过时一并把 whviz-hint 置位——那一行提示讲的就是引导里的第二、三步,再留着是重复。
+   步骤定义放数据里,加一步不用碰渲染逻辑。 */
+const TOUR = { i: 0, on: false };
+const TOUR_STEPS = [
+  { target: () => document.querySelector('.chart-card'),
+    zh: '这条河是时间。左边是很久很久以前，右边是今天。',
+    en: 'This river is time. Long, long ago on the left; today on the right.',
+    enter: () => { if (!PB.on) pbToggle(); },      // 让它自己流给孩子看
+    leave: () => { if (PB.on) pbStop(); } },
+  { target: () => tourBandEl(), tap: true, scroll: true,
+    zh: '每一条带子是一个文明。点它，就能看它的故事。',
+    en: 'Each band is a civilization. Tap one to read its story.' },
+  { target: () => document.getElementById('vwGeo'), scroll: true,
+    zh: '想知道你住的地方以前住着谁？点这里，换成按地方看。',
+    en: 'Want to know who lived where you live? Tap here for the by-place view.' }
+];
+/* 第二步高亮哪条色带:用当天的「今日文明」那条——开场条上刚说过它的名字,
+   两处指的是同一条,孩子的注意力不用第二次搬家。找不到就退回图表整体。 */
+function tourBandEl() {
+  const c = (typeof TODAY_C !== 'undefined' && TODAY_C) ? TODAY_C.c : null;
+  const i = c ? CIVS.indexOf(c) : -1;
+  return (i >= 0 && chart && chart.querySelector(`path.band[data-ci="${i}"]`)) || document.querySelector('.chart-card');
+}
+function tourPlace() {
+  const st = TOUR_STEPS[TOUR.i], el = st.target();
+  const hole = document.getElementById('tourHole'), box = document.getElementById('tourBox'), tap = document.getElementById('tourTap');
+  if (!el) { tourEnd(); return; }
+  /* 目标可能在横向滚动区之外(今日文明若是现代色带,它在时间轴最右端,离视口两千多像素),
+     不先滚进来,量出来的 rect 会落在视口外、尺寸 clamp 成负数,洞就画不出来。
+     用 behavior:'auto' 而不是 smooth——后台标签页里 smooth scroll 不动,验证会失真(见 CHANGELOG v203)。 */
+  if (st.scroll) el.scrollIntoView({ block: 'center', inline: 'center', behavior: 'auto' });
+  const r = el.getBoundingClientRect(), pad = 8;
+  let top = r.top - pad, left = r.left - pad, w = r.width + pad * 2, h = r.height + pad * 2;
+  left = Math.max(4, Math.min(left, innerWidth - 28));
+  top  = Math.max(4, Math.min(top,  innerHeight - 28));
+  w = Math.max(24, Math.min(w, innerWidth  - left - 4));
+  h = Math.max(24, Math.min(h, innerHeight - top  - 4));
+  hole.style.top = top + 'px'; hole.style.left = left + 'px';
+  hole.style.width = w + 'px'; hole.style.height = h + 'px';
+  /* 文案框位置:洞下方 → 洞上方 → 都放不下(第一步高亮的是整张图表,占满视口)就落到左下角。
+     落左下角时要给时光穿梭的信息带让位:那条带正在动,是第一步要孩子看的东西,不能压住。 */
+  const bh = box.getBoundingClientRect().height || 120;
+  const bw = box.getBoundingClientRect().width || 320;
+  const below = top + h + 12, above = top - bh - 12;
+  const pbH = document.body.classList.contains('pb-on')
+    ? (parseInt(getComputedStyle(document.body).getPropertyValue('--pb-h')) || 96) : 12;
+  let bt;
+  if (below + bh < innerHeight - 8) bt = below;
+  else if (above >= 8) bt = above;
+  else bt = Math.max(8, innerHeight - bh - pbH - 12);
+  box.style.top = bt + 'px';
+  box.style.left = Math.max(12, Math.min(left, innerWidth - bw - 12)) + 'px';
+  tap.hidden = !st.tap;
+  if (st.tap) { tap.style.top = (top + h / 2 - 4) + 'px'; tap.style.left = (left + w / 2 - 17) + 'px'; }
+  document.getElementById('tourTxt').textContent = T(st.zh, st.en);
+  document.getElementById('tourDots').innerHTML = TOUR_STEPS.map((_, k) => `<i class="${k === TOUR.i ? 'on' : ''}"></i>`).join('');
+  document.getElementById('tourSkip').textContent = T('跳过', 'Skip');
+  document.getElementById('tourNext').textContent = TOUR.i === TOUR_STEPS.length - 1 ? T('知道了', 'Got it') : T('下一步', 'Next');
+}
+function tourGo(i) {
+  const prev = TOUR_STEPS[TOUR.i];
+  if (prev && prev.leave) prev.leave();
+  if (i >= TOUR_STEPS.length) { tourEnd(); return; }
+  TOUR.i = i;
+  const st = TOUR_STEPS[i];
+  if (st.enter) st.enter();
+  tourPlace();
+}
+function tourStart() {
+  TOUR.on = true; TOUR.i = 0;
+  document.getElementById('tour').hidden = false;
+  const st = TOUR_STEPS[0]; if (st.enter) st.enter();
+  tourPlace();
+}
+function tourEnd() {
+  TOUR.on = false;
+  const st = TOUR_STEPS[TOUR.i]; if (st && st.leave) st.leave();
+  document.getElementById('tour').hidden = true;
+  try { localStorage.setItem('whviz-tour', '1'); } catch (e) {}
+  fhDismiss();   // 引导里已经讲过那一行提示的两个入口
+}
+document.getElementById('tourCatch').addEventListener('click', () => tourGo(TOUR.i + 1));
+document.getElementById('tourNext').addEventListener('click', e => { e.stopPropagation(); tourGo(TOUR.i + 1); });
+document.getElementById('tourSkip').addEventListener('click', e => { e.stopPropagation(); tourEnd(); });
+addEventListener('keydown', e => { if (TOUR.on && e.key === 'Escape') tourEnd(); });
+addEventListener('resize', () => { if (TOUR.on) tourPlace(); });
+/* 「?」常驻在开场条上,任何时候都能重看——看过一次就再也找不到的引导等于没有 */
+document.getElementById('tourQ').addEventListener('click', tourStart);
+try { if (!localStorage.getItem('whviz-tour')) setTimeout(tourStart, 450); } catch (e) {}
+
 document.getElementById('fhX').addEventListener('click', fhDismiss);
 document.getElementById('playBtn').addEventListener('click', fhDismiss);
 document.getElementById('vwGeo').addEventListener('click', fhDismiss);
@@ -14230,6 +14387,7 @@ function applyLang() {
   document.getElementById('h1T').textContent = T('文明长河', 'A River of Civilizations');
   document.getElementById('subT').textContent = T('从史前到现代：各区域主导文明的兴衰与往来。厚度 = 区域内相对影响力（示意），颜色 = 所属文明圈，同色的深浅只为区分相邻色带、没有含义。点击任意色带查看详情。',
     'Prehistory to the present: the rise, fall and exchanges of each region\'s dominant civilizations. Thickness = relative regional influence (illustrative); color = civilizational sphere; lighter and darker shades of one color only tell neighbouring bands apart and carry no meaning. Click any band for details.');
+  document.getElementById('tourQ').textContent = T('? 怎么玩', '? How to use');
   document.getElementById('evLbl').textContent = T('交流事件', 'Exchange events');
   tvHeadTexts();
   document.getElementById('notesT').innerHTML = T(
