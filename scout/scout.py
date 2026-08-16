@@ -22,6 +22,8 @@ import lark_oapi as lark
 from lark_oapi.api.im.v1 import (
     GetMessageResourceRequest,
     P2ImMessageReceiveV1,
+    PatchMessageRequest,
+    PatchMessageRequestBody,
     ReplyMessageRequest,
     ReplyMessageRequestBody,
 )
@@ -143,25 +145,56 @@ def speech_to_text(audio: bytes) -> str:
     return r["data"]["recognition_text"]
 
 
-def reply_card(message_id: str, markdown: str) -> None:
-    card = json.dumps(
+def card_json(markdown: str) -> str:
+    return json.dumps(
         {
             "config": {"wide_screen_mode": True},
             "elements": [{"tag": "markdown", "content": markdown}],
         },
         ensure_ascii=False,
     )
+
+
+def reply_card(message_id: str, markdown: str) -> str | None:
+    """回复一张卡片,返回机器人这条消息的 message_id(供后续原地更新)。"""
     req = (
         ReplyMessageRequest.builder()
         .message_id(message_id)
         .request_body(
-            ReplyMessageRequestBody.builder().content(card).msg_type("interactive").build()
+            ReplyMessageRequestBody.builder()
+            .content(card_json(markdown))
+            .msg_type("interactive")
+            .build()
         )
         .build()
     )
     resp = feishu.im.v1.message.reply(req)
     if not resp.success():
         print(f"[scout] 回复失败: {resp.code} {resp.msg}")
+        return None
+    return resp.data.message_id
+
+
+def update_card(bot_message_id: str, markdown: str) -> bool:
+    """把机器人已发出的卡片原地更新成新内容。"""
+    req = (
+        PatchMessageRequest.builder()
+        .message_id(bot_message_id)
+        .request_body(PatchMessageRequestBody.builder().content(card_json(markdown)).build())
+        .build()
+    )
+    resp = feishu.im.v1.message.patch(req)
+    if not resp.success():
+        print(f"[scout] 更新卡片失败: {resp.code} {resp.msg}")
+        return False
+    return True
+
+
+def deliver(user_message_id: str, ack_id: str | None, markdown: str) -> None:
+    """优先原地更新「查询中」卡片;更新不了就退回发一条新回复。"""
+    if ack_id and update_card(ack_id, markdown):
+        return
+    reply_card(user_message_id, markdown)
 
 
 def image_ext(data: bytes) -> str:
@@ -181,6 +214,7 @@ def handle(event: P2ImMessageReceiveV1) -> None:
         return
 
     image_path = None
+    ack_id = None
     try:
         content = json.loads(msg.content)
         if msg.message_type == "text":
@@ -198,11 +232,13 @@ def handle(event: P2ImMessageReceiveV1) -> None:
             reply_card(msg.message_id, "目前支持:文字、照片、语音。发一张封面/海报/门店照试试?")
             return
 
+        # 立刻回一张状态卡,查完后原地更新成结果
+        ack_id = reply_card(msg.message_id, "🔍 收到,正在识别和联网查评分,约 1 分钟…")
         print(f"[scout] 收到 {msg.message_type} 消息,查询中(约 1 分钟)…")
-        reply_card(msg.message_id, ask_claude(task, image_path))
+        deliver(msg.message_id, ack_id, ask_claude(task, image_path))
     except Exception as e:  # 任何一步失败都告诉用户,别静默
         print(f"[scout] 处理出错: {e!r}")
-        reply_card(msg.message_id, f"这次没查成 😵 ({type(e).__name__}),再发一次试试?")
+        deliver(msg.message_id, ack_id, f"这次没查成 😵 ({type(e).__name__}),再发一次试试?")
     finally:
         if image_path and os.path.exists(image_path):
             os.remove(image_path)
