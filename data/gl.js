@@ -167,6 +167,10 @@ const GL = {
  { a:950, b:999, k:'art', t:['新波斯语文学','New Persian literature'], d:['《列王纪》让波斯的记忆没有断掉。','The Shahnameh keeps Persian memory unbroken.'] } ],
 '喀喇汗王朝': [ { a:1000, b:1100, k:'thought', t:['突厥语的第一批书','The first books in Turkic'], d:['《福乐智慧》与《突厥语大词典》,一部讲怎么活,一部讲怎么说。','One on how to live, one on how to speak.'] } ],
 '西辽·哈剌契丹': [ { a:1132, b:1211, k:'thought', t:['多信仰共治','Rule across faiths'], d:['佛教君主治穆斯林臣民,不强求改宗。','A Buddhist court over Muslim subjects, conversion not required.'] } ],
+'北元·蒙古诸部': [
+  { a:1571, b:1635, k:'econ', t:['长城下的互市','Markets under the Wall'], d:['隆庆和议后开了十一处马市,用马换茶、布与铁锅;抢了两百年之后,买反而更划算。','Eleven horse markets opened after 1571 — horses for tea, cloth and iron pots. After two centuries of raiding, buying turned out to pay better.'] },
+  { a:1578, b:1635, k:'thought', t:['喇嘛教传遍蒙古','Lamaism sweeps the steppe'], d:['俺答汗给出「达赖喇嘛」称号之后,寺院取代萨满,蒙古文佛经也在这几十年里译出。','After Altan Khan conferred the title, monasteries displaced the shamans and the Mongolian Buddhist canon was translated.'] },
+],
 '哈萨克汗国': [ { a:1500, b:1700, k:'art', t:['口传史诗与冬不拉','Oral epic and the dombra'], d:['没有文字的年代,历史靠弹唱一代代传下去。','Before writing, history travelled by song.'] } ],
 '布哈拉·希瓦·浩罕三汗国': [ { a:1500, b:1700, k:'thought', t:['经学院之城','City of madrasas'], d:['布哈拉一城的经学院数以百计,号称"伊斯兰之穹"。','Hundreds in Bukhara alone — "the dome of Islam".'] } ],
 '回鹘': [ { a:757, b:840, k:'econ', t:['绢马贸易','Silk for horses'], d:['一匹马换四十匹绢,唐朝欠账到国库紧张。','Forty bolts of silk per horse — the Tang ran up a debt.'] } ],
