@@ -84,6 +84,8 @@ def build_prompt(task_text: str, image_path: str | None) -> str:
 
 def ask_claude(task_text: str, image_path: str | None = None) -> str:
     """调用本地 Claude Code 无头模式(走订阅额度,无 API 费用)。"""
+    # 环境里若残留 ANTHROPIC_API_KEY 等,Claude Code 会弃用订阅登录改走 API key,这里主动剔除
+    env = {k: v for k, v in os.environ.items() if not k.startswith("ANTHROPIC_")}
     result = subprocess.run(
         [
             CLAUDE_BIN,
@@ -96,6 +98,7 @@ def ask_claude(task_text: str, image_path: str | None = None) -> str:
         text=True,
         timeout=300,
         cwd=SCOUT_DIR,
+        env=env,
     )
     if result.returncode != 0:
         raise RuntimeError(f"claude 退出码 {result.returncode}: {result.stderr.strip()[-500:]}")
