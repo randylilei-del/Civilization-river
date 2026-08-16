@@ -568,6 +568,9 @@ const NOT_IN = [
   ['德里', 77.21, 28.61, ['元']],                // 元没到南亚
   ['拉合尔', 74.34, 31.55, ['阿拉伯哈里发']],    // 阿拉伯止于信德,没进旁遮普
   ['伊斯坦布尔', 28.98, 41.01, ['中世纪西欧']],  // 拉丁西欧不含拜占庭
+  /* v233.1:核查实测出 v230 补画时两处顺带扩过头,补上探针钉住 */
+  ['格拉纳达', -3.60, 37.18, ['中世纪西欧']],    // 纳斯里德到 1492 才亡,站内非斯段自己写着这一年
+  ['和田', 79.92, 37.12, ['元']],                // 塔里木西南在元多属察合台汗国
 ];
 NOT_IN.forEach(([name, lon, lat, civs]) => {
   civs.forEach(cn => {
@@ -1184,7 +1187,15 @@ CIVS.forEach(c => {
   for (const [zk, ek] of [['成就', 'Legacy'], ['人物', 'Figures']]) {
     CIVS.forEach(c => {
       const zh = (c.f && c.f[zk]) || '', en = (c.e && c.e.f && c.e.f[ek]) || '';
-      if (!zh || !en) return;
+      /* v233.1:原来这里写的是 `if (!zh || !en) return`,于是「一侧整个为空」——**恰恰是最坏的
+         不对称**——被静默跳过。核查扫出三条:瓦里·蒂瓦纳科中文根本没有「成就」键而英文有 Legacy,
+         花剌子模与布哈拉三汗国中文用的是「关键词」键、英文却挂在 Legacy 上(渲染出来一边写
+         「关键词」一边写 Legacy)。只在两侧皆空时才跳过。 */
+      if (!zh && !en) return;
+      if (!zh || !en) {
+        P.push(`[中英一侧为空] ${c.n} ${!zh ? zk + ' 缺失而 ' + ek + ' 有内容' : ek + ' 缺失而 ' + zk + ' 有内容'} —— 一侧的读者完全看不到这一行`);
+        return;
+      }
       const a = zh.split(NS).map(sp).filter(Boolean), b = en.split(NS).map(sp).filter(Boolean);
       if (a.length !== b.length)
         P.push(`[中英项数不等] ${c.n} ${zk}(${a.length} 项) vs ${ek}(${b.length} 项) —— 这两格按位置对应,少一项英文就永远看不到最后那样`);
