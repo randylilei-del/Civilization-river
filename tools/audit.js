@@ -1159,6 +1159,26 @@ CIVS.forEach(c => {
  * 五条大洋洲色带在页面上是黑的,而 audit 与「148 卡 × 中英」全量扫描都查不出来
  * (它们查文字内容,不查填充色)。index.html 里同一套调色板出现在多个主题块中,
  * 漏掉任何一块就是那个主题下的黑带,所以这里按出现次数比对而不只查存在性。 */
+/* 规则 67(v226.1):**`display` 会盖掉 `[hidden]`**。给元素写了 `display: flex/inline-flex/grid`
+ * 之后,HTML 的 hidden 属性与 `el.hidden = true` 就都失效了——元素照样显示,而 JS 读到的
+ * `el.hidden` 是 true,任何「查属性」的测试都会通过。
+ * 这不是假想:①v151 的首访提示 `#firstHint` 从做出来那天起点了 × 就关不掉 ②v226 的欢迎屏
+ * 同样中招,Ray 在 iPad 上看到的「点了准备好了遮罩还在」就是它,而我上一轮只验了属性值、
+ * 没截图看,漏了过去。站内 `#pcard` `#geoview` `#tableview` `#gvLb` `#playbar` 五处都
+ * 补了 `[hidden] { display:none }`,说明这是已知的坑——规则要做的是不让下一个再漏。 */
+{
+  const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
+  /* 只查「HTML 里初始就带 hidden 属性」的元素:它们必然是靠 hidden 控制显隐的 */
+  const ids = [...html.matchAll(/<[^>]+id="([A-Za-z0-9_-]+)"[^>]*\shidden[\s>]/g)].map(m => m[1]);
+  for (const id of new Set(ids)) {
+    const decl = new RegExp('#' + id + '\\s*\\{[^}]*display\\s*:', 'g');
+    if (!decl.test(html)) continue;                       // 没设 display,不受影响
+    const guard = new RegExp('#' + id + '\\[hidden\\]\\s*\\{[^}]*display\\s*:\\s*none');
+    if (!guard.test(html))
+      P.push(`[hidden 被 display 盖掉] #${id} 的 CSS 里设了 display 却没有 \`#${id}[hidden] { display:none }\` —— 设了 hidden 也关不掉,而 JS 读到的 el.hidden 仍是 true`);
+  }
+}
+
 /* 规则 65(v221):`d` 与 `e.d` 的长度比。两侧是分别写的、不是翻译,所以「双语都在、都非空」
  * (规则 49)完全查不出**一侧偷偷长出一整段**。2026-08-16 核查 v217 时,摩洛哥的英文 e.d 比中文 d
  * 多出了白图泰的出生地、"as far west as Algiers"、整句非斯老城无车等六组事实,英文读者拿到的是

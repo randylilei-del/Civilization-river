@@ -314,22 +314,28 @@ svg { display: block; }
    "准备好了吗",才是把人接住的顺序。
    **遮罩用浅色不用深色**:三步引导的深色遮罩是为了把注意力挤到那个洞上;欢迎屏没有洞,
    要的是"整张图还在,只是先蒙一层"的感觉,浅色 + 模糊正好——深色会把底下的长河压没。 */
+/* ⚠ `display: flex` 会**覆盖 `[hidden]` 的 display:none**——设了 hidden 属性,元素照样显示。
+   v226 就栽在这里:代码里把欢迎屏设成 hidden、JS 也读到 hidden=true,而屏幕上遮罩纹丝不动,
+   Ray 在 iPad 上看到的「点了准备好了遮罩还在」就是它。凡是给元素设了 display,
+   都要补一条 [hidden] 规则把它按回去。 */
+.tour-welcome[hidden] { display: none; }
 .tour-welcome {
   position: fixed; inset: 0; z-index: 3; display: flex; align-items: center; justify-content: center;
-  background: rgba(252,251,249,.82); backdrop-filter: blur(3px); padding: 20px;
+  background: rgba(252,251,249,.90); backdrop-filter: blur(6px); padding: 20px;
   animation: twFade .35s ease both;
 }
-:root[data-theme="dark"] .tour-welcome { background: rgba(18,18,17,.86); }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .tour-welcome { background: rgba(18,18,17,.86); } }
+:root[data-theme="dark"] .tour-welcome { background: rgba(18,18,17,.92); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .tour-welcome { background: rgba(18,18,17,.92); } }
+/* v226.1(Ray 实机反馈):**不要中间那个白色方框**。文字与按钮直接落在遮罩上,
+   靠遮罩本身的模糊把底图压住可读性,不再另起一层卡片。 */
 .tw-box {
-  max-width: 430px; text-align: center; padding: 30px 34px 24px;
-  background: var(--surface); color: var(--ink);
-  border-radius: 18px; box-shadow: 0 18px 48px rgba(0,0,0,.22);
+  max-width: 460px; text-align: center; padding: 0 8px;
+  color: var(--ink);
   animation: twRise .4s cubic-bezier(.2,.7,.3,1) both .06s;
 }
-.tw-box h2 { margin: 0 0 12px; font-size: 22px; font-weight: 700; letter-spacing: .01em; }
-.tw-box p { margin: 0 0 8px; font-size: 15px; line-height: 1.72; color: var(--ink-2); }
-.tw-box .tw-sub { font-size: 13.5px; margin-bottom: 22px; }
+.tw-box h2 { margin: 0 0 16px; font-size: 26px; font-weight: 700; letter-spacing: .01em; }
+.tw-box p { margin: 0 0 10px; font-size: 16px; line-height: 1.75; color: var(--ink); }
+.tw-box .tw-sub { font-size: 14.5px; margin-bottom: 26px; color: var(--ink-2); }
 .tw-go {
   font: inherit; font-size: 15px; font-weight: 600; cursor: pointer;
   padding: 11px 30px; border-radius: 11px;
@@ -350,9 +356,13 @@ svg { display: block; }
    为什么点哪儿都前进:三步、每步一句话,给 7 岁的东西不该有「点错地方就卡住」这种状态。
    遮罩用一个巨大的 box-shadow 挖洞,不改动被高亮元素本身(改它就要处理层叠、滚动、主题三件事)。 */
 #tour { position: fixed; inset: 0; z-index: 60; }
+/* v226.1(Ray 实机反馈):**点完「准备好了」就不该还蒙一层**。原来这里是
+   `box-shadow: 0 0 0 9999px rgba(0,0,0,.5)` 的挖洞遮罩——那是三步引导独立存在时的
+   思路(把注意力挤进洞里);接在欢迎屏后面就变成「刚说完开始,结果又蒙一层」。
+   改成页面完全正常,只用一个描边光圈标出位置。 */
 .tour-hole {
   position: fixed; border-radius: 12px; pointer-events: none;
-  box-shadow: 0 0 0 9999px rgba(0,0,0,.5);
+  box-shadow: 0 0 0 2.5px var(--ink), 0 0 0 6px var(--surface-82), 0 6px 22px rgba(0,0,0,.18);
   transition: top .35s cubic-bezier(.4,0,.2,1), left .35s cubic-bezier(.4,0,.2,1),
               width .35s cubic-bezier(.4,0,.2,1), height .35s cubic-bezier(.4,0,.2,1);
 }
@@ -494,6 +504,7 @@ svg.no-ev .evg { display: none; }
 .start-strip #civToday .ct-badge { flex: none; background: var(--ink); color: var(--surface); font-size: 11.5px; font-weight: 600; padding: 4px 10px; border-radius: 999px; }
 .start-strip #civToday .dot { flex: none; width: 10px; height: 10px; border-radius: 3px; }
 .start-strip #civToday b { color: var(--ink); font-weight: 700; font-size: 14px; }
+#firstHint[hidden] { display: none; }   /* v226.1:不补这条,display 会盖掉 hidden——点了 × 也关不掉 */
 #firstHint { display: inline-flex; gap: 8px; align-items: baseline; }
 #firstHint button { border: 0; background: none; color: var(--muted); cursor: pointer; font-size: 14px; padding: 0 2px; line-height: 1; }
 #firstHint button:hover { color: var(--ink); }
