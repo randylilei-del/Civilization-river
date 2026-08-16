@@ -170,7 +170,7 @@ const GL = {
 ],
 '阿兹特克': [ { a:1440, b:1519, k:'econ', t:['特拉特洛尔科市场','The great market'], d:['西班牙人说他们从没见过这么大的集市。','The Spaniards said they had never seen its like.'] } ],
 '巽伽与恒河诸国': [
-  { a:-150, b:100, k:'art', t:['桑奇的塔门','The gateways of Sanchi'], d:['阿育王建的是塔身,四座满刻本生故事的塔门是巽伽时期加的——今天去桑奇看的主要就是这几座门。','Ashoka raised the dome; the four gateways, carved all over with birth-stories, come from the Shunga period — and they are the main thing visitors go to see.'] },
+  { a:-150, b:100, k:'art', t:['桑奇:砖塔包上石头','Sanchi cased in stone'], d:['阿育王建的是砖塔,巽伽时期给它包石、扩大一倍、加了一圈石栏楯;四座塔门更晚,南门题记留着出钱的人——娑多迦尼王的工匠首领与毗底沙象牙工匠行会。','Ashoka built in brick; the Shunga period cased it in stone, doubled its size and added a carved railing. The four gateways came later, and the south one names its donors: a foreman of king Satakarni\'s craftsmen and the ivory-workers\' guild of Vidisha.'] },
   { a:-150, b:200, k:'thought', t:['把话定下来','Fixing the words'], d:['两大史诗在这几百年里从口传定成文本,帕坦伽利写下《大疏》钉住梵语语法,此后两千年几乎没再变。','The two epics settled from oral performance into text in these centuries, and Patanjali\'s great commentary pinned down Sanskrit grammar so firmly that it hardly moved for two thousand years.'] },
 ],
 '百乘王朝': [

@@ -235,6 +235,18 @@ const CIV_PHOTO = {
  { f:'Kanishka_casket,_Asia,_G33_South_Asia.jpg', h:'9/9a', t:['迦腻色伽舍利函','the Kanishka casket'], by:'Anthony Huan', lic:'CC BY-SA 2.0' },
  { f:'General_View_of_the_main_Butkara-I_Stupa.JPG', h:'9/99', t:['布特卡拉佛塔','the Butkara stupa'], by:'Muhammad Zahir', lic:'CC BY-SA 3.0' },
 ],
+'伐卡塔卡与德干诸国': [
+  /* v242.1:阿旃陀第二期洞窟正是这条带的头号成就,而这张图原本只挂在笈多下(笈多卡通篇不提阿旃陀) */
+  { f:'Ajanta_(63).jpg', h:'c/c3', t:['阿旃陀石窟','the Ajanta caves'], by:'No machine-readable author provided. Soman assumed (based on', lic:'CC BY 2.5' },
+],
+'巽伽与恒河诸国': [
+  /* v243.1:这张图拍的正是桑奇的东塔门与包石后的塔身 */
+  { f:'East_Gateway_-_Stupa_1_-_Sanchi_Hill_2013-02-21_4398.JPG', h:'1/12', t:['桑奇大塔','the Great Stupa at Sanchi'], by:'Biswarup Ganguly', lic:'CC BY 3.0' },
+],
+'阿瓦·勃固': [
+  /* v240.1:信修浮第一次给整座塔贴金,是这条带的头号成就 */
+  { f:'Shwedagon_Pagoda_2017.jpg', h:'c/c4', t:['大金塔','the Shwedagon Pagoda'], by:'Bjørn Christian Tørrissen', lic:'CC BY-SA 4.0' },
+],
 '笈多王朝': [
  { f:'Ajanta_(63).jpg', h:'c/c3', t:['阿旃陀石窟','the Ajanta caves'], by:'No machine-readable author provided. Soman assumed (based on', lic:'CC BY 2.5' },
  { f:'Iron_Pillar,_Delhi,_May_2008.jpg', h:'8/82', t:['德里铁柱','the iron pillar of Delhi'], by:'Photograph taken by Mark A. Wilson (Department of Geology, T', lic:'Public domain' },
