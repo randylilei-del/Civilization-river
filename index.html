@@ -11463,17 +11463,17 @@ CIVS.forEach(c => { const g = GL[c.n] || c.gl; if (g) g.sort((x, y) => x.a - y.a
    口径纪律同六问:主流共识、传播路线有争议处在 d 里写明、不写单因论。
 
    ---- 人口流的入选判据(v189,Ray 认可;四条全中才做) ----
-   1. **改变了目的地的语言或人口构成**——只是军事征服不算,那是色带该讲的事
-   2. **跨至少两条泳道**——只在一个区域内部的移动是某个文明的内政
-   3. **有 3 个以上能给出年份和地点的节点**——给不出就只是一团模糊的箭头
-   4. **能给 7 岁讲成一个动作**:「谁,从哪儿,走到哪儿」
+   1. 改变了目的地的语言或人口构成——只是军事征服不算,那是色带该讲的事
+   2. 跨至少两条泳道——只在一个区域内部的移动是某个文明的内政
+   3. 有 3 个以上能给出年份和地点的节点——给不出就只是一团模糊的箭头
+   4. 能给 7 岁讲成一个动作:「谁,从哪儿,走到哪儿」
 
    立这条判据的由来:原来只有两条个案裁决(奴隶贸易做/黑死病不做),没有正面判据,
    于是每加一条都要重新吵一次,而且会系统性地偏向「当时恰好想到的那条」。
    回测:班图/突厥/奴隶贸易/下南洋四条全中;黑死病挂在第 1 条(流动的是病不是人),
    与原裁决一致。用它一扫浮出来的大缺口:印欧语系扩散(四条全中,争议大需写明)、
    维京扩张(站里连维京色带都没有)、南岛语族向西到马达加斯加、腓尼基与希腊的地中海
-   殖民、日耳曼大迁徙。**加轨迹前先过这四条,过不了就别加。**
+   殖民、日耳曼大迁徙。加轨迹前先过这四条,过不了就别加。
    ⚠ 判据只管「该不该做」,不管「画不画得出来」:停靠站的纵坐标由 l(泳道)决定,
    目的地没有对应泳道的轨迹画不出移动感(见 v189 大洋洲)。 */
 const TRACES = [
@@ -11665,6 +11665,28 @@ const TRACES = [
   { y:600, l:'st', t:['最东的一支:吐火罗语','The easternmost branch: Tocharian'], d:['塔里木盆地的佛经译本里,写着一种谁也没想到会出现在这里的印欧语——吐火罗语,它在一个关键读音上跟远在西边的拉丁语站在一队,而不是跟近在咫尺的印度语——但这不说明它们是近亲,只说明它保留了更老的样子。顺带说一件事:最早那批塔里木干尸曾被认作从草原迁来的吐火罗人,2021年古 DNA 显示他们是本地的古老人群;不过他们说的是什么话,基因回答不了。','In Buddhist translations from the Tarim Basin sits an Indo-European language nobody expected to find there — Tocharian, On one key sound it lines up with Latin far to the west rather than with the Indian languages next door — which does not make them close relatives, only means it kept an older form. One thing worth adding: the earliest Tarim mummies were long taken for Tocharians who had come off the steppe, and ancient DNA in 2021 showed they were a local, very old population — though what language they spoke is not a question genes can answer.'], p:0 },
   { y:1786, l:'sa', t:['加尔各答的一次演讲','A lecture in Calcutta'], d:['这一站起,动的不再是人,是后来的人在追查前面发生过什么。英国法官威廉·琼斯在加尔各答讲道:梵语与希腊语、拉丁语相似到不可能是巧合,三者必定同出一源。他不是第一个注意到的人,但这次演讲之后,追查这门亲缘关系成了一门学问——只靠比较词语和语法,人们复原出一种从没有人写下来过的语言。','From here on it is not people who move but later people working out what happened. In Calcutta the English judge William Jones argued that Sanskrit resembles Greek and Latin too closely for accident, and that all three must have sprung from a common source. He was not the first to notice it, but after that lecture tracing the kinship became a discipline — and by comparing words and grammar alone, scholars reconstructed a language nobody had ever written down.'], p:4 },
   { y:2015, l:'eu', t:['古 DNA 出场','Ancient DNA arrives'], d:['老家在哪儿,学者争了两百年;近几十年主要是草原说和安纳托利亚农业说在争。2015年古 DNA 给草原说加上了重重一码:大规模人群迁徙确实发生过。但事情没有就此了结——2023年有研究提出高加索以南更早的源头加上后来的草原扩散;2025年一项迄今最大规模的古 DNA 研究又提出,颜那亚人和赫梯人共同的祖先来自里海西北一带。今天仍在争。','Where the homeland lay has been argued for two centuries, and for the last few decades mainly between the steppe and an Anatolian farming origin. In 2015 ancient DNA put heavy weight behind the steppe: a large-scale migration really did happen. It did not end there — a 2023 study proposed an earlier source south of the Caucasus plus the later steppe spread, and in 2025 the largest ancient-DNA study yet argued that the Yamnaya and the Hittites share an ancestral population from northwest of the Caspian. It is still being argued.'], p:6 },
+] },
+{ g:'people', n:['腓尼基人与希腊人的地中海殖民','Phoenicians and Greeks colonise the Mediterranean'], stops:[
+  { y:-1100, l:'me', t:['出发:提尔与西顿','Setting out: Tyre and Sidon'], d:['黎凡特海岸的几座城挤在山与海之间,地少人多,只能往外走。腓尼基人的船沿着海岸线一段段往西,先设停靠点补水,再设商站,商站住久了就成了城。','A few cities on the Levantine coast, squeezed between mountains and sea with too little land, had to go outward. Phoenician ships worked west along the coast, first watering stops, then trading posts, and posts lived in long enough became towns.'] },
+  { y:-814, l:'me', t:['迦太基','Carthage'], d:['传统年份说是提尔人建的,后来长成整个西地中海最大的城,反过来盖过了母城。腓尼基人带出去的还有他们的字母——希腊人从他们那里学去,再传给罗马,今天这行字母的祖先就是它。','The traditional date has it founded from Tyre; it grew into the largest city of the western Mediterranean and outgrew its mother city. What the Phoenicians also carried out was their alphabet — the Greeks learned it from them and passed it to Rome, and the letters on this page descend from it.'] },
+  { y:-750, l:'eu', t:['库迈:希腊人到意大利','Cumae: the Greeks reach Italy'], d:['希腊城邦人多地少,把多出来的人成批送出去建新城,叫做「殖民地」——但不是帝国的属地,新城一建就是独立的城邦,只在祭祀上认母城。库迈是意大利最早的一座。','Greek city-states with too many people and too little land sent groups out to found new towns — colonies, though not possessions: each was an independent city from the day it was founded, tied to its mother city only in religion. Cumae was the first in Italy.'] },
+  { y:-733, l:'eu', t:['叙拉古','Syracuse'], d:['科林斯人建于西西里东岸,后来成为西地中海最强的希腊城邦,阿基米德就是这里人。南意大利与西西里的希腊城太密,罗马人索性把这一带叫「大希腊」。','Founded from Corinth on the east coast of Sicily, it became the strongest Greek city in the western Mediterranean; Archimedes was born here. Greek cities were so thick across southern Italy and Sicily that the Romans simply called the region Great Greece.'] },
+  { y:-630, l:'me', t:['昔兰尼','Cyrene'], d:['来自锡拉岛的希腊人在今利比亚东部建城,靠出口一种叫罗盘草的药用植物富起来,那种草后来被采绝了,只留在钱币的图案上。','Greeks from Thera founded a city in what is now eastern Libya and grew rich on silphium, a medicinal plant they exported until it was harvested to extinction — it survives only as a design on their coins.'] },
+  { y:-600, l:'eu', t:['马赛','Massalia'], d:['小亚细亚的福西亚人建于罗讷河口,是今天法国最古老的城市,葡萄和橄榄从这里进入高卢。到这时,从黎凡特到西班牙南岸,地中海一圈都是这两拨航海者留下的城。','Phocaeans from Asia Minor founded it at the mouth of the Rhône; it is the oldest city in France, and grapes and olives entered Gaul through it. By now the whole rim of the Mediterranean, from the Levant to southern Spain, was studded with towns these two seafaring peoples had left.'] },
+] },
+{ g:'people', n:['日耳曼大迁徙','The Germanic Migrations'], stops:[
+  { y:376, l:'eu', t:['哥特人渡多瑙河','The Goths cross the Danube'], d:['匈人从东边压过来,西哥特人整族请求进入罗马境内避难,罗马答应了,却没能安置好——两年后阿德里安堡一战,罗马皇帝战死。此后两百年,一批批部落从莱茵河与多瑙河那一侧进来。','Pressed from the east by the Huns, the Visigoths asked as a people to be let into the empire; Rome agreed and then failed to feed them — two years later the emperor died in battle at Adrianople. For two centuries afterwards, one group after another came in across the Rhine and the Danube.'] },
+  { y:410, l:'eu', t:['西哥特人劫罗马','The Visigoths sack Rome'], d:['八百年来罗马城第一次被外敌攻破,三天洗劫。城当时已不是首都,实质损失有限,但消息传遍地中海世界,「罗马不会倒」这句话从此不再有人信。','For the first time in eight hundred years the city was taken by an outside enemy and sacked for three days. Rome was no longer the capital and the material loss was limited, but the news went round the Mediterranean and no one believed again that Rome could not fall.'] },
+  { y:429, l:'me', t:['汪达尔人渡海到北非','The Vandals cross to Africa'], d:['汪达尔人从西班牙南部渡过直布罗陀,十年间拿下北非最富的行省,连迦太基一并占了,还建起舰队反过来控制西地中海——罗马城的粮食从此断了来路。','The Vandals crossed from southern Spain at Gibraltar and within a decade held Rome\'s richest African provinces, Carthage among them, and built a fleet that controlled the western Mediterranean — the grain supply of the city of Rome was cut off.'] },
+  { y:449, l:'eu', t:['盎格鲁-撒克逊人到不列颠','The Anglo-Saxons reach Britain'], d:['罗马军团撤走之后,北海对岸的盎格鲁人、撒克逊人、朱特人陆续渡海而来。这一支的语言留了下来:今天的英语就是从他们的话长出来的,英格兰(England)这个名字的意思就是「盎格鲁人的地」。','After the legions left, Angles, Saxons and Jutes came across the North Sea. This is the branch whose language stayed: English grew out of their speech, and the name England means the land of the Angles.'] },
+  { y:493, l:'eu', t:['东哥特人据意大利','The Ostrogoths take Italy'], d:['狄奥多里克在意大利建国,自己是哥特人的王,同时替东罗马皇帝管着意大利;他保留了罗马的行政、元老院和法律,拉文纳至今留着他那个时代的镶嵌画。','Theodoric set up his kingdom in Italy, king of the Goths and at the same time governing Italy for the emperor in Constantinople; he kept the Roman administration, senate and law, and the mosaics of his day still stand at Ravenna.'] },
+  { y:507, l:'eu', t:['法兰克人据高卢','The Franks take Gaul'], d:['克洛维击败西哥特人,把高卢大部收入囊中,并且皈依了当地多数人信的正统基督教——这一步让他和罗马旧秩序结成一体,法兰克人因此站得比别的部落都久,后来长成法兰西与神圣罗马帝国。','Clovis beat the Visigoths, took most of Gaul, and converted to the Christianity the local majority already held — the step that bound him to the old Roman order. The Franks outlasted the other groups because of it, and grew into France and the Holy Roman Empire.'] },
+] },
+{ g:'people', n:['南岛语族向西:从婆罗洲到马达加斯加','Austronesians west: from Borneo to Madagascar'], stops:[
+  { y:-1500, l:'se', t:['婆罗洲','Borneo'], d:['南岛语族从台湾出发向南扩散,这一支在婆罗洲住了下来。站里另一条「波利尼西亚大扩散」讲的是他们向东、走进太平洋的那一支;这条讲向西的那一支。','Austronesians spreading south from Taiwan settled Borneo. The other trace in this chart, the Polynesian expansion, follows the branch that went east into the Pacific; this one follows the branch that went west.'] },
+  { y:500, l:'af', t:['马达加斯加','Madagascar'], d:['非洲东边这座世界第四大的岛,最早住下来的人不是从三百多公里外的非洲大陆过去的,而是从七千公里外的婆罗洲渡海而来的。怎么走的至今有争议:一说沿印度洋北岸一段段挪,一说借季风直航;年代也只能给个大概,考古与语言学的证据都指向公元 500 年前后。','The first people to settle the world\'s fourth-largest island, off the coast of Africa, did not come from the mainland three hundred kilometres away but across the sea from Borneo, seven thousand kilometres off. How they went is still argued: some hold they worked along the northern rim of the Indian Ocean, others that they sailed direct on the monsoon; the date can only be given roughly, with archaeology and linguistics both pointing to around 500 CE.'] },
+  { y:800, l:'af', t:['科摩罗群岛','The Comoros'], d:['马达加斯加与非洲大陆之间的这串岛上,考古发现了同一时期的南岛式陶器与作物,是这条航路上的中途站。他们带来的芋头、香蕉、山药后来传进非洲大陆,改变了那里的农业。','On the islands between Madagascar and the mainland, archaeologists have found Austronesian-style pottery and crops of the same period — a waypoint on this route. The taro, bananas and yams they brought later passed into mainland Africa and changed farming there.'] },
+  { y:1000, l:'af', t:['马拉加斯人的形成','The Malagasy take shape'], d:['来自婆罗洲的人与从非洲大陆渡海而来的班图人在岛上混居,形成了今天的马拉加斯人。证据在话里:马拉加斯语属南岛语系,与婆罗洲东南部的马安彦语最接近——一个孩子最容易记住的事实是,非洲东边那座大岛上说的话,和婆罗洲的话是亲戚。','People from Borneo and Bantu-speakers who crossed from the African mainland mixed on the island and became the Malagasy. The evidence is in the language: Malagasy is an Austronesian language, closest to Ma\'anyan in south-eastern Borneo — the easiest fact for a child to hold on to is that the language of that great island off Africa is a relative of the language of Borneo.'] },
 ] },
 ];
 /*__DATA:traces:end__*/
