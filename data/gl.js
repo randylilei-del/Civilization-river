@@ -209,6 +209,9 @@ const GL = {
  { a:1860, b:1900, k:'econ', t:['种植园与劳工贸易','Plantations and the labour trade'], d:['昆士兰与斐济的甘蔗园要人手,1863年起约六万二千人被运往昆士兰、两万七千人以上被运往斐济,有受雇的也有被掳的;这条产业链改变了美拉尼西亚的人口与语言。','The cane fields of Queensland and Fiji needed hands, and from 1863 some sixty-two thousand were carried to Queensland and twenty-seven thousand more to Fiji, some hired and many taken; the trade changed the population and the languages of Melanesia.'] } ],
 '澳新与太平洋岛国': [
  { a:1990, b:2025, k:'thought', t:['小国的气候外交','Climate diplomacy from small states'], d:['人口一万多的国家,管辖的海域比印度还大;巴黎协定里那句 1.5℃ 主要是它们推进去的——对图瓦卢来说那不是模型,是国家还在不在。','States of a few thousand people administer ocean larger than India; the 1.5°C line in the Paris Agreement is there largely because they pushed it in — for Tuvalu that is not a model but whether the country still exists.'] } ],
+'摩洛哥诸王朝': [
+  { a:1323, b:1465, k:'thought', t:['非斯的学院时代','The madrasa age in Fez'], d:['马林诸王在非斯一座接一座地盖学院,阿塔林、布伊纳尼亚都建于这几十年,城市成为伊斯兰世界最重要的学问中心之一。','The Marinid kings put up college after college in Fez — the Attarine and the Bou Inania both date from these decades — and the city became one of the chief centres of learning in the Muslim world.'] },
+  { a:1578, b:1603, k:'econ', t:['糖与黄金','Sugar and gold'], d:['三王之战后,甘蔗制糖与跨撒哈拉的黄金让萨阿德富极一时,素丹艾哈迈德因此得了「黄金的」这个外号。','After the Battle of the Three Kings, cane sugar and trans-Saharan gold made the Saadians briefly rich, and Sultan Ahmad was nicknamed the Golden for it.'] } ],
 '阿富汗': [
   { a:1964, b:1973, k:'thought', t:['宪政十年','The constitutional decade'], d:['颁布宪法,有选举也有自由报刊,喀布尔大学男女同校——现代史上最开放的十年,终于 1973 年的政变。','A constitution, elections and a free press, with men and women studying together at Kabul University — the most open decade in its modern history, ended by the coup of 1973.'] } ],
 '蒙古国': [
