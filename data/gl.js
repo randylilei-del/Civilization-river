@@ -99,6 +99,10 @@ const GL = {
 '德意志': [
  { a:1900, b:1933, k:'thought', t:['物理学之都','Capital of physics'], d:['普朗克、爱因斯坦与哥廷根学派,直到人才流散。','Planck, Einstein, Gottingen — until the exodus.'] },
  { a:1950, b:1990, k:'econ', t:['经济奇迹','The Wirtschaftswunder'], d:['战败时城市成片是瓦砾,二十年后西德成了欧洲最大的工业国。靠的是马歇尔计划的启动资金、并未被炸垮的工业底子,以及把大批技术工人重新组织起来的双元制学徒训练。','Its cities were fields of rubble at the defeat; twenty years later West Germany was Europe\'s largest industrial economy — on Marshall Plan capital, on an industrial base that the bombing had not in fact destroyed, and on an apprenticeship system that put its skilled workers back to work.'] } ],
+'加喜特巴比伦': [
+  { a:-1400, b:-1155, k:'thought', t:['《吉尔伽美什》定本','Gilgamesh made standard'], d:['祭司把早先零散的诗篇整理成一部完整的史诗,今天读到的版本来自这次编定;而它能传下来,靠的是七百年后亚述巴尼拔图书馆里的抄本。','Priests worked the older scattered poems into one complete epic; the text read today descends from this recension — and it survived thanks to copies made seven centuries later in the library at Nineveh.'] },
+  { a:-1400, b:-1200, k:'econ', t:['马与青金石','Horses and lapis'], d:['两河下游的粮食之外,真正让它在国际上说得上话的是马与青金石——阿马尔那的信里,法老要的正是这两样。','Beyond the grain of the lower rivers, what gave it standing abroad were horses and lapis lazuli — the two things pharaoh keeps asking for in the Amarna letters.'] },
+],
 '赫梯': [ { a:-1400, b:-1200, k:'tech', t:['铁器与战车','Iron and chariots'], d:['最早成规模用铁,轻型战车纵横近东。','The first at scale with iron; light chariots rule the Near East.'] } ],
 '迦太基': [ { a:-600, b:-264, k:'econ', t:['西地中海商网','Western Mediterranean network'], d:['从西班牙银矿到北非谷仓,一张海上账本。','From Spanish silver to African grain, one seaborne ledger.'] } ],
 '希腊化王朝': [ { a:-300, b:-150, k:'tech', t:['亚历山大里亚科学','Alexandrian science'], d:['欧几里得的几何、阿基米德的力学、地球周长的测算。','Euclid\'s geometry, Archimedes\' mechanics, the Earth measured.'] } ],
