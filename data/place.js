@@ -114,6 +114,7 @@ const PLACE = {
 '都柏林':['爱尔兰','Ireland','都柏林','Dublin'], '约克':['英国','United Kingdom','约克','York'], '诺曼底':['法国','France'], '冰岛':['冰岛','Iceland','雷克雅未克','Reykjavik'],
 /* v213 斯里兰卡 */
 '阿努拉德普勒':['斯里兰卡','Sri Lanka','阿努拉德普勒','Anuradhapura'], '波隆纳鲁沃':['斯里兰卡','Sri Lanka'], '康提':['斯里兰卡','Sri Lanka','康提','Kandy'],
+'哥本哈根':['丹麦','Denmark','哥本哈根','Copenhagen'], '奥斯陆':['挪威','Norway','奥斯陆','Oslo'], '卑尔根':['挪威','Norway','卑尔根','Bergen'],
 '霍尔木兹':['伊朗','Iran'], '沙迦':['阿联酋','United Arab Emirates','沙迦','Sharjah'], '迪拜':['阿联酋','United Arab Emirates','迪拜','Dubai'],
 '马拉喀什':['摩洛哥','Morocco','马拉喀什','Marrakesh'], '梅克内斯':['摩洛哥','Morocco','梅克内斯','Meknes'], '非斯':['摩洛哥','Morocco','非斯','Fez'],
 '坎大哈':['阿富汗','Afghanistan','坎大哈','Kandahar'], '喀布尔':['阿富汗','Afghanistan','喀布尔','Kabul'],
