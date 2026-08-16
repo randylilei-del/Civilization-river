@@ -3946,7 +3946,11 @@ const GEO = {
 /* v208:东南角补到孟加拉三角洲——加尔各答原在外(笈多盛期辖孟加拉)。 */
 '笈多王朝': { p:[[[72,26],[78,30],[84,27],[91,23.5],[89,21.5],[86,21],[78,20],[72.5,21],[70.4,20.7],[70,22.3],[72,23]]], c:[85.1,25.6] },
 /* v208:西南角推到孟买(72.9°E)——原来切在外面,-185—1585 那座城一片空。 */
-'中世纪诸王朝': { p:[[[70,26],[76,30],[84,27],[88,23],[88,20],[80,16],[72.5,18],[71,22]]], c:[80,26] },
+/* v235:南界原为 [80,16],[72.5,18],把德干腹地切在外面——汉皮(遮娄其—拉施特拉库塔—后遮娄其的地盘)
+   因此 220—1336 空了 1116 年,而这条带的 f.中心 写的正是「卡瑙杰、德干诸都」。
+   **有意不吞**:金奈(朱罗)、加尔各答与达卡(波罗)——这两处基线里的缺口是有意的分工,不是洞(v235 查证)。
+   断言:汉皮/瓦拉纳西在内,金奈/加尔各答/达卡在外。 */
+'中世纪诸王朝': { p:[[[70,26],[76,30],[84,27],[88,23],[88,20],[82,16],[78,14],[75,14.5],[73.5,17],[71,22]]], c:[80,26] },
 '朱罗王朝': { p:[[[76,13],[80,16],[81,10],[80,6],[77.2,7.9]]], c:[79.1,10.8] },
 /* v208:东缘推到比哈尔—孟加拉(巴特那 85.1°E 原在外;苏丹国盛期辖比哈尔与孟加拉)。 */
 /* v213 斯里兰卡诸王国:整座岛。断言:科伦坡 / 阿努拉德普勒 / 康提在内,马杜赖在外。 */
@@ -3961,7 +3965,11 @@ const GEO = {
 '三佛齐': { p:[[[95,5],[100,6],[104,2],[106,-4],[102,-6],[98,0]]], c:[104.7,-3] },
 '高棉·吴哥': { p:[[[100,15],[104,18],[107,15],[108,10],[104,9],[100,12]]], c:[103.9,13.4] },
 '大越': { p:[[[104,22],[107,21],[109,17],[108,15],[105,19]]], c:[105.8,21] },
-'满者伯夷': { p:[[[105,-6],[112,-6],[115,-8],[112,-8],[106,-7]]], c:[112.4,-7.5] },
+/* v235:这条带自己的 b 写着「号令群岛,今日印尼版图的历史蓝本」,而多边形只画了爪哇一岛——自相矛盾。
+   扩到苏门答腊南部:1377 年满者伯夷灭三佛齐残余,巨港入其治下(巨港 1288—1511 原本空 223 年)。
+   雅加达本来就在内(基线如此),重画时保住了。**有意不吞**:马六甲(1400 才建国,恰是满者伯夷衰落的产物)、新加坡、吉隆坡、马尼拉。
+   断言:巨港/雅加达在内,马六甲/新加坡/吉隆坡/马尼拉在外。 */
+'满者伯夷': { p:[[[102,-4.5],[103.5,-1.8],[105.5,-2.5],[106.5,-5.5],[107.5,-6.3],[112,-6.4],[115.5,-8.2],[116,-8.9],[112,-8.7],[106.5,-7.5],[104.5,-5.8]]], c:[112.4,-7.5] },
 '马六甲及诸苏丹国': { p:[[[99,7],[103,6],[104,1],[101,2],[99,5]]], c:[102.2,2.2] },
 '暹罗': { p:[[[98,20],[101,20],[103,16],[102,13],[100,13],[99,16]]], c:[100.5,13.7] },
 '欧洲殖民东南亚': { p:[[[92,22],[98,22],[106,22],[108.5,17.5],[112,17],[122,19],[126,8],[128,-3],[120,-9],[110,-9],[102,-7],[95,3],[92,12]]], c:[106.8,-6.2] },
@@ -8109,6 +8117,8 @@ const PLACE_LORE = {
  'In 541 Ly Bi rose against the Liang, and in 544 he took the imperial title and named his state Van Xuan, with its capital near today\'s Hanoi. It was the first time anyone here had declared himself emperor, and Vietnamese histories call his line the Early Ly. After Ly Bi\'s death Trieu Quang Phuc fought on; the state held out on and off for some sixty years until Sui armies came south and ended it in 602. Vietnam calls the whole stretch from 111 BC to 938 the period of northern rule — and these sixty years are the break within that millennium that gets told and retold.'],
 '巨港|三佛齐': ['巨港扼着马六甲海峡的咽喉,三佛齐靠向过往商船收税立国六百年。671 年唐僧义净取经途中在这里停留半年学梵文,回程又住了好几年译经,说这里佛学之盛可比印度。',
  'Palembang sat at the throat of the Malacca Strait, and Srivijaya lived for six centuries on tolls from the ships that passed. In 671 the Chinese monk Yijing broke his journey here for half a year to study Sanskrit, and on the way home stayed several years more translating texts; he reported Buddhist learning here to rival India\'s.'],
+'巨港|满者伯夷': ['1377 年满者伯夷派兵攻破巨港,三佛齐的最后残余就此结束——收了六百年过路费的这座河口,自己成了被收的一方。但满者伯夷对外岛用的是纳贡称臣那一套,不是直接治理,巨港因此成了各路人马混杂的港口:1407 年郑和的船队经过这里,抓走了盘踞多年的海盗头子陈祖义。',
+ 'In 1377 Majapahit stormed Palembang and finished off the last remnant of Srivijaya — the river mouth that had taken tolls for six centuries now paid them itself. But Majapahit ruled its outer islands by tribute rather than administration, and Palembang became a port of mixed and shifting powers: when Zheng He\'s fleet came through in 1407 it carried off Chen Zuyi, a pirate chief who had held the place for years.'],
 '马六甲|马六甲及诸苏丹国': ['1400 年前后拜里米苏拉在此建港,靠季风换船的中转生意迅速兴起,苏丹改宗伊斯兰教后,这里成了伊斯兰教向东南亚岛屿传播的枢纽。1511 年葡萄牙人攻占此城,是欧洲人在东南亚拿下的第一座大港。',
  'Parameswara founded the port around 1400; it grew fast on transshipment as the monsoon winds turned, and after its sultans took up Islam it became the hinge from which Islam spread through the islands of Southeast Asia. The Portuguese stormed it in 1511 — the first great Southeast Asian port to fall to Europeans.'],
 '雅加达|欧洲殖民东南亚': ['1619 年荷兰东印度公司攻毁本地的查雅加尔达(Jayakarta,雅加达之名的由来),在原址建起巴达维亚,作为它在亚洲的总部。这家公司自己有军队、能签条约、能宣战——一间公司在这片群岛上说了近二百年的算。',
@@ -8445,6 +8455,8 @@ const PLACE_LORE = {
  'Around 1800 the Scottish surveyor Colin Mackenzie made a systematic survey of the ruins of Hampi, drawing plans and copying inscriptions. His work is among the earliest of Indian archaeology — a city neglected as a capital for two centuries came back onto paper through a surveyor. The Virupaksha temple inside it, meanwhile, had never stopped receiving worshippers.'],
 '汉皮|印度·南亚诸国': ['汉皮 1986 年列入世界文化遗产。遗址铺开在几十平方公里的乱石之间:神庙、水渠、王宫,还有一条长长的市集街,两边至今立着成排的石柱。十六世纪到过这里的葡萄牙旅行者写道,红宝石、钻石、祖母绿与珍珠就公开摆在那条街上卖。',
  'Hampi was inscribed as a World Heritage Site in 1986. The remains are spread over tens of square kilometres of boulder country — temples, water channels, palaces, and a long bazaar street still lined with rows of stone columns. A Portuguese traveller who saw it in the sixteenth century wrote of rubies, diamonds, emeralds and pearls being sold openly along that street.'],
+'汉皮|中世纪诸王朝': ['维查耶纳伽尔在这里建都之前的几百年,这片乱石岗先后属于遮娄其、拉施特拉库塔与后遮娄其。离汉皮不远的巴达米、艾霍莱与帕塔达卡尔留着他们开的石窟和神庙——南印度的神庙样式就是在那几处试出来的,不同的屋顶与柱式一座挨一座地摆着,像一排做到一半的作业(帕塔达卡尔今天是世界文化遗产)。同一片石头地,先当了几百年试验场,后来才长出汉皮那座城。',
+ 'For centuries before Vijayanagara built its capital here, this boulder country passed between the Chalukyas, the Rashtrakutas and the Later Chalukyas. Badami, Aihole and Pattadakal, all within reach of Hampi, still hold the cave shrines and temples they cut — this is where the southern Indian temple was worked out, different roof-lines and column styles standing side by side like a row of half-finished exercises (Pattadakal is a World Heritage site today). The same field of stone served as a workshop for centuries before the city of Hampi grew out of it.'],
 '孟买|孔雀王朝': ['孟买的七座岛屿在孔雀王朝时属于西海岸的贸易海岸。附近的坎赫里石窟大约从公元一世纪起开凿,一直修到十世纪——僧人住在离港口不远的山里,靠往来商人供养,这是印度佛教石窟常见的位置。',
  'The seven islands of Bombay lay on the trading coast the Mauryas knew on the western shore. The Kanheri caves nearby were cut from about the first century AD and worked on into the tenth — monks living in hills within reach of a port, supported by the merchants who used it, which is where Indian Buddhist cave sites usually are.'],
 '孟买|马拉塔': ['十七、十八世纪马拉塔控制着孟买周边的大片土地,而七座岛屿在英国人手里。象岛石窟就在孟买湾中,那尊六世纪凿出来的湿婆三面像高约六米;岛上的雕像有不少损坏,一般归因于葡萄牙人占据的那段时间。',
