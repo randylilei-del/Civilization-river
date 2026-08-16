@@ -41,7 +41,7 @@ const PLACE = {
 /* 南亚 */
 '哈拉帕':['巴基斯坦','Pakistan'], '摩亨佐-达罗':['巴基斯坦','Pakistan'],
 '白沙瓦':['巴基斯坦','Pakistan','白沙瓦','Peshawar'],
-'塔克西拉':['巴基斯坦','Pakistan','塔克西拉','Taxila'], '阿瓦':['缅甸','Myanmar','因瓦','Inwa'], '勃固':['缅甸','Myanmar','勃固','Bago'], '杜尔-库瑞加尔祖':['伊拉克','Iraq','阿卡尔库夫','Aqar Quf'], '阿力麻里':['中国','China','霍城','Huocheng'], '叶尔羌':['中国','China','莎车','Yarkant'], '归化城(今呼和浩特)':['中国','China','呼和浩特','Hohhot'], '舍羯罗':['巴基斯坦','Pakistan','锡亚尔科特','Sialkot'],
+'塔克西拉':['巴基斯坦','Pakistan','塔克西拉','Taxila'], '阿瓦':['缅甸','Myanmar','因瓦','Inwa'], '勃固':['缅甸','Myanmar','勃固','Bago'], '杜尔-库瑞加尔祖':['伊拉克','Iraq','阿卡尔库夫','Aqar Quf'], '阿力麻里':['中国','China','霍城','Huocheng'], '那格尔达纳':['印度','India','纳格尔丹','Nagardhan'], '瓦茨古尔马':['印度','India','瓦希姆','Washim'], '叶尔羌':['中国','China','莎车','Yarkant'], '归化城(今呼和浩特)':['中国','China','呼和浩特','Hohhot'], '舍羯罗':['巴基斯坦','Pakistan','锡亚尔科特','Sialkot'],
 '印度河—恒河平原':['巴基斯坦与印度北部','Pakistan and northern India'], '德干诸都':['印度中南部','south-central India'],
 '华氏城':['印度','India','巴特那','Patna'], '卡瑙杰':['印度','India','格瑙杰','Kannauj'],
 '普拉蒂什塔纳':['印度','India','派坦','Paithan'], '阿马拉瓦蒂':['印度','India','阿马拉瓦蒂','Amaravati'],
