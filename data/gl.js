@@ -104,6 +104,10 @@ const GL = {
 '中世纪西欧': [
  { a:1140, b:1300, k:'art', t:['哥特式教堂','Gothic cathedrals'], d:['尖拱把力往下导、飞扶壁在外面顶住侧推力,墙因此不必承重,可以整面掏空装彩色玻璃。当时多数人不识字,窗上的画就是他们读的圣经;沙特尔大教堂 13 世纪的玻璃至今还在原位。','The pointed arch carried the load downward and the flying buttress took the outward thrust from outside, so the wall no longer had to hold the building up and could be opened for glass. Most people could not read, and the windows were their Bible; the thirteenth-century glass at Chartres is still in place.'] },
  { a:1150, b:1300, k:'thought', t:['大学与经院哲学','Universities and scholasticism'], d:['博洛尼亚、巴黎、牛津成型,阿奎那调和信仰与理性。','Bologna, Paris, Oxford; Aquinas weds faith to reason.'] } ],
+'勃兰登堡·普鲁士': [
+  { a:1685, b:1740, k:'econ', t:['把别人赶走的人请进来','Taking in what others expelled'], d:['1685 年波茨坦敕令承诺免税、给房、承认行会资格,两万多胡格诺人带着纺织、玻璃与金银细工的手艺迁入,一度占柏林人口三分之一;此后波希米亚人、萨尔茨堡人、荷兰排水工也一批批招来。','The Edict of Potsdam offered tax relief, housing and recognition of guild qualifications; over twenty thousand Huguenots arrived with weaving, glass and fine metalwork and briefly made up a third of Berlin, followed by Bohemians, Salzburgers and Dutch drainage engineers.'] },
+  { a:1717, b:1806, k:'thought', t:['把行政办成一门专业','Administration as a profession'], d:['考试选官、档案留痕、按章办事,官员按能力而非出身选拔;这套做法后来被许多国家学去,今天所谓「官僚体系」的底子里有它的一份。','Entry by examination, decisions on record, business by the rulebook, and officials chosen on competence rather than birth — a model many states later copied, and part of the foundation of what is now simply called bureaucracy.'] },
+],
 '德意志': [
  { a:1900, b:1933, k:'thought', t:['物理学之都','Capital of physics'], d:['普朗克、爱因斯坦与哥廷根学派,直到人才流散。','Planck, Einstein, Gottingen — until the exodus.'] },
  { a:1950, b:1990, k:'econ', t:['经济奇迹','The Wirtschaftswunder'], d:['战败时城市成片是瓦砾,二十年后西德成了欧洲最大的工业国。靠的是马歇尔计划的启动资金、并未被炸垮的工业底子,以及把大批技术工人重新组织起来的双元制学徒训练。','Its cities were fields of rubble at the defeat; twenty years later West Germany was Europe\'s largest industrial economy — on Marshall Plan capital, on an industrial base that the bombing had not in fact destroyed, and on an apprenticeship system that put its skilled workers back to work.'] } ],
