@@ -1170,6 +1170,30 @@ CIVS.forEach(c => {
  * 五条大洋洲色带在页面上是黑的,而 audit 与「148 卡 × 中英」全量扫描都查不出来
  * (它们查文字内容,不查填充色)。index.html 里同一套调色板出现在多个主题块中,
  * 漏掉任何一块就是那个主题下的黑带,所以这里按出现次数比对而不只查存在性。 */
+/* 规则 68(v231):速览里「成就」与「人物」两格是**按位置**把英文换回中文键的
+ * (`linkAchv` / `linkNames`,见 index.html),所以中英两侧的**项数必须相等**——少一项,
+ * 英文读者就永远看不到最后那一两样;顺序若再不同,还会点开错的卡。
+ * 2026-08-16 扫出 22 条不等(罗马共和国少「公民权扩张」、隋少「三省六部」、唐少
+ * 「律令制输出东亚」…),v231 全部补齐。**其中一条不是漏写而是被切开的**:
+ * 拉帕努伊的英文写着 `a settlement 3,500 km from any continent`,而 `NSPLIT` 认逗号,
+ * 于是这一项在英文界面上被劈成「a settlement 3」与「500 km from any continent」两半——
+ * **千位分隔符在这两个字段里是禁用字符**,规则一并拦下。 */
+{
+  const NS = /[、,;；]/;
+  const sp = x => x.replace(/（[^）]*）|\([^)]*\)/g, '').trim();
+  for (const [zk, ek] of [['成就', 'Legacy'], ['人物', 'Figures']]) {
+    CIVS.forEach(c => {
+      const zh = (c.f && c.f[zk]) || '', en = (c.e && c.e.f && c.e.f[ek]) || '';
+      if (!zh || !en) return;
+      const a = zh.split(NS).map(sp).filter(Boolean), b = en.split(NS).map(sp).filter(Boolean);
+      if (a.length !== b.length)
+        P.push(`[中英项数不等] ${c.n} ${zk}(${a.length} 项) vs ${ek}(${b.length} 项) —— 这两格按位置对应,少一项英文就永远看不到最后那样`);
+      if (/\d,\d{3}/.test(en))
+        P.push(`[分项字段里有千位逗号] ${c.n} ${ek} 含 "${(en.match(/\d,\d{3}/) || [])[0]}" —— NSPLIT 认逗号,这一项会在英文界面上被劈成两半,改成不带逗号的写法`);
+    });
+  }
+}
+
 /* 规则 67(v226.1):**`display` 会盖掉 `[hidden]`**。给元素写了 `display: flex/inline-flex/grid`
  * 之后,HTML 的 hidden 属性与 `el.hidden = true` 就都失效了——元素照样显示,而 JS 读到的
  * `el.hidden` 是 true,任何「查属性」的测试都会通过。
