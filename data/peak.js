@@ -99,5 +99,5 @@ const PEAK = {
 /* v200:汤加王国是主权国家,陆地约 750 km²;人口取 2021 年普查约 10 万。 */
 '汤加王国':{a:0.075,p:10,py:2021},
 /* v214 */
-'蒙古国':{a:156,p:350,py:2024}, '朝鲜':{a:12,p:2600,py:2024},
+'阿富汗':{a:200,ay:1761,p:1400,as:['非 Taagepera 序列(Bosin 2009)','not from the Taagepera series (Bosin 2009)'],an:['杜兰尼帝国鼎盛,含今巴基斯坦大部与伊朗东部;今天的阿富汗约 65 万 km²','the Durrani Empire at its height, including most of today\'s Pakistan and eastern Iran; Afghanistan today is about 650,000 km²']}, '蒙古国':{a:156,p:350,py:2024}, '朝鲜':{a:12,p:2600,py:2024},
 };

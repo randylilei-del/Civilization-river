@@ -209,6 +209,8 @@ const GL = {
  { a:1860, b:1900, k:'econ', t:['种植园与劳工贸易','Plantations and the labour trade'], d:['昆士兰与斐济的甘蔗园要人手,1863年起约六万二千人被运往昆士兰、两万七千人以上被运往斐济,有受雇的也有被掳的;这条产业链改变了美拉尼西亚的人口与语言。','The cane fields of Queensland and Fiji needed hands, and from 1863 some sixty-two thousand were carried to Queensland and twenty-seven thousand more to Fiji, some hired and many taken; the trade changed the population and the languages of Melanesia.'] } ],
 '澳新与太平洋岛国': [
  { a:1990, b:2025, k:'thought', t:['小国的气候外交','Climate diplomacy from small states'], d:['人口一万多的国家,管辖的海域比印度还大;巴黎协定里那句 1.5℃ 主要是它们推进去的——对图瓦卢来说那不是模型,是国家还在不在。','States of a few thousand people administer ocean larger than India; the 1.5°C line in the Paris Agreement is there largely because they pushed it in — for Tuvalu that is not a model but whether the country still exists.'] } ],
+'阿富汗': [
+  { a:1964, b:1973, k:'thought', t:['宪政十年','The constitutional decade'], d:['颁布宪法,有选举也有自由报刊,喀布尔大学男女同校——现代史上最开放的十年,终于 1973 年的政变。','A constitution, elections and a free press, with men and women studying together at Kabul University — the most open decade in its modern history, ended by the coup of 1973.'] } ],
 '蒙古国': [
  { a:1990, b:2025, k:'thought', t:['没有流血的转型','A transition without blood'], d:['1990 年绝食示威后执政党没有开枪,几个月后自由选举;此后政权多次和平轮换。','After the hunger strikes of 1990 the ruling party did not shoot; free elections followed within months, and power has changed hands peacefully many times since.'] } ],
 '朝鲜': [
