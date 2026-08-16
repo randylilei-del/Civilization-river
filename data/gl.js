@@ -119,7 +119,7 @@ const GL = {
  { a:-528, b:-400, k:'thought', t:['沙门思潮','The shramana ferment'], d:['佛教与耆那教同时兴起,挑战婆罗门。','Buddhism and Jainism rise together against the Brahmins.'] },
  { a:-268, b:-232, k:'thought', t:['阿育王护法','Ashoka\'s dharma'], d:['石柱诏令刻满帝国,使团远至希腊化诸王。','Edicts across the empire, envoys to the Greek kings.'] } ],
 '印度-希腊诸王': [
-  { a:-150, b:-50, k:'art', t:['犍陀罗的前奏','Before Gandhara'], d:['希腊的雕刻手法在这里遇上佛教,几十年后长出有人脸的佛像。','Greek sculptural technique meets Buddhism here; within decades the Buddha has a human face.'] },
+  { a:-150, b:-50, k:'art', t:['希腊手艺落在这里','Greek craft takes root here'], d:['希腊的雕刻、建筑与钱币工艺在旁遮普与犍陀罗扎下根;它们后来是犍陀罗佛像的来源之一,但佛像本身要到几百年后才出现。','Greek sculpture, architecture and die-cutting take root in the Punjab and Gandhara. They later feed into the Gandharan Buddha — but the Buddha image itself is still centuries away.'] },
   { a:-160, b:-100, k:'thought', t:['《弥兰陀王问经》','The Milinda Panha'], d:['希腊国王追问「到底是谁在轮回」,僧人拿他自己的马车作答:拆开来哪一件都不是车。','A Greek king presses on who exactly is reborn; the monk answers with the king\'s own chariot — take it apart and no single piece is the chariot.'] },
 ],
 '贵霜帝国': [
