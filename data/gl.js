@@ -111,6 +111,10 @@ const GL = {
   { a:-1400, b:-1155, k:'thought', t:['《吉尔伽美什》定本','Gilgamesh made standard'], d:['祭司把早先零散的诗篇整理成一部完整的史诗,今天读到的版本来自这次编定;而它能传下来,靠的是七百年后亚述巴尼拔图书馆里的抄本。','Priests worked the older scattered poems into one complete epic; the text read today descends from this recension — and it survived thanks to copies made seven centuries later in the library at Nineveh.'] },
   { a:-1400, b:-1200, k:'econ', t:['马与青金石','Horses and lapis'], d:['两河下游的粮食之外,真正让它在国际上说得上话的是马与青金石——阿马尔那的信里,法老要的正是这两样。','Beyond the grain of the lower rivers, what gave it standing abroad were horses and lapis lazuli — the two things pharaoh keeps asking for in the Amarna letters.'] },
 ],
+'弗里吉亚': [
+  { a:-750, b:-690, k:'econ', t:['东西走廊上的王国','A kingdom on the corridor'], d:['从爱琴海往东进入亚洲大体只有这一条走廊,后来的波斯御道、罗马大道乃至今天的公路都沿着它走;弗里吉亚的分量来自地利而不是军力。','Going east from the Aegean into Asia there is essentially one corridor; the Persian Royal Road, the Roman highway and the modern motorway all follow it. Phrygia mattered for where it sat, not for its army.'] },
+  { a:-800, b:-690, k:'art', t:['一顶帽子活得比王国久','A hat that outlived the kingdom'], d:['弗里吉亚人戴的向前弯折的软帽,被罗马人与获释奴隶联系在一起,两千多年后成了法国大革命的自由帽,今天仍印在几个国家的国徽上。','The forward-curling cap the Phrygians wore was linked by the Romans with freed slaves, became the liberty cap of the French Revolution two millennia later, and still appears on several national arms.'] },
+],
 '赫梯': [ { a:-1400, b:-1200, k:'tech', t:['铁器与战车','Iron and chariots'], d:['最早成规模用铁,轻型战车纵横近东。','The first at scale with iron; light chariots rule the Near East.'] } ],
 '迦太基': [ { a:-600, b:-264, k:'econ', t:['西地中海商网','Western Mediterranean network'], d:['从西班牙银矿到北非谷仓,一张海上账本。','From Spanish silver to African grain, one seaborne ledger.'] } ],
 '希腊化王朝': [ { a:-300, b:-150, k:'tech', t:['亚历山大里亚科学','Alexandrian science'], d:['欧几里得的几何、阿基米德的力学、地球周长的测算。','Euclid\'s geometry, Archimedes\' mechanics, the Earth measured.'] } ],

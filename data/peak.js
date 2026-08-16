@@ -17,7 +17,7 @@ const PEAK = {
 '帕提亚·萨珊':{a:350}, '阿拉伯哈里发':{a:1110,ay:720,p:3400,w:.16},
 '奥斯曼帝国':{a:520,ay:1683,p:3000,w:.055}, '萨法维·波斯':{a:290,as:['非 Taagepera 序列','not from the Taagepera series']}, '塞尔柱突厥':{a:390,ay:1080},
 '亚述':{a:140,ay:-670}, '新巴比伦':{a:50,ay:-562}, '苏美尔·阿卡德':{a:80,ay:-2250}, '迦太基':{a:30,ay:-220},
-'赫梯':{a:45,ay:-1250},
+'弗里吉亚':{a:15,as:['示意值:安纳托利亚中部高原的大致范围,非 Taagepera 主序列','indicative: roughly the central Anatolian plateau; not from the Taagepera series']}, '赫梯':{a:45,ay:-1250},
 /* 古巴比伦不给 ay:Taagepera 记峰值在前1690(短年表),而站内「鼎盛:汉谟拉比(前1792—前1750)」
    与大事记用的是中年表,写上去会变成「峰值在汉谟拉比死后 60 年」。宁可不写年份。 */
 '古巴比伦':{a:25}, '加喜特巴比伦':{a:30,ay:-1350,as:['示意值:统治范围与古巴比伦、新巴比伦同量级(两河下游巴比伦尼亚),非 Taagepera 主序列','indicative: the same order as Old and Neo-Babylonian — lower Mesopotamia; not from the Taagepera series']},
