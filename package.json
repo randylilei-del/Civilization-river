@@ -1,0 +1,13 @@
+{
+  "name": "civilization-river",
+  "private": true,
+  "description": "文明长河 — 单文件 PWA。本 package.json 只承载开发期校验工具的依赖,产品 index.html 零依赖。",
+  "scripts": {
+    "check": "node tools/check.js",
+    "check:quick": "node tools/check.js --quick",
+    "smoke": "node tools/smoke.js"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.55.0"
+  }
+}

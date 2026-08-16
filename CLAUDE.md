@@ -1,6 +1,6 @@
 # 文明长河 · civilization-river
 
-从史前到现代的世界文明兴衰交互可视化。**单文件 PWA**:全部代码、数据、海岸线都在 `index.html` 里,无构建、无后端、无外部依赖(维基链接除外)。
+从史前到现代的世界文明兴衰交互可视化。**单文件 PWA**:全部代码、数据、海岸线都在 `index.html` 里,无构建、无后端、无外部依赖(维基链接除外)。仓库根的 `package.json` 只承载开发期校验工具(`playwright-core`),与产品无关。
 
 - **产品形态**:静态站(Vercel 自动部署)+ iPad 添加主屏幕(儿童用户:Ray 的儿子,7 岁)
 - **双语**:中/EN 全量双语,所有新增内容必须同时写两种语言
@@ -12,6 +12,8 @@
 index.html            # 交付产物 + 代码手写源:样式、渲染器、config 常量(数据表已全部迁出)
 data/                 # 全部 30 张内容表的正本(.js 文本片段,性质分类见 docs/DATA.md)
 tools/build.js        # 把 data/*.js 注入回 index.html 的标记区间;改 data 后必跑
+tools/check.js        # 改完一条命令:build 一致性 → audit → 语法 → smoke;--quick 跳过 smoke
+tools/smoke.js        # headless 渲染层烟测(playwright-core + 本机 Chrome),断言清单见「修改工作流」第 3 步
 tools/load.js         # audit/coverage/peakgap/refs 共用的数据加载器(含 GL_X 合并镜像)
 manifest.webmanifest  # PWA 清单
 sw.js                 # 离线缓存(network-first);改缓存策略记得升 CACHE 版本号
@@ -26,15 +28,9 @@ docs/CHANGELOG.md     # 版本史
 ## 修改工作流
 
 1. **改数据(23 张内容表全在 `data/`):改 `data/<表名>.js` → `node tools/build.js`**(直接改 index.html 的数据区间会被 audit 规则 45 拦下)。改代码/样式/config 常量:直接改 `index.html`
-2. 语法检查:`sed -n '/<script>/,/<\/script>/p' index.html | sed '1d;$d' > /tmp/c.js && node --check /tmp/c.js`
-3. 数据校验:`node tools/audit.js`(自包含,无依赖;查中英条目数对齐、大事记越界与排序、GL 区间合法性、孤儿键等;退出码非 0 即有问题)
-4. 渲染验证:浏览器打开确认无 pageerror、无布局破坏(深浅色 × 中英都看)
-   - 本机**没装 Playwright**,用 claude-in-chrome MCP 工具;`file://` 会被扩展拒绝,先起本地服务器:
-     `python3 -m http.server 8777 --bind 127.0.0.1 --directory "<项目路径>"`(用后台任务方式起,`nohup ... &` 写法会被权限拦)
-   - 深色模式没有页面按钮,靠 `prefers-color-scheme`;验证时用 JS 强开:`document.documentElement.setAttribute('data-theme','dark')`
-   - 改了数据表就跑全量扫描,比抽查几张卡可靠得多:
-     `for (const lang of ['zh','en']) { document.querySelector('[data-l='+lang+']').click(); for (const c of CIVS) openCiv(c) }`
-     每次检查 `panel.innerHTML` 是否出现 undefined/NaN/[object
+2. **改完一条命令:`node tools/check.js`**(= build 一致性 → audit → 语法 → headless 烟测,任一红退出码 1;`--quick` 跳过烟测≈3 秒)。首次先在仓库根 `npm install`(只装 `playwright-core`,用本机 Chrome,不下载浏览器;产品 index.html 零依赖不受影响)。三步的判据分别在 `tools/build.js` / `tools/audit.js`(69 条结构规则)/ `tools/smoke.js`
+3. `tools/smoke.js` 管**渲染层**——以前只能实机点的那些:四态(中英×深浅)零 pageerror 零站外请求、引导层点完真消失(量真实盒子)、322 卡零脏值 + 中英 class 直方图一致(拦「英文卡少一行」)、127 城×中英每行有正文、色带真实填充色非黑、标签中心在色带内且不出视口、选轨迹后站点进视口、列表同列字号一致、iPad 竖屏/手机关键入口可见。**加新断言必须先注入反例看它红**(`SMOKE_INDEX=<反例html> node tools/smoke.js`),验证记录写在断言旁注释里;清不完的旧问题用 warn 不用 fail(标签重叠 4 处是当前基线)
+4. 仍需人眼的:iPad 实机手感、史实、中英同义、儿童文风、图片内容——走 adversarial-verifier + Ray 实机。需要在 claude-in-chrome 里看图时:`python3 -m http.server 8777 --bind 127.0.0.1 --directory "<项目路径>"`(后台任务方式起),深色用 `document.documentElement.setAttribute('data-theme','dark')`
 5. commit + push → Vercel 自动部署
 6. 记录:每版写进 `docs/CHANGELOG.md`(判断依据也写在那里),设计决策进 `docs/DESIGN.md`。(2026-08-15 起不再指向 Plans 库——`06 Plans/learning/world-history-viz.md` 从未建立,原指针失效)
 

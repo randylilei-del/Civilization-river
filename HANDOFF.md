@@ -79,9 +79,9 @@ X. **（原第 1 条）写新内容前必须先读同卡/同城的既有字段**
 ### 改完必跑（顺序）
 ```
 node tools/build.js      # 改 data/*.js 之后必跑
-node tools/audit.js      # 68 条规则,退出码非 0 即有问题
-sed -n '/<script>/,/<\/script>/p' index.html | sed '1d;$d' > /tmp/c.js && node --check /tmp/c.js
+node tools/check.js      # 2026-08-16 起一条命令 = build 一致性 → audit → 语法 → headless smoke;--quick 跳过 smoke
 ```
+smoke（`tools/smoke.js`，playwright-core + 本机 Chrome，首次 `npm install`）已把下面「浏览器全量验证」那些手粘脚本固化成断言，pre-commit 会自动跑 `--quick`。人眼仍要看的：iPad 手感、史实、中英同义、图片内容。
 ⚠ `node tools/audit.js | tail` 会让 `$?` 变成 tail 的退出码——要看真实退出码就别接管道。
 
 ### 浏览器全量验证
