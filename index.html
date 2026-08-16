@@ -308,6 +308,43 @@ svg { display: block; }
   letter-spacing: .04em; white-space: nowrap;
 }
 
+/* v226 欢迎屏:三步引导之前先有一屏把人接住。
+   为什么加这一屏(Ray 2026-08-16 实机看过之后提的):原来打开就直接高亮、直接开始演,
+   而人还没弄清楚"这是什么"就被指指点点了。先说清楚是什么、接下来会发生什么,再问一句
+   "准备好了吗",才是把人接住的顺序。
+   **遮罩用浅色不用深色**:三步引导的深色遮罩是为了把注意力挤到那个洞上;欢迎屏没有洞,
+   要的是"整张图还在,只是先蒙一层"的感觉,浅色 + 模糊正好——深色会把底下的长河压没。 */
+.tour-welcome {
+  position: fixed; inset: 0; z-index: 3; display: flex; align-items: center; justify-content: center;
+  background: rgba(252,251,249,.82); backdrop-filter: blur(3px); padding: 20px;
+  animation: twFade .35s ease both;
+}
+:root[data-theme="dark"] .tour-welcome { background: rgba(18,18,17,.86); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .tour-welcome { background: rgba(18,18,17,.86); } }
+.tw-box {
+  max-width: 430px; text-align: center; padding: 30px 34px 24px;
+  background: var(--surface); color: var(--ink);
+  border-radius: 18px; box-shadow: 0 18px 48px rgba(0,0,0,.22);
+  animation: twRise .4s cubic-bezier(.2,.7,.3,1) both .06s;
+}
+.tw-box h2 { margin: 0 0 12px; font-size: 22px; font-weight: 700; letter-spacing: .01em; }
+.tw-box p { margin: 0 0 8px; font-size: 15px; line-height: 1.72; color: var(--ink-2); }
+.tw-box .tw-sub { font-size: 13.5px; margin-bottom: 22px; }
+.tw-go {
+  font: inherit; font-size: 15px; font-weight: 600; cursor: pointer;
+  padding: 11px 30px; border-radius: 11px;
+  background: var(--ink); color: var(--surface); border: 1px solid var(--ink);
+}
+.tw-go:hover { opacity: .88; }
+.tw-skip {
+  display: block; margin: 12px auto 0; font: inherit; font-size: 13px;
+  background: none; border: none; color: var(--ink-2); opacity: .7; cursor: pointer;
+}
+.tw-skip:hover { opacity: 1; text-decoration: underline; }
+@keyframes twFade { from { opacity: 0 } to { opacity: 1 } }
+@keyframes twRise { from { opacity: 0; transform: translateY(14px) } to { opacity: 1; transform: none } }
+@media (prefers-reduced-motion: reduce) { .tour-welcome, .tw-box { animation: none } }
+
 /* ---------- v220 首访引导:三步,页面自己演给你看 ----------
    为什么不是视频:铁律「不引入外部资源」——视频只能做成点了才跳走的外链,7 岁点出去多半不回来。
    为什么点哪儿都前进:三步、每步一句话,给 7 岁的东西不该有「点错地方就卡住」这种状态。
@@ -907,6 +944,15 @@ td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; ma
 
 <!-- v220 首访引导层。三步:①这条河是时间(同时自动跑一遍时光穿梭)②点色带看故事 ③换成按地方看 -->
 <div id="tour" hidden>
+  <div class="tour-welcome" id="tourWelcome" hidden>
+    <div class="tw-box">
+      <h2 id="twT"></h2>
+      <p id="twP1"></p>
+      <p class="tw-sub" id="twP2"></p>
+      <button class="tw-go" id="twGo"></button>
+      <button class="tw-skip" id="twSkip"></button>
+    </div>
+  </div>
   <div class="tour-catch" id="tourCatch"></div>
   <div class="tour-hole" id="tourHole"></div>
   <div class="tour-tap" id="tourTap" hidden>👆</div>
@@ -14482,20 +14528,52 @@ function tourGo(i) {
   if (st.enter) st.enter();
   tourPlace();
 }
+/* v226:先出欢迎屏,点「准备好了」才进第一步。
+   这一屏在时,三步引导的遮罩与文案框不参与——它们要等第一步 enter 里的时光穿梭跑起来
+   才有东西可指,提前显示就是一个空洞加一行看不懂的字。 */
 function tourStart() {
   TOUR.on = true; TOUR.i = 0;
   document.getElementById('tour').hidden = false;
+  document.getElementById('tourWelcome').hidden = false;
+  document.getElementById('tourHole').style.opacity = '0';
+  document.getElementById('tourBox').style.opacity = '0';
+  twText();
+}
+function twText() {
+  document.getElementById('twT').textContent = T('欢迎来到文明长河', 'Welcome to A River of Civilizations');
+  document.getElementById('twP1').textContent = T(
+    '五千年里，全世界的文明在这里一条一条流过。',
+    'Five thousand years of the world\'s civilizations, flowing here side by side.');
+  document.getElementById('twP2').textContent = T(
+    '正式开始之前，先用一小段动画带你认认路——大概半分钟。',
+    'Before you start, a short animation to show you around — about half a minute.');
+  document.getElementById('twGo').textContent = T('准备好了 →', 'I\'m ready →');
+  document.getElementById('twSkip').textContent = T('先自己看看', 'Let me just look around');
+}
+/* 从欢迎屏进第一步:遮罩与文案框恢复可见,然后才让时光穿梭跑起来 */
+function twStart() {
+  document.getElementById('tourWelcome').hidden = true;
+  document.getElementById('tourHole').style.opacity = '';
+  document.getElementById('tourBox').style.opacity = '';
   const st = TOUR_STEPS[0]; if (st.enter) st.enter();
   tourPlace();
 }
 function tourEnd() {
   TOUR.on = false;
   const st = TOUR_STEPS[TOUR.i]; if (st && st.leave) st.leave();
+  document.getElementById('tourWelcome').hidden = true;
+  document.getElementById('tourHole').style.opacity = '';
+  document.getElementById('tourBox').style.opacity = '';
   document.getElementById('tour').hidden = true;
   try { localStorage.setItem('whviz-tour', '1'); } catch (e) {}
   fhDismiss();   // 引导里已经讲过那一行提示的两个入口
 }
-document.getElementById('tourCatch').addEventListener('click', () => tourGo(TOUR.i + 1));
+document.getElementById('tourCatch').addEventListener('click', () => {
+  if (!document.getElementById('tourWelcome').hidden) return;   // 欢迎屏在时,点哪儿都不推进
+  tourGo(TOUR.i + 1);
+});
+document.getElementById('twGo').addEventListener('click', e => { e.stopPropagation(); twStart(); });
+document.getElementById('twSkip').addEventListener('click', e => { e.stopPropagation(); tourEnd(); });
 document.getElementById('tourNext').addEventListener('click', e => { e.stopPropagation(); tourGo(TOUR.i + 1); });
 document.getElementById('tourSkip').addEventListener('click', e => { e.stopPropagation(); tourEnd(); });
 addEventListener('keydown', e => { if (TOUR.on && e.key === 'Escape') tourEnd(); });
@@ -14514,6 +14592,7 @@ function applyLang() {
   document.getElementById('subT').textContent = T('从史前到现代：各区域主导文明的兴衰与往来。厚度 = 区域内相对影响力（示意），颜色 = 所属文明圈，同色的深浅只为区分相邻色带、没有含义。点击任意色带查看详情。',
     'Prehistory to the present: the rise, fall and exchanges of each region\'s dominant civilizations. Thickness = relative regional influence (illustrative); color = civilizational sphere; lighter and darker shades of one color only tell neighbouring bands apart and carry no meaning. Click any band for details.');
   document.getElementById('tourQ').textContent = T('? 怎么玩', '? How to use');
+  if (typeof twText === 'function') twText();
   document.getElementById('evLbl').textContent = T('交流事件', 'Exchange events');
   tvHeadTexts();
   document.getElementById('notesT').innerHTML = T(
