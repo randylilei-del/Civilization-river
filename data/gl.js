@@ -9,61 +9,61 @@ const GL = {
  { a:100, b:235, k:'thought', t:['法学家时代','The great jurists'], d:['罗马法体系成形,泽被后世大陆法。','Roman law systematized - the root of civil law.'] } ],
 '拜占庭': [
  { a:528, b:565, k:'thought', t:['查士丁尼法典','Justinian codification'], d:['罗马法大全,欧洲法学的底本。','The Corpus Juris, foundation of European law.'] },
- { a:867, b:1056, k:'art', t:['马其顿文艺复兴','Macedonian Renaissance'], d:['圣像艺术与古典学问复兴。','Icons and classical learning revive.'] } ],
+ { a:867, b:1056, k:'art', t:['马其顿文艺复兴','Macedonian Renaissance'], d:['9 到 11 世纪,君士坦丁堡重新抄写与研究古希腊典籍,圣像艺术也从毁像运动中恢复。今天读得到的古希腊文献,多数是靠这一时期的抄本传下来的。','From the ninth to the eleventh century Constantinople copied and studied the Greek classics afresh, and icon painting recovered from the years of iconoclasm. Most Greek literature we can read today survives through the manuscripts of this period.'] } ],
 '阿拉伯哈里发': [
  { a:780, b:900, k:'thought', t:['翻译运动','Translation movement'], d:['希腊波斯印度典籍尽入阿拉伯语。','Greek, Persian and Indian learning rendered into Arabic.'] },
  { a:800, b:1000, k:'tech', t:['代数与天文','Algebra & astronomy'], d:['花剌子米的代数,天文台与星表。','Al-Khwarizmi, observatories, star tables.'] },
  { a:750, b:950, k:'econ', t:['两洋枢纽','Hub of two seas'], d:['印度洋与地中海贸易在巴格达汇流。','Indian Ocean and Mediterranean trade meet at Baghdad.'] } ],
 '奥斯曼帝国': [
- { a:1450, b:1600, k:'econ', t:['三洲商路','Tri-continental trade'], d:['东西商路税关尽在其手。','The tolls of East-West trade in one hand.'] },
+ { a:1450, b:1600, k:'econ', t:['三洲商路','Tri-continental trade'], d:['亚、欧、非三洲的商路都要从它的地界上过:黑海运来的粮、波斯来的生丝、印度洋来的香料,进出都得在关口交税。这笔过路钱长期是国库最大的一笔,也是它养得起常备军的底气。','The trade roads of three continents all crossed its territory: grain from the Black Sea, raw silk from Persia, spices from the Indian Ocean — all of it paid duty at its customs houses. Those tolls were for long the largest single item of state revenue, and what paid for its standing army.'] },
  { a:1520, b:1600, k:'art', t:['希南建筑时代','Age of Sinan'], d:['苏莱曼尼耶清真寺群,奥斯曼美学定型。','The Suleymaniye and the classical Ottoman style.'] } ],
-'波斯(阿契美尼德)': [ { a:-520, b:-400, k:'econ', t:['御道与贡赋','Royal Road economy'], d:['二十行省贡赋与驿传体系。','Tribute and post-roads across twenty satrapies.'] } ],
+'波斯(阿契美尼德)': [ { a:-520, b:-400, k:'econ', t:['御道与贡赋','Royal Road economy'], d:['从苏萨到萨迪斯的御道两千多公里,沿途设驿站换马换人,信使七天就能跑完全程,寻常人走要三个月。二十个行省按定额缴纳贡赋,整座帝国靠这两样运转。','The Royal Road ran more than two thousand kilometres from Susa to Sardis with posting stations to change horse and rider, so a messenger covered it in seven days where an ordinary traveller took three months. Twenty satrapies paid fixed tribute, and on these two things the empire ran.'] } ],
 '古埃及': [
- { a:-2600, b:-2400, k:'tech', t:['金字塔工程','Pyramid engineering'], d:['吉萨群像:古代最大工程。','Giza, antiquity\'s greatest works.'] },
- { a:-1550, b:-1150, k:'art', t:['神庙时代','Temple age'], d:['卡纳克、卢克索与帝王谷。','Karnak, Luxor, the Valley of the Kings.'] } ],
+ { a:-2600, b:-2400, k:'tech', t:['金字塔工程','Pyramid engineering'], d:['吉萨的胡夫金字塔用了两百多万块石头,建成之后的四千年里一直是地球上最高的建筑,直到 19 世纪才被超过——没有铁器、没有滑轮,靠的是斜坡、木橇与人力。','The Great Pyramid at Giza took over two million blocks and remained the tallest structure on earth for four thousand years, not surpassed until the nineteenth century — built with no iron and no pulleys, on ramps and sledges and human labour.'] },
+ { a:-1550, b:-1150, k:'art', t:['神庙时代','Temple age'], d:['卡纳克神庙群前后修了近两千年,历代法老各加盖一段;帝王谷则把陵墓改挖进山谷的岩壁里防盗,六十多座墓里只有图坦卡蒙那座基本没被盗过。','Karnak was built and rebuilt over nearly two thousand years, each pharaoh adding his own part; in the Valley of the Kings the tombs were cut into the rock instead to foil robbers, and of the sixty-odd found there only Tutankhamun\'s was substantially intact.'] } ],
 '苏美尔·阿卡德': [ { a:-3300, b:-2900, k:'tech', t:['文字与历法','Writing & calendar'], d:['楔形文字、六十进制、阴历。','Cuneiform, base-60, the lunar calendar.'] } ],
 '笈多王朝': [
  { a:380, b:500, k:'tech', t:['零与天文','Zero & astronomy'], d:['阿耶波多:地球自转与位值记数。','Aryabhata: rotation of the earth, place-value numerals.'] },
- { a:380, b:470, k:'art', t:['梵语古典','Sanskrit classics'], d:['迦梨陀娑的戏剧与长诗。','Kalidasa\'s dramas and epics.'] } ],
+ { a:380, b:470, k:'art', t:['梵语古典','Sanskrit classics'], d:['迦梨陀娑的剧本《沙恭达罗》18 世纪译到欧洲,歌德读后专门写诗称赞。这一时期的梵语戏剧与长诗,定下了此后一千多年印度文学的样子。','Kalidasa\'s play Shakuntala reached Europe in the eighteenth century and Goethe wrote a poem in praise of it. The Sanskrit drama and verse of this period set the shape of Indian literature for the thousand years that followed.'] } ],
 '莫卧儿帝国': [
- { a:1560, b:1660, k:'art', t:['泰姬陵与细密画','Taj & miniatures'], d:['印度-波斯美学的合流。','Indo-Persian aesthetics converge.'] },
- { a:1580, b:1700, k:'econ', t:['棉纺织出口','Cotton exports'], d:['印度棉布行销全球。','Indian cottons clothe the world.'] } ],
+ { a:1560, b:1660, k:'art', t:['泰姬陵与细密画','Taj & miniatures'], d:['泰姬陵把波斯的穹顶与拱门配上印度的白大理石和宝石镶嵌,建了二十多年;细密画则是波斯的画法加印度的题材,一整幅常常只有巴掌大,要用几根毛的笔来画。','The Taj Mahal set Persian domes and arches on Indian white marble inlaid with stone, and took over twenty years to build; the miniature joined Persian technique to Indian subjects, a whole picture often no bigger than a palm and painted with brushes of a few hairs.'] },
+ { a:1580, b:1700, k:'econ', t:['棉纺织出口','Cotton exports'], d:['印度棉布当时卖遍全世界,从东南亚到西非都在穿。英国为保护本国毛纺织业立法限制它进口,反倒逼着自己去造纺纱机器——工业革命的一条起因就在这里。','Indian cotton cloth was worn from South-East Asia to West Africa. Britain restricted its import by law to protect its own woollen trade, and in doing so drove itself to build spinning machinery — one of the roots of the Industrial Revolution.'] } ],
 '维京·北欧': [
  { a:800, b:1000, k:'tech', t:['长船','The longship'], d:['叠板造船,吃水不到一米,横渡北海也能划进内河;奥塞贝格船与戈克斯塔德船至今完整。','Clinker-built, drawing under a metre, able to cross the North Sea and row up rivers; the Oseberg and Gokstad ships survive whole.'] },
  { a:800, b:1000, k:'econ', t:['从波罗的海到巴格达的贸易网','A trade network from the Baltic to Baghdad'], d:['毛皮、蜜蜡与奴隶顺俄罗斯河流南下,阿拉伯银币成万枚地流回瑞典。','Furs, wax and slaves went south down the Russian rivers, and Arab silver flowed back to Sweden by the tens of thousands.'] } ],
 '文艺复兴意大利': [
- { a:1400, b:1500, k:'econ', t:['银行与商业','Banking & commerce'], d:['美第奇银行与复式记账。','The Medici bank and double-entry books.'] },
+ { a:1400, b:1500, k:'econ', t:['银行与商业','Banking & commerce'], d:['美第奇银行在欧洲各大城市设分行,用汇票让商人不必带着现金赶路;复式记账把每一笔钱记两遍、两边必须对得上——今天全世界的账仍然这么做。','The Medici bank kept branches in the major cities of Europe and used bills of exchange so merchants need not travel with cash; double-entry bookkeeping recorded every sum twice and required the two sides to agree — the whole world still keeps accounts this way.'] },
  { a:1480, b:1530, k:'art', t:['盛期文艺复兴','High Renaissance'], d:['达芬奇、米开朗基罗、拉斐尔同城竞技。','Leonardo, Michelangelo and Raphael in rivalry.'] } ],
 '西班牙·葡萄牙帝国': [
  { a:1545, b:1640, k:'econ', t:['白银世纪','The silver century'], d:['波托西白银撑起第一个全球贸易循环。','Potosi silver powers the first global loop.'] },
  { a:1580, b:1660, k:'art', t:['黄金世纪','Siglo de Oro'], d:['塞万提斯与委拉斯开兹的时代。','The age of Cervantes and Velazquez.'] } ],
 '荷兰共和国': [
  { a:1600, b:1670, k:'econ', t:['黄金时代','Golden Age'], d:['人均财富冠绝欧洲的商业共和国。','The richest people in Europe.'] },
- { a:1630, b:1670, k:'art', t:['伦勃朗与维米尔','Rembrandt & Vermeer'], d:['市民肖像与光影的巅峰。','Burgher portraits, mastery of light.'] } ],
+ { a:1630, b:1670, k:'art', t:['伦勃朗与维米尔','Rembrandt & Vermeer'], d:['别处的画家画国王与圣徒,荷兰画家画市民、画厨房、画一束光落在墙上。买画的是商人而不是宫廷,画因此变小、变多、变得日常——维米尔一生只留下三十几幅。','Elsewhere painters painted kings and saints; Dutch painters painted citizens, kitchens, and a shaft of light on a wall. Their buyers were merchants rather than courts, so the pictures got smaller, more numerous and more everyday — Vermeer left only some thirty-five in his life.'] } ],
 '法兰西': [
  { a:1720, b:1789, k:'thought', t:['启蒙运动','The Enlightenment'], d:['伏尔泰、卢梭、百科全书派。','Voltaire, Rousseau, the Encyclopedistes.'] },
- { a:1860, b:1910, k:'art', t:['印象派时代','Impressionist era'], d:['巴黎是世界艺术之都。','Paris, capital of art.'] } ],
+ { a:1860, b:1910, k:'art', t:['印象派时代','Impressionist era'], d:['莫奈、雷诺阿这批人把画架搬到户外,画光和空气而不画清楚的轮廓,当时被官方沙龙拒之门外、被评论家嘲笑;今天他们的画是全世界最贵的一批,巴黎也因此成了艺术之都。','Monet, Renoir and the rest took their easels outdoors to paint light and air rather than clear outlines; the official Salon turned them away and the critics laughed. Their canvases are now among the most valuable in the world, and Paris became the capital of art because of them.'] } ],
 '大英帝国·英国': [
- { a:1687, b:1727, k:'thought', t:['牛顿时代','Age of Newton'], d:['《原理》奠定经典物理。','The Principia founds classical physics.'] },
- { a:1770, b:1850, k:'tech', t:['工业革命','Industrial Revolution'], d:['蒸汽、铁路、工厂制。','Steam, rail, the factory system.'] },
+ { a:1687, b:1727, k:'thought', t:['牛顿时代','Age of Newton'], d:['《自然哲学的数学原理》用三条运动定律加一个万有引力公式,把天上行星的轨道和地上苹果的下落算成了同一件事;此后两百多年,物理学都在这个框架里做题。','The Principia used three laws of motion and one formula for gravity to make the orbit of a planet and the fall of an apple the same problem; for the next two centuries physics worked inside that frame.'] },
+ { a:1770, b:1850, k:'tech', t:['工业革命','Industrial Revolution'], d:['蒸汽机、铁路与工厂制度在几十年里改写了人怎么干活:1851 年万国博览会上,英国一国的展品占了全场近一半,「世界工厂」这个称呼就是那时来的。','Steam engines, railways and the factory rewrote how work was done within decades: at the Great Exhibition of 1851 Britain alone supplied nearly half the exhibits, and that is when it came to be called the workshop of the world.'] },
  { a:1815, b:1914, k:'econ', t:['全球贸易金融','Global trade & finance'], d:['英镑与伦敦城是世界结算中枢。','Sterling and the City clear the world\'s trade.'] } ],
 '美国': [
  { a:1876, b:1915, k:'tech', t:['发明时代','Age of invention'], d:['电灯、电话、汽车、飞机接连问世。','Light, telephone, car, airplane.'] },
  { a:1945, b:1973, k:'econ', t:['战后繁荣','Postwar boom'], d:['中产时代与布雷顿森林体系。','The middle-class era under Bretton Woods.'] },
- { a:1970, b:2025, k:'tech', t:['信息革命','Information revolution'], d:['从芯片到互联网到 AI。','Chips to Internet to AI.'] } ],
+ { a:1970, b:2025, k:'tech', t:['信息革命','Information revolution'], d:['晶体管、集成电路、个人电脑、互联网、智能手机——这条链上的关键一步几乎每一次都发生在美国,而且多数出自同一片湾区;今天的人工智能仍在这条链上往下走。','The transistor, the integrated circuit, the personal computer, the internet, the smartphone — nearly every decisive step on that chain happened in the United States, most of them around one bay; today\'s artificial intelligence is the next link on it.'] } ],
 '日本': [
  { a:1760, b:1850, k:'art', t:['浮世绘','Ukiyo-e'], d:['北斋广重,后来震动欧洲画坛。','Hokusai and Hiroshige, later shaking Europe.'] },
- { a:1955, b:1990, k:'econ', t:['经济奇迹','Economic miracle'], d:['从废墟到世界第二。','Ruins to the world\'s second economy.'] },
- { a:1980, b:2025, k:'art', t:['动漫与游戏','Anime & games'], d:['全球流行文化的重要一极。','A pole of global pop culture.'] } ],
+ { a:1955, b:1990, k:'econ', t:['经济奇迹','Economic miracle'], d:['战败二十多年后,日本从废墟变成世界第二大经济体:1964 年新干线通车、东京办奥运,此后汽车与家电卖遍全球,「日本制造」一度是精工细作的同义词。','Twenty-odd years after defeat, Japan went from ruins to the second-largest economy in the world: the bullet train opened and Tokyo hosted the Olympics in 1964, and its cars and electronics then sold everywhere — made in Japan became a byword for precision.'] },
+ { a:1980, b:2025, k:'art', t:['动漫与游戏','Anime & games'], d:['手冢治虫之后,漫画成了日本最普及的一种表达;宫崎骏的动画、任天堂与索尼的游戏机,把这套视觉语言送到了全世界孩子手里——今天很多人认识日本是从这里开始的。','After Tezuka Osamu, comics became the most widely used form of expression in Japan; Miyazaki\'s films and the consoles of Nintendo and Sony carried that visual language to children everywhere — for many people today it is where knowing Japan begins.'] } ],
 '现代欧洲诸国': [
  { a:1957, b:2004, k:'thought', t:['把主权放到一张桌子上','Sovereignty pooled at one table'], d:['从 1957 年六国的共同市场到 2004 年二十五国的联盟,历史上少见的自愿让渡主权——关税、农业、竞争规则和一部分外交由布鲁塞尔的一张桌子决定。','From the six-nation common market of 1957 to a union of twenty-five in 2004 — a rare voluntary pooling of sovereignty, with tariffs, farming, competition rules and part of foreign policy decided at one table in Brussels.'] },
  { a:1945, b:1975, k:'econ', t:['战后经济奇迹','The postwar economic miracle'], d:['马歇尔计划与共同市场之下,意大利、荷兰、北欧三十年高速增长,北欧走出高税收高福利的路。','Under the Marshall Plan and the common market Italy, the Netherlands and the Nordics grew fast for thirty years, and the Nordics took the road of high taxes and generous welfare.'] } ],
 '俄罗斯·苏联': [
  { a:1820, b:1880, k:'art', t:['文学黄金时代','Literary golden age'], d:['普希金到托尔斯泰、陀思妥耶夫斯基。','Pushkin to Tolstoy and Dostoevsky.'] },
- { a:1957, b:1975, k:'tech', t:['太空竞赛','Space race'], d:['卫星与加加林先拔头筹。','Sputnik and Gagarin lead first.'] } ],
-'玛雅': [ { a:250, b:900, k:'tech', t:['历法与天文','Calendar & astronomy'], d:['长纪历精于儒略历。','The Long Count outdoes the Julian year.'] } ],
+ { a:1957, b:1975, k:'tech', t:['太空竞赛','Space race'], d:['1957 年的斯普特尼克是人类第一颗人造卫星,1961 年加加林是第一个进入太空的人——两次都比美国早,正是这两次让美国下决心送人上月球。','Sputnik in 1957 was the first artificial satellite and Gagarin in 1961 the first human in space — both ahead of the United States, and it was those two that pushed America to commit to putting a man on the Moon.'] } ],
+'玛雅': [ { a:250, b:900, k:'tech', t:['历法与天文','Calendar & astronomy'], d:['玛雅的长纪历能一直记到几千年后而不重复;他们把金星的运行周期算到每五百年才差不到一天,比同时期欧洲用的儒略历精确得多——而这一切没有望远镜。','The Maya Long Count could run for thousands of years without repeating, and they tracked the cycle of Venus to within a day over five centuries — far closer than the Julian calendar Europe was using, and all of it without a telescope.'] } ],
 '印加': [ { a:1440, b:1530, k:'tech', t:['道路与农业工程','Roads & terraces'], d:['约三万公里驿道与高山梯田。','Some 30,000 km of roads, mountain terraces.'] } ],
-'高棉·吴哥': [ { a:1110, b:1220, k:'art', t:['吴哥建筑巅峰','Angkor at its height'], d:['吴哥窟与巴戎寺。','Angkor Wat and the Bayon.'] } ],
+'高棉·吴哥': [ { a:1110, b:1220, k:'art', t:['吴哥建筑巅峰','Angkor at its height'], d:['吴哥窟是今天世界上最大的宗教建筑群,五座塔象征神话里的须弥山;巴戎寺的石塔上刻着两百多张巨大的人脸,刻的是谁至今没有定论。','Angkor Wat is the largest religious structure in the world today, its five towers standing for the mythical Mount Meru; the towers of the Bayon carry over two hundred giant carved faces, and whose faces they are is still unsettled.'] } ],
 '商': [
  { a:-1300, b:-1046, k:'tech', t:['青铜范铸','Piece-mould bronze'], d:['后母戊鼎重八百余公斤,一次浇铸而成。','The 830 kg Houmuwu ding, cast in one pour.'] },
  { a:-1250, b:-1046, k:'thought', t:['甲骨占卜','Oracle-bone divination'], d:['成熟的汉字体系,连同王室的每一次问卜。','A mature script — and every royal question recorded.'] } ],
@@ -177,7 +177,7 @@ const GL = {
 '二里头·夏': [ { a:-1700, b:-1600, k:'tech', t:['最早的青铜礼器','The first bronze ritual vessels'], d:['爵与绿松石龙形器:礼制在此有了实物。','Bronze jue cups and a turquoise dragon — ritual made tangible.'] } ],
 '西晋': [ { a:266, b:300, k:'thought', t:['玄学与《三国志》','Mystic learning, and the Sanguozhi'], d:['清谈风起,陈寿同时写下最可靠的三国信史。','Pure conversation flourishes as Chen Shou writes the sober history.'] } ],
 '马里帝国': [
- { a:1300, b:1400, k:'econ', t:['黄金之国','The land of gold'], d:['一度供应旧大陆近半黄金。','At one point nearly half the Old World\'s gold.'] },
+ { a:1300, b:1400, k:'econ', t:['黄金之国','The land of gold'], d:['一度供应旧大陆近一半的黄金。1324 年曼萨·穆萨去麦加朝觐,一路上散金太多,据说开罗的金价十几年都没缓过来——这趟路也把马里画进了欧洲人的地图。','It once supplied close to half the gold of the Old World. When Mansa Musa went on pilgrimage to Mecca in 1324 he gave away so much along the way that the price of gold in Cairo is said not to have recovered for a decade — and that journey put Mali on European maps.'] },
  { a:1327, b:1450, k:'thought', t:['廷巴克图学统','Timbuktu\'s learning'], d:['清真寺即大学,手抄本世代相传。','Mosque as university; manuscripts passed down for generations.'] } ],
 '现代非洲': [ { a:2007, b:2025, k:'econ', t:['跨越式移动支付','Leapfrogging to mobile money'], d:['没有铺开银行网,直接用手机结算。','No branch network needed — the phone is the bank.'] } ],
 '瓦里·蒂瓦纳科': [ { a:700, b:1000, k:'tech', t:['高原农业工程','High-altitude farming'], d:['垄台田与梯田,让四千米高处也能养活城市。','Raised fields and terraces feed cities at 4,000 metres.'] } ],
