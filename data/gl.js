@@ -161,6 +161,10 @@ const GL = {
   { a:1200, b:1428, k:'thought', t:['「托尔特克」变成一个褒义词','"Toltec" becomes a compliment'], d:['纳瓦特尔语里它后来指「工匠、有本事的人」;阿兹特克贵族争相自称托尔特克后代,把一座废弃的城当作文明的尺子。','In Nahuatl it came to mean a craftsman, someone of skill; Aztec nobles claimed Toltec descent, taking an abandoned city as the measure of the civilized.'] },
 ],
 '阿兹特克': [ { a:1440, b:1519, k:'econ', t:['特拉特洛尔科市场','The great market'], d:['西班牙人说他们从没见过这么大的集市。','The Spaniards said they had never seen its like.'] } ],
+'巽伽与恒河诸国': [
+  { a:-150, b:100, k:'art', t:['桑奇的塔门','The gateways of Sanchi'], d:['阿育王建的是塔身,四座满刻本生故事的塔门是巽伽时期加的——今天去桑奇看的主要就是这几座门。','Ashoka raised the dome; the four gateways, carved all over with birth-stories, come from the Shunga period — and they are the main thing visitors go to see.'] },
+  { a:-150, b:200, k:'thought', t:['把话定下来','Fixing the words'], d:['两大史诗在这几百年里从口传定成文本,帕坦伽利写下《大疏》钉住梵语语法,此后两千年几乎没再变。','The two epics settled from oral performance into text in these centuries, and Patanjali\'s great commentary pinned down Sanskrit grammar so firmly that it hardly moved for two thousand years.'] },
+],
 '百乘王朝': [
  { a:1, b:200, k:'econ', t:['印度洋罗马贸易','Rome across the Indian Ocean'], d:['季风直航埃及,南印出土的罗马金币多在此时。','Monsoon runs to Egypt; most Roman gold in south India dates here.'] },
  { a:100, b:220, k:'art', t:['阿马拉瓦蒂佛教艺术','The Amaravati school'], d:['与犍陀罗并立的另一支源流,人物柔软流动。','A second source alongside Gandhara — softer, in motion.'] } ],
