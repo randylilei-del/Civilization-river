@@ -2276,7 +2276,7 @@ const PEOPLE = {
   t:['辽朝灭亡时他带着二百骑西走,几年后在中亚重建了一个帝国。',
      'When the Liao fell he rode west with two hundred men, and a few years later he had an empire in Central Asia.'],
   a:[['辽朝进士出身,又能领兵,是契丹少见的文武兼备之人','A Liao examination graduate who could also command an army — rare among the Khitan'],
-     ['1124 年金灭辽之际率二百骑西迁,收拢旧部与草原诸族','Left with two hundred horsemen in 1124 and gathered up scattered Khitan and steppe tribes'],
+     ['1124 年辽亡前夕率二百骑北走可敦城,再从那里西行,收拢旧部与草原诸族','Rode north to Khatun City with two hundred horsemen in 1124, then on west, gathering up scattered Khitan and steppe tribes'],
      ['1141 年卡特万之战击溃塞尔柱苏丹桑贾尔的十万大军','Destroyed the Seljuk sultan Sanjar\'s army of 100,000 at Qatwan in 1141']],
   s:['卡特万是伊斯兰世界第一次被非穆斯林政权重创,消息传到欧洲后被误认为是东方基督教君主"祭司王约翰"打赢了穆斯林——这个传说影响了此后三百年的欧洲东方想象,并间接推动了寻找东方盟友的地理探索。西辽疆域一度横跨中亚,存续近百年。',
      'Qatwan was the first heavy defeat the Islamic world suffered from a non-Muslim power, and when word reached Europe it was taken to mean that a Christian king in the east — Prester John — had beaten the Muslims. That legend shaped European ideas about Asia for three centuries and helped drive the search for allies beyond it. His state spanned Central Asia and lasted nearly a hundred years.'] },
