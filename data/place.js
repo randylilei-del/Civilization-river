@@ -90,7 +90,7 @@ const PLACE = {
 '特奥蒂瓦坎':['墨西哥','Mexico','墨西哥城近郊','near Mexico City'], '图拉':['墨西哥','Mexico','图拉德阿连德','Tula de Allende'], '乔卢拉':['墨西哥','Mexico','乔卢拉','Cholula'],
 '墨西哥城':['墨西哥','Mexico','墨西哥城','Mexico City'], '特诺奇蒂特兰':['墨西哥','Mexico','墨西哥城','Mexico City'],
 '蒂卡尔':['危地马拉','Guatemala'], '瓦里':['秘鲁','Peru'], '查文德万塔尔':['秘鲁','Peru'],
-'帕查卡马克':['秘鲁','Peru','利马以南','south of Lima'], '栋古拉':['苏丹','Sudan','栋古拉','Dongola'], '戈尔迪翁':['土耳其','Turkey','波拉特勒','Polatlı'], '柯尼斯堡':['俄罗斯','Russia','加里宁格勒','Kaliningrad'], '森纳尔':['苏丹','Sudan','森纳尔','Sennar'], '库斯科':['秘鲁','Peru','库斯科','Cusco'], '利马':['秘鲁','Peru','利马','Lima'],
+'帕查卡马克':['秘鲁','Peru','利马以南','south of Lima'], '栋古拉':['苏丹','Sudan','栋古拉','Dongola'], '戈尔迪翁':['土耳其','Turkey','波拉特勒','Polatlı'], '柯尼斯堡':['俄罗斯','Russia','加里宁格勒','Kaliningrad'], '罗哈(今拉利贝拉)':['埃塞俄比亚','Ethiopia','拉利贝拉','Lalibela'], '森纳尔':['苏丹','Sudan','森纳尔','Sennar'], '库斯科':['秘鲁','Peru','库斯科','Cusco'], '利马':['秘鲁','Peru','利马','Lima'],
 '的喀喀湖畔':['玻利维亚与秘鲁','Bolivia and Peru'],
 '华盛顿':['美国','United States','华盛顿','Washington DC'], '纽约':['美国','United States','纽约','New York'],
 '硅谷':['美国加州','California, USA'],
