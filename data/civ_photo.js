@@ -243,6 +243,10 @@ const CIV_PHOTO = {
   /* v243.1:这张图拍的正是桑奇的东塔门与包石后的塔身 */
   { f:'East_Gateway_-_Stupa_1_-_Sanchi_Hill_2013-02-21_4398.JPG', h:'1/12', t:['桑奇大塔','the Great Stupa at Sanchi'], by:'Biswarup Ganguly', lic:'CC BY 3.0' },
 ],
+'勃兰登堡·普鲁士': [
+  /* v247.1:门建于 1791,而「德意志」带 1866 才起——这张图本来挂错了带 */
+  { f:'Brandenburger_Tor_abends.jpg', h:'a/a6', t:['勃兰登堡门','the Brandenburg Gate'], by:'Thomas Wolf, www.foto-tw.de', lic:'CC BY-SA 4.0' },
+],
 '阿瓦·勃固': [
   /* v240.1:信修浮第一次给整座塔贴金,是这条带的头号成就 */
   { f:'Shwedagon_Pagoda_2017.jpg', h:'c/c4', t:['大金塔','the Shwedagon Pagoda'], by:'Bjørn Christian Tørrissen', lic:'CC BY-SA 4.0' },

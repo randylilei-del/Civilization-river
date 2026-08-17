@@ -273,7 +273,7 @@ const CITY_SITES = {
  { n:['贝伦塔','the Belem Tower'], y:1519, e:['曼努埃尔时期','Manueline'] },
 ],
 '柏林': [
- { n:['勃兰登堡门','the Brandenburg Gate'], y:1791, e:['普鲁士','Prussia'] },
+ { n:['勃兰登堡门','the Brandenburg Gate'], y:1791, e:['勃兰登堡·普鲁士','Brandenburg-Prussia'] },
 ],
 '斯德哥尔摩': [
  { n:['骑士岛教堂','Riddarholmen Church'], y:1300, e:['中世纪','medieval'], ca:1 },

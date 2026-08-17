@@ -16,6 +16,7 @@ const path = require('path');
 const { LANES, SPHERES, ERAS, EV_NAME, CIVS, EVENTS, GEO, CHRONO, GL, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME, PEAK, ACHV, AGLYPH, GEO_CITY, PLACE_LORE, UNIONS, SEARCH_ALIAS, CITY_VIDEO, CITY_LORE, CITY_NAMES, CITY_SITES, RIVERS, RANGES, DESERTS, LAKES } = D;
 
 const P = [];
+const W = [];   /* v248.1:warn 通道——不计入退出码,给「清不完的旧问题」用 */
 const KINDS = ['econ', 'art', 'tech', 'thought'];
 
 CIVS.forEach(c => {
@@ -468,6 +469,9 @@ const pip = (x, y, poly) => {
  * ⚠ 这不是几何表,是**结论表**:每条 = 已做过史实核对的「该文明鼎盛期确实统治过该地标」
  * (考据见 CHANGELOG v127/v128)。往表里加地标必须先核史实;探针失守 = 有人改版图切掉了它。 */
 const LANDMARKS = [
+  /* v245.1 / v247.1:两处「招牌落在自己边界外」的修正,各配正向探针钉住 */
+  ['法拉斯', 31.30, 22.19, ['努比亚诸王国']],
+  ['布雷斯劳·西里西亚', 17.03, 51.11, ['勃兰登堡·普鲁士']],
   /* v248:拉利贝拉不在 GEO_CITY 里,而十一座岩凿教堂正是这条带的全部落点 */
   ['拉利贝拉', 39.04, 12.03, ['扎格维王朝']],
   /* v246:戈尔迪翁不在 GEO_CITY 里,而它是这条带的都城与「戈尔迪之结」所在 */
@@ -1113,6 +1117,29 @@ EVENTS.forEach(e => {
  *   ② 非双语:只写中文就上线,英文视图会突然少一行,层次断掉
  *   ③ 超长:钩子句的全部价值是「一眼扫到」,写成第二段正文就把层次又抹平了。
  *      30 字是硬上限(设计目标 ≤20),中英分别按字/词计——英文按 12 词。 */
+/* 规则 71(v248.1,**warn 不 fail**):地点小段不许是本带 d/b/q 的改写。
+ * 由来:「place_lore 抄自己的 civs 字段」在 v237.1(乌兰巴托)、v240.1(仰光/墨西哥城)、
+ * v248.1(利马/麦罗埃/柏林/安卡拉) 三轮核查里各犯一次,而教训每次都写进了 HANDOFF——
+ * **说明这不是记性问题,是缺一个判据**。核查员给的判据很干脆:算小段与本带
+ * d/b/q 的 6-gram 重合率,全站 844 条中位数是 0%,而复发的那几条都在 30—62%。
+ * 为什么是 warn 而不是 fail:加规则时全站仍有 6 条 ≥25%(德黑兰|现代中东、
+ * 麦罗埃|库施·努比亚、开封|三国、阿拉木图|西辽、金沙萨|欧洲殖民非洲、撒马尔罕|粟特),
+ * 都不是本轮引入的。按站内纪律「清不完的旧问题用 warn 不用 fail」,红灯久了没人看。
+ * audit 原本只有 P(fail),这条规则同时给它加了 W(warn):单独打印、不计入退出码。 */
+{
+  const grams = (str, n) => { const out = new Set(); for (const part of String(str).split(/[。,;:!?、「」()——…\s]+/)) for (let i = 0; i + n <= part.length; i++) out.add(part.slice(i, i + n)); return out; };
+  for (const key of Object.keys(PLACE_LORE)) {
+    const civ = key.split('|')[1];
+    const c = CIVS.find(x => x.n === civ); if (!c) continue;
+    let own = (c.d || '') + '§' + (c.b || '');
+    if (c.q) for (const k of Object.keys(c.q)) own += '§' + c.q[k][0];
+    const g = grams(PLACE_LORE[key][0], 6), o = grams(own, 6);
+    if (!g.size) continue;
+    const pct = [...g].filter(x => o.has(x)).length / g.size * 100;
+    if (pct >= 25) W.push(`[小段与本带正文重合 ${pct.toFixed(0)}%] ${key} —— 小段该讲「那个朝代这个地方是什么样」,不是把色带卡的话再说一遍(全站中位数 0%)`);
+  }
+}
+
 /* 规则 70(v239.1):data/*.js 里对象字面量的键不许重复。
  * 由来:v237 给 f['中心'] 补古地名时往 place.js 加了一条 '哈拉和林',而 place.js:30 早就有一条。
  * **JS 后写胜出,既有条目被静默覆盖** —— 「蒙古帝国」卡片的「今属」从「今 蒙古国」变成了
@@ -1608,6 +1635,7 @@ TRACES.forEach(tr => {
 });
 
 console.log(P.length ? P.join('\n') : '✅ 结构校验全通过');
+if (W.length) console.log(`\n⚠ ${W.length} 条警告(不影响退出码):\n` + W.join('\n'));
 
 const nChrono = Object.values(CHRONO).reduce((s, a) => s + a.length, 0);
 

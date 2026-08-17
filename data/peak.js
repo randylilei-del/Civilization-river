@@ -17,7 +17,7 @@ const PEAK = {
 '帕提亚·萨珊':{a:350}, '阿拉伯哈里发':{a:1110,ay:720,p:3400,w:.16},
 '奥斯曼帝国':{a:520,ay:1683,p:3000,w:.055}, '萨法维·波斯':{a:290,as:['非 Taagepera 序列','not from the Taagepera series']}, '塞尔柱突厥':{a:390,ay:1080},
 '亚述':{a:140,ay:-670}, '新巴比伦':{a:50,ay:-562}, '苏美尔·阿卡德':{a:80,ay:-2250}, '迦太基':{a:30,ay:-220},
-'勃兰登堡·普鲁士':{a:35,ay:1815,as:['示意值:1815 年本土范围(不含莱茵兰飞地),非 Taagepera 主序列','indicative: the core territory in 1815, excluding the Rhenish exclaves; not from the Taagepera series']}, '扎格维王朝':{a:12,as:['示意值:埃塞俄比亚高原中北部的大致范围,非 Taagepera 主序列','indicative: roughly the north-central Ethiopian highlands; not from the Taagepera series']}, '弗里吉亚':{a:15,as:['示意值:安纳托利亚中部高原的大致范围,非 Taagepera 主序列','indicative: roughly the central Anatolian plateau; not from the Taagepera series']}, '赫梯':{a:45,ay:-1250},
+'勃兰登堡·普鲁士':{a:28,ay:1828,as:['1828 年全境(含莱茵兰与威斯特伐利亚),约 106,852 平方英里;不是 1866 年之后的疆域','the whole state in 1828, including the Rhineland and Westphalia — about 106,852 square miles; not the post-1866 extent']}, '扎格维王朝':{a:12,as:['示意值:埃塞俄比亚高原中北部的大致范围,非 Taagepera 主序列','indicative: roughly the north-central Ethiopian highlands; not from the Taagepera series']}, '弗里吉亚':{a:15,as:['示意值:安纳托利亚中部高原的大致范围,非 Taagepera 主序列','indicative: roughly the central Anatolian plateau; not from the Taagepera series']}, '赫梯':{a:45,ay:-1250},
 /* 古巴比伦不给 ay:Taagepera 记峰值在前1690(短年表),而站内「鼎盛:汉谟拉比(前1792—前1750)」
    与大事记用的是中年表,写上去会变成「峰值在汉谟拉比死后 60 年」。宁可不写年份。 */
 '古巴比伦':{a:25}, '加喜特巴比伦':{a:30,ay:-1350,as:['示意值:统治范围与古巴比伦、新巴比伦同量级(两河下游巴比伦尼亚),非 Taagepera 主序列','indicative: the same order as Old and Neo-Babylonian — lower Mesopotamia; not from the Taagepera series']},
