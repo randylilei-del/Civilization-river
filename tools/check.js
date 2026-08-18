@@ -52,6 +52,15 @@ run('语法(index.html <script>)', () => {
   return { ok: r.status === 0, note: r.status === 0 ? `${m.length} 段` : r.stderr.split('\n').slice(0, 3).join(' ') };
 });
 
+/* 3.5 lint-content:新写内容的可疑句清单(最高级/现在时/大数字/因果词)。只扫 HEAD..工作区的 data/ diff,
+   **不计入退出码**——它是给写的人自己看一眼的,不是规则。 */
+{
+  const r = node(['tools/lint-content.js']);
+  const out = (r.stdout || '').trim();
+  if (out && !/没有命中/.test(out)) { console.log('· ' + out.split('\n').join('\n  ')); }
+  else console.log('· lint-content:新写内容无可疑句(或没有未提交的 data 改动)');
+}
+
 /* 4. smoke:headless 渲染层断言(--quick 跳过) */
 if (!QUICK) run('smoke(headless 渲染层)', () => {
   const r = node(['tools/smoke.js']);

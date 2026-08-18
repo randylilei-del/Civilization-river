@@ -191,7 +191,11 @@ async function newPage(browser, { width, height, dark = false }) {
   stats.labels = labels.n;
   labels.outside.forEach(x => fail('标签出色带', x));
   labels.clipped.forEach(x => fail('标签出视口', x));
-  labels.overlap.slice(0, 20).forEach(x => warn('标签重叠', x));   // 2026-08-16 基线 4 处(北欧×文艺复兴意大利等),清零后改 fail
+  /* 标签重叠:基线冻结(2026-08-18)。基线内 warn(清不完的旧问题不亮红灯),**基线外 fail**——
+     v247 新带又多了一处,那时靠「显式改 CLAUDE.md」放过,warn 就是这么一点点变成「多一条也无所谓」的。
+     新带引入新重叠必须当场处理:挪标签,或有意识地把它加进这张表。 */
+  const OVERLAP_BASELINE = new Set(['北欧诸王国 × 文艺复兴意大利', '勃兰登堡·普鲁士 × 俄罗斯·苏联', '帖木儿帝国 × 北元·蒙古诸部', '马六甲及诸苏丹国 × 暹罗', '南诏·大理 × 吐蕃']);
+  labels.overlap.forEach(x => (OVERLAP_BASELINE.has(x) ? warn : fail)(OVERLAP_BASELINE.has(x) ? '标签重叠(基线)' : '标签重叠(新增)', x));
 
   /* ── 7. 选一条轨迹后,站点要进视口(v205,Ray「点基督教像没反应」) ───────────────────
      反例验证:把 traceSel change 里 window.scrollTo 注释掉 → 报「站点不在视口」(2026-08-16) */
