@@ -217,7 +217,7 @@ const CITY_LORE = {
 /* 美洲 */
 '墨西哥城': ['原本是特斯科科湖中的一座岛城特诺奇蒂特兰,阿兹特克人用浮田在湖上种地——西班牙人把湖填了,在废墟上照原位盖起主教座堂与总督府。今天全城因为抽干的湖床而年年下沉。',
  'It began as Tenochtitlan, an island city in Lake Texcoco where the Mexica farmed on floating plots — the Spanish drained the lake and raised cathedral and palace on the ruins, in the same spot. The whole city now sinks a little every year into that emptied lakebed.'],
-'特奥蒂瓦坎': ['墨西哥谷地北端,公元 1 至 6 世纪美洲最大的城市,人口十万以上——街道按一条「亡灵大道」严格对齐,太阳金字塔与月亮金字塔立在两端。谁建的、说什么语言,至今没有定论;阿兹特克人来时它已废弃八百年,是他们给了这个名字。',
+'特奥蒂瓦坎': ['墨西哥谷地北端,公元 1 至 6 世纪美洲最大的城市,人口十万以上——街道按一条「亡者大道」严格对齐,太阳金字塔与月亮金字塔立在两端。谁建的、说什么语言,至今没有定论;阿兹特克人来时它已废弃八百年,是他们给了这个名字。',
  'At the north end of the valley of Mexico, the largest city in the Americas from the first to the sixth century, with over a hundred thousand people — its streets align strictly on an avenue the Aztecs later called the road of the dead, with the pyramids of the Sun and Moon at either end. Who built it and what they spoke is still unsettled; it had been abandoned eight hundred years when the Aztecs arrived and named it.'],
 '奇琴伊察': ['尤卡坦半岛没有地表河流,雨水直接渗进石灰岩——所以城建在天然井(cenote)旁边,那既是水源也是祭祀之地。库库尔坎金字塔的台阶总数正好是一年的天数,春分日影会在栏边爬出一条蛇。',
  'Yucatan has no surface rivers; rain sinks straight into the limestone — so the city was built beside natural wells, which were both its water and its place of sacrifice. The steps of the Kukulcan pyramid add up to the days of a year, and at the equinox the shadow crawls down the balustrade as a serpent.'],
