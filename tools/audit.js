@@ -1783,12 +1783,20 @@ CIVS.forEach(c => {
   /* v270.2:成就卡一并查。核查员比出秦的三张成就卡与 gl.js 的鼎盛段逐字重合(四十字诏、
      「广五十步」、路基、睡虎地里耶),而规则 78 当时只覆盖 PEOPLE——两层各讲各的这条纪律
      (DATA.md:81 / index.html 渲染注释)一直没有工具兜底。 */
-  const cards = [...Object.entries(PEOPLE || {}).map(([k, v]) => ['人物', k, v]),
-                 ...Object.entries(ACHV || {}).map(([k, v]) => ['成就', k, v])];
-  for (const [kind, k0, p] of cards) {
-    const k = `${kind}卡 ${k0}`;
+  const cards = [...Object.entries(PEOPLE || {}).map(([k, v]) => ['人物', k, v, 'card']),
+                 ...Object.entries(ACHV || {}).map(([k, v]) => ['成就', k, v, 'card'])];
+  /* v271:鼎盛段也进来比。v250.1 定的纪律是「GL 讲什么时候最好、什么时候开始失灵,制度细节留给 q」,
+     而这一层此前同样没有工具兜底——补 35 条鼎盛不足时正好用它盯着自己。
+     GL 的比对对象里要去掉 GL 自己,否则整段与自己 100% 重合。 */
+  CIVS.forEach(c => (GL[c.n] || c.gl || []).forEach(g => {
+    cards.push(['鼎盛', `${c.n}·${(g.t && g.t[0]) || g.k}`, { c: c.n, t: g.t, a: [], s: g.d }, 'gl']);
+  }));
+  for (const [kind, k0, p, src] of cards) {
+    const k = `${kind}段 ${k0}`.replace('人物段', '人物卡').replace('成就段', '成就卡');
     const c = CIVS.find(x => x.n === p.c); if (!c) continue;
-    const body = norm([c.b, c.d, flat(c.q), flat(c.qh), flat(GL[c.n] || c.gl || []), flat((D.GL_X && D.GL_X[c.n]) || []), flat(CHRONO[c.n] || [])].join(''));
+    /* GL_X 会被 load.js 镜像进 GL,鼎盛段拿自己去比会 100% 撞上,所以 gl 这一路两张表都排除 */
+    const glTxt = src === 'gl' ? '' : flat(GL[c.n] || c.gl || []) + flat((D.GL_X && D.GL_X[c.n]) || []);
+    const body = norm([c.b, c.d, flat(c.q), flat(c.qh), glTxt, flat(CHRONO[c.n] || [])].join(''));
     const card = norm([flat(p.t), flat(p.a), flat(p.s)].join(''));
     let best = '';
     for (let i = 0; i < card.length; i++) {
@@ -1800,7 +1808,7 @@ CIVS.forEach(c => {
   /* 一次刷 35 条 warn 等于没人看:按重合长度排序只列最长的 8 条,其余给个数字。
      旧卡的存量在这里,新卡进来会排到前面。 */
   dup.sort((a, b) => b.best.length - a.best.length);
-  dup.slice(0, 8).forEach(d => W.push(`[卡片复述母条目 ${d.best.length} 字] ${d.k}:「${d.best}」—— 卡片该讲这个人/这样东西本身,带卡与鼎盛段的话留给它们自己`));
+  dup.slice(0, 8).forEach(d => W.push(`[卡片复述母条目 ${d.best.length} 字] ${d.k}:「${d.best}」—— 这一层该讲自己的角度:人物卡讲这个人、成就卡讲这样东西、鼎盛段讲什么时候最好与什么时候失灵`));
   if (dup.length > 8) W.push(`[卡片复述母条目] 另有 ${dup.length - 8} 张重合 14 字以上(多为旧卡),跑 \`node tools/audit.js\` 看不到全部——要全表用 grep`);
 }
 
