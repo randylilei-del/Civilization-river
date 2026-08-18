@@ -1775,6 +1775,7 @@ CIVS.forEach(c => {
   /* 只比中文正文:英文里 the East India Company 这类词组天然重合,比了全是噪音 */
   const norm = t => (String(t).match(/[\u4e00-\u9fa5]/g) || []).join('');
   const flat = v => Array.isArray(v) ? v.map(flat).join('') : (v && typeof v === 'object' ? Object.values(v).map(flat).join('') : String(v ?? ''));
+  const dup = [];
   for (const [k, p] of Object.entries(PEOPLE || {})) {
     const c = CIVS.find(x => x.n === p.c); if (!c) continue;
     const body = norm([c.b, c.d, flat(c.q), flat(c.qh), flat(GL[c.n] || c.gl || []), flat(CHRONO[c.n] || [])].join(''));
@@ -1784,9 +1785,13 @@ CIVS.forEach(c => {
       let len = best.length;
       while (i + len + 1 <= card.length && body.includes(card.slice(i, i + len + 1))) { len++; best = card.slice(i, i + len); }
     }
-    if (best.length >= 14)
-      W.push(`[人物卡复述母条目 ${best.length} 字] ${k}:「${best}」—— 人物卡该写这个人自己的事,带卡的话让带卡说`);
+    if (best.length >= 14) dup.push({ k, best });
   }
+  /* 一次刷 35 条 warn 等于没人看:按重合长度排序只列最长的 8 条,其余给个数字。
+     旧卡的存量在这里,新卡进来会排到前面。 */
+  dup.sort((a, b) => b.best.length - a.best.length);
+  dup.slice(0, 8).forEach(d => W.push(`[人物卡复述母条目 ${d.best.length} 字] ${d.k}:「${d.best}」—— 人物卡该写这个人自己的事,带卡的话让带卡说`));
+  if (dup.length > 8) W.push(`[人物卡复述母条目] 另有 ${dup.length - 8} 张重合 14 字以上(多为旧卡),跑 \`node tools/audit.js\` 看不到全部——要全表用 grep`);
 }
 
 console.log(P.length ? P.join('\n') : '✅ 结构校验全通过');

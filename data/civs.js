@@ -2095,7 +2095,7 @@ const CIVS = [
   d:'阿骨打以两千五百人起兵,十年灭辽,再一年掳走徽钦二帝;迁都燕京,北京作为都城的历史由此开篇。金世宗治国宽和,被比作上古贤君,称"小尧舜",但汉化与守成的两难始终未解,1234年在蒙宋夹击下亡于蔡州。' },
 { l:'ea', s:'steppe', v:2, n:'元', k:[[1271,0],[1290,.8],[1368,0]], b:'草原帝国首次统一全中国;行省制沿用至今。',
   e:{ n:'Yuan', w:'Yuan dynasty', b:'The steppe rules all China; the province system endures.', d:'The first whole-China rule from the steppe; its province system is still in use. Persian cobalt colored the blue-white porcelain and Marco Polo\'s Khanbaliq gave Europe its first systematic image of China. Ninety-seven years — among the shortest of the unified dynasties.', f:{ 'Peak':'Kublai (1271–1294)', 'Center':'Dadu (Beijing)', 'Figures':'Kublai, Guo Shoujing, Drogön Chögyal Phagpa, Huang Daopo', 'Legacy':'Province system, blue-white porcelain, zaju drama' } },
-  f:{ '鼎盛':'忽必烈(1271—1294)', '中心':'大都(北京)', '人物':'忽必烈、郭守敬、八思巴、黄道婆', '成就':'行省制、青花瓷、元曲' },
+  f:{ '鼎盛':'忽必烈(1271—1294)', '中心':'大都(北京)', '人物':'忽必烈、郭守敬、八思巴、黄道婆', '成就':'行中书省、青花瓷、元曲' },
   qh:{ born:['草原政权第一次统治了整个中国','The first time a steppe power ruled all of China'],
        rule:['「省」这个词,是从这时候留下来的','The word province has been in use ever since'],
        money:['纸币第一次成了全国的主要钱','Paper money became the main currency nationwide'],
