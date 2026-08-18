@@ -1675,6 +1675,73 @@ TRACES.forEach(tr => {
   });
 });
 
+/* 73. 今天仍存在的主权国家,色带不能在现代之前戛然而止(v249.3;Ray 2026-08-14「荷兰文明后来就消失了,
+ * 但荷兰这个国家其实还在」)。v135 只做过一次性排查、没留规则。判法沿用 v135:色带名里含现存国家名,
+ * 而名字里**没有限定词**告诉读者「这讲的是那个国家的某一段」(古/帝国/王国/王朝/诸/共和国/殖民/苏丹/汗国/城邦/
+ * 文化/文明/时代/治下/属/·/-),且色带在 2000 年前结束 → 红。 */
+{
+  const COUNTRIES = ['埃及','希腊','意大利','瑞典','荷兰','波兰','蒙古','日本','朝鲜','韩国','印度','越南','泰国','缅甸','柬埔寨','埃塞俄比亚','摩洛哥','阿富汗','哈萨克','匈牙利','奥地利','西班牙','葡萄牙','法国','法兰西','德国','德意志','英国','俄罗斯','土耳其','伊朗','伊拉克','中国','美国','墨西哥','秘鲁','巴西','汤加','丹麦','挪威','立陶宛','加纳','马里','刚果','津巴布韦','斯里兰卡','尼泊尔','阿曼','也门','叙利亚','突尼斯','阿尔及利亚','利比亚','苏丹','索马里','肯尼亚','坦桑尼亚','尼日利亚','塞内加尔','马达加斯加','澳大利亚','新西兰','菲律宾','印度尼西亚','马来西亚','新加坡','巴基斯坦','孟加拉','乌兹别克','乌克兰','罗马尼亚','保加利亚','塞尔维亚','捷克','芬兰','爱尔兰','比利时','瑞士','智利','阿根廷','哥伦比亚','古巴','加拿大','斐济','萨摩亚','夏威夷'];
+  const QUAL = /古|帝国|王国|王朝|诸|共和国|殖民|苏丹|汗国|城邦|文化|文明|时代|治下|属|·|-|人|化|北元|文艺复兴/;
+  const ALLOW = new Set(['大津巴布韦']);   // 遗址名不是国名(v135 已裁决)
+  CIVS.forEach(c => {
+    const y1 = c.k[c.k.length - 1][0]; if (y1 >= 2000) return;
+    const hit = COUNTRIES.filter(n => c.n.includes(n) && !(n === '古巴' && c.n.includes('古巴比伦')) && !(n === '苏丹' && c.n.includes('苏丹国')));
+    if (hit.length && !QUAL.test(c.n) && !ALLOW.has(c.n))
+      P.push(`[国家还在,色带却结束了] ${c.n} 止于 ${y1},但「${hit[0]}」今天仍是主权国家——名字里加限定词(某某帝国/王朝/共和国…),或把带延到今天`);
+  });
+}
+
+/* 74. 敏感表述口径白名单(v249.3;Ray 2026-08-14「保证所有的台湾都叫做中国台湾」→ v146 定的口径:归属语境用「中国台湾」,
+ * 历史叙述保留「台湾」)。DATA.md 写「历史叙述共 7 处」,到 2026-08-18 已是 21 处——没有任何东西强迫新增时过一遍口径。
+ * 做法:按表记录当前命中数当基线;数字一变就红,逼写的人对照 DATA.md 那一节判一次,然后**有意识地**改下面的基线。
+ * 只查计数不查位置:够拦「不知不觉多了一处」,又不至于改动周边文字就误报。 */
+{
+  const SENSITIVE = {
+    '台湾': { chrono: 1, civs: 3, people: 6, place_lore: 6, ranges: 1, traces: 4 },   // 2026-08-18 基线;其中「中国台湾」3 处(孔子/孙中山/蒋介石)
+  };
+  const dir = path.join(__dirname, '..', 'data');
+  for (const [word, base] of Object.entries(SENSITIVE)) {
+    const now = {};
+    fs.readdirSync(dir).filter(f => f.endsWith('.js')).forEach(f => {
+      const n = (fs.readFileSync(path.join(dir, f), 'utf-8').match(new RegExp(word, 'g')) || []).length;
+      if (n) now[f.replace(/\.js$/, '')] = n;
+    });
+    const keys = new Set([...Object.keys(base), ...Object.keys(now)]);
+    for (const k of keys) if ((base[k] || 0) !== (now[k] || 0))
+      P.push(`[敏感表述口径] 「${word}」在 data/${k}.js 里出现 ${now[k] || 0} 处(基线 ${base[k] || 0})——按 docs/DATA.md「台湾相关表述的口径」逐处判定,确认后更新 audit.js 规则 74 的基线`);
+  }
+}
+
+/* 75. 统计行不许无声缩水(v249.3;v118 教训:换 loader 后 GL 校验对象 265→170,退出码两边都是 0)。
+ * 把关键计数写到 tools/.audit-stats.json(gitignore,按机器保存):变少了就红,变多了自动更新——
+ * 有意删内容时删掉那个文件重跑一次即可。 */
+const STATS = {
+  civs: CIVS.length,
+  chrono: Object.values(CHRONO).reduce((s, a) => s + a.length, 0),
+  gl: Object.values(GL).reduce((s, a) => s + a.length, 0) + CIVS.filter(c => c.gl).reduce((s, c) => s + c.gl.length, 0),
+  glCovered: CIVS.filter(c => GL[c.n] || c.gl).length,
+  events: EVENTS.length, traces: TRACES.length, people: Object.keys(PEOPLE).length, achv: Object.keys(ACHV).length,
+  placeLore: Object.keys(PLACE_LORE).length, geoCity: GEO_CITY.length, cityLore: Object.keys(CITY_LORE).length,
+  civPhoto: Object.values(D.CIV_PHOTO || {}).reduce((s, a) => s + a.length, 0),
+};
+{
+  const f = path.join(__dirname, '.audit-stats.json');
+  let prev = null; try { prev = JSON.parse(fs.readFileSync(f, 'utf-8')); } catch (e) {}
+  if (prev) for (const [k, v] of Object.entries(STATS)) if (prev[k] !== undefined && v < prev[k])
+    P.push(`[统计缩水] ${k} ${prev[k]} → ${v}:是数据真少了,还是加载器/合并镜像漏了一块?有意删减就 rm tools/.audit-stats.json 重跑`);
+  if (!P.some(x => x.startsWith('[统计缩水]'))) { try { fs.writeFileSync(f, JSON.stringify(STATS)); } catch (e) {} }
+}
+
+/* 76. 字段不许等于它的回退目标(v249.3;那边 HANDOFF 教训「静默回退比报错危险」)。渲染里 c.d || c.b、
+ * c.e.d || c.e.b:缺 d 会退回 b,规则 69 拦「缺」;但把 b 原样抄成 d,或 d 以 b 开头,同样是没写——
+ * 而且这种「合法值」任何零 undefined 的自检都抓不到。大事记描述等于标题同理。 */
+CIVS.forEach(c => {
+  const norm = t => (t || '').replace(/[\s。.,,;;:!?!?]/g, '');
+  if (c.d && norm(c.d) === norm(c.b)) P.push(`[叙述 d 抄了 b] ${c.n}:d 和 b 一样,等于没写`);
+  if (c.e && c.e.d && norm(c.e.d) === norm(c.e.b)) P.push(`[英文 d 抄了 b] ${c.n}`);
+  (CHRONO[c.n] || []).forEach(it => { if (it[2] && it[2][0] && norm(it[2][0]) === norm(it[1][0])) P.push(`[大事记描述抄了标题] ${c.n} ${it[0]}`); });
+});
+
 console.log(P.length ? P.join('\n') : '✅ 结构校验全通过');
 if (W.length) console.log(`\n⚠ ${W.length} 条警告(不影响退出码):\n` + W.join('\n'));
 
