@@ -58,7 +58,7 @@ run('语法(index.html <script>)', () => {
   const r = node(['tools/lint-content.js']);
   const out = (r.stdout || '').trim();
   if (out && !/没有命中/.test(out)) { console.log('· ' + out.split('\n').join('\n  ')); }
-  else console.log('· lint-content:新写内容无可疑句(或没有未提交的 data 改动)');
+  else console.log('· lint-content:无可疑句');
 }
 
 /* 4. smoke:headless 渲染层断言(--quick 跳过) */

@@ -15,7 +15,16 @@ const fs = require('fs'), path = require('path');
 const ROOT = path.resolve(__dirname, '..');
 const args = process.argv.slice(2);
 const ALL = args.includes('--all');
-const REF = args.find(a => !a.startsWith('--')) || 'HEAD';
+let REF = args.find(a => !a.startsWith('--')) || 'HEAD';
+/* 工作区干净时 HEAD..工作区 是空的,报「无可疑句」是假绿灯(核查员 2026-08-18 抓到:
+   同一份规则对 HEAD 跑什么都没有,对上一批的 sha 跑抓到 200 多句)。干净就自动退一格看上一个 commit。 */
+if (!args.find(a => !a.startsWith('--'))) {
+  try {
+    const { execSync: ex } = require('child_process');
+    const dirty = ex('git status --porcelain -- data/', { cwd: ROOT, encoding: 'utf-8' }).trim();
+    if (!dirty) REF = 'HEAD~1';
+  } catch (e) {}
+}
 
 const CHECKS = [
   ['最高级', /最早|最大|最长|最高|最强|最富|最先|第一个|第一座|第一次|唯一|从未|从来没有|史上|空前|绝无仅有|\b(first|earliest|largest|biggest|greatest|longest|highest|only|never|unprecedented|the first)\b/i,

@@ -1742,6 +1742,53 @@ CIVS.forEach(c => {
   (CHRONO[c.n] || []).forEach(it => { if (it[2] && it[2][0] && norm(it[2][0]) === norm(it[1][0])) P.push(`[大事记描述抄了标题] ${c.n} ${it[0]}`); });
 });
 
+/* 77. 人物卡的年代要跟站内别处对得上(v266.1)。三张卡在同一批里撞车才发现:信修浮写在位到 1472、
+ * 达摩悉提写 1471 起、CHRONO 又写 1472 即位;哈里塞纳卡写 475—500,而同卡 f「鼎盛」写的是约 460—480。
+ * 查两件事:①人物的年代区间必须与所属色带的存续区间有重叠(不要求包含——莉莉乌欧卡拉尼活过了王国);
+ * ②若该文明 f['鼎盛'] 里点了这个人的名字并带年份区间,两边的区间必须相交。 */
+{
+  /* 「前268」要读成 -268:中文纪年的负号是「前」字,直接抓数字会把公元前当成公元 */
+  const yrs = t => [...String(t).matchAll(/(前)?\s*(\d{3,4})/g)].map(m => (m[1] ? -1 : 1) * (+m[2]));
+  for (const [k, p] of Object.entries(PEOPLE || {})) {
+    const c = CIVS.find(x => x.n === p.c); if (!c || !Array.isArray(p.y)) continue;
+    const b0 = c.k[0][0], b1 = c.k[c.k.length - 1][0];
+    const [a0, a1] = p.r || p.y;
+    if (a1 < b0 - 5 || a0 > b1 + 5)
+      P.push(`[人物年代与色带不重叠] ${k} ${a0}~${a1} vs ${c.n} ${b0}~${b1} —— 归属或年代有一处写错了`);
+    const peak = (c.f && c.f['鼎盛']) || '';
+    if (peak.includes(k)) {
+      const py = yrs(peak);
+      if (py.length >= 2) {
+        const [p0, p1] = [Math.min(...py), Math.max(...py)];
+        if (a1 < p0 || a0 > p1)
+          P.push(`[人物年代与「鼎盛」打架] ${k} 卡写 ${a0}~${a1},而 ${c.n} 的「鼎盛」写「${peak}」—— 两套年表混用了`);
+      }
+    }
+  }
+}
+
+/* 78(warn). 人物卡不许把母条目的话再说一遍(v266.1)。规则 71 只管 place_lore,人物卡这一层此前没人看,
+ * 结果一批 16 张里 6 张的「意义」段是母条目 b/d/q/钩子的压缩复述,其中一张连钩子句都一字不差。
+ * 判法:人物卡全文与该文明的 b/d/q/qh/GL/CHRONO 拼起来的正文,找 ≥12 字的逐字重合串。
+ * warn 不 fail——引用同一个专名或书名本来就会重合,阈值给得宽,只把明显复述挑出来。 */
+{
+  /* 只比中文正文:英文里 the East India Company 这类词组天然重合,比了全是噪音 */
+  const norm = t => (String(t).match(/[\u4e00-\u9fa5]/g) || []).join('');
+  const flat = v => Array.isArray(v) ? v.map(flat).join('') : (v && typeof v === 'object' ? Object.values(v).map(flat).join('') : String(v ?? ''));
+  for (const [k, p] of Object.entries(PEOPLE || {})) {
+    const c = CIVS.find(x => x.n === p.c); if (!c) continue;
+    const body = norm([c.b, c.d, flat(c.q), flat(c.qh), flat(GL[c.n] || c.gl || []), flat(CHRONO[c.n] || [])].join(''));
+    const card = norm([flat(p.t), flat(p.a), flat(p.s)].join(''));
+    let best = '';
+    for (let i = 0; i < card.length; i++) {
+      let len = best.length;
+      while (i + len + 1 <= card.length && body.includes(card.slice(i, i + len + 1))) { len++; best = card.slice(i, i + len); }
+    }
+    if (best.length >= 14)
+      W.push(`[人物卡复述母条目 ${best.length} 字] ${k}:「${best}」—— 人物卡该写这个人自己的事,带卡的话让带卡说`);
+  }
+}
+
 console.log(P.length ? P.join('\n') : '✅ 结构校验全通过');
 if (W.length) console.log(`\n⚠ ${W.length} 条警告(不影响退出码):\n` + W.join('\n'));
 
