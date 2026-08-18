@@ -16,7 +16,7 @@ tools/check.js        # 改完一条命令:build 一致性 → audit → 语法 
 tools/smoke.js        # headless 渲染层烟测(playwright-core + 本机 Chrome),断言清单见「修改工作流」第 3 步
 tools/depth.js        # 内容厚度体检:172 带/127 城同组相对排名,列「最薄 N」清单(不是红灯);`depth.js 唐` 看单条体检表
 tools/context.js      # **写新内容前必跑**:`context.js <带名|城市名>` 一条命令摊开同卡/同城/同城别带的全部既有字段 + SETTLED 裁决 + depth 体检
-tools/lint-content.js # 新写内容的可疑句清单(最高级/现在时/大数字/因果词),只扫 HEAD..工作区 diff;check.js 会顺带打印,不计入退出码
+tools/lint-content.js # 新写内容的可疑句清单(最高级/现在时/大数字/因果词),只扫 HEAD..工作区 diff(工作区干净时自动退到 HEAD~1);check.js 会顺带打印,不计入退出码。**批量写完 commit 后,用该批第一个 commit 的 sha 再跑一次 `node tools/lint-content.js <sha>~1` 并逐条销账**——它是 warn 通道,不销账就等于没跑(核查员两次抓到「清单当时就报了、没人回头看」)
 tools/gap.js          # 城市时间断层诊断:拿补带选题名单 / 补完复核清没清零(node tools/gap.js 150 [城市名])
 tools/newband.js      # 新色带内容**插入前**预检(markdown / 钩子重复 / 缺中文 d / f 项数 / PLACE / PEAK)
 tools/load.js         # audit/coverage/peakgap/refs 共用的数据加载器(含 GL_X 合并镜像)

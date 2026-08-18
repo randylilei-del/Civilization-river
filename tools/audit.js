@@ -1771,7 +1771,7 @@ CIVS.forEach(c => {
   }
 }
 
-/* 78(warn). 人物卡不许把母条目的话再说一遍(v266.1)。规则 71 只管 place_lore,人物卡这一层此前没人看,
+/* 78(warn). 人物卡与成就卡都不许把母条目的话再说一遍(v266.1)。规则 71 只管 place_lore,人物卡这一层此前没人看,
  * 结果一批 16 张里 6 张的「意义」段是母条目 b/d/q/钩子的压缩复述,其中一张连钩子句都一字不差。
  * 判法:人物卡全文与该文明的 b/d/q/qh/GL/CHRONO 拼起来的正文,找 ≥12 字的逐字重合串。
  * warn 不 fail——引用同一个专名或书名本来就会重合,阈值给得宽,只把明显复述挑出来。 */
@@ -1780,9 +1780,15 @@ CIVS.forEach(c => {
   const norm = t => (String(t).match(/[\u4e00-\u9fa5]/g) || []).join('');
   const flat = v => Array.isArray(v) ? v.map(flat).join('') : (v && typeof v === 'object' ? Object.values(v).map(flat).join('') : String(v ?? ''));
   const dup = [];
-  for (const [k, p] of Object.entries(PEOPLE || {})) {
+  /* v270.2:成就卡一并查。核查员比出秦的三张成就卡与 gl.js 的鼎盛段逐字重合(四十字诏、
+     「广五十步」、路基、睡虎地里耶),而规则 78 当时只覆盖 PEOPLE——两层各讲各的这条纪律
+     (DATA.md:81 / index.html 渲染注释)一直没有工具兜底。 */
+  const cards = [...Object.entries(PEOPLE || {}).map(([k, v]) => ['人物', k, v]),
+                 ...Object.entries(ACHV || {}).map(([k, v]) => ['成就', k, v])];
+  for (const [kind, k0, p] of cards) {
+    const k = `${kind}卡 ${k0}`;
     const c = CIVS.find(x => x.n === p.c); if (!c) continue;
-    const body = norm([c.b, c.d, flat(c.q), flat(c.qh), flat(GL[c.n] || c.gl || []), flat(CHRONO[c.n] || [])].join(''));
+    const body = norm([c.b, c.d, flat(c.q), flat(c.qh), flat(GL[c.n] || c.gl || []), flat((D.GL_X && D.GL_X[c.n]) || []), flat(CHRONO[c.n] || [])].join(''));
     const card = norm([flat(p.t), flat(p.a), flat(p.s)].join(''));
     let best = '';
     for (let i = 0; i < card.length; i++) {
@@ -1794,8 +1800,8 @@ CIVS.forEach(c => {
   /* 一次刷 35 条 warn 等于没人看:按重合长度排序只列最长的 8 条,其余给个数字。
      旧卡的存量在这里,新卡进来会排到前面。 */
   dup.sort((a, b) => b.best.length - a.best.length);
-  dup.slice(0, 8).forEach(d => W.push(`[人物卡复述母条目 ${d.best.length} 字] ${d.k}:「${d.best}」—— 人物卡该写这个人自己的事,带卡的话让带卡说`));
-  if (dup.length > 8) W.push(`[人物卡复述母条目] 另有 ${dup.length - 8} 张重合 14 字以上(多为旧卡),跑 \`node tools/audit.js\` 看不到全部——要全表用 grep`);
+  dup.slice(0, 8).forEach(d => W.push(`[卡片复述母条目 ${d.best.length} 字] ${d.k}:「${d.best}」—— 卡片该讲这个人/这样东西本身,带卡与鼎盛段的话留给它们自己`));
+  if (dup.length > 8) W.push(`[卡片复述母条目] 另有 ${dup.length - 8} 张重合 14 字以上(多为旧卡),跑 \`node tools/audit.js\` 看不到全部——要全表用 grep`);
 }
 
 console.log(P.length ? P.join('\n') : '✅ 结构校验全通过');
