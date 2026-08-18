@@ -105,7 +105,7 @@ const CITY_SITES = {
 ],
 '香港': [
  { n:['李郑屋汉墓','the Lei Cheng Uk Han tomb'], y:100, e:['东汉','Eastern Han'], ca:1 },
- { n:['宋王台','Sung Wong Toi'], y:1279, e:['南宋','Southern Song'], ca:1 },
+ { n:['宋王台石刻','the Sung Wong Toi inscription'], y:1279, e:['宋元之际','Song–Yuan transition'], ca:1 },
  { n:['九龙寨城衙门','the Kowloon Walled City yamen'], y:1847, e:['清','Qing'] },
 ],
 /* 东亚其余 · 东南亚 */
