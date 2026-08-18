@@ -7,7 +7,14 @@
  *
  * 原则:**不设绝对长度阈值**(v229 教训:机械追长度只会注水),只做**同组相对排名**——
  * 同泳道 × 同影响力档(k 峰值)为一组,组太小则退到全站同档;每个维度算组内百分位,
- * 掉到组内最后 15% 的维度标出来。这是清单不是红灯:薄不薄最终由人判,清单只负责把「先看哪 20 张」排好。
+ * 掉到组内尾部(大档 35% / 中档 25% / 小档 15%)的维度标出来。这是清单不是红灯:薄不薄最终由人判,清单只负责把「先看哪 20 张」排好。
+ *
+ * 尺子分三层(2026-08-18 Ray 校准后定:他点名的罗马共和国/秦/西晋/吠陀时代/香港,薄的全在正文层):
+ *   核心层(权重 3;六问字数 2——v181 起六问有意求短,总字数少不一定薄,最短格更说明问题):大事记条数、六问字数、六问最短格、鼎盛段数、鼎盛非短段数、正文密度
+ *   结构层(权重 1):大事记描述率、六问非空格数、交往
+ *   素材层(不判薄,只列缺口):照片、视频——外部素材要慢慢补,不该把一条正文很厚的带拖进「薄」名单
+ *   绝对缺口(不看组,0 就是缺):人物 0(audit 的 FIGURES_NA 留空名单除外)、成就卡 0
+ * 城市同理:核心 = 总结段字数、古迹条数、小段覆盖率、小段均长、小段密度;结构 = 古称条数(新大陆城市天然没有,权重 0.5);素材 = 照片、视频
  *
  * 用法:node tools/depth.js            文明 + 城市各列最薄 20
  *      node tools/depth.js 40         列最薄 40
@@ -25,7 +32,10 @@ const JSON_OUT = args.includes('--json');
 const nArg = args.find(a => /^\d+$/.test(a));
 const TOP = nArg ? +nArg : 20;
 const ONE = args.find(a => !a.startsWith('--') && !/^\d+$/.test(a));
-const BOTTOM = 0.15;   // 组内最后 15% 算「薄」
+/* 期望随分量走(2026-08-18 Ray 校准:秦、西晋这种分量的朝代,「组内不垫底」不等于够):
+   大档带看到组内后 35% 就算薄、中档 25%、小档 15%;分数也按档放大。城市按经过的带数分档同理。 */
+const BOTTOM_OF = { 大: 0.35, 中: 0.25, 小: 0.15 };
+const TIER_W = { 大: 1.5, 中: 1.25, 小: 1 };
 
 /* ── 具体物词典:年份/数字 + 站内专名(文明名、城市名、人物名、成就名)──────────────── */
 const NAMES = new Set([...CIVS.map(c => c.n), ...GEO_CITY.map(g => g[0]), ...Object.keys(PEOPLE), ...Object.keys(ACHV)]);
@@ -54,6 +64,7 @@ const civRows = CIVS.map(c => {
       大事记描述率: ch.length ? +(ch.filter(it => it[2] && zhOf(it[2])).length / ch.length).toFixed(2) : 0,
       六问字数: qTexts.reduce((s, t) => s + t.length, 0),
       六问非空格数: qTexts.filter(t => t.length >= 20).length,
+      六问最短格: Math.min(...qTexts.map(t => t.length)),
       鼎盛段数: gl.length,
       鼎盛非短段数: gl.filter(g => zhOf(g.d).length > 20).length,
       人物数: (peopleByCiv[c.n] || []).length,
@@ -88,14 +99,23 @@ const cityRows = GEO_CITY.map(g => {
   };
 });
 
+/* ── 三层权重 ─────────────────────────────────────────────────────────────── */
+const W_CIV = { 大事记条数: 3, 六问字数: 2, 六问最短格: 3, 鼎盛段数: 3, 鼎盛非短段数: 3, 正文密度: 3,
+                大事记描述率: 1, 六问非空格数: 1, 交往: 1,
+                人物数: 0, 成就卡数: 0, 照片: 0, 视频: 0 };   // 0 = 不参与判薄(人物/成就走绝对缺口,照片/视频走素材缺口)
+const W_CITY = { 总结段字数: 3, 古迹条数: 3, 小段覆盖率: 3, 小段均长: 3, 小段密度: 3, 古称条数: 0.5, 照片: 0, 视频: 0 };
+/* 人物留空名单直接读 audit.js 里的 FIGURES_NA,不另抄一份 */
+const FIGURES_NA = (() => { try { const src = require('fs').readFileSync(require('path').join(__dirname, 'audit.js'), 'utf-8');
+  const m = src.match(/const FIGURES_NA = \[([\s\S]*?)\];/); return new Set(eval('[' + m[1] + ']')); } catch (e) { return new Set(); } })();
+
 /* ── 组内百分位 ───────────────────────────────────────────────────────────── */
-function rank(rows, groupOf, fallbackOf) {
+function rank(rows, groupOf, fallbackOf, W) {
   const groups = {}; rows.forEach(r => (groups[groupOf(r)] = groups[groupOf(r)] || []).push(r));
   const fb = {}; rows.forEach(r => (fb[fallbackOf(r)] = fb[fallbackOf(r)] || []).push(r));
   for (const r of rows) {
-    let g = groups[groupOf(r)]; if (g.length < 5) g = fb[fallbackOf(r)];
+    let g = groups[groupOf(r)]; if (g.length < 6) g = fb[fallbackOf(r)];
     r.group = groupOf(r) + (g === groups[groupOf(r)] ? '' : '(退到全站同档)'); r.groupSize = g.length;
-    r.pct = {}; r.thin = [];
+    r.pct = {}; r.thin = []; r.score = 0;
     for (const d of Object.keys(r.dims)) {
       const vals = g.map(x => x.dims[d]);
       const below = vals.filter(v => v < r.dims[d]).length, eq = vals.filter(v => v === r.dims[d]).length;
@@ -104,16 +124,23 @@ function rank(rows, groupOf, fallbackOf) {
       const distinct = new Set(vals).size;
       // 存续不到百年的带(秦 15 年、西晋 51 年)大事记条数和交往天然少,这两维不判薄
       const shortSpan = r.span !== undefined && r.span < 100 && (d === '大事记条数' || d === '交往');
-      if (p <= BOTTOM && distinct > 1 && r.dims[d] < Math.max(...vals) && !shortSpan) r.thin.push(d);
+      const w = W[d] ?? 1;
+      const BOTTOM = BOTTOM_OF[r.tier];
+      if (w > 0 && p <= BOTTOM && distinct > 1 && r.dims[d] < Math.max(...vals) && !shortSpan) { r.thin.push(d); r.score += TIER_W[r.tier] * w * (BOTTOM - p + 0.05); }
     }
-    // 综合分:薄维度数 + 最薄的那个有多薄
-    const minP = Math.min(...Object.values(r.pct));
-    r.score = r.thin.length + (1 - minP);
+    // 绝对缺口:不看组
+    r.gaps = [];
+    if ('人物数' in r.dims && r.dims.人物数 === 0 && !FIGURES_NA.has(r.n)) r.gaps.push('无人物');
+    if ('成就卡数' in r.dims && r.dims.成就卡数 === 0) r.gaps.push('无成就卡');
+    if ('鼎盛非短段数' in r.dims && r.tier !== '小' && r.dims.鼎盛非短段数 < 2) r.gaps.push('鼎盛不足');
+    r.media = [];
+    if (r.dims.照片 === 0) r.media.push('无照片');
+    if (r.dims.视频 === 0) r.media.push('无视频');
   }
   return rows;
 }
-rank(civRows, r => `${r.lane}·${r.tier}`, r => r.tier);
-rank(cityRows, r => `${r.tier}城`, r => '全站');
+rank(civRows, r => `${r.lane}·${r.tier}`, r => r.tier, W_CIV);
+rank(cityRows, r => `${r.tier}城`, r => '全站', W_CITY);
 
 /* ── 输出 ─────────────────────────────────────────────────────────────────── */
 const bar = p => '▁▂▃▄▅▆▇█'[Math.min(7, Math.floor(p * 8))];
@@ -125,7 +152,7 @@ if (ONE) {
   const r = civRows.find(x => x.n === ONE) || cityRows.find(x => x.n === ONE);
   if (!r) { console.error(`depth: 找不到「${ONE}」`); process.exit(2); }
   const pool = civRows.includes(r) ? civRows : cityRows;
-  console.log(`${r.n} · 组「${r.group}」共 ${r.groupSize} 条 · 薄维度 ${r.thin.length ? r.thin.join('/') : '无'}`);
+  console.log(`${r.n} · 组「${r.group}」共 ${r.groupSize} 条 · 薄维度 ${r.thin.length ? r.thin.join('/') : '无'}${r.gaps.length ? ' · 绝对缺口:' + r.gaps.join('/') : ''}${r.media.length ? ' · 素材:' + r.media.join('/') : ''}`);
   for (const d of Object.keys(r.dims)) console.log(`  ${bar(r.pct[d])} ${String(d).padEnd(8, '　')} ${String(r.dims[d]).padStart(6)}   组内百分位 ${Math.round(r.pct[d] * 100)}%${r.thin.includes(d) ? '  ← 薄' : ''}`);
   const peers = pool.filter(x => x.group.startsWith(r.group.replace(/\(.*\)$/, '')) && x !== r).sort((a, b) => a.thin.length - b.thin.length || b.dims[Object.keys(r.dims)[0]] - a.dims[Object.keys(r.dims)[0]]).slice(0, 3);
   if (peers.length) { console.log('  同组最厚三条(参照):'); peers.forEach(p => console.log(`    ${p.n}: ${Object.entries(p.dims).map(([k, v]) => `${k} ${v}`).join(' · ')}`)); }
@@ -134,14 +161,16 @@ if (ONE) {
 
 const thinCivs = civRows.filter(r => r.thin.length).sort((a, b) => b.score - a.score);
 const thinCities = cityRows.filter(r => r.thin.length).sort((a, b) => b.score - a.score);
-console.log(`depth: ${CIVS.length} 条带里 ${thinCivs.length} 条至少一个维度在组内最后 ${BOTTOM * 100}%;${GEO_CITY.length} 座城里 ${thinCities.length} 座。下面各列最薄 ${TOP}(▁ 最薄 … █ 最厚,括号里是原值):\n`);
-console.log('── 文明 ──');
+console.log(`depth: 172 带 / 127 城。「薄」只看正文层(权重见文件头);人物/成就卡走绝对缺口,照片/视频走素材缺口。\n`);
+console.log(`── 文明 · 正文薄(${thinCivs.length} 条,列最薄 ${TOP};▁ 最薄 … █ 最厚,括号里是原值)──`);
 thinCivs.slice(0, TOP).forEach(r => console.log(fmtRow(r) + `   [组 ${r.group}]`));
-console.log('\n── 城市 ──');
+console.log(`\n── 城市 · 正文薄(${thinCities.length} 座,列最薄 ${TOP})──`);
 thinCities.slice(0, TOP).forEach(r => console.log(fmtRow(r) + `   [${r.hits} 带经过]`));
-/* 全站维度分布,给「哪一类内容整体最薄」一个感觉 */
-console.log('\n── 全站:各维度为 0 的条数 ──');
-const zeros = {}; civRows.forEach(r => Object.entries(r.dims).forEach(([d, v]) => { if (!v) zeros[d] = (zeros[d] || 0) + 1; }));
-console.log('  文明:' + Object.entries(zeros).sort((a, b) => b[1] - a[1]).map(([d, n]) => `${d} ${n}`).join(' · '));
-const zc = {}; cityRows.forEach(r => Object.entries(r.dims).forEach(([d, v]) => { if (!v) zc[d] = (zc[d] || 0) + 1; }));
-console.log('  城市:' + Object.entries(zc).sort((a, b) => b[1] - a[1]).map(([d, n]) => `${d} ${n}`).join(' · '));
+const noPeople = civRows.filter(r => r.gaps.includes('无人物')), noAchv = civRows.filter(r => r.gaps.includes('无成就卡'));
+const glShort = civRows.filter(r => r.gaps.includes('鼎盛不足'));
+console.log(`\n── 绝对缺口 ──`);
+console.log(`  鼎盛不足(大/中档而非短段 <2)${glShort.length} 条:${glShort.map(r => r.n).join('、')}`);
+console.log(`  无人物(留空名单外)${noPeople.length} 条:${noPeople.map(r => r.n).join('、')}`);
+console.log(`  无成就卡 ${noAchv.length} 条(先补影响力大的):${noAchv.filter(r => r.tier === '大').map(r => r.n).join('、')}${noAchv.filter(r => r.tier === '大').length ? ' …' : ''}(大档 ${noAchv.filter(r => r.tier === '大').length} / 中档 ${noAchv.filter(r => r.tier === '中').length} / 小档 ${noAchv.filter(r => r.tier === '小').length})`);
+console.log(`\n── 素材缺口(慢慢补,不算薄)──`);
+console.log(`  文明:无照片 ${civRows.filter(r => r.media.includes('无照片')).length} · 无视频 ${civRows.filter(r => r.media.includes('无视频')).length}    城市:无照片 ${cityRows.filter(r => r.media.includes('无照片')).length} · 无视频 ${cityRows.filter(r => r.media.includes('无视频')).length}`);
