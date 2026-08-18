@@ -14,6 +14,7 @@ data/                 # 全部 30 张内容表的正本(.js 文本片段,性质�
 tools/build.js        # 把 data/*.js 注入回 index.html 的标记区间;改 data 后必跑
 tools/check.js        # 改完一条命令:build 一致性 → audit → 语法 → smoke;--quick 跳过 smoke
 tools/smoke.js        # headless 渲染层烟测(playwright-core + 本机 Chrome),断言清单见「修改工作流」第 3 步
+tools/depth.js        # 内容厚度体检:172 带/127 城同组相对排名,列「最薄 N」清单(不是红灯);`depth.js 唐` 看单条体检表
 tools/gap.js          # 城市时间断层诊断:拿补带选题名单 / 补完复核清没清零(node tools/gap.js 150 [城市名])
 tools/newband.js      # 新色带内容**插入前**预检(markdown / 钩子重复 / 缺中文 d / f 项数 / PLACE / PEAK)
 tools/load.js         # audit/coverage/peakgap/refs 共用的数据加载器(含 GL_X 合并镜像)
