@@ -1192,7 +1192,7 @@ const PEOPLE = {
   t:['中国疆域最大的时候是在他手上,闭关的格局也是他定的。',
      'China reached its greatest extent under him — and he also set the terms on which it closed itself off.'],
   a:[['平定准噶尔与大小和卓,新疆并入版图,清朝疆域达到最大','Destroyed the Dzungars and annexed what became Xinjiang, taking the empire to its largest'],
-     ['主持编《四库全书》,收书三千五百余种,同时禁毁书籍逾万部','Commissioned the Siku Quanshu, gathering 3,500-odd titles — and banned or destroyed over ten thousand others in the process'],
+     ['主持编《四库全书》,收书三千四百六十余种,同时禁毁书籍逾万部','Commissioned the Siku Quanshu, gathering some 3,460 titles — and banned or destroyed over ten thousand others in the process'],
      ['1793 年拒绝英国马戛尔尼使团的通商请求','Turned away Lord Macartney\'s trade mission in 1793']],
   s:['清朝疆域在他手上约一千三百万平方公里,是中国历史上的最大值之一。《四库全书》约八亿字,是中国历史上最大的丛书;但编书的同时也是规模最大的一次文字清查。马戛尔尼被拒后不到五十年,英国用军舰打开了同一扇门。',
      'The empire covered some 13 million square kilometres under him, among the largest in Chinese history. The Siku Quanshu, at roughly 800 million characters, is the biggest collection ever compiled in China — and compiling it doubled as the most thorough literary purge ever conducted. Fewer than fifty years after Macartney was refused, Britain opened the same door with gunboats.'] },
