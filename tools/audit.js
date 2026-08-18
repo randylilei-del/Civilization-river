@@ -399,10 +399,14 @@ Object.entries(ACHV || {}).forEach(([k, a]) => {
   // 「X的Y」说明这条大事记讲的是 Y、只是拿 X 作参照,不是在给 X 断代 ——
   // 高棉 1060 年那条讲巴普昂寺、描述写「吴哥窟的预演」,按原来的宽匹配会误报。
   // 反过来「科举制发端」里 X 是主语,那才是真正要查的情形(v67 就是靠它抓到 605/587)。
+  /* v267.1:「紫禁城前一年落成」这类也不算断代——条目在给自己那一年断代,只是顺带说 X 发生在别的时候。
+     排除相对时间词,否则「1421 迁都(紫禁城前一年落成)」会去和紫禁城卡的 1406—1420 打架。 */
+  const REL = /^(前一年|次年|前一|上一年|之前|之后|以前|以后|前后)/;
   const named = (txt, key) => {
     let i = txt.indexOf(key);
     while (i >= 0) {
-      if (txt[i + key.length] !== '的') return true;   // 不是「X的…」,算作在给 X 断代
+      const tail = txt.slice(i + key.length);
+      if (tail[0] !== '的' && !REL.test(tail)) return true;   // 不是「X的…」也不是「X 前一年…」,算作在给 X 断代
       i = txt.indexOf(key, i + 1);
     }
     return false;
@@ -1697,7 +1701,7 @@ TRACES.forEach(tr => {
  * 只查计数不查位置:够拦「不知不觉多了一处」,又不至于改动周边文字就误报。 */
 {
   const SENSITIVE = {
-    '台湾': { chrono: 1, civs: 3, people: 6, place_lore: 6, ranges: 1, traces: 4 },   // 2026-08-18 基线;其中「中国台湾」3 处(孔子/孙中山/蒋介石)
+    '台湾': { achv: 1, chrono: 1, civs: 3, people: 6, place_lore: 6, ranges: 1, traces: 4 },   // 2026-08-18 基线;其中「中国台湾」3 处(孔子/孙中山/蒋介石)。achv 那处是紫禁城卡「1948 年运往台湾,现藏台北故宫」——历史叙述 + 机构专名,合 v146 口径
   };
   const dir = path.join(__dirname, '..', 'data');
   for (const [word, base] of Object.entries(SENSITIVE)) {
