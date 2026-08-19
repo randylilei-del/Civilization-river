@@ -1812,6 +1812,92 @@ CIVS.forEach(c => {
   if (dup.length > 8) W.push(`[卡片复述母条目] 另有 ${dup.length - 8} 张重合 14 字以上(多为旧卡),跑 \`node tools/audit.js\` 看不到全部——要全表用 grep`);
 }
 
+/* 79–81. 跨色带与同带内的结构冲突(v279;2026-08-20 对抗核查的产物)。
+ *
+ * 为什么存在:那一轮核查里最硬的两条错,audit 一条都查不出——
+ *   ① 商有两段 thought 同为 -1250~-1046、同讲甲骨占卜,**重复上架**,鼎盛条上会出现两根写同一件事的条;
+ *   ② 「《吉尔伽美什》定本」这顶帽子被古巴比伦与加喜特巴比伦**两条色带同时戴着**(标题逐字相同)。
+ * audit 的 GL 校验此前只在单条带内查区间与 k 值,跨带一致性没有任何工具管。
+ *
+ * ⚠ 边界说清楚:**这三条不检测「同一件事在两条带上年代矛盾」那类语义冲突**。
+ * 2026-08-20 试过四种信号(3-4字汉字子串 1222 词 / 英文大写专名 151 处 / 标题 n-gram 226 处 /
+ * 站内封闭词表 43 处),精度全部不可用——因为「开罗」出现在法蒂玛、阿尤布、马穆鲁克三条带上且
+ * 年代互不重叠是**完全正确**的(三个前后相继的王朝),「年代不重叠」根本不是冲突信号。
+ * 判断「是不是同一件事」需要语义,没有便宜信号做得到,硬上就是几十上百条误报。
+ * 那一类只能人读——别再来重造这个轮子,先看这段注释。
+ *
+ * 三条都注入过反例验证(2026-08-20,见各条旁注),不是永远绿的摆设。
+ * ⚠ 注入反例时会污染 tools/.audit-stats.json(规则 75 的计数基线):加过段再撤掉就是「缩水」。
+ *   测完 rm 一次即可——这次就踩了。
+ *
+ * 下面三条都是**零语义、纯结构**的,所以敢挂红灯:
+ *   79 同带内同 k 同区间(无基线,当前 0 命中,纯回归护栏)
+ *   80 跨带标题逐字相同(基线 1 条)
+ *   81 同一部《书名》出现在多条带的 GL 里(基线 3 条)
+ * 80/81 的基线在 tools/.crossband-baseline.json,**入库而非 gitignore**——基线内容是有意的判断,
+ * 该被 review,不该按机器各存一份(这一点与规则 75 的 .audit-stats.json 有意不同)。
+ * 基线**不会自动写入**:新增命中就是红,要么改内容,要么有意识地手工加进基线文件。 */
+{
+  const glOf = c => GL[c.n] || c.gl || [];
+  const zh1 = v => Array.isArray(v) ? (v[0] || '') : (typeof v === 'string' ? v : '');
+  const bl = (() => {
+    const f = path.join(__dirname, '.crossband-baseline.json');
+    try { return JSON.parse(fs.readFileSync(f, 'utf-8')); } catch (e) { return { titles: [], books: [] }; }
+  })();
+  /* 基线条目写成 {key, why, when} 而不是裸字符串:没有理由的基线三个月后没人敢动,
+     只会一直加不会减——规则 36 的 71 城基线就是这么变成黑箱的。 */
+  const inBL = (kind, key) => (bl[kind] || []).some(e => (typeof e === 'string' ? e : e.key) === key);
+
+  /* 79. 同一条带内,k 与 [a,b] 全同的鼎盛段不许有第二根。
+     反例验证:给孔雀王朝塞一段 {a:-260,b:-232,k:'tech'} → 红,退出码 1 ✓(2026-08-20) */
+  CIVS.forEach(c => {
+    const byKey = {};
+    glOf(c).forEach(g => { const k = `${g.k}|${g.a}|${g.b}`; (byKey[k] = byKey[k] || []).push(zh1(g.t)); });
+    Object.entries(byKey).forEach(([k, ts]) => { if (ts.length > 1)
+      P.push(`[同带鼎盛段重复上架] ${c.n} ${k.replace(/\|/g, ' ')} 有 ${ts.length} 段:「${ts.join('」「')}」—— 同一条带的同一个领域、同一个年代区间只该有一根条,合并成一段(旧段的钩子句吸进新段)`);
+    });
+  });
+
+  /* 80. 不同色带的鼎盛段标题不许逐字相同(去标点后比) */
+  {
+    /* 反例验证:把迦太基「圆形军港与标准件造船」改名「工业革命」(大英帝国已有)→ 红 ✓;
+       再改名「经济奇迹」(基线里有)→ 不报 ✓——两个方向都试过(2026-08-20) */
+    const normT = t => t.replace(/[《》「」·:：,，、。—\-()（） ]/g, '');
+    const byT = {};
+    CIVS.forEach(c => glOf(c).forEach(g => {
+      const t = normT(zh1(g.t)); if (!t) return;
+      (byT[t] = byT[t] || []).push({ band: c.n, t: zh1(g.t), a: g.a, b: g.b });
+    }));
+    Object.entries(byT).forEach(([key, ss]) => {
+      const bands = [...new Set(ss.map(x => x.band))];
+      if (bands.length < 2 || inBL('titles', key)) return;
+      P.push(`[跨带标题撞车] 「${ss[0].t}」同时挂在 ${bands.length} 条带上:${ss.map(x => `${x.band}(${x.a}~${x.b})`).join(' / ')} —— 同一顶帽子两条带戴,读者点开两处看到同一句话;改掉其中一个标题,或有意保留就把 "${key}" 加进 tools/.crossband-baseline.json 的 titles`);
+    });
+  }
+
+  /* 81. 同一部《书》不许在多条带的鼎盛段里各讲一遍而无人对口径
+   *     (《史集》就是这么在蒙古帝国写「第一次」、伊尔汗国写「已知最早」的)
+   *     反例验证:往孔雀王朝段塞一句《爪哇史颂》(满者伯夷已有)→ 红,退出码 1 ✓(2026-08-20) */
+  {
+    const byBook = {};
+    CIVS.forEach(c => {
+      const seen = new Set();
+      glOf(c).forEach(g => {
+        const txt = zh1(g.t) + zh1(g.d);
+        for (const m of txt.matchAll(/《([^》]{2,20})》/g)) {
+          const b = `《${m[1]}》`; if (seen.has(b)) continue; seen.add(b);
+          (byBook[b] = byBook[b] || []).push({ band: c.n, t: zh1(g.t) });
+        }
+      });
+    });
+    Object.entries(byBook).forEach(([book, ss]) => {
+      const bands = [...new Set(ss.map(x => x.band))];
+      if (bands.length < 2 || inBL('books', book)) return;
+      P.push(`[同一部书跨带] ${book} 在 ${bands.length} 条带的鼎盛段里各讲了一遍:${ss.map(x => `${x.band}「${x.t}」`).join(' / ')} —— 核对两处的年代与 hedge 强度是否一致(最高级只改一处是复发过 3 次的毛病),核完把 "${book}" 加进 tools/.crossband-baseline.json 的 books`);
+    });
+  }
+}
+
 console.log(P.length ? P.join('\n') : '✅ 结构校验全通过');
 if (W.length) console.log(`\n⚠ ${W.length} 条警告(不影响退出码):\n` + W.join('\n'));
 
