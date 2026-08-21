@@ -1898,6 +1898,86 @@ CIVS.forEach(c => {
   }
 }
 
+/* 82. 同一文明内,跨层的版图面积不许互相打架(v280;2026-08-21)。
+ *
+ * 为什么存在:规则 79-81 查的是 GL 与 GL 之间,而上一轮核查挑出的口径不一致大半在**另一个方向**——
+ * 卡片与 q 之间。两处陈年待办就是这个形状:
+ *   清   q.power「约 1470 万」 vs 乾隆人物卡「约一千三百万」 vs 成就卡「约一千三百万」
+ *   蒙古 成吉思汗人物卡「约 3300 万」 vs 成就卡「约两千四百万」
+ * 孩子记得住的恰恰是这种数字,而同一条带点开两张卡看到两个数,是最伤信任的一类错。
+ *
+ * 只查「万平方公里」一个量纲——两次打架都在这里,面积也最容易被各层各写一套。
+ * 人口/年数等以后确有需要再扩,不预建。
+ *
+ * 关键判据:**带年份锚点的数字不参与比对**。不同年份的版图本来就不同(蒙古 1227 年一千三百五十万、
+ * 1294 年两千四百万,两个都对),硬比就是误报。只有**两个都不带年份**的面积互相打架才算冲突——
+ * 「鼎盛时约 3300 万」对「鼎盛时约两千四百万」,这才是真的两说。
+ * 阈值 10%:同一件事的不同估算(2350/2400)不该报,量级不同的(1300/1470、2400/3300)必须报。
+ *
+ * 反例验证(2026-08-21,三个方向都试过):
+ *   A 把成吉思汗卡改回「约三千三百万」(不带年份)→ 红 ✓
+ *   B 同一个数字前面加「1227 年」→ 不报 ✓(年份豁免有效,顺带证明中文数字解析能读「三千三百万」)
+ *   C 把澳新从基线的 areas 里拿掉 → 重新变红 ✓(基线真的在起作用,不是摆设)
+ * ⚠ 同 79-81:注入反例会污染规则 75 的 .audit-stats.json,测完 rm 一次。 */
+{
+  const CN = { 零:0, 一:1, 二:2, 两:2, 三:3, 四:4, 五:5, 六:6, 七:7, 八:8, 九:9 };
+  /* 把「一千三百五十」「两千四百」这类中文数字读成值;读不出来返回 null,宁可漏也不误判 */
+  const cn2num = w => {
+    if (/^\d[\d,]*(\.\d+)?$/.test(w)) return parseFloat(w.replace(/,/g, ''));
+    let total = 0, cur = 0, ok = false;
+    for (const ch of w) {
+      if (CN[ch] !== undefined) { cur = CN[ch]; ok = true; }
+      else if (ch === '十') { total += (cur || 1) * 10; cur = 0; ok = true; }
+      else if (ch === '百') { total += (cur || 1) * 100; cur = 0; ok = true; }
+      else if (ch === '千') { total += (cur || 1) * 1000; cur = 0; ok = true; }
+      else return null;
+    }
+    return ok ? total + cur : null;
+  };
+  /* 规则 79-81 的 inBL 在那个块的作用域里,这里够不着,自己读一次 */
+  const BL82 = (() => {
+    try { return (JSON.parse(fs.readFileSync(path.join(__dirname, '.crossband-baseline.json'), 'utf-8')).areas || [])
+      .map(e => (typeof e === 'string' ? e : e.key)); } catch (e) { return []; }
+  })();
+  const zhOf = v => Array.isArray(v) ? (v[0] || '') : (typeof v === 'string' ? v : '');
+  const flat1 = o => !o ? '' : (Array.isArray(o) ? o.map(zhOf).join('。') : Object.values(o).map(zhOf).join('。'));
+
+  /* 一条文明的全部中文正文,按「层」分开收——报错时要指得出是哪一层 */
+  const layersOf = c => {
+    const L = [];
+    L.push(['六问 q', flat1(c.q)]);
+    L.push(['叙述 d', zhOf(c.d)]);
+    (GL[c.n] || c.gl || []).forEach(g => L.push([`鼎盛段「${zhOf(g.t)}」`, zhOf(g.d)]));
+    Object.entries(PEOPLE).filter(([, p]) => p.c === c.n).forEach(([k, p]) =>
+      L.push([`人物卡 ${k}`, [zhOf(p.t), (p.a || []).map(zhOf).join('。'), zhOf(p.s)].join('。')]));
+    Object.entries(ACHV).filter(([, a]) => a.c === c.n).forEach(([k, a]) =>
+      L.push([`成就卡 ${k}`, [zhOf(a.t), (a.a || []).map(zhOf).join('。'), zhOf(a.s)].join('。')]));
+    return L.filter(x => x[1]);
+  };
+
+  CIVS.forEach(c => {
+    const found = [];
+    layersOf(c).forEach(([layer, txt]) => {
+      for (const m of txt.matchAll(/([\d,.]+|[零一二两三四五六七八九十百千]+)\s*万平方公里/g)) {
+        const v = cn2num(m[1]); if (v === null || !v) continue;
+        /* 年份锚点:命中处前 24 字里出现四位数年份或「N 年」→ 这是有年代的断言,不参与比对 */
+        const before = txt.slice(Math.max(0, m.index - 24), m.index);
+        if (/\d{3,4}\s*年|前\s*\d{2,4}/.test(before)) continue;
+        found.push({ layer, v, raw: m[0] });
+      }
+    });
+    for (let i = 0; i < found.length; i++) for (let j = i + 1; j < found.length; j++) {
+      const A = found[i], B = found[j];
+      if (A.layer === B.layer) continue;
+      if (Math.abs(A.v - B.v) / Math.max(A.v, B.v) <= 0.10) continue;
+      /* 规则 82 只按文明分组,认不出「两个数说的是两个不同主语」(澳新那条:基里巴斯的 EEZ vs 图瓦卢的),
+         这类只能进基线 */
+      if (BL82.includes(c.n)) continue;
+      P.push(`[同带版图面积打架] ${c.n}:${A.layer}「${A.raw}」 vs ${B.layer}「${B.raw}」—— 同一条带点开两处看到两个数,孩子记得住的正是这种数字;统一口径,或给其中一个加上年份锚点(带年份的不参与比对)`);
+    }
+  });
+}
+
 console.log(P.length ? P.join('\n') : '✅ 结构校验全通过');
 if (W.length) console.log(`\n⚠ ${W.length} 条警告(不影响退出码):\n` + W.join('\n'));
 
