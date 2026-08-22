@@ -1858,6 +1858,37 @@ CIVS.forEach(c => {
     });
   });
 
+  /* 79b. 同一条带内,年代重叠且标题讲同一样东西的两段(v283;2026-08-22)。
+     79 只抓「k 与区间全同」,而真问题两次都是从这个缝里漏过去的:
+       商   art「青铜礼器的巅峰」vs tech「青铜范铸」—— 两段都引后母戊鼎、都给了同一个重量
+       俄苏 art「文学黄金时代」vs thought「俄国文学的黄金期」—— 年代重叠、都点名托翁陀翁
+     换个 k、把标题改成近义词,79 和 80 就都拦不住。判据:年代区间重叠 + 标题去掉通用词后
+     仍有 >=2 字的公共子串。
+     ⚠ 通用词停用表是这条规则能不能用的关键:不去掉「世纪」「时代」,西葡的「白银世纪 vs
+     黄金世纪」、罗马的「工程时代 vs 法学家时代」就会误报——那是两件完全不同的事。
+     2026-08-22 实测:字集 Dice>=0.25 得 14 处(精度约三成,不可用);换成「最长公共子串+停用表」
+     得 9 处,逐条读过正文后 6 处是真重复(已修)、3 处是正当的两面切分(进基线)。
+     反例验证(2026-08-22,两个方向):把蒙古 tech 段标题改回「驿站与工匠迁徙」(与 econ 段年代重叠)→ 红 ✓;
+     改成只与对方共有「时代」这类通用词 → 不报 ✓(停用表有效)。 */
+  {
+    const STOP = ['世纪', '时代', '时期', '王朝', '帝国', '之后', '与', '的', '和', '之'];
+    const nz = t => { let x = t.replace(/[《》「」·:：,，、。—\-()（） ]/g, ''); for (const w of STOP) x = x.split(w).join(''); return x; };
+    const lcs = (a, b) => { let best = ''; for (let i = 0; i < a.length; i++) { let l = best.length;
+      while (i + l + 1 <= a.length && b.includes(a.slice(i, i + l + 1))) { l++; best = a.slice(i, i + l); } } return best; };
+    CIVS.forEach(c => {
+      const g = glOf(c);
+      for (let i = 0; i < g.length; i++) for (let j = i + 1; j < g.length; j++) {
+        const x = g[i], y = g[j];
+        if (x.b < y.a || y.b < x.a) continue;                       /* 年代不重叠:相继的事本来就该分开讲 */
+        const w = lcs(nz(zh1(x.t)), nz(zh1(y.t)));
+        if (w.length < 2) continue;
+        const key = `${c.n}|${zh1(x.t)}|${zh1(y.t)}`;
+        if (inBL('samebandPairs', key)) continue;
+        P.push(`[同带两段讲同一样东西] ${c.n}:${x.a}~${x.b} ${x.k}「${zh1(x.t)}」 与 ${y.a}~${y.b} ${y.k}「${zh1(y.t)}」年代重叠,标题共有「${w}」—— 读一遍两段正文:真重复就合并或让其中一段换个角度讲;确属两面切分就把 "${key}" 加进 tools/.crossband-baseline.json 的 samebandPairs`);
+      }
+    });
+  }
+
   /* 80. 不同色带的鼎盛段标题不许逐字相同(去标点后比) */
   {
     /* 反例验证:把迦太基「圆形军港与标准件造船」改名「工业革命」(大英帝国已有)→ 红 ✓;
