@@ -38,6 +38,7 @@ const CHECKS = [
 ];
 
 let lines = [];
+const OLD = [];   /* diff 里被移除的行(见下方 SEEN 的说明) */
 if (ALL) {
   for (const f of fs.readdirSync(path.join(ROOT, 'data')).filter(f => f.endsWith('.js')))
     fs.readFileSync(path.join(ROOT, 'data', f), 'utf-8').split('\n').forEach((l, i) => lines.push({ file: 'data/' + f, no: i + 1, text: l }));
@@ -49,19 +50,33 @@ if (ALL) {
   for (const l of diff.split('\n')) {
     if (l.startsWith('+++ b/')) { file = l.slice(6); continue; }
     const h = l.match(/^@@ -\d+(?:,\d+)? \+(\d+)/); if (h) { no = +h[1] - 1; continue; }
-    if (l.startsWith('-') || l.startsWith('---')) continue;
+    if (l.startsWith('---')) continue;
+    if (l.startsWith('-')) { OLD.push(l.slice(1)); continue; }   /* 改动前的行,留着做「这句本来就在」的底 */
     no++;
     if (l.startsWith('+')) lines.push({ file, no, text: l.slice(1) });
   }
 }
 
 /* 把一行拆成句子再匹配,输出时只给命中的那句,不给整行(一行 data 常是几百字) */
-const sentences = t => t.split(/(?<=[。！？!?;；])|(?<=\.\s)/).map(s => s.trim()).filter(s => s.length > 3);
+/* v312:除了句末标点,**也在数据结构的边界处切一刀**(`],[`、`]],[`)。
+   chrono.js 一个文明就是一整行,不切的话一个片段会同时横跨我改的那条和旁边的存量条目,
+   于是「这句本来就在」的过滤永远命不中,存量的「最早」「唯一」照样被翻出来。 */
+const sentences = t => t.split(/(?<=[。！？!?;；])|(?<=\.\s)|(?<=\],\[)|(?<=\]\],\[)/).map(s => s.trim()).filter(s => s.length > 3);
+/* v312:只报「这次真的新写的句子」。
+   data/ 里一条带常常是**一整行**(chrono.js 一个文明一行,几千字)。改动其中一条大事记,
+   git diff 会把整行标成新增,于是这一行上几十条存量内容全被翻出来——v311 改了 46 行,
+   报了 82 句,**真正新写的只有 3 句**。清单一长人就不看了,那这个工具就废了。
+   办法:把 diff 里被移除的行也收下来,拆成句子做成 SEEN;报的时候跳过 SEEN 里已有的句子。
+   完全新增的行不受影响(它的句子不在 SEEN 里),所以不会漏报。 */
+const SEEN = new Set();
+for (const t of OLD) for (const s of sentences(t)) SEEN.add(s);
+
 const hits = [];
 for (const { file, no, text } of lines) {
   if (/^\s*(\/\/|\/\*|\*)/.test(text)) continue;   // 注释不扫
   for (const s of sentences(text)) for (const [tag, re, why] of CHECKS) {
     if (tag === '最高级' && /First Emperor|第一帝国|First (Republic|Empire|Reich)/.test(s)) continue;   // 专名不算
+    if (SEEN.has(s)) continue;                       // 改动前就存在的句子,不是这次写的
     const m = s.match(re); if (m) hits.push({ tag, file, no, m: m[0], s: s.length > 90 ? s.slice(0, 90) + '…' : s, why });
   }
 }
@@ -84,6 +99,7 @@ const ENY = /\b(one of|among|one [a-z]+|a founding|not the only|some of|part of|
 for (const { file, no, text } of lines) {
   if (/^\s*(\/\/|\/\*|\*)/.test(text)) continue;
   if (!ZHY.test(text)) continue;
+  if (SEEN.has(text)) continue;
   if (!/[A-Za-z]{40,}|[A-Za-z][A-Za-z ,'-]{60,}/.test(text)) continue;   // 这一行得真有英文
   if (ENY.test(text)) continue;
   const m = text.match(/[^,。;:、'\[]{0,24}之一/);
