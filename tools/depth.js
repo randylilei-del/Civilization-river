@@ -22,7 +22,7 @@
  *      node tools/depth.js --json     机器可读(供 check.js / newband.js 接入)
  *
  * 维度(文明):大事记条数、大事记描述率、六问总字数、六问空格数、鼎盛段数、鼎盛短段占比、
- *   人物数、成就卡数、交往(同期同泳道的交流事件 + 轨迹站点)、照片、视频、正文密度(每百字具体物:年份/数字/站内专名)
+ *   人物数、成就卡数、交往(同期同泳道的交流事件 + 轨迹站点)、照片、视频、正文密度(每百字具体物:阿拉伯数字/中文数字/站内专名;v285 起中文数字才算进来)
  * 维度(城市):经过它的色带数(分组依据)、总结段字数、古称条数、古迹条数、照片、视频、小段覆盖率、小段均长、小段密度
  */
 const D = require('./load')();
@@ -41,8 +41,19 @@ const TIER_W = { 大: 1.5, 中: 1.25, 小: 1 };
 const NAMES = new Set([...CIVS.map(c => c.n), ...GEO_CITY.map(g => g[0]), ...Object.keys(PEOPLE), ...Object.keys(ACHV)]);
 const nameRe = new RegExp([...NAMES].filter(n => n.length >= 2).map(n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'g');
 const zhOf = v => Array.isArray(v) ? (v[0] || '') : (typeof v === 'string' ? v : '');
-/* 每百字里有几个「具体的东西」:年份数字、站内专名。「税关尽在其手」= 0,「1573 年广州第一船白银」= 3 */
-const density = txt => { if (!txt) return 0; const nums = (txt.match(/\d{2,4}/g) || []).length; const names = (txt.match(nameRe) || []).length; return +(100 * (nums + names) / txt.length).toFixed(1); };
+/* 每百字里有几个「具体的东西」:阿拉伯数字、**中文数字**、站内专名。
+   「税关尽在其手」= 0,「1573 年广州第一船白银」= 2.5,「四十字诏,广五十步」= 4.4。
+   ⚠ v285(2026-08-22)起把中文数字也算进来。此前只认 /\d{2,4}/,系统性低估了用中文数字写的带——
+   秦的正文里「四十字诏」「广五十步」「七百多公里」全是硬锚点,一个都没被看见:密度 1.0 → 2.3。
+   **但要说清楚:这不等于此前「冤枉」了秦。** 秦同组(ea·大)的唐、清、明也全用中文数字,一起涨,
+   秦的组内百分位 0% → 0%,还是垫底——相对指标本该如此。真正改变相对位置的,是那些**与写法不同的带
+   同组竞争**的:古埃及(me·中)25% → 81%、唐(ea·大)29% → 71%。改这条的理由是「量准」,不是「翻案」。
+   代价:重排。文明 172 条里 43 条移动 >=15 个百分点,城市 127 座里 18 座(14%)同样移动;
+   下降的那些(奥地利·哈布斯堡 2.3→2.3、暹罗 2.4→2.4)密度数值其实没变,只是别人涨上来把它们顶下去了。
+   **v285 之前 CHANGELOG 里记过的密度数字与之后不可比。**
+   误判量过:全站 1399 处中文数字串里,非计量的只有「一两」×2、「一一」×6,合计 0.6%,可忽略。 */
+const CN_NUM = /[零一二两三四五六七八九十百千万亿]{2,}/g;
+const density = txt => { if (!txt) return 0; const nums = (txt.match(/\d{2,4}/g) || []).length; const cn = (txt.match(CN_NUM) || []).length; const names = (txt.match(nameRe) || []).length; return +(100 * (nums + cn + names) / txt.length).toFixed(1); };
 
 /* ── 文明体检 ─────────────────────────────────────────────────────────────── */
 const peopleByCiv = {}; for (const [n, p] of Object.entries(PEOPLE)) (peopleByCiv[p.c] = peopleByCiv[p.c] || []).push(n);
