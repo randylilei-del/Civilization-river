@@ -65,6 +65,32 @@ for (const { file, no, text } of lines) {
     const m = s.match(re); if (m) hits.push({ tag, file, no, m: m[0], s: s.length > 90 ? s.slice(0, 90) + '…' : s, why });
   }
 }
+/* 中英对冲不成对(2026-08-22 第四轮核查的盲区 5 立)。
+   核查员在同一批里抓到方向相反的两处:中文写「最早的常备军**之一**」,英文写 the earliest standing army;
+   中文写「最早以火器为主的步兵**之一**」,英文写 the first infantry force anywhere。**中文对冲了,英文把话说死了。**
+   它指出这是系统性的而非偶发,建议做成工具。
+
+   ⚠ 装之前量过两轮,记下来省得有人再走一遍:
+   ① 想做「通用对冲词配对」——中文 22 个标记 vs 英文 26 个,全站报 274 处,抽看**绝大多数是词表窟窿**:
+      中「一般认为」对英 the mainstream view is、中「少见的」对英 one of the few、中「传说」对英 remembered as。
+      **对冲的说法在两种语言里都是开放集,穷举不完**,这条路和跨带语义查重一样走不通。
+   ② 收窄到「之一 ↔ one of」这个闭集:先报 112 处,**噪音源是「四分之一」「三分之一」里就含「之一」**;
+      排除分数、再只查「中文有之一而英文没有」这一个方向(反方向是英文更保守,无害),降到 7 处,
+      逐条读完**没有一处是真的说过头**(「漠南为之一空」被误命中;其余是英文更简但并没把话说死)。
+   所以精度不高。**但它放在 lint 里是划算的**:lint 只扫新写的行,那 7 条存量永远不会跳出来,
+   而它本来抓得到的正是核查员找到的那两处真错。清单不是红灯,写的人自己判一下就行。 */
+const ZHY = /(?<![分])之一/;
+const ENY = /\b(one of|among|one [a-z]+|a founding|not the only|some of|part of|helped|contributed|feed into)\b/i;
+for (const { file, no, text } of lines) {
+  if (/^\s*(\/\/|\/\*|\*)/.test(text)) continue;
+  if (!ZHY.test(text)) continue;
+  if (!/[A-Za-z]{40,}|[A-Za-z][A-Za-z ,'-]{60,}/.test(text)) continue;   // 这一行得真有英文
+  if (ENY.test(text)) continue;
+  const m = text.match(/[^,。;:、'\[]{0,24}之一/);
+  hits.push({ tag: '中英对冲不成对', file, no, m: '之一', s: (m ? m[0] : '之一') + ' …… 英文这一行没有 one of / among / one X',
+    why: '中文用「之一」对冲了,英文可能把话说死(核查员抓到过两次:the earliest standing army / the first infantry force anywhere)' });
+}
+
 if (!hits.length) { console.log(`lint-content: ${ALL ? '全站' : REF + '..工作区'} 的 data/ 里没有命中(扫了 ${lines.length} 行)`); process.exit(0); }
 console.log(`lint-content: ${ALL ? '全站' : REF + '..工作区'} 新写的 ${lines.length} 行里,${hits.length} 句值得看一眼(清单不是红灯):`);
 const byTag = {}; hits.forEach(h => (byTag[h.tag] = byTag[h.tag] || []).push(h));
