@@ -1701,7 +1701,7 @@ TRACES.forEach(tr => {
  * 只查计数不查位置:够拦「不知不觉多了一处」,又不至于改动周边文字就误报。 */
 {
   const SENSITIVE = {
-    '台湾': { achv: 1, chrono: 1, civs: 3, people: 6, place_lore: 6, ranges: 1, traces: 4 },   // 2026-08-18 基线;其中「中国台湾」3 处(孔子/孙中山/蒋介石)。achv 那处是紫禁城卡「1948 年运往台湾,现藏台北故宫」——历史叙述 + 机构专名,合 v146 口径
+    '台湾': { achv: 1, chrono: 2, civs: 3, people: 6, place_lore: 6, ranges: 1, traces: 4 },   // 2026-08-18 基线;其中「中国台湾」3 处(孔子/孙中山/蒋介石)。achv 那处是紫禁城卡「1948 年运往台湾,现藏台北故宫」——历史叙述 + 机构专名,合 v146 口径。chrono 第 2 处是 v317 清 1683 描述「清设台湾府,隶属福建」——动作宾语+历史政区名,合口径第二类(历史叙述)
   };
   const dir = path.join(__dirname, '..', 'data');
   for (const [word, base] of Object.entries(SENSITIVE)) {
