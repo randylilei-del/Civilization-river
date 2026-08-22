@@ -226,7 +226,7 @@ const PEOPLE = {
 '陈胜': { g:'state', y:[-209,-208], yk:'r', c:'秦', n:['陈胜','Chen Sheng'],
   t:['他是替人种地的雇工，起兵当年就称了王，第二年被自己的车夫杀死。',
      'A hired farmhand who declared himself king in the year he revolted, and was killed by his own carriage driver the year after.'],
-  a:[['前209年七月，与吴广率九百名戍卒在大泽乡（今安徽宿州）起兵——他们因大雨误了赴边期限，按秦法当斩；这是秦统一后有明确记载的第一次大规模平民起事。','In the seventh month of 209 BC he and Wu Guang raised 900 conscripts in revolt at Daze Village (today\'s Suzhou, Anhui). Heavy rain had made them late for garrison duty, a capital offence under Qin law. It is the first large-scale commoners\' uprising recorded after the unification.'],
+  a:[['前209年七月，与吴广率九百名戍卒在大泽乡（今安徽宿州）起兵：他们因大雨误了赴边期限，《史记》说按秦法当斩；这是秦统一后有明确记载的第一次大规模平民起事。','In the seventh month of 209 BC he and Wu Guang raised 900 conscripts in revolt at Daze Village (today\'s Suzhou, Anhui). Heavy rain had made them late for garrison duty, which the Records of the Grand Historian says was a capital offence under Qin law. It is the first large-scale commoners\' uprising recorded after the unification.'],
      ['攻下陈县（今河南淮阳）后自立为王，国号「张楚」，并分兵西攻函谷关；政权前后不到半年。','After taking Chen (today\'s Huaiyang, Henan) he made himself king under the title Zhang Chu and sent columns west toward the Hangu Pass. The regime lasted less than six months.'],
      ['前208年在下城父被自己的车夫庄贾所杀。《史记》记他起兵时对同伴说：「王侯将相宁有种乎？」','In 208 BC he was killed at Xiachengfu by Zhuang Jia, the man who drove his carriage. The Records preserves what he said to his companions when the revolt began: "Are kings and nobles, generals and ministers, born to their rank?"']],
   s:['司马迁把陈胜列入《史记》三十篇「世家」，与各诸侯国国君同一等级——这是《史记》体例里给非诸侯出身者的最高位置之一。汉高祖刘邦为他在砀设置守冢三十家，按时祭祀。「王侯将相宁有种乎」这句话即出自《史记·陈涉世家》。',
