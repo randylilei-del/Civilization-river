@@ -2547,6 +2547,20 @@ const PEOPLE = {
      ['《隋书》记他的都城「郭下二万余家」,又记国王三日一听朝,坐五香七宝床——一座 7 世纪东南亚都城的排场,被中国史官记了下来','The Book of Sui counts over twenty thousand households below the walls, and describes the king holding audience every third day on a couch of five scents and seven jewels — the style of a seventh-century Southeast Asian capital, noted down by Chinese historians']],
   s:['他的名字随都城一起留了下来:考古学界至今用「伊奢那补罗」称呼三坡布雷古的都城遗址。真腊自己的碑铭与中国的史书在他身上对上了号——东南亚早期历史里,能两头都查到的王并不多。','His name survived with his city: archaeologists still call the Sambor Prei Kuk capital Ishanapura. On him, Chenla\'s own inscriptions and the Chinese histories agree — among early Southeast Asian kings, not many can be checked from both ends.'] },
 
+'阇耶波罗': { g:'king', y:[964,1001], yk:'r', c:'喀布尔沙希', n:['阇耶波罗','Jayapala'],
+  t:['联合诸邦对抗加兹尼的老王;战败被俘赎回后,他选择了柴堆。','The old king who led the coalition against Ghazni — beaten, captured and ransomed, he chose the pyre.'],
+  a:[['两度联合北印诸邦迎战加兹尼父子,都败在快进快出的突厥骑兵手里','Twice he led coalitions of northern kings against Ghazni, father and son, and twice lost to cavalry that struck and withdrew'],
+     ['1001 年在白沙瓦附近再败被俘,以重金赎回','Beaten and captured again near Peshawar in 1001, he was ransomed at a heavy price'],
+     ['他把王冠交给儿子阿难陀波罗,随后自焚——败而被俘的王,按那个时代的规矩不能再戴王冠','He handed the crown to his son Anandapala and gave himself to the fire — a king once taken captive could not, by the rules of that age, wear a crown again']],
+  s:['此后每一代沙希王都接着打,每一代都再退一步,直到退无可退。几十年后为这一家写下身后评语的,正是征服者宫廷里的那位学者——他的话,本带的鼎盛段里可以读到。','Each Shahi king after him fought on, and each fell back another step, until there was nowhere left to fall. The man who wrote this house its verdict decades later was the scholar of the conquerors\' own court — his words can be read in this band\'s golden-age panel.'] },
+
+'马哈茂德': { g:'king', y:[998,1030], yk:'r', c:'加兹尼王朝', n:['马哈茂德','Mahmud of Ghazni'],
+  t:['三十二年里一再南下印度的苏丹;他抢来的金子,养出了一座文学之都。','The sultan who raided India for thirty-two years — and fed a capital of letters on the gold.'],
+  a:[['「苏丹」这个王号在他手里叫响(通常认为他是先例);他一生不称哈里发,反而去巴格达讨来一纸册封','The royal style of sultan rang out with him (commonly held the precedent); he never claimed the caliphate, and fetched a deed of investiture from Baghdad instead'],
+     ['南征的次数,旧史算作十七,今人各有各的数;最响的一击落在古吉拉特海边——索姆纳特','The old histories count seventeen expeditions south and modern counts vary; the loudest blow fell on the Gujarat coast, at Somnath'],
+     ['他的宫廷把战利品折成了文名:诗人有赏,学者是掳来的,《列王纪》是献来的','His court converted plunder into letters: the poets rewarded, the scholar carried off, the Shahnameh presented']],
+  s:['在伊斯兰世界的记忆里他是护教的雄主,在印度的记忆里他是毁庙的劫掠者——同一个人,两份记忆,至今都没有淡。他真正留下的是一个模板:波斯语宫廷加突厥武力,后来统治印度七百年的政权,大都照这个样子搭。','In Islamic memory a champion of the faith, in Indian memory the temple-wrecking raider — one man, two memories, neither faded yet. What he really left was a template: a Persian court on Turkic arms, and most of the powers that ruled India for the next seven hundred years were built to the pattern.'] },
+
 '马武拉': { g:'king', y:[1629,1652], yk:'r', c:'穆塔帕与托尔瓦', n:['马武拉','Mavura'],
   t:['靠葡萄牙人的枪坐上王位的王;坐上去那天,也把国家签了出去。','A king set on the throne by Portuguese guns — and the day he sat down, he signed the kingdom away.'],
   a:[['1629 年,他在葡萄牙人助战下击败争位的卡帕拉里泽登上王位,随即受洗,教名「菲利佩」','In 1629, with Portuguese help in the fight, he beat his rival Kapararidze to the throne, and was baptised Filipe'],

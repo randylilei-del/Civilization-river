@@ -72,6 +72,7 @@ const PLACE = {
 '逻些(拉萨)':['中国','China','拉萨','Lhasa'], '游动王营':['埃塞俄比亚','Ethiopia'], '贡德尔':['埃塞俄比亚','Ethiopia','贡德尔','Gondar'], '亚的斯亚贝巴':['埃塞俄比亚','Ethiopia','亚的斯亚贝巴','Addis Ababa'], '昌昌':['秘鲁','Peru','特鲁希略近郊','near Trujillo'], '高德':['印度','India','马尔达一带','around Malda'], '伊奢那补罗(三坡布雷古)':['柬埔寨','Cambodia','磅同省一带','around Kampong Thom'],
 '多摩梨帝':['印度','India','西孟加拉邦塔姆卢克','Tamluk, West Bengal'], '金耳城':['印度','India','穆尔希达巴德一带','around Murshidabad'],
 '赞比西河谷王庭':['津巴布韦北部','northern Zimbabwe'], '卡米':['津巴布韦','Zimbabwe','布拉瓦约近郊','near Bulawayo'],
+'乌德班达(洪德)':['巴基斯坦','Pakistan','印度河边的洪德村','Hund on the Indus'], '拉合尔':['巴基斯坦','Pakistan','拉合尔','Lahore'], '加兹尼':['阿富汗','Afghanistan','加兹尼','Ghazni'],
 '蒲甘':['缅甸','Myanmar','蒲甘','Bagan'], '克拉科夫':['波兰','Poland','克拉科夫','Kraków'], '华沙':['波兰','Poland','华沙','Warsaw'], '维也纳':['奥地利','Austria','维也纳','Vienna'], '斯德哥尔摩':['瑞典','Sweden','斯德哥尔摩','Stockholm'], '恩吉米':['乍得','Chad'], '比尔尼恩加扎尔加穆':['尼日利亚','Nigeria'], '莫切谷':['秘鲁','Peru'], '兰巴耶克谷':['秘鲁','Peru'], '科尔多瓦':['西班牙','Spain','科尔多瓦','Córdoba'], '卡霍基亚(今美国伊利诺伊州)':['美国','USA','圣路易斯近郊','near St Louis'], '羊苴咩城(大理)':['中国','China','大理','Dali'], '毗奢耶那伽罗(汉皮)':['印度','India','汉皮','Hampi'], '赖加德':['印度','India','赖加德','Raigad'], '浦那':['印度','India','浦那','Pune'], '上京龙泉府':['中国','China','黑龙江宁安','Ning\'an, Heilongjiang'], '库马西':['加纳','Ghana','库马西','Kumasi'], '兴庆(银川)':['中国','China','银川','Yinchuan'], '中都(北京)':['中国','China','北京','Beijing'],
 '大都(北京)':['中国','China','北京','Beijing'], '北京':['中国','China','北京','Beijing'],
 '南京':['中国','China','南京','Nanjing'], '上海':['中国','China','上海','Shanghai'],
