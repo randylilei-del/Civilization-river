@@ -64,9 +64,9 @@ const TRACES = [
   { y:250, l:'se', t:['南传上座部','Theravada moves south'], d:['经斯里兰卡传入东南亚,至今是中南半岛底色。','Via Sri Lanka into Southeast Asia — the mainland\'s faith to this day.'], p:0 },
   { y:372, l:'ea', t:['传入朝鲜半岛','Enters Korea'], d:['经前秦入高句丽,再传百济新罗。','Via the northern kingdoms to Baekje and Silla.'], p:2 },
   { y:552, l:'ea', t:['传入日本','Enters Japan'], d:['百济献佛像经卷;飞鸟时代佛教立国。','Baekje sends images and sutras; Asuka Japan builds on it.'] },
-  { y:779, l:'ea', t:['传入吐蕃','Enters Tibet'], d:['赤松德赞建成桑耶寺,首批藏人剃度出家;按藏地史书的说法,汉印两派僧人辩过一场,留下的是印度一路。','Trisong Detsen completes Samye and the first Tibetans take vows; by the Tibetan histories\' account, Chinese and Indian monks held a debate, and the Indian line stayed.'], p:0 },
+  { y:779, l:'ea', t:['传入吐蕃','Enters Tibet'], d:['赤松德赞建成桑耶寺,首批藏人剃度出家;按藏地史书的说法,十几年后汉印两派僧人辩过一场,留下的是印度一路。','Trisong Detsen completes Samye and the first Tibetans take vows; by the Tibetan histories\' account, Chinese and Indian monks held a debate a dozen years on, and the Indian line stayed.'], p:0 },
   { y:1200, l:'sa', t:['在故乡熄灭','Extinguished at home'], d:['约 1200 年前后,突厥骑兵扫过恒河流域,超戒寺被毁,那烂陀一蹶不振——佛教在它出生的土地上退了场,传出去的各支都活得更久。','Around 1200 Turkic cavalry swept the Ganges plain: Vikramashila was destroyed and Nalanda never recovered. Buddhism left the land of its birth — every branch sent abroad outlived the one that stayed.'], p:0 },
-  { y:1578, l:'st', t:['北传蒙古','North to Mongolia'], d:['俺答汗与索南嘉措在青海会面,此后数十年蒙古各部改宗藏传佛教——细节在北元那条色带里。','Altan Khan met Sonam Gyatso by Lake Qinghai, and within decades the Mongol banners turned to Tibetan Buddhism — the detail sits in the Northern Yuan band.'], p:6 },
+  { y:1578, l:'st', t:['北传蒙古','North to Mongolia'], d:['俺答汗与索南嘉措在青海会面,此后数十年蒙古各部改宗藏传佛教——细节在北元那条色带里。','Altan Khan met Sonam Gyatso by Lake Qinghai, and within decades the Mongol tribes turned to Tibetan Buddhism — the detail sits in the Northern Yuan band.'], p:6 },
 ] },
 { g:'beliefs', n:['取经人的逆行','Pilgrims against the current'], stops:[
   { y:399, l:'ea', t:['法显出长安','Faxian leaves Chang\'an'], d:['六十多岁动身,穿沙漠翻雪山,只为求一部完整的戒律。','Setting out past sixty, across desert and snow passes, for one complete book of monastic rules.'] },
