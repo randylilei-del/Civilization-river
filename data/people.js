@@ -2540,6 +2540,13 @@ const PEOPLE = {
   s:['这批阿马尔那书信是青铜时代晚期国际关系最直接的证据:埃及、巴比伦、赫梯、亚述、米坦尼的君主互称兄弟,用联姻和送礼维持一个多国体系,和后世的外交没什么两样。他死后不久王位发生动乱,亚述王阿淑尔-乌巴里特一世出兵干预、扶立新王——那个他看不起的邻居,已经反过来能决定巴比伦的王位了。',
      'The Amarna letters are the plainest evidence we have of international relations in the late Bronze Age: the kings of Egypt, Babylon, Hatti, Assyria and Mitanni addressed one another as brothers and held a multi-state system together by marriage and gift-exchange, not so differently from diplomacy since. Soon after his death the succession broke down and the Assyrian king Ashur-uballit I intervened to put his own candidate on the throne — the neighbour he had looked down on was now deciding who ruled Babylon.'] },
 
+'伊奢那跋摩一世': { g:'king', y:[616,637], ca:1, yk:'r', c:'真腊', n:['伊奢那跋摩一世','Isanavarman I'],
+  t:['把自己的名字给了国都的王:伊奢那补罗,意思是「伊奢那之城」。','The king who gave the capital his name: Ishanapura, the city of Isana.'],
+  a:[['《隋书》记大业十二年(616 年)真腊遣使入贡,一般系于他在位初年;隋炀帝「礼之甚厚」,此后往来断了','The Book of Sui records the Chenla embassy of 616, generally placed early in his reign; the emperor received it handsomely, and then the exchanges lapsed'],
+     ['兼并扶南在他手里收尾,疆域推到湄公河下游;都城即今天的三坡布雷古,砖塔群 2017 年列入世界遗产','The absorption of Funan was finished under him and the realm reached the lower Mekong; his capital is today\'s Sambor Prei Kuk, its towers inscribed as World Heritage in 2017'],
+     ['《隋书》记他的都城「郭下二万余家」,又记国王三日一听朝,坐五香七宝床——一座 7 世纪东南亚都城的排场,被中国史官记了下来','The Book of Sui counts over twenty thousand households below the walls, and describes the king holding audience every third day on a couch of five scents and seven jewels — the style of a seventh-century Southeast Asian capital, noted down by Chinese historians']],
+  s:['他的名字随都城一起留了下来:考古学界至今用「伊奢那补罗」称呼三坡布雷古的都城遗址。真腊自己的碑铭与中国的史书在他身上对上了号——东南亚早期历史里,能两头都查到的王并不多。','His name survived with his city: archaeologists still call the Sambor Prei Kuk capital Ishanapura. On him, Chenla\'s own inscriptions and the Chinese histories agree — among early Southeast Asian kings, not many can be checked from both ends.'] },
+
 '米特里达梯六世': { g:'king', y:[-120,-63], yk:'r', c:'本都王国', n:['米特里达梯六世','Mithridates VI'],
   t:['罗马人打了二十五年才打倒的国王;他每天服毒防毒,最后毒药果真毒不死他。','It took Rome twenty-five years to bring him down; he dosed himself against poison daily, and in the end poison indeed could not kill him.'],
   a:[['据老普林尼记载,他能说二十二种语言,接见治下各族都不用翻译','Pliny records that he spoke twenty-two languages and needed no interpreter with any people he ruled'],
