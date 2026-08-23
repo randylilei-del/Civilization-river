@@ -2547,6 +2547,13 @@ const PEOPLE = {
      ['《隋书》记他的都城「郭下二万余家」,又记国王三日一听朝,坐五香七宝床——一座 7 世纪东南亚都城的排场,被中国史官记了下来','The Book of Sui counts over twenty thousand households below the walls, and describes the king holding audience every third day on a couch of five scents and seven jewels — the style of a seventh-century Southeast Asian capital, noted down by Chinese historians']],
   s:['他的名字随都城一起留了下来:考古学界至今用「伊奢那补罗」称呼三坡布雷古的都城遗址。真腊自己的碑铭与中国的史书在他身上对上了号——东南亚早期历史里,能两头都查到的王并不多。','His name survived with his city: archaeologists still call the Sambor Prei Kuk capital Ishanapura. On him, Chenla\'s own inscriptions and the Chinese histories agree — among early Southeast Asian kings, not many can be checked from both ends.'] },
 
+'设赏迦': { g:'king', y:[600,625], ca:1, yk:'r', c:'早期孟加拉', n:['设赏迦','Shashanka'],
+  t:['孟加拉的第一位大王;关于他的记载,全部出自敌人之手。','Bengal\'s first great king — every surviving account of him written by his enemies.'],
+  a:[['约 600 年在金耳城称王,在位年代各家考订出入较大;金币上铸着卧牛与湿婆,是孟加拉最早的本地王朝铸币之一','Crowned at Karnasubarna about 600, his dates much debated; his gold coins, stamped with Shiva and the reclining bull, are among Bengal\'s earliest royal issues'],
+     ['《戒日王传》说他骗杀了戒日王的哥哥——作者是戒日王的御用文人;另一面的说法,一个字也没有传下来','The Harshacharita says he lured Harsha\'s brother to his death — its author was Harsha\'s court poet, and not one word from the other side survives'],
+     ['玄奘几十年后路过,记他砍倒了菩提迦耶的菩提树;这条是转述,又出自敌对阵营,考古上没有印证——但「灭佛者」的形象就此定了型','Xuanzang, passing decades later, records that he cut down the Bodhi tree at Bodh Gaya; the report is second-hand, from the hostile camp, with no archaeological confirmation — but the image of the persecutor stuck']],
+  s:['他一死王国就散了,名声却走了两条路:敌人的书里他是奸雄与灭佛者,后世孟加拉史家把他追认为第一位本土大王。两种形象用的其实是同一批史料——史料是谁写的,常常比史料写了什么更要紧。','His kingdom fell apart at his death, but his name went two ways: villain and persecutor in his enemies\' books, first great native king to later Bengali historians. Both portraits rest on the same few sources — and who wrote a source often matters more than what it says.'] },
+
 '贝尼尼': { g:'art', y:[1598,1680], c:'教皇国', n:['贝尼尼','Gian Lorenzo Bernini'],
   t:['先后为八任教皇干活的艺术家;今天的罗马长什么样,有一半是他的主意。','Artist to eight popes in succession; how Rome looks today is half his doing.'],
   a:[['二十多岁就名动罗马:《阿波罗与达芙妮》把「人正在变成月桂树」的一瞬刻进大理石,指尖化作叶子,石头薄得透光','Famous in his twenties: his Apollo and Daphne fixes in marble the instant of a girl turning into a laurel, fingertips becoming leaves, the stone carved thin enough to glow'],
