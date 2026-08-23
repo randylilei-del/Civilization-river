@@ -2543,7 +2543,7 @@ const PEOPLE = {
 '伊奢那跋摩一世': { g:'king', y:[616,637], ca:1, yk:'r', c:'真腊', n:['伊奢那跋摩一世','Isanavarman I'],
   t:['把自己的名字给了国都的王:伊奢那补罗,意思是「伊奢那之城」。','The king who gave the capital his name: Ishanapura, the city of Isana.'],
   a:[['《隋书》记大业十二年(616 年)真腊遣使入贡,一般系于他在位初年;隋炀帝「礼之甚厚」,此后往来断了','The Book of Sui records the Chenla embassy of 616, generally placed early in his reign; the emperor received it handsomely, and then the exchanges lapsed'],
-     ['兼并扶南在他手里收尾,疆域推到湄公河下游;都城即今天的三坡布雷古,砖塔群 2017 年列入世界遗产','The absorption of Funan was finished under him and the realm reached the lower Mekong; his capital is today\'s Sambor Prei Kuk, its towers inscribed as World Heritage in 2017'],
+     ['兼并扶南在他手里收尾,疆域推到湄公河下游;都城伊奢那补罗就是今天的三坡布雷古','The absorption of Funan was finished under him and the realm reached the lower Mekong; his capital Ishanapura is today\'s Sambor Prei Kuk'],
      ['《隋书》记他的都城「郭下二万余家」,又记国王三日一听朝,坐五香七宝床——一座 7 世纪东南亚都城的排场,被中国史官记了下来','The Book of Sui counts over twenty thousand households below the walls, and describes the king holding audience every third day on a couch of five scents and seven jewels — the style of a seventh-century Southeast Asian capital, noted down by Chinese historians']],
   s:['他的名字随都城一起留了下来:考古学界至今用「伊奢那补罗」称呼三坡布雷古的都城遗址。真腊自己的碑铭与中国的史书在他身上对上了号——东南亚早期历史里,能两头都查到的王并不多。','His name survived with his city: archaeologists still call the Sambor Prei Kuk capital Ishanapura. On him, Chenla\'s own inscriptions and the Chinese histories agree — among early Southeast Asian kings, not many can be checked from both ends.'] },
 
