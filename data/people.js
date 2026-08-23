@@ -2549,7 +2549,7 @@ const PEOPLE = {
 
 '阇耶波罗': { g:'king', y:[964,1001], yk:'r', c:'喀布尔沙希', n:['阇耶波罗','Jayapala'],
   t:['联合诸邦对抗加兹尼的老王;战败被俘赎回后,他选择了柴堆。','The old king who led the coalition against Ghazni — beaten, captured and ransomed, he chose the pyre.'],
-  a:[['两度联合北印诸邦迎战加兹尼父子,都败在快进快出的突厥骑兵手里','Twice he led coalitions of northern kings against Ghazni, father and son, and twice lost to cavalry that struck and withdrew'],
+  a:[['先联合北印诸邦迎战萨布克特勤,后又独力迎战其子马哈茂德——每一仗都败给快进快出的突厥骑兵','He led a coalition of northern kings against Sabuktigin, then faced his son Mahmud with his own forces — beaten each time by cavalry that struck and withdrew'],
      ['1001 年在白沙瓦附近再败被俘,以重金赎回','Beaten and captured again near Peshawar in 1001, he was ransomed at a heavy price'],
      ['他把王冠交给儿子阿难陀波罗,随后自焚——败而被俘的王,按那个时代的规矩不能再戴王冠','He handed the crown to his son Anandapala and gave himself to the fire — a king once taken captive could not, by the rules of that age, wear a crown again']],
   s:['此后每一代沙希王都接着打,每一代都再退一步,直到退无可退。几十年后为这一家写下身后评语的,正是征服者宫廷里的那位学者——他的话,本带的鼎盛段里可以读到。','Each Shahi king after him fought on, and each fell back another step, until there was nowhere left to fall. The man who wrote this house its verdict decades later was the scholar of the conquerors\' own court — his words can be read in this band\'s golden-age panel.'] },
@@ -2563,7 +2563,7 @@ const PEOPLE = {
 
 '马武拉': { g:'king', y:[1629,1652], yk:'r', c:'穆塔帕与托尔瓦', n:['马武拉','Mavura'],
   t:['靠葡萄牙人的枪坐上王位的王;坐上去那天,也把国家签了出去。','A king set on the throne by Portuguese guns — and the day he sat down, he signed the kingdom away.'],
-  a:[['1629 年,他在葡萄牙人助战下击败争位的卡帕拉里泽登上王位,随即受洗,教名「菲利佩」','In 1629, with Portuguese help in the fight, he beat his rival Kapararidze to the throne, and was baptised Filipe'],
+  a:[['1629 年,他在葡萄牙人助战下击败争位的卡帕拉里泽登上王位,并受洗为「菲利佩」——受洗的确切年份各家记载不一','In 1629, with Portuguese help in the fight, he beat his rival Kapararidze to the throne and was baptised Filipe — the date of the baptism is variously reported'],
      ['同年签下的条约里:葡萄牙商人与传教士通行免税,金矿对他们开放,斯瓦希里商人被逐出境','The treaty he signed that year gave Portuguese traders and missionaries free passage untaxed, opened the mines to them, and expelled the Swahili merchants'],
      ['此后二十多年他一直在位,名义上仍是「穆韦内·穆塔帕」,实际上王庭的废立常凭葡萄牙人的火枪','He reigned on for over twenty years, still Mwene Mutapa in name; in practice the making and unmaking of kings ran on Portuguese muskets']],
   s:['他成了一个类型的开头:此后两个多世纪,非洲不少王位都要靠欧洲人的承认与军火才坐得稳——先是贸易,再是条约,最后是废立。1629 年那纸条约,常被史家当作这条路最早的完整样本之一。','He was the start of a pattern: for the next two centuries and more, many African thrones would need European recognition and firearms to hold — trade first, then treaty, then the making of kings. Historians often cite the treaty of 1629 as one of the earliest complete specimens of that road.'] },
