@@ -76,6 +76,16 @@ async function newPage(browser, { width, height, dark = false }) {
 
   /* ── 2. 引导层:欢迎屏首访可见;点「准备好了」后欢迎屏真实盒子归零(v226.1 的坑) ─────
      反例验证:把 #tourWelcome 的 CSS 加 display:flex !important → 报「点完仍可见」(2026-08-16) */
+  /* 欢迎屏是 setTimeout(450ms) 起、twFade .35s 淡入的,newPage 的 500ms 固定等待在慢机器上
+     会正好卡在 opacity 还没起来的那一格 → 误报「首访欢迎屏没显示出来」(2026-08-23 实测:
+     hidden=false、display=flex、盒子 1180×820,只有 opacity=0)。这里等它真正淡入,
+     **不放宽判据**:等不到就超时落回原来的断言,照样红。
+     反例验证:给 #tourWelcome 注入 `opacity:0 !important;animation:none !important` →
+     等待超时后仍报「首访欢迎屏没显示出来」、退出码 1(2026-08-23)。 */
+  await page.waitForFunction(() => {
+    const w = document.getElementById('tourWelcome');
+    return !w || (!w.hidden && +getComputedStyle(w).opacity > 0.02);
+  }, null, { timeout: 2500 }).catch(() => {});
   const tour = await page.evaluate(() => {
     const w = document.getElementById('tourWelcome');
     if (!w) return { missing: true };

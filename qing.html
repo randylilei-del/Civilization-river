@@ -183,7 +183,17 @@ const ACTS = [
 const scene = document.getElementById('scene'), next = document.getElementById('next'),
       dots = document.getElementById('dots'), homeBtn = document.getElementById('home');
 let act = -1, blk = 0;
-const seen = new Set(JSON.parse(localStorage.getItem('qing_seen') || '[]'));
+/* 进度存 localStorage。某些内置浏览器(飞书/微信 webview、隐私模式、file:// 下的部分内核)
+   一访问 localStorage 就抛 SecurityError;不兜住的话整段脚本当场挂掉,页面只剩静态骨架——
+   六个问题不出现、"开始"按钮点了没反应。2026-08-23 用注入式反例复现过这个症状。
+   存不下就退化成"不记进度",内容照常能看。 */
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+};
+let seenInit = [];
+try { seenInit = JSON.parse(store.get('qing_seen') || '[]') || []; } catch (e) { seenInit = []; }
+const seen = new Set(seenInit);
 
 function renderDots() {
   dots.innerHTML = ACTS.map((_, i) => `<i class="${i === act ? 'on' : ''}"></i>`).join('');
@@ -218,7 +228,7 @@ function reveal() {
   if (blk < blocks.length) {
     next.textContent = '接着说 →'; next.className = ''; next.onclick = reveal;
   } else {
-    seen.add(act); localStorage.setItem('qing_seen', JSON.stringify([...seen]));
+    seen.add(act); store.set('qing_seen', JSON.stringify([...seen]));
     if (act < ACTS.length - 1) {
       next.textContent = `下一个问题:${ACTS[act + 1].t}`; next.className = '';
       next.onclick = () => openAct(act + 1);
