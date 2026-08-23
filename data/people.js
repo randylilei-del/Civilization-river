@@ -2547,6 +2547,13 @@ const PEOPLE = {
      ['《隋书》记他的都城「郭下二万余家」,又记国王三日一听朝,坐五香七宝床——一座 7 世纪东南亚都城的排场,被中国史官记了下来','The Book of Sui counts over twenty thousand households below the walls, and describes the king holding audience every third day on a couch of five scents and seven jewels — the style of a seventh-century Southeast Asian capital, noted down by Chinese historians']],
   s:['他的名字随都城一起留了下来:考古学界至今用「伊奢那补罗」称呼三坡布雷古的都城遗址。真腊自己的碑铭与中国的史书在他身上对上了号——东南亚早期历史里,能两头都查到的王并不多。','His name survived with his city: archaeologists still call the Sambor Prei Kuk capital Ishanapura. On him, Chenla\'s own inscriptions and the Chinese histories agree — among early Southeast Asian kings, not many can be checked from both ends.'] },
 
+'宗喀巴': { g:'faith', y:[1357,1419], c:'西藏诸政权', n:['宗喀巴','Tsongkhapa'],
+  t:['一位改革僧人:他整顿了戒律,身后长出一个教派、两大活佛系统。','A reformer monk: he restored the discipline, and after him grew a school and two great lines of rebirth.'],
+  a:[['生在青海湟水一带,「宗喀巴」意思就是「宗喀地方的人」;十六岁入卫藏求学,遍访各派名师','Born by the Huangshui in Qinghai — Tsongkhapa simply means the man from Tsongkha — he went to central Tibet at sixteen and studied under masters of every school'],
+     ['他针对的是当时僧团的松弛:重申戒律、重立学制,让僧人从显到密按次第修学;他和弟子都戴黄帽,人称「黄帽派」','What he set himself against was the laxity of the clergy of his day: discipline restated, a curriculum rebuilt, monks to study in ordered stages from open to esoteric teaching; he and his disciples wore yellow hats, and the yellow hat became the name'],
+     ['1409 年在拉萨首办传昭大法会,同年建甘丹寺——格鲁派从这一年起步,后来成为藏传佛教最大的教派','In 1409 he held the first Great Prayer Festival at Lhasa and founded Ganden monastery the same year — the Gelug school starts from that year, and grew into the largest in Tibetan Buddhism']],
+  s:['他身后,弟子一系发展出达赖与班禅两大转世系统,格鲁派由此与高原此后的政治史缠在一起。今天塔尔寺就建在他的出生地;甘丹寺的金顶下,他的法座至今空悬——按传统,那个位子只属于他。','After him his disciples\' lines grew into the Dalai and Panchen successions, and the Gelug school was braided into the plateau\'s political history ever after. Kumbum monastery stands today on his birthplace; and under the golden roofs of Ganden his throne is kept vacant — by tradition, the seat is his alone.'] },
+
 '阇耶波罗': { g:'king', y:[964,1001], yk:'r', c:'喀布尔沙希', n:['阇耶波罗','Jayapala'],
   t:['联合诸邦对抗加兹尼的老王;战败被俘赎回后,他选择了柴堆。','The old king who led the coalition against Ghazni — beaten, captured and ransomed, he chose the pyre.'],
   a:[['先联合北印诸邦迎战萨布克特勤,后又独力迎战其子马哈茂德——每一仗都败给快进快出的突厥骑兵','He led a coalition of northern kings against Sabuktigin, then faced his son Mahmud with his own forces — beaten each time by cavalry that struck and withdrew'],
