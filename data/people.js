@@ -2540,6 +2540,13 @@ const PEOPLE = {
   s:['这批阿马尔那书信是青铜时代晚期国际关系最直接的证据:埃及、巴比伦、赫梯、亚述、米坦尼的君主互称兄弟,用联姻和送礼维持一个多国体系,和后世的外交没什么两样。他死后不久王位发生动乱,亚述王阿淑尔-乌巴里特一世出兵干预、扶立新王——那个他看不起的邻居,已经反过来能决定巴比伦的王位了。',
      'The Amarna letters are the plainest evidence we have of international relations in the late Bronze Age: the kings of Egypt, Babylon, Hatti, Assyria and Mitanni addressed one another as brothers and held a multi-state system together by marriage and gift-exchange, not so differently from diplomacy since. Soon after his death the succession broke down and the Assyrian king Ashur-uballit I intervened to put his own candidate on the throne — the neighbour he had looked down on was now deciding who ruled Babylon.'] },
 
+'米特里达梯六世': { g:'king', y:[-120,-63], yk:'r', c:'本都王国', n:['米特里达梯六世','Mithridates VI'],
+  t:['罗马人打了二十五年才打倒的国王;他每天服毒防毒,最后毒药果真毒不死他。','It took Rome twenty-five years to bring him down; he dosed himself against poison daily, and in the end poison indeed could not kill him.'],
+  a:[['据老普林尼记载,他能说二十二种语言,接见治下各族都不用翻译','Pliny records that he spoke twenty-two languages and needed no interpreter with any people he ruled'],
+     ['前 88 年他下令亚细亚行省各城在同一天杀尽境内的罗马人;古代作者给的数字从八万到十五万,现代学者多认为有夸大','In 88 BC he ordered every city of the province of Asia to kill its Romans on the same day; the ancient figures of eighty to a hundred and fifty thousand are mostly thought inflated'],
+     ['前 63 年兵败众叛,服毒自尽而毒药无效,请随行军官动手——各家记载版本不一','Defeated and deserted in 63 BC, he took poison and it failed; he asked an officer of his guard to finish it — the accounts differ']],
+  s:['解毒方冠着他的名字进了欧洲的药房,「以毒练毒」在药理学里至今叫「米特里达梯主义」。在罗马人自己的记忆里,他与汉尼拔并列,是共和国最难缠的对手之一。','The antidote that bears his name entered the pharmacies of Europe, and training against poison by small doses is still called mithridatism. In Rome\'s own memory he stands with Hannibal among the republic\'s most stubborn opponents.'] },
+
 '迈达斯': { g:'king', y:[-738,-696], yk:'r', ca:1, c:'弗里吉亚', n:['迈达斯','Midas'],
   t:['传说里他碰到什么什么就变成金子;亚述的档案里,他只是个不好打交道的邻国国王。',
      'In the legend everything he touched turned to gold; in the Assyrian records he is just a difficult neighbour.'],
