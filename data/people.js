@@ -2547,6 +2547,13 @@ const PEOPLE = {
      ['《隋书》记他的都城「郭下二万余家」,又记国王三日一听朝,坐五香七宝床——一座 7 世纪东南亚都城的排场,被中国史官记了下来','The Book of Sui counts over twenty thousand households below the walls, and describes the king holding audience every third day on a couch of five scents and seven jewels — the style of a seventh-century Southeast Asian capital, noted down by Chinese historians']],
   s:['他的名字随都城一起留了下来:考古学界至今用「伊奢那补罗」称呼三坡布雷古的都城遗址。真腊自己的碑铭与中国的史书在他身上对上了号——东南亚早期历史里,能两头都查到的王并不多。','His name survived with his city: archaeologists still call the Sambor Prei Kuk capital Ishanapura. On him, Chenla\'s own inscriptions and the Chinese histories agree — among early Southeast Asian kings, not many can be checked from both ends.'] },
 
+'马武拉': { g:'king', y:[1629,1652], yk:'r', c:'穆塔帕与托尔瓦', n:['马武拉','Mavura'],
+  t:['靠葡萄牙人的枪坐上王位的王;坐上去那天,也把国家签了出去。','A king set on the throne by Portuguese guns — and the day he sat down, he signed the kingdom away.'],
+  a:[['1629 年,他在葡萄牙人助战下击败争位的卡帕拉里泽登上王位,随即受洗,教名「菲利佩」','In 1629, with Portuguese help in the fight, he beat his rival Kapararidze to the throne, and was baptised Filipe'],
+     ['同年签下的条约里:葡萄牙商人与传教士通行免税,金矿对他们开放,斯瓦希里商人被逐出境','The treaty he signed that year gave Portuguese traders and missionaries free passage untaxed, opened the mines to them, and expelled the Swahili merchants'],
+     ['此后二十多年他一直在位,名义上仍是「穆韦内·穆塔帕」,实际上王庭的废立常凭葡萄牙人的火枪','He reigned on for over twenty years, still Mwene Mutapa in name; in practice the making and unmaking of kings ran on Portuguese muskets']],
+  s:['他成了一个类型的开头:此后两个多世纪,非洲不少王位都要靠欧洲人的承认与军火才坐得稳——先是贸易,再是条约,最后是废立。1629 年那纸条约,常被史家当作这条路最早的完整样本之一。','He was the start of a pattern: for the next two centuries and more, many African thrones would need European recognition and firearms to hold — trade first, then treaty, then the making of kings. Historians often cite the treaty of 1629 as one of the earliest complete specimens of that road.'] },
+
 '设赏迦': { g:'king', y:[600,625], ca:1, yk:'r', c:'早期孟加拉', n:['设赏迦','Shashanka'],
   t:['孟加拉的第一位大王;关于他的记载,全部出自敌人之手。','Bengal\'s first great king — every surviving account of him written by his enemies.'],
   a:[['约 600 年在金耳城称王,在位年代各家考订出入较大;金币上铸着卧牛与湿婆,是孟加拉最早的本地王朝铸币之一','Crowned at Karnasubarna about 600, his dates much debated; his gold coins, stamped with Shiva and the reclining bull, are among Bengal\'s earliest royal issues'],
