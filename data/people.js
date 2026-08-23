@@ -2547,6 +2547,13 @@ const PEOPLE = {
      ['《隋书》记他的都城「郭下二万余家」,又记国王三日一听朝,坐五香七宝床——一座 7 世纪东南亚都城的排场,被中国史官记了下来','The Book of Sui counts over twenty thousand households below the walls, and describes the king holding audience every third day on a couch of five scents and seven jewels — the style of a seventh-century Southeast Asian capital, noted down by Chinese historians']],
   s:['他的名字随都城一起留了下来:考古学界至今用「伊奢那补罗」称呼三坡布雷古的都城遗址。真腊自己的碑铭与中国的史书在他身上对上了号——东南亚早期历史里,能两头都查到的王并不多。','His name survived with his city: archaeologists still call the Sambor Prei Kuk capital Ishanapura. On him, Chenla\'s own inscriptions and the Chinese histories agree — among early Southeast Asian kings, not many can be checked from both ends.'] },
 
+'贝尼尼': { g:'art', y:[1598,1680], c:'教皇国', n:['贝尼尼','Gian Lorenzo Bernini'],
+  t:['先后为八任教皇干活的艺术家;今天的罗马长什么样,有一半是他的主意。','Artist to eight popes in succession; how Rome looks today is half his doing.'],
+  a:[['二十多岁就名动罗马:《阿波罗与达芙妮》把「人正在变成月桂树」的一瞬刻进大理石,指尖化作叶子,石头薄得透光','Famous in his twenties: his Apollo and Daphne fixes in marble the instant of a girl turning into a laurel, fingertips becoming leaves, the stone carved thin enough to glow'],
+     ['也栽过大跟头:他给圣彼得大教堂加建的钟塔出现裂缝,1646 年教皇下令整座拆掉,声名跌到谷底;几年后他靠四河喷泉翻了身','He also fell hard: cracks appeared in the bell tower he added to St Peter\'s, in 1646 the pope ordered it demolished, and his standing hit bottom — a few years later the Four Rivers fountain won it back'],
+     ['1656 年起主持圣彼得广场,他把柱廊设计成环抱的双臂——按他自己的说法,是教会张开手臂迎接世人;工程做了十一年','From 1656 he directed St Peter\'s Square, designing the colonnade as two embracing arms — in his own words, the church reaching out to gather the world in; the work took eleven years']],
+  s:['他死后巴洛克退潮,19 世纪的评论家一度看不起他;20 世纪重新翻案,如今常与米开朗基罗并提为雕塑史的高峰。而每天在他的广场上拍照的游客,多数并不知道他的名字——作品比名字有名,对建城的人来说不算坏结局。','After his death the Baroque went out of fashion and nineteenth-century critics looked down on him; the twentieth century reversed the verdict, and he now stands with Michelangelo among the peaks of sculpture. Most of the visitors photographing his square each day do not know his name — the work more famous than the man, which is not a bad ending for a city-builder.'] },
+
 '米特里达梯六世': { g:'king', y:[-120,-63], yk:'r', c:'本都王国', n:['米特里达梯六世','Mithridates VI'],
   t:['罗马人打了二十五年才打倒的国王;他每天服毒防毒,最后毒药果真毒不死他。','It took Rome twenty-five years to bring him down; he dosed himself against poison daily, and in the end poison indeed could not kill him.'],
   a:[['据老普林尼记载,他能说二十二种语言,接见治下各族都不用翻译','Pliny records that he spoke twenty-two languages and needed no interpreter with any people he ruled'],
