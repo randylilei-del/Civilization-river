@@ -1830,6 +1830,28 @@ CIVS.forEach(c => {
   }
   /* 一次刷 35 条 warn 等于没人看:按重合长度排序只列最长的 8 条,其余给个数字。
      旧卡的存量在这里,新卡进来会排到前面。 */
+  /* 78b(v338). d ↔ 同带 q/chrono 的整句复读,≥20 字红灯、零基线。
+     为什么阈值是 20 不是 14:装规则前按第 26 条量过精度——全站 ≥14 命中 67 处,d 作为摘要层
+     借用 q 的强短语是普遍且合理的写法,14 字线会把摘要写作本身判死;≥20 命中 20 处,逐处读全是
+     整句复读(印度-希腊 36 字/伐卡塔卡 31×2…),v338 已全部改写清零。此前 v328.2 与 v333.1 两轮
+     核查各漏一批正是这个通道——规则 78 的 body 含 d,但从不比「d 对 q 自己」。
+     反例注入:把任一带 d 里抄回一句 ≥20 字的 q 原文 → 红(2026-08-28 实测)。 */
+  {
+    const lcs = (a, b) => { let best = ''; let prev = new Array(b.length + 1).fill(0);
+      for (let i = 1; i <= a.length; i++) { const cur = new Array(b.length + 1).fill(0);
+        for (let j = 1; j <= b.length; j++) { if (a[i - 1] === b[j - 1]) { cur[j] = prev[j - 1] + 1;
+          if (cur[j] > best.length) best = a.slice(i - cur[j], i); } } prev = cur; } return best; };
+    for (const c of CIVS) {
+      const d = norm(c.d || ''); if (!d) continue;
+      const layers = {};
+      for (const [k, v] of Object.entries(c.q || {})) layers['q.' + k] = norm(v[0]);
+      (CHRONO[c.n] || []).forEach(e => { if (e[2]) layers['大事记' + e[0]] = norm(e[2][0]); });
+      for (const [k, t] of Object.entries(layers)) {
+        const l = lcs(d, t);
+        if (l.length >= 20) P.push(`[d 层整句复读] ${c.n} 的 d 与 ${k} 逐字重合 ${l.length} 字:「${l.slice(0, 24)}…」—— d 是摘要层,要用自己的话压缩,不要整句抄回`);
+      }
+    }
+  }
   dup.sort((a, b) => b.best.length - a.best.length);
   dup.slice(0, 8).forEach(d => W.push(`[卡片复述母条目 ${d.best.length} 字] ${d.k}:「${d.best}」—— 这一层该讲自己的角度:人物卡讲这个人、成就卡讲这样东西、鼎盛段讲什么时候最好与什么时候失灵`));
   if (dup.length > 8) W.push(`[卡片复述母条目] 另有 ${dup.length - 8} 张重合 14 字以上(多为旧卡),跑 \`node tools/audit.js\` 看不到全部——要全表用 grep`);
