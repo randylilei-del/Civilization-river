@@ -183,6 +183,33 @@ async function newPage(browser, { width, height, dark = false }) {
   if (snap.err || snap.got !== snap.want) fail('近旁点击未吸附', JSON.stringify(snap));
   stats.snap = snap.got === snap.want ? 1 : 0;
 
+  /* ── 4c. 轨迹全貌条(v336,Ray:选轨迹只见角落一截箭头,不知道整条线有多长) ──
+     选中佛教轨迹 → 屏底全貌条可见、站数齐、点末站主图滚到该站进视口。
+     反例验证:把 index.html 的 TR_BAR 改 false → 报「全貌条未出现」(2026-08-28 实测红) */
+  const tbar = await page.evaluate(async () => {
+    const i = TRACES.findIndex(t => t.n[0] === '佛教');
+    traceSel.value = String(i); traceSel.dispatchEvent(new Event('change'));
+    await new Promise(r => setTimeout(r, 120));
+    const bar = document.getElementById('trBar');
+    if (!bar || bar.hidden) return { err: '全貌条未出现' };
+    const chips = bar.querySelectorAll('.tb-stop').length;
+    const last = bar.querySelector(`.tb-stop[data-ti="${TRACES[i].stops.length - 1}"]`);
+    last.click();
+    await new Promise(r => setTimeout(r, 700));
+    const g = chart.querySelector(`.trstop[data-ti="${TRACES[i].stops.length - 1}"]`);
+    const r2 = g ? g.getBoundingClientRect() : null;
+    const inView = r2 && r2.top >= 0 && r2.bottom <= window.innerHeight;
+    traceSel.value = ''; traceSel.dispatchEvent(new Event('change'));
+    zoomReset(); window.scrollTo(0, 0);   // 还原视窗:选轨迹时 zoomTo 过,不还原会污染后面的带/标签统计
+    return { chips, want: TRACES[i].stops.length, inView };
+  });
+  if (tbar.err) fail('全貌条未出现', tbar.err);
+  else {
+    if (tbar.chips !== tbar.want) fail('全貌条站数不齐', `${tbar.chips}/${tbar.want}`);
+    if (!tbar.inView) fail('全貌条点站未滚到', JSON.stringify(tbar));
+  }
+  stats.trbar = tbar.chips || 0;
+
   /* ── 5. 色带真实填充色:没有一条是纯黑/透明(v193 五条大洋洲带黑了好几版) ─────────────
      反例验证:临时删掉 CSS 里某圈 --c9-a 变量 → 报黑带(2026-08-16) */
   const bands = await page.evaluate(() => {

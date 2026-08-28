@@ -288,6 +288,24 @@ svg.tr .evg, svg.tr .ung { opacity: .2; }
 @keyframes trFlow { to { stroke-dashoffset: 0; } }
 @media (prefers-reduced-motion: reduce) { .trstop, .trpath { animation: none; stroke-dashoffset: 0; } }
 
+/* v336 轨迹全貌条(Ray 2026-08-28:选轨迹只见角落一截箭头,不知道整条线有多长):
+   固定在屏底,整条线「年份·站名 → …」一次摆全;点任一站,主图滚过去并闪一下。 */
+#trBar[hidden] { display: none; }
+#trBar { position: fixed; left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bottom)); z-index: 60;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.14); padding: 7px 10px; font-size: 12.5px;
+  display: flex; align-items: center; gap: 8px; }
+#trBar .tb-name { font-weight: 600; white-space: nowrap; color: var(--ink); }
+#trBar .tb-line { display: flex; align-items: center; gap: 4px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: thin; flex: 1; }
+#trBar .tb-stop { flex: 0 0 auto; border: 1px solid var(--border); background: none; color: var(--ink);
+  border-radius: 999px; padding: 3px 10px; font-size: 12px; cursor: pointer; font-family: inherit; }
+#trBar .tb-stop:active { background: var(--ink); color: var(--surface); }
+#trBar .tb-stop b { font-weight: 600; margin-right: 3px; }
+#trBar .tb-arr { color: var(--ink-2); flex: 0 0 auto; }
+#trBar .tb-x { flex: 0 0 auto; border: none; background: none; color: var(--ink-2); font-size: 15px; cursor: pointer; padding: 2px 4px; }
+.trstop.tbgo { filter: drop-shadow(0 0 6px var(--ink)); }
+
+
 .chart-wrap { position: relative; max-width: 1200px; margin: 0 auto 8px; padding: 0 20px; }
 .chart-card {
   position: relative; background: var(--surface);
@@ -1004,6 +1022,7 @@ td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; ma
   <div class="tv-body"><table id="dataTable"></table></div>
 </div>
 <!-- v202.1 城市照片放大层:点图放大、再点缩回 -->
+<div id="trBar" hidden></div>
 <figure id="gvLb" hidden><img alt=""><figcaption></figcaption></figure>
 
 <div id="playbar" hidden aria-live="polite">
@@ -15342,6 +15361,27 @@ traceSel.addEventListener('change', () => {
       window.scrollTo({ top: Math.max(0, target), behavior: 'smooth' });
     }, 30);
   } else buildChart();
+  buildTrBar();
+});
+/* v336 轨迹全貌条。TR_BAR 是 smoke 反例注入点(改 false → 断言 4c 必须红)。 */
+const trBar = document.getElementById('trBar');
+const TR_BAR = true;
+function buildTrBar() {
+  if (!TR_BAR || curTrace === null) { trBar.hidden = true; trBar.innerHTML = ''; return; }
+  const t = TRACES[curTrace], li = LANG === 'zh' ? 0 : 1;
+  const chips = t.stops.map((s, i) => (i ? `<span class="tb-arr">${s.p != null && s.p !== i - 1 ? '↳' : '→'}</span>` : '') +
+    `<button class="tb-stop" data-ti="${i}"><b>${fmtY(s.y)}</b>${s.t[li]}</button>`).join('');
+  trBar.innerHTML = `<span class="tb-name">${t.n[li]}</span><div class="tb-line">${chips}</div>` +
+    `<button class="tb-x" aria-label="${T('关闭', 'Close')}">✕</button>`;
+  trBar.hidden = false;
+}
+trBar.addEventListener('click', e => {
+  if (e.target.closest('.tb-x')) { traceSel.value = ''; traceSel.dispatchEvent(new Event('change')); return; }
+  const b = e.target.closest('.tb-stop'); if (!b) return;
+  const g = chart.querySelector(`.trstop[data-ti="${b.dataset.ti}"]`); if (!g) return;
+  const r = g.getBoundingClientRect();
+  window.scrollTo({ top: Math.max(0, window.scrollY + r.top - (window.innerHeight - r.height) / 2), behavior: 'smooth' });
+  g.classList.add('tbgo'); setTimeout(() => g.classList.remove('tbgo'), 1200);
 });
 /* ---------- 人物卡 ----------
    独立于 #panel 的一层,所以弹出和关闭都不碰文明卡的 DOM 与滚动位置——
@@ -16456,6 +16496,7 @@ function applyLang() {
   document.querySelectorAll('.viewsw [data-v="geo"]').forEach(b => b.textContent = T('按地方看', 'By place'));
   document.querySelectorAll('.viewsw [data-v="table"]').forEach(b => b.textContent = T('按列表看', 'By list'));
   if (!gv.hidden) { gvHeadTexts(); renderGvMap(); if (GV.last) gvQuery(GV.last.lon, GV.last.lat, GV.last.ci); }
+  buildTrBar();   // v336 轨迹全貌条随语言重建
   document.getElementById('pbNowLab').textContent = T('此刻在场', 'On stage now');
   document.getElementById('pbFeedLab').textContent = T('最近发生', 'Recently');
   /* v179:下拉按分组渲染(Ray:17 条平铺挑不过来)。组序 = TR_ORDER,组名 = TR_GROUP */
