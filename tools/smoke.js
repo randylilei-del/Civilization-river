@@ -162,6 +162,27 @@ async function newPage(browser, { width, height, dark = false }) {
   city.nohit.forEach(x => fail('城市无命中', x));
   city.thin.forEach(x => fail('城市行空', x));
 
+  /* ── 4b. 地图近旁点击吸附(v335,Ray/Jasper 实测:点到城市点旁边不该显示「没有文明」) ──
+     模拟真实指针事件:在拉萨点旁 20px 处按下抬起,断言吸附选中拉萨。
+     反例验证:把 index.html 的 GV_SNAP 改 0 → 报「近旁点击未吸附」(2026-08-28 实测红) */
+  const snap = await page.evaluate(() => {
+    openGeoView();
+    if (GV.mini) setGvMini(false);
+    GV.zoom = 1; renderGvMap();
+    const svg = gvMap.querySelector('svg'); if (!svg) return { err: '无 svg' };
+    const r = svg.getBoundingClientRect();
+    const i = GEO_CITY.findIndex(c => c[0] === '拉萨');
+    const cx = r.left + (GEO_CITY[i][2] + 180) / 360 * r.width + 20;
+    const cy = r.top + (GV_LAT1 - GEO_CITY[i][3]) / (GV_LAT1 - GV_LAT0) * r.height;
+    const ev = t => new PointerEvent(t, { clientX: cx, clientY: cy, pointerId: 7, bubbles: true });
+    gvMap.dispatchEvent(ev('pointerdown')); gvMap.dispatchEvent(ev('pointerup'));
+    const got = GV.last ? GV.last.ci : -9;
+    closeGeoView();
+    return { want: i, got };
+  });
+  if (snap.err || snap.got !== snap.want) fail('近旁点击未吸附', JSON.stringify(snap));
+  stats.snap = snap.got === snap.want ? 1 : 0;
+
   /* ── 5. 色带真实填充色:没有一条是纯黑/透明(v193 五条大洋洲带黑了好几版) ─────────────
      反例验证:临时删掉 CSS 里某圈 --c9-a 变量 → 报黑带(2026-08-16) */
   const bands = await page.evaluate(() => {

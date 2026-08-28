@@ -16024,6 +16024,11 @@ let gvMoved = false;
   });
   /* 点击查询并进抬手逻辑,不依赖 click 事件——setPointerCapture 会把事件重定向到
      容器,click 的 target 不再是城市点,靠 click 判定会失灵 */
+  /* v335(Ray 2026-08-28,Jasper 实测):7 岁手指点不准 10px 的命中圈。两级吸附,单位都是
+     CSS 像素、与缩放档无关:①脱靶但离最近城市点 ≤GV_SNAP → 直接当点中了它;
+     ②GV_SNAP~GV_SNAP2 之间、且点到的那一处查出来一个文明都没有(海里/空白) → 与其给孩子
+     看「没有文明」,不如也吸过去。想真查空地的把点落在 GV_SNAP2 之外即可,「查任意点」仍在。 */
+  const GV_SNAP = 28, GV_SNAP2 = 64;
   function tapAt(cx, cy) {
     const el = document.elementFromPoint(cx, cy);
     const hit = el && el.closest && el.closest('.gc-hit');
@@ -16031,9 +16036,21 @@ let gvMoved = false;
     const svg = gvMap.querySelector('svg');
     if (!svg || !el || !svg.contains(el)) return;
     const r = svg.getBoundingClientRect();
-    const lon = (cx - r.left) / r.width * 360 - 180;
-    const lat = GV_LAT1 - (cy - r.top) / r.height * (GV_LAT1 - GV_LAT0);
-    gvQuery(+lon.toFixed(2), +lat.toFixed(2), -1);
+    let bi = -1, bd = Infinity;
+    for (let i = 0; i < GEO_CITY.length; i++) {
+      const dx = r.left + (GEO_CITY[i][2] + 180) / 360 * r.width - cx;
+      const dy = r.top + (GV_LAT1 - GEO_CITY[i][3]) / (GV_LAT1 - GV_LAT0) * r.height - cy;
+      const d = dx * dx + dy * dy;
+      if (d < bd) { bd = d; bi = i; }
+    }
+    if (bi >= 0 && bd <= GV_SNAP * GV_SNAP) { gvQuery(GEO_CITY[bi][2], GEO_CITY[bi][3], bi); return; }
+    const lon = +((cx - r.left) / r.width * 360 - 180).toFixed(2);
+    const lat = +(GV_LAT1 - (cy - r.top) / r.height * (GV_LAT1 - GV_LAT0)).toFixed(2);
+    if (bi >= 0 && bd <= GV_SNAP2 * GV_SNAP2 &&
+        !CIVS.some(c => { const g = GEO[c.n]; return g && g.p && g.p.some(poly => gvPip(lon, lat, poly)); })) {
+      gvQuery(GEO_CITY[bi][2], GEO_CITY[bi][3], bi); return;
+    }
+    gvQuery(lon, lat, -1);
   }
   const endPt = e => {
     if (GV.mini) {   // v199 窄带:这次按下是在窄带上开始的、且没滑动 → 展开;刚被 tapAt 收窄的那次抬手不会进来(它按下时还不是 mini)
