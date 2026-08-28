@@ -219,7 +219,7 @@ h1 { font-size: 24px; margin: 0 0 2px; letter-spacing: .01em; }
 .ctl { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-2); cursor: pointer; user-select: none; }
 .ctl input { accent-color: var(--c-west); }
 .lang { margin-left: auto; display: flex; gap: 2px; border: 1px solid var(--border); border-radius: 999px; padding: 2px; }
-.lang button { border: 0; background: none; color: var(--ink-2); font: inherit; font-size: 12px; padding: 2px 10px; border-radius: 999px; cursor: pointer; }
+.lang button { border: 0; background: none; color: var(--ink-2); font: inherit; font-size: 12px; padding: 7px 12px; border-radius: 999px; cursor: pointer; }   /* v337 触控体检:高 23 → ≥32 */
 .lang button.on { background: var(--wash); color: var(--ink); font-weight: 600; }
 .controls select {
   font: inherit; font-size: 12px; background: var(--surface); color: var(--ink-2);
@@ -298,11 +298,11 @@ svg.tr .evg, svg.tr .ung { opacity: .2; }
 #trBar .tb-name { font-weight: 600; white-space: nowrap; color: var(--ink); }
 #trBar .tb-line { display: flex; align-items: center; gap: 4px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: thin; flex: 1; }
 #trBar .tb-stop { flex: 0 0 auto; border: 1px solid var(--border); background: none; color: var(--ink);
-  border-radius: 999px; padding: 3px 10px; font-size: 12px; cursor: pointer; font-family: inherit; }
+  border-radius: 999px; padding: 7px 12px; font-size: 12px; cursor: pointer; font-family: inherit; }   /* v337 触控体检:高 25 → ≥32 */
 #trBar .tb-stop:active { background: var(--ink); color: var(--surface); }
 #trBar .tb-stop b { font-weight: 600; margin-right: 3px; }
 #trBar .tb-arr { color: var(--ink-2); flex: 0 0 auto; }
-#trBar .tb-x { flex: 0 0 auto; border: none; background: none; color: var(--ink-2); font-size: 15px; cursor: pointer; padding: 2px 4px; }
+#trBar .tb-x { flex: 0 0 auto; border: none; background: none; color: var(--ink-2); font-size: 15px; cursor: pointer; padding: 10px 12px; margin: -8px -6px; }   /* v337 触控体检:19×21 → ≥32,负边距保条高 */
 .trstop.tbgo { filter: drop-shadow(0 0 6px var(--ink)); }
 
 
@@ -524,7 +524,7 @@ svg.no-ev .evg { display: none; }
 .start-strip #civToday b { color: var(--ink); font-weight: 700; font-size: 14px; }
 #firstHint[hidden] { display: none; }   /* v226.1:不补这条,display 会盖掉 hidden——点了 × 也关不掉 */
 #firstHint { display: inline-flex; gap: 8px; align-items: baseline; }
-#firstHint button { border: 0; background: none; color: var(--muted); cursor: pointer; font-size: 14px; padding: 0 2px; line-height: 1; }
+#firstHint button { border: 0; background: none; color: var(--muted); cursor: pointer; font-size: 14px; padding: 10px 12px; margin: -10px -10px; line-height: 1; }   /* v337 触控体检:12×14 → ≥32,负边距保版面 */
 #firstHint button:hover { color: var(--ink); }
 /* v152 搜索:输入框混在 controls 行里;结果浮层贴在框下,不占版面。
    高亮不用底色用加粗——颜色在本站只承载文明圈语义,搜索命中不配新颜色 */
@@ -630,10 +630,10 @@ a.bk:hover { border-color: var(--ink-2); }
   border-bottom: 1px solid var(--border); background: var(--surface); flex: none; }
 #geoview .gv-head b { font-size: 13.5px; font-weight: 600; flex: 1; min-width: 0; }
 #geoview .gv-zoom { display: flex; gap: 4px; flex: none; }
-#geoview .gv-zoom button { font: inherit; font-size: 12px; padding: 3px 9px; border: 1px solid var(--border);
+#geoview .gv-zoom button { font: inherit; font-size: 12px; padding: 7px 11px; border: 1px solid var(--border);   /* v337 触控体检:高 27 → ≥33 */
   border-radius: 99px; background: var(--surface); color: var(--ink-2); cursor: pointer; }
 #geoview .gv-zoom button.on { background: var(--ink); color: var(--surface); border-color: var(--ink); }
-#geoview .gv-x { font: inherit; font-size: 20px; line-height: 1; padding: 2px 9px; border: none;
+#geoview .gv-x { font: inherit; font-size: 20px; line-height: 1; padding: 8px 12px; border: none;   /* v337 触控体检:30×24 → ≥36 */
   background: none; color: var(--ink-2); cursor: pointer; flex: none; }
 /* v177 城市视频入口:与文明卡 .vid-play 同形态的整行按钮 */
 /* v197:这几条原本用的是 .gv-map,而 .gv-map 早就是**地理视角世界地图容器**的类名
