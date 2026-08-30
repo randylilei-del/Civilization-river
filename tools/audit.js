@@ -1857,6 +1857,31 @@ CIVS.forEach(c => {
   if (dup.length > 8) W.push(`[卡片复述母条目] 另有 ${dup.length - 8} 张重合 14 字以上(多为旧卡),跑 \`node tools/audit.js\` 看不到全部——要全表用 grep`);
 }
 
+/* 78c(v341). 同城小段互查:同一座城不同年代的 place_lore 两两 LCS,≥20 字红灯(零基线)、14–19 字 warn。
+   为什么存在:第十四轮之前的第十三轮核查抓到「开封|东汉 与 开封|三国 整段同讲曹操起兵」——
+   规则 78 系只比「卡片/小段 ↔ 本带正文」,同城小段之间没有任何工具管。
+   装前按第 26 条量过精度:全站 127 城两两比对,≥20 命中 0;14–19 命中 2(蒂卡尔雨林句/
+   哥本哈根 1801 海战,v341 已清零);10–13 命中 6,逐处读全是两段各自视角提同一锚点事件
+   (刘琨晋阳、哈拉尔建镇……),属合理互文——故红线取 20、warn 取 14,与 78/78b 同口径。
+   ⚠ 边界:字面 LCS 抓不住「换词复述」——开封案例本身字面只重合 6 字,压到能抓它的阈值全站都是误报。
+   那一类靠写前流程兜:`context.js <城市名>` 第②节会摊开同城全部小段,写/改小段前先跑它(HANDOFF 教训)。
+   反例注入:任选一城,把 A 段抄一句 ≥20 字进同城 B 段 → 红(2026-08-30 实测,见下)。 */
+{
+  const norm = t => (String(t).match(/[\u4e00-\u9fa5]/g) || []).join('');
+  const lcs = (a, b) => { let best = ''; let prev = new Array(b.length + 1).fill(0);
+    for (let i = 1; i <= a.length; i++) { const cur = new Array(b.length + 1).fill(0);
+      for (let j = 1; j <= b.length; j++) { if (a[i - 1] === b[j - 1]) { cur[j] = prev[j - 1] + 1;
+        if (cur[j] > best.length) best = a.slice(i - cur[j], i); } } prev = cur; } return best; };
+  const byCity = {};
+  for (const key of Object.keys(PLACE_LORE)) { const [city, band] = key.split('|'); (byCity[city] = byCity[city] || []).push([band, norm(PLACE_LORE[key][0])]); }
+  for (const [city, segs] of Object.entries(byCity))
+    for (let i = 0; i < segs.length; i++) for (let j = i + 1; j < segs.length; j++) {
+      const l = lcs(segs[i][1], segs[j][1]);
+      if (l.length >= 20) P.push(`[同城小段互抄] ${city}: ${segs[i][0]} ↔ ${segs[j][0]} 逐字重合 ${l.length} 字:「${l.slice(0, 24)}…」—— 同一座城的各年代小段要各讲各的年代`);
+      else if (l.length >= 14) W.push(`[同城小段重合 ${l.length} 字] ${city}: ${segs[i][0]} ↔ ${segs[j][0]}「${l}」—— 各年代小段要各讲各的年代`);
+    }
+}
+
 /* 79–81. 跨色带与同带内的结构冲突(v279;2026-08-20 对抗核查的产物)。
  *
  * 为什么存在:那一轮核查里最硬的两条错,audit 一条都查不出——
