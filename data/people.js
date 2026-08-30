@@ -2596,12 +2596,12 @@ const PEOPLE = {
      ['王国亡后,希罗多德版本的结局是:他在火刑堆上喊出梭伦的名字,居鲁士问明原委,把他放了下来留在身边——另一路古代记载里没有火刑堆','In Herodotus\' version of the end he cried out Solon\'s name on the pyre, and Cyrus, once he heard why, had him taken down and kept him close — other ancient accounts have no pyre at all'],],
   s:['他死后,吕底亚人做了两百年波斯臣民;而他传下的那句话越走越远:命运没有走完,先别急着下结论——此后两千多年,西方人一想到「盛极而衰」,常常就想起他。','After him the Lydians spent two centuries as Persian subjects, while the sentence he passed on travelled further and further: judge no life before it is finished. For two thousand years and more, when the West has thought of fortune overturned, it has often thought of him.'] },
 
-'檀石槐': { g:'king', y:[156,181], yk:'r', c:'鲜卑', n:['檀石槐','Tanshihuai'],
+'檀石槐': { g:'king', y:[156,181], yk:'r', ca:1, c:'鲜卑', n:['檀石槐','Tanshihuai'],
   t:['爸爸不肯认的孩子,长大把整片草原捏进了一只手里。','A child his father refused to own grew up to close one hand around the whole steppe.'],
   a:[['《后汉书》记的出身带着传奇色彩:父亲从军三年回来,见家里多了个儿子,不认,弃之;他由外祖家养大,十四五岁单骑追回被抢走的牛羊,部落自此服他','The Book of the Later Han gives him a storybook start: his father came home from three years with the army, found a son he would not own, and cast him out; raised by his mother\'s family, at fourteen or fifteen he rode out alone and took back the clan\'s stolen herds — and the clan followed him from that day'],
-     ['东汉遣使送来王印,「欲封檀石槐为王,与之和亲」,他不肯受,寇边反而更勤——王号是别人给的,草原是自己打下的','The Han sent envoys with a royal seal, offering to make him a king and bind it with a marriage; he refused, and raided the frontier harder than before — a crown is granted, but a steppe is taken'],
-     ['据记载他大约活了四十五岁,在位近三十年——这个年纪放在草原霸主里算短的,而他建起来的东西比他的寿命还短','He is recorded as living to about forty-five, nearly thirty years of it in power — a short life for a steppe overlord, and what he built proved shorter still'],],
-  s:['草原上后来每一个想把各部拧成一股绳的人,都要面对他留下的那道题:靠威望拢起来的联盟,怎么活过那个有威望的人。一千年后,成吉思汗用千户制和成文的大法回答了它。','Every steppe leader who later tried to twist the clans into one rope faced the problem he left behind: how does a confederation held together by prestige outlive the man with the prestige? A thousand years on, Genghis Khan answered it with decimal households and a written law.'] },
+     ['东汉遣使送来王印,「封檀石槐为王,欲与和亲」,他不肯受,寇边反而更勤——王号是别人给的,草原是自己打下的','The Han sent envoys with a royal seal, offering to make him a king and bind it with a marriage; he refused, and raided the frontier harder than before — a crown is granted, but a steppe is taken'],
+     ['据记载他大约活了四十五岁,在位二十多年——这个年纪放在草原霸主里算短的,而他建起来的东西比他的寿命还短','He is recorded as living to about forty-five, some twenty-five of them in power — a short life for a steppe overlord, and what he built proved shorter still'],],
+  s:['草原上后来每一个想把各部拧成一股绳的人,都要面对他留下的那道题:靠威望拢起来的联盟,怎么活过那个有威望的人。一千年后,成吉思汗用千户制和一部叫「大扎撒」的法回答了它。','Every steppe leader who later tried to twist the clans into one rope faced the problem he left behind: how does a confederation held together by prestige outlive the man with the prestige? A thousand years on, Genghis Khan answered it with decimal households and the code called the Great Yasa.'] },
 
 '曹议金': { g:'state', y:[914,935], yk:'r', c:'归义军', n:['曹议金','Cao Yijin'],
   t:['莫高窟有一窟被文书叫作「大王窟」——修窟的这位大王,一辈子没真敢称王。','One Mogao cave is called the Great King\'s Cave in the old documents — and the great king who built it never quite dared be king.'],
