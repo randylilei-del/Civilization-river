@@ -6,7 +6,7 @@ const PLACE = {
 '雅典':['希腊','Greece','雅典','Athens'], '斯巴达':['希腊','Greece','斯巴达','Sparta'],
 '罗马城':['意大利','Italy','罗马','Rome'], '罗马':['意大利','Italy','罗马','Rome'],
 '佛罗伦萨':['意大利','Italy','佛罗伦萨','Florence'], '威尼斯':['意大利','Italy','威尼斯','Venice'],
-'萨第斯':['土耳其','Turkey','萨尔特(马尼萨省)','Sart, Manisa'], '阿马西亚':['土耳其','Turkey','阿马西亚','Amasya'], '锡诺普':['土耳其','Turkey','锡诺普','Sinop'],
+'萨第斯':['土耳其','Turkey','萨尔特(马尼萨省)','Sart, Manisa'], '弹汗山':['中国','China','张家口以北一带(今址有诸说)','north of Zhangjiakou (site debated)'], '阿马西亚':['土耳其','Turkey','阿马西亚','Amasya'], '锡诺普':['土耳其','Turkey','锡诺普','Sinop'],
 '君士坦丁堡':['土耳其','Turkey','伊斯坦布尔','Istanbul'], '伊斯坦布尔':['土耳其','Turkey','伊斯坦布尔','Istanbul'],
 '里斯本':['葡萄牙','Portugal','里斯本','Lisbon'], '马德里':['西班牙','Spain','马德里','Madrid'],
 '阿姆斯特丹':['荷兰','Netherlands','阿姆斯特丹','Amsterdam'], '巴黎':['法国','France','巴黎','Paris'],

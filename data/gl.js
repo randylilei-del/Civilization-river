@@ -283,6 +283,9 @@ const GL = {
 '粟特': [
  { a:400, b:750, k:'econ', t:['丝路商网','The Silk Road network'], d:['从撒马尔罕到长安,一路都有自己人的聚落。','Own colonies all the way from Samarkand to Chang\'an.'] },
  { a:550, b:750, k:'art', t:['片治肯特壁画','The Panjikent murals'], d:['商人宅邸的墙上画着史诗与宴饮,鲜艳如新。','Epics and banquets on merchants\' walls, still vivid.'] } ],
+'鲜卑': [
+{ a:156, b:181, k:'thought', t:['三部与大人','Three divisions under chiefs'],  d:['不设世袭王庭,按地段把草原分成三部、各置大人——一套完全系在盟主个人威望上的组织,他在则合,他亡则散。','No hereditary court: the steppe cut into three divisions by territory, each under appointed chiefs — an order hanging entirely on the overlord\'s standing, whole while he lived, gone when he died.'] },
+{ a:250, b:330, k:'art', t:['金步摇','Gold step-shake crowns'], d:['慕容鲜卑的金冠上悬着会颤的金叶,走一步摇一步,「步摇」由此得名;辽西出土的几顶,枝叶如小树。','Murong crowns hung with trembling gold leaves that swayed at every step — hence the name; the ones unearthed in western Liaoning branch like little trees.'] }],
 '柔然': [ { a:402, b:552, k:'thought', t:['可汗制度','The khagan institution'], d:['一个称号定义了此后一千年的草原君权。','One title defines steppe sovereignty for a thousand years.'] } ],
 '萨曼王朝': [
  { a:900, b:999, k:'thought', t:['布哈拉学术圈','The Bukhara circle'], d:['伊本·西那与比鲁尼在同一片土地上同时出现。','Ibn Sina and al-Biruni, same soil, same generation.'] },
