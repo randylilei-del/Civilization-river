@@ -6,7 +6,7 @@
       年份与图都已过 v201/v202 两轮核查——唐→大雁塔、明→紫禁城、奥斯曼→托普卡帕宫。这一路 76 条文明。
    ② 剩下的文明手工点名「拍得到的实物」(成就字段里的东西:乌尔塔庙、汉谟拉比法典、桑奇大塔、摩艾……),取英文维基条目首图,
       Commons 查许可,缩略图人眼过一遍(剔地图 / 黑白远景 / 糊图 10 张)。抽象成就(科举、法典条文)不配图;不配人像。
-   覆盖不到的文明留空(v209 时点 11 条:匈奴、柔然、匈人、嚈哒、准噶尔、俄国治下中亚、西晋、渤海国、卡涅姆·博尔努、加纳帝国、拉皮塔——
+   覆盖不到的文明留空(v342 第三批补 20 条后,留空=v209 的 11 条+喀布尔沙希——维基条目无首图,Commons 搜索也没有可用实物照;v209 时点 11 条:匈奴、柔然、匈人、嚈哒、准噶尔、俄国治下中亚、西晋、渤海国、卡涅姆·博尔努、加纳帝国、拉皮塔——
    要么真没有拿得出手的实物,要么维基条目首图是地图),没条目就不渲染按钮,不硬凑。第二批手工清单见 tools/civ_photo_curated_titles2.json。
    ⚠ 缩略图宽度只能用 960(Commons 对站外只出标准档),同 city_photo.js。 */
 const CIV_PHOTO = {
@@ -602,5 +602,65 @@ const CIV_PHOTO = {
 '朝鲜': [
  { f:'Prázdné_slnice_a_rozestavěný_hotel_Ryugyong_-_panoramio.jpg', h:'a/a5', t:['柳京饭店','the Ryugyong Hotel'], by:'Martin Cígler', lic:'CC BY-SA 3.0' },
  { f:'070401_Panmunjeom3.jpg', h:'e/ea', t:['板门店与非军事区','Panmunjom and the DMZ'], by:'Driedprawns at en.wikipedia', lic:'CC BY 2.5' },
+],
+'北欧诸王国': [
+ { f:'Borgund_Stave_Church_in_Lærdalen,_2013_June.jpg', h:'e/e2', t:['博尔贡木板教堂','Borgund stave church'], by:'Ximonic (Simo Räsänen)', lic:'CC BY-SA 3.0' },
+],
+'教皇国': [
+ { f:'Basilica_di_San_Pietro_in_Vaticano_September_2015-1a.jpg', h:'f/f5', t:['圣彼得大教堂','St Peter\'s Basilica'], by:'Alvesgaspar', lic:'CC BY-SA 4.0' },
+],
+'加喜特巴比伦': [
+ { f:'Caillou_Michaux_CdM.jpg', h:'6/6c', t:['界石「库杜鲁」','a kudurru boundary stone'], by:'Marie-Lan Nguyen', lic:'Public domain' },
+],
+'弗里吉亚': [
+ { f:'Gordion_Early_Phrygian_East_Gate.jpg', h:'0/0c', t:['戈尔迪翁的早期城门','the early Phrygian gate at Gordion'], by:'Gordion Archive, Penn Museum', lic:'CC BY-SA 4.0' },
+],
+'本都王国': [
+ { f:'Amasya-Pontisches_Grab-02.JPG', h:'1/18', t:['阿马西亚崖壁上的本都王陵','the rock tombs of the Pontic kings at Amasya'], by:'Michael F. Schönitzer', lic:'CC BY-SA 4.0' },
+],
+'摩洛哥诸王朝': [
+ { f:'Marokko0112_(retouched).jpg', h:'4/49', t:['马拉喀什的库图比亚宣礼塔','the Kutubiyya minaret, Marrakesh'], by:'Rol1000', lic:'CC BY-SA 4.0' },
+],
+'海湾诸邦': [
+ { f:'Dhow_znz.jpg', h:'8/80', t:['航行中的单桅帆船','a dhow under sail'], by:'Muhammad Mahdi Karim', lic:'GFDL 1.2' },
+],
+'加兹尼王朝': [
+ { f:'Minaret_of_Bahram_Shah_(with_Minaret_of_Mas\'ud_III_in_the_background)._Ghazni,_Afghanistan_2014.jpg', h:'8/87', t:['加兹尼的两座宣礼塔','the minarets of Ghazni'], by:'AhmadElhan', lic:'CC BY-SA 4.0' },
+],
+'北元·蒙古诸部': [
+ { f:'Świątynia_Zachodnia_w_klasztorze_Erdene_Dzuu_01.jpg', h:'4/4c', t:['额尔德尼召','Erdene Zuu monastery'], by:'Marcin Konsek', lic:'CC BY-SA 4.0' },
+],
+'东察合台·叶尔羌': [
+ { f:'2015-09-12-123007_-_Moschee_beim_Grabmal_der_Amann_Shahan_Isa_Khan.jpg', h:'a/aa', t:['莎车的阿勒屯清真寺','the Altyn Mosque, Yarkand'], by:'Zossolino', lic:'CC BY-SA 4.0' },
+],
+'阿富汗': [
+ { f:'Blue_Mosque_in_the_northern_Afghan_city_in_2012.jpg', h:'c/c9', t:['马扎里沙里夫的蓝色清真寺','the Blue Mosque, Mazar-i-Sharif'], by:'Sgt. Kimberly Lamb (U.S. Armed Forces)', lic:'Public domain' },
+],
+'印度-希腊诸王': [
+ { f:'CapitalSharp.jpg', h:'9/9c', t:['阿伊哈努姆出土的科林斯柱头','a Corinthian capital from Ai-Khanoum'], by:'World Imaging', lic:'Public domain', s:1 },
+],
+'早期孟加拉': [
+ { f:'Paharpur_Buddhist_Bihar.jpg', h:'4/42', t:['索马普拉大寺(帕哈尔普尔)','Somapura Mahavihara, Paharpur'], by:'Abdulmominbd', lic:'CC BY-SA 4.0' },
+],
+'真腊': [
+ { f:'Durga_temple,_Prasat_Sambor_Kuk_N9,_Cambodia_01.jpg', h:'7/78', t:['三波坡雷古的砖塔','a brick tower at Sambor Prei Kuk'], by:'Ms Sarah Welch', lic:'CC0' },
+],
+'西藏诸政权': [
+ { f:'Sakya_monastery6.jpg', h:'2/21', t:['萨迦寺','Sakya monastery'], by:'Antoine Taveneaux', lic:'CC BY-SA 3.0' },
+],
+'扎格维王朝': [
+ { f:'Lalibela,_san_giorgio,_esterno_24.jpg', h:'a/aa', t:['拉利贝拉的圣乔治堂','Bete Giyorgis, Lalibela'], by:'Sailko', lic:'CC BY 3.0' },
+],
+'努比亚诸王国': [
+ { f:'Faras_Saint_Anne.jpg', h:'7/78', t:['法拉斯壁画上的圣安妮','Saint Anne, a wall painting from Faras'], by:'Anonymous (Faras)', lic:'Public domain' },
+],
+'穆塔帕与托尔瓦': [
+ { f:'ZW_Khami_Ruins.JPG', h:'4/4e', t:['卡米遗址的干石墙','dry-stone walls at Khami'], by:'Digr', lic:'CC BY-SA 4.0' },
+],
+'帕查卡马克与中部海岸': [
+ { f:'Pachacamac_-_51163366566.jpg', h:'a/af', t:['帕查卡马克遗址','the ruins of Pachacamac'], by:'Apollo', lic:'CC BY 2.0' },
+],
+'托尔特克与谷地诸邦': [
+ { f:'Telamones_Tula.jpg', h:'c/c9', t:['图拉的石武士','the stone warriors at Tula'], by:'User:Luidger', lic:'CC BY-SA 3.0' },
 ],
 };
