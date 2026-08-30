@@ -388,7 +388,7 @@ const CIVS = [
       legacy:['文学与音乐是它最没有争议的输出:托尔斯泰、陀思妥耶夫斯基、契诃夫、柴可夫斯基、肖斯塔科维奇。科学上,门捷列夫的元素周期表、朗道学派的理论物理、以及整套航天工程——今天国际空间站仍在用联盟号飞船。西伯利亚大铁路把一个横跨十一个时区的国家连成整体,至今是世界最长的铁路线。','Literature and music are its least disputed exports: Tolstoy, Dostoevsky, Chekhov, Tchaikovsky, Shostakovich. In science, Mendeleev\'s periodic table, the Landau school in theoretical physics, and an entire tradition of spaceflight — Soyuz craft still carry crews to the International Space Station. The Trans-Siberian Railway tied a country spanning eleven time zones into one piece and is still the longest railway line in the world.'] },
   d:'莫斯科公国摆脱金帐汗国后向东一路扩张到太平洋,彼得大帝强行西化建起海军。1917年革命后以计划经济速成工业化,二战中击败纳粹主力,与美国平分世界四十余年;1991年联盟解体,俄罗斯仍是幅员最大的国家。' },
 /* 中东·北非 */
-{ l:'me', s:'mideast', v:0, n:'苏美尔·阿卡德', k:[[-3500,0],[-3300,.5],[-2334,.6],[-2004,0]], b:'最早的城市与楔形文字诞生于两河流域;阿卡德是首个"帝国"。',
+{ l:'me', s:'mideast', v:0, n:'苏美尔·阿卡德', k:[[-3500,0],[-3300,.5],[-2334,.6],[-2004,.3],[-1894,0]], b:'最早的城市与楔形文字诞生于两河流域;阿卡德是首个"帝国"。',
   e:{ n:'Sumer & Akkad', w:'Sumer', b:'First cities and writing; Akkad, the first empire.', d:'The Sumerians invented writing, cities, schools and proto-law — practically defining "civilization"; Sargon of Akkad first welded the city-states into an empire. Their legacy persists in every hour of sixty minutes.', f:{ 'Peak':'24th c. BCE (Sargon)', 'Center':'Uruk, then Akkad, then Ur', 'Figures':'Sargon, Ur-Nammu', 'Legacy':'Cuneiform, the wheel, base-60, Gilgamesh' } },
   f:{ '鼎盛':'前24世纪(萨尔贡)', '中心':'乌鲁克→阿卡德→乌尔', '人物':'萨尔贡、乌尔纳姆', '成就':'楔形文字、车轮、六十进制、《吉尔伽美什》' },
   qh:{ born:['文字的起点是账本,不是诗歌','Writing began as bookkeeping, not poetry'],
