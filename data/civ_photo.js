@@ -663,4 +663,13 @@ const CIV_PHOTO = {
 '托尔特克与谷地诸邦': [
  { f:'Telamones_Tula.jpg', h:'c/c9', t:['图拉的石武士','the stone warriors at Tula'], by:'User:Luidger', lic:'CC BY-SA 3.0' },
 ],
+'吕底亚': [
+ { f:'Lydia_-_king_Kroisos_-_561-546_BC_-_gold_stater_-_foreparts_of_lion_and_bull_-_two_quadrata_incusa_-_München_SMS.jpg', h:'5/5b', t:['克罗伊斯金币:狮牛相对','A gold stater of Croesus: lion facing bull'], by:'ArchaiOptix', lic:'CC BY-SA 4.0' },
+],
+'鲜卑': [
+ { f:'花树状金步摇06323.jpg', h:'4/4a', t:['花树状金步摇(北票房身村出土)','A tree-shaped gold buyao ornament from Fangshen, Beipiao'], by:'Augusthaiho', lic:'CC BY-SA 4.0' },
+],
+'归义军': [
+ { f:'Caves_16-17_of_Mogao_Grottoes_(20230918142815).jpg', h:'f/f5', t:['莫高窟第16—17窟,17窟即藏经洞','Mogao caves 16–17 — Cave 17 is the Library Cave'], by:'N509FZ', lic:'CC BY-SA 4.0' },
+],
 };

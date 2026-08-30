@@ -2589,6 +2589,27 @@ const PEOPLE = {
      ['1656 年起主持圣彼得广场,他把柱廊设计成环抱的双臂——按他自己的说法,是教会张开手臂迎接世人;工程做了十一年','From 1656 he directed St Peter\'s Square, designing the colonnade as two embracing arms — in his own words, the church reaching out to gather the world in; the work took eleven years']],
   s:['他死后巴洛克退潮,19 世纪的评论家一度看不起他;20 世纪重新翻案,如今常与米开朗基罗并提为雕塑史的高峰。而每天在他的广场上拍照的游客,多数并不知道他的名字——作品比名字有名,对建城的人来说不算坏结局。','After his death the Baroque went out of fashion and nineteenth-century critics looked down on him; the twentieth century reversed the verdict, and he now stands with Michelangelo among the peaks of sculpture. Most of the visitors photographing his square each day do not know his name — the work more famous than the man, which is not a bad ending for a city-builder.'] },
 
+'克罗伊斯': { g:'king', y:[-560,-547], yk:'r', c:'吕底亚', n:['克罗伊斯','Croesus'],
+  t:['他问天下谁最幸福,得到的答案当时没听懂——听懂的时候,人在火刑堆上。','He asked who was the happiest of men and did not understand the answer — until he stood on the pyre.'],
+  a:[['给以弗所的阿尔忒弥斯神庙捐过整批石柱,其中几件构件刻着他的名字,今天存于大英博物馆','Gave a whole set of columns to the temple of Artemis at Ephesus; several pieces carry his name and are in the British Museum today'],
+     ['希罗多德记他问来访的雅典贤人梭伦:你见过比我更幸福的人吗?梭伦答:人没到最后一天,说不上幸福——这段对话的年代其实对不上,后人多当寓言读','Herodotus has him ask the visiting Athenian sage Solon whether he had ever seen a happier man; Solon answered that no man should be called happy before his last day — the chronology does not quite work, and it is mostly read as a parable'],
+     ['王国亡后,希罗多德版本的结局是:他在火刑堆上喊出梭伦的名字,居鲁士问明原委,把他放了下来留在身边——另一路古代记载里没有火刑堆','In Herodotus\' version of the end he cried out Solon\'s name on the pyre, and Cyrus, once he heard why, had him taken down and kept him close — other ancient accounts have no pyre at all'],],
+  s:['他死后,吕底亚人做了两百年波斯臣民;而他传下的那句话越走越远:命运没有走完,先别急着下结论——此后两千多年,西方人一想到「盛极而衰」,常常就想起他。','After him the Lydians spent two centuries as Persian subjects, while the sentence he passed on travelled further and further: judge no life before it is finished. For two thousand years and more, when the West has thought of fortune overturned, it has often thought of him.'] },
+
+'檀石槐': { g:'king', y:[156,181], yk:'r', c:'鲜卑', n:['檀石槐','Tanshihuai'],
+  t:['爸爸不肯认的孩子,长大把整片草原捏进了一只手里。','A child his father refused to own grew up to close one hand around the whole steppe.'],
+  a:[['《后汉书》记的出身带着传奇色彩:父亲从军三年回来,见家里多了个儿子,不认,弃之;他由外祖家养大,十四五岁单骑追回被抢走的牛羊,部落自此服他','The Book of the Later Han gives him a storybook start: his father came home from three years with the army, found a son he would not own, and cast him out; raised by his mother\'s family, at fourteen or fifteen he rode out alone and took back the clan\'s stolen herds — and the clan followed him from that day'],
+     ['东汉遣使送来王印,「欲封檀石槐为王,与之和亲」,他不肯受,寇边反而更勤——王号是别人给的,草原是自己打下的','The Han sent envoys with a royal seal, offering to make him a king and bind it with a marriage; he refused, and raided the frontier harder than before — a crown is granted, but a steppe is taken'],
+     ['据记载他大约活了四十五岁,在位近三十年——这个年纪放在草原霸主里算短的,而他建起来的东西比他的寿命还短','He is recorded as living to about forty-five, nearly thirty years of it in power — a short life for a steppe overlord, and what he built proved shorter still'],],
+  s:['草原上后来每一个想把各部拧成一股绳的人,都要面对他留下的那道题:靠威望拢起来的联盟,怎么活过那个有威望的人。一千年后,成吉思汗用千户制和成文的大法回答了它。','Every steppe leader who later tried to twist the clans into one rope faced the problem he left behind: how does a confederation held together by prestige outlive the man with the prestige? A thousand years on, Genghis Khan answered it with decimal households and a written law.'] },
+
+'曹议金': { g:'state', y:[914,935], yk:'r', c:'归义军', n:['曹议金','Cao Yijin'],
+  t:['莫高窟有一窟被文书叫作「大王窟」——修窟的这位大王,一辈子没真敢称王。','One Mogao cave is called the Great King\'s Cave in the old documents — and the great king who built it never quite dared be king.'],
+  a:[['接掌十年后才等到中原的正式册命:924 年后唐的旌节送到沙州——他的使团为此要穿过回鹘与吐蕃各部的地界,路上时有折损','His formal patent from China came ten years after he took charge: in 924 the insignia of Later Tang reached Shazhou — carried by missions that crossed Uyghur and Tibetan country, and not all of them made it'],
+     ['第 98 窟是他的功德窟:两百多身供养人像连排而立,曹家、姻亲与僚属画成一支队伍——一座窟,就是一册画出来的家谱加官册','Cave 98 is his merit cave: over two hundred donor figures stand in ranks — family, in-laws and officers painted as one procession. A cave that is a genealogy and a register of office, done in paint'],
+     ['他的回鹘夫人以「天公主」的名号与他并列出现在题记与壁画上——在归义军的文书里,这位夫人有自己的政治身份','His Uyghur wife appears beside him in inscriptions and murals under her own title of Heavenly Princess — in the circuit\'s documents she holds standing of her own'],],
+  s:['学界另有一说:曹氏可能出自入华粟特人的后裔(依据是婚姻圈与命名习惯,争议未定)。若真如此,替河西守了一百二十年汉家旗号的,是一个胡商移民家族——放在丝绸之路上,这倒是最合适不过的一个结局。','One school holds that the Cao family may have descended from Sogdian settlers in China (the evidence lies in marriage circles and naming habits; the question is open). If so, the house that kept a Chinese banner over Hexi for a hundred and twenty years was itself a family of immigrant caravan traders — and on the Silk Road no ending could fit better.'] },
+
 '米特里达梯六世': { g:'king', y:[-120,-63], yk:'r', c:'本都王国', n:['米特里达梯六世','Mithridates VI'],
   t:['罗马人打了二十五年才打倒的国王;他每天服毒防毒,最后毒药果真毒不死他。','It took Rome twenty-five years to bring him down; he dosed himself against poison daily, and in the end poison indeed could not kill him.'],
   a:[['据老普林尼记载,他能说二十二种语言,接见治下各族都不用翻译','Pliny records that he spoke twenty-two languages and needed no interpreter with any people he ruled'],
