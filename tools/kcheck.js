@@ -22,7 +22,7 @@
          node tools/kcheck.js 金          只看一条带（不进榜也打印，便于改完自查）
 */
 const D = require('./load')();
-const K = { econ:'经济', life:'生活', art:'艺术', tech:'技术', thought:'思想', inst:'制度' };
+const K = { econ:'经济', life:'生活', art:'艺术', tech:'科技', thought:'思想', inst:'制度' };  /* v351.1:tech 的中文标签跟渲染对齐(渲染是「科技」不是「技术」) */
 const LEX = {
   econ:/贸易|商路|税|钱|银|币|市场|集市|作坊|出口|港|货|粮|租|买|卖|商人|经济/g,
   tech:/技术|工艺|机器|冶|铁|炉|船|水利|渠|历法|测|算|工程|发明|火药|印刷|造/g,
@@ -38,7 +38,12 @@ const suspect = g => { const s = score(g);
   return (best !== g.k && s[best] >= (s[g.k] || 0) * 2 && s[best] >= 5) ? best : null; };
 
 const only = process.argv[2];
-const all = Object.entries(D.GL);
+/* v351.1:原来只遍历 D.GL,漏掉写在 civs.js 条目里的 c.gl——全站 435 段只扫到 381 段,
+   v351 新写的四段中文 life 全在漏扫区、从未被 k 值体检过(第十九轮核查抓到)。
+   现按 depth.js 的同款口径合并两处来源。 */
+const merged = {};
+for (const c of D.CIVS) { const gl = D.GL[c.n] || c.gl || []; if (gl.length) merged[c.n] = gl; }
+const all = Object.entries(merged);
 let n = 0, flagged = 0;
 
 for (const [civ, segs] of all) {
