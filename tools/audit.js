@@ -17,7 +17,7 @@ const { LANES, SPHERES, ERAS, EV_NAME, CIVS, EVENTS, GEO, CHRONO, GL, TRACES, PL
 
 const P = [];
 const W = [];   /* v248.1:warn 通道——不计入退出码,给「清不完的旧问题」用 */
-const KINDS = ['econ', 'art', 'tech', 'thought'];
+const KINDS = ['econ', 'life', 'art', 'tech', 'thought', 'inst'];  /* v350:+life/+inst,见 index.html GL_KIND 旁注 */
 
 CIVS.forEach(c => {
   const y0 = c.k[0][0], y1 = c.k[c.k.length - 1][0];
