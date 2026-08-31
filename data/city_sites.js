@@ -82,10 +82,18 @@ const CITY_SITES = {
  { n:['清净寺','the Qingjing Mosque'], y:1009, e:['北宋','Northern Song'] },
  { n:['洛阳桥','the Luoyang Bridge'], y:1059, e:['北宋','Northern Song'] },
 ],
+'张掖': [
+ { n:['马蹄寺石窟','the Mati Temple grottoes'], y:400, e:['十六国·北凉','Northern Liang'], ca:1 },
+ { n:['大佛寺卧佛','the reclining Buddha of the Great Buddha Temple'], y:1098, e:['西夏','Western Xia'] },
+],
+'武威': [
+ { n:['天梯山石窟','the Tiantishan grottoes'], y:412, e:['十六国·北凉','Northern Liang'], ca:1 },
+ { n:['雷台汉墓(铜奔马出土处)','the Leitai Han tomb, where the Flying Horse was found'], y:200, e:['东汉','Eastern Han'], ca:1 },
+],
 '敦煌': [
  { n:['莫高窟','the Mogao Caves'], y:366, e:['十六国·前秦','Former Qin'] },
  { n:['玉门关','the Jade Gate'], y:-111, e:['西汉','Western Han'] },
- { n:['汉长城遗址','the Han Great Wall'], y:-101, e:['西汉','Western Han'], ca:1 },
+ { n:['阳关','the Yang Pass'], y:-111, e:['西汉','Western Han'], ca:1 },
 ],
 '拉萨': [
  { n:['大昭寺','the Jokhang Temple'], y:647, e:['吐蕃','Tibetan Empire'] },

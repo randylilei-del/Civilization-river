@@ -5369,8 +5369,10 @@ const CITY_LORE = {
  'The first great port at the mouth of the Pearl River, trading abroad without a break for two thousand years — from the kingdom of Nanyue to the Tang foreign quarter to the Thirteen Factories, the one door left open in the Qing. China\'s earliest mosque, its earliest foreign trading houses and most of its earliest emigrants started here.'],
 '泉州': ['宋元时叫刺桐,是当时世界上最大的港口之一,马可·波罗与伊本·白图泰都写过它——伊斯兰教、印度教、摩尼教、基督教的遗迹至今叠在同一座城里。明代海禁之后港淤了,它才安静下来。',
  'Known as Zayton under the Song and Yuan, it was among the largest ports on earth, and both Marco Polo and Ibn Battuta wrote about it — remains of Islam, Hinduism, Manichaeism and Christianity still lie stacked in the one city. It fell quiet only after the Ming sea bans, when the harbour silted up.'],
-'敦煌': ['河西走廊的最后一个绿洲,出了这里就是沙漠——所有向西去的人要在这儿补给,所有向东来的东西也要在这儿落脚。莫高窟一千年凿了七百多个洞,把这条路上往来过的所有信仰都画在了墙上。',
- 'The last oasis of the Hexi corridor, with desert beyond — everyone heading west stocked up here and everything coming east put down here first. Over a thousand years more than seven hundred caves were cut at Mogao, and every faith that ever passed along this road was painted on their walls.'],
+'张掖': ['河西走廊最宽的一段绿洲,祁连山的雪水到这里摊开成一片好地,自古「金张掖」。汉朝设四郡时它叫张掖——取「张国臂掖,以通西域」,意思是伸出胳膊把西域揽过来:这个地名本身就是一句国策。','The widest stretch of oasis in the Hexi corridor, where meltwater off the Qilian mountains spreads into good farmland — "golden Zhangye" in the old phrase. The Han named it Zhangye, "to stretch out the arm and reach the Western Regions": the place name is itself a statement of policy.'],
+'武威': ['河西走廊的东大门,进出中原的第一站,古称凉州。汉武帝取名「武威」,是要「彰显大汉的武功军威」;此后两千年里,谁想经营西域,都得先坐稳这里。','The eastern gate of the Hexi corridor and the first stop coming in from China proper, known of old as Liangzhou. Emperor Wu named it Wuwei, "martial might", and for two thousand years after, anyone who meant to hold the Western Regions had first to hold this place.'],
+'敦煌': ['南边祁连山,北边戈壁沙漠,雪水从山上下来在中间浇出一串绿洲,连成一条一千多公里长、最窄处只有几十公里的通道——这就是河西走廊——中原西去,几乎只有这一条路好走。敦煌是这条路上的最后一个绿洲,出了这里就是沙漠:向西去的人在这儿补给,向东来的东西在这儿落脚。莫高窟一千年凿了七百多个洞,把这条路上往来过的所有信仰都画在了墙上。',
+ 'The Qilian mountains to the south, gravel desert to the north, and meltwater coming off the peaks to water a chain of oases between them: that chain, more than a thousand kilometres long and at its narrowest a few dozen wide, is the Hexi corridor: going west out of China proper, there is hardly another road worth taking. Dunhuang is its last oasis, with desert beyond: those heading west stocked up here, and what came east put down here first. Over a thousand years more than seven hundred caves were cut at Mogao, and every faith that ever passed along this road was painted on their walls.'],
 '喀什': ['塔克拉玛干沙漠西缘的路口,南北两条丝路在这里合成一条,翻过帕米尔往西——所以它同时属于东亚、中亚和南亚,谁强盛就归谁。老城的土坯房与巴扎的样子,一千年没怎么变。',
  'The junction at the western edge of the Taklamakan, where the northern and southern Silk Roads join into one before crossing the Pamirs — which is why it belongs at once to East, Central and South Asia, and to whoever is strongest. The mud-brick lanes and the bazaar have changed little in a thousand years.'],
 '拉萨': ['海拔三千六百米的河谷,是青藏高原上少数能种青稞、养得起一座城的地方——松赞干布把都城迁来,布达拉宫从此立在红山上。它是政教合一制度存续最久的一个中心。',
@@ -5699,10 +5701,18 @@ const CITY_SITES = {
  { n:['清净寺','the Qingjing Mosque'], y:1009, e:['北宋','Northern Song'] },
  { n:['洛阳桥','the Luoyang Bridge'], y:1059, e:['北宋','Northern Song'] },
 ],
+'张掖': [
+ { n:['马蹄寺石窟','the Mati Temple grottoes'], y:400, e:['十六国·北凉','Northern Liang'], ca:1 },
+ { n:['大佛寺卧佛','the reclining Buddha of the Great Buddha Temple'], y:1098, e:['西夏','Western Xia'] },
+],
+'武威': [
+ { n:['天梯山石窟','the Tiantishan grottoes'], y:412, e:['十六国·北凉','Northern Liang'], ca:1 },
+ { n:['雷台汉墓(铜奔马出土处)','the Leitai Han tomb, where the Flying Horse was found'], y:200, e:['东汉','Eastern Han'], ca:1 },
+],
 '敦煌': [
  { n:['莫高窟','the Mogao Caves'], y:366, e:['十六国·前秦','Former Qin'] },
  { n:['玉门关','the Jade Gate'], y:-111, e:['西汉','Western Han'] },
- { n:['汉长城遗址','the Han Great Wall'], y:-101, e:['西汉','Western Han'], ca:1 },
+ { n:['阳关','the Yang Pass'], y:-111, e:['西汉','Western Han'], ca:1 },
 ],
 '拉萨': [
  { n:['大昭寺','the Jokhang Temple'], y:647, e:['吐蕃','Tibetan Empire'] },
@@ -7817,7 +7827,7 @@ const PLACE = {
 const GEO_CITY = [
 ['西安','Xi\'an',108.94,34.34],['洛阳','Luoyang',112.45,34.62],['北京','Beijing',116.40,39.90],['南京','Nanjing',118.80,32.06],
 ['杭州','Hangzhou',120.15,30.27],['开封','Kaifeng',114.31,34.80],['成都','Chengdu',104.07,30.57],['广州','Guangzhou',113.26,23.13],
-['泉州','Quanzhou',118.59,24.87],['敦煌','Dunhuang',94.66,40.14],['喀什','Kashgar',75.99,39.47],['拉萨','Lhasa',91.14,29.65],
+['泉州','Quanzhou',118.59,24.87],['敦煌','Dunhuang',94.66,40.14],['张掖','Zhangye',100.45,38.93],['武威','Wuwei',102.63,37.93],['喀什','Kashgar',75.99,39.47],['拉萨','Lhasa',91.14,29.65],
 ['苏州','Suzhou',120.62,31.30],['大同','Datong',113.30,40.08],['太原','Taiyuan',112.55,37.87],['长沙','Changsha',112.94,28.23],
 ['乌兰巴托','Ulaanbaatar',106.92,47.92],['哈拉和林','Karakorum',102.83,47.20],['首尔','Seoul',126.98,37.57],['平壤','Pyongyang',125.75,39.03],
 ['东京','Tokyo',139.69,35.69],['京都','Kyoto',135.77,35.01],['台北','Taipei',121.56,25.03],['香港','Hong Kong',114.17,22.32],
@@ -7948,6 +7958,9 @@ const CITY_NAMES = {
 ],
 '喀什': [
  { n:['疏勒','Shule'], a:-100, b:1000 },
+],
+'武威': [
+ { n:['凉州','Liangzhou'], a:-106, b:1227 },
 ],
 '敦煌': [
  { n:['沙州','Shazhou'], a:622, b:1036 },
@@ -8194,6 +8207,16 @@ const PLACE_LORE = {
  'The capital Chang\'an stood just northwest of today\'s Xi\'an, and Weiyang Palace was among the largest palace complexes then on earth. Zhang Qian set out for the Western Regions from here — the eastern end of the Silk Road.'],
 '西安|唐': ['唐长安是当时世界上最大的城市之一,人口可能过百万,棋盘般的街坊,中轴朱雀大街宽逾百米。日本遣唐使、粟特商人、各国僧侣都汇在这座城里。',
  'Tang Chang\'an was among the largest cities in the world: a million people, a chessboard of walled wards, and a central avenue over a hundred meters wide. Japanese envoys, Sogdian merchants and monks from across Asia all converged here.'],
+'张掖|西汉': ['前 111 年汉朝在这里设张掖郡,名字取自「张国臂掖,以通西域」——把胳膊伸出去,够着西域。四郡里它居中,南靠祁连山,山上的雪水下来,把戈壁中间浇出一条长长的绿洲:走廊之所以是走廊,靠的就是这条水线。','In 111 BC the Han founded Zhangye commandery here, its name meaning to stretch out the arm and reach the Western Regions. It sits in the middle of the four commanderies, backed by the Qilian mountains: meltwater off those peaks waters a long ribbon of oasis through the gravel desert — the corridor is a corridor because of that line of water.'],
+'张掖|东晋·十六国': ['中原大乱的一百多年里,河西反倒是块清净地方:前凉、后凉、南凉、北凉、西凉先后在走廊上立国,史称「五凉」。中原的士人、经师带着书往西跑,河西因此保住了一批学问;北凉的僧人在马蹄寺一带凿窟造像,比敦煌的许多洞还早。','While China proper spent a century and more in chaos, the corridor was relatively quiet: the Former, Later, Southern, Northern and Western Liang rose here one after another — the Five Liang. Scholars and classicists fled west with their books, and much learning survived here; Northern Liang monks cut caves and carved images around Mati Temple, earlier than many of the grottoes at Dunhuang.'],
+'张掖|隋': ['609 年隋炀帝西巡到张掖,在这里会见西域二十七国的使者与商人:命人陈列货物、张挂帷帐,让各国使团轮番入场,场面办得像一次万国博览会。他为此翻越祁连山的大斗拔谷,遇上暴风雪,随行的士兵和牲畜冻死了不少——这是中国历史上皇帝到过的最西的地方之一。','In 609 Emperor Yang of Sui came west to Zhangye and received envoys and merchants from twenty-seven states of the Western Regions: goods were laid out, awnings hung, and mission after mission ushered in — an exposition of nations. To get there he crossed the Qilian by the Dadoubagu pass and was caught in a blizzard that killed many of his soldiers and animals. It remains one of the westernmost points any Chinese emperor ever reached.'],
+'张掖|西夏': ['西夏在这里建了大佛寺,殿里躺着一尊三十四米长的木胎泥塑卧佛,是中国现存最大的室内卧佛;寺一直用到今天。西夏文的佛经也在这一带刊印流通——走廊上的信仰,换了统治者照样往下传。','Western Xia built the Great Buddha Temple here, whose hall holds a reclining Buddha thirty-four metres long, of clay over a wooden frame — the largest indoor reclining Buddha in China, and the temple is still in use. Tangut-script scriptures were printed and circulated in this country too: the faith of the corridor carried on under new masters.'],
+'张掖|清': ['清朝把甘肃提督衙门设在张掖(时称甘州),管着河西的驻防。走廊在这个时候不再是「通西域」的前线,而是内地通往新疆的后方通道:粮台、驿站、军屯一站站铺过去,左宗棠西征时,大军的补给就是沿这条线运上去的。','The Qing placed the provincial military commander of Gansu at Zhangye (then Ganzhou), in charge of the corridor garrisons. The corridor was no longer a frontier facing the Western Regions but a rear supply line into Xinjiang: granaries, post stations and military farms strung along it, and it was up this line that Zuo Zongtang\'s armies were supplied on their western campaign.'],
+'武威|西汉': ['前 121 年霍去病出陇西击破匈奴,河西归汉;汉朝在这里设武威郡——「武功军威」,名字是说给匈奴听的。这是四郡里最东的一个,进出中原的第一道门:从此往西,才叫「关外」。','In 121 BC Huo Qubing struck west from Longxi, broke the Xiongnu, and the corridor passed to Han; the commandery founded here was named Wuwei, martial might — a name addressed to the Xiongnu. It is the easternmost of the four, the first gate coming out of China proper: west of here begins the country beyond the passes.'],
+'武威|东汉': ['1969 年,当地人在雷台的一座东汉墓里挖出一批铜车马,其中一匹马三足腾空、一足踏在飞燕背上——这就是后来的「铜奔马」。设计的人只用一个支点就把「快」的感觉立住了;它今天是中国旅游标志。','In 1969 villagers digging at Leitai broke into an Eastern Han tomb and found a train of bronze horses and chariots. One horse flies with three hooves in the air and the fourth touching the back of a swallow — the Flying Horse of Gansu. Its maker held up the whole idea of speed on a single point of support; it is now the emblem of Chinese tourism.'],
+'武威|东晋·十六国': ['「五凉」里有四个把都城设在这里(时称姑臧),河西一度是北方最安稳、也最有学问的地方。412 年北凉的僧人在城南的天梯山开凿石窟,后来北魏灭北凉,把这里的工匠迁往平城——云冈石窟的第一批工匠里,就有从凉州带走的人。','Four of the Five Liang made their capital here, at the city then called Guzang, and for a time the corridor was the most settled and most learned part of the north. In 412 Northern Liang monks began cutting the Tiantishan grottoes south of the city; when the Northern Wei destroyed Northern Liang they moved its craftsmen to their own capital — and among the first carvers at Yungang were men taken from Liangzhou.'],
+'武威|唐': ['唐代凉州是河西节度使的驻地,也是长安以西数一数二的大城,城里胡商、驻军与乐工混杂。当时最流行的一支曲子就叫《凉州》,唐人写边塞诗爱写这里;后来的《凉州词》——「葡萄美酒夜光杯」——写的正是这座城的酒和这条路上的风气。','Tang Liangzhou was the seat of the Hexi military governor and among the greatest cities west of Chang\'an, full of foreign merchants, garrison troops and musicians. The most fashionable tune of the age was called Liangzhou, and the frontier poets loved the place; the later Liangzhou lyric — grape wine in a cup of luminous jade — is about this city\'s wine and this road\'s manners.'],
+'武威|西夏': ['西夏在凉州立了一块碑,同一段话用西夏文和汉文各刻一面——1804 年张澍在城里一座封闭的碑亭中发现它,西夏文才第一次被认出来是什么。今天读得懂西夏文,起点就是这块碑。','Western Xia set up a stele at Liangzhou with the same text cut in Tangut on one face and Chinese on the other. In 1804 the scholar Zhang Shu found it inside a sealed pavilion in the city, and Tangut script was recognised for what it was for the first time. Everything now readable in Tangut begins with this stone.'],
 '敦煌|西汉': ['汉武帝夺取河西走廊后设四郡,敦煌是最西的一个;再往西出玉门关、阳关,就是西域。此后一千年,它都是丝路进出中国的大门。',
  'After Emperor Wu took the Hexi Corridor, four commanderies were founded — Dunhuang the westernmost. Beyond it lay the Yumen and Yang passes and the Western Regions: for the next thousand years this was the Silk Road\'s gateway into China.'],
 '敦煌|唐': ['唐时敦煌称沙州,莫高窟进入全盛,今存洞窟中有相当一部分开凿于隋唐。安史之乱后此地陷于吐蕃六十余年,848 年张议潮起兵赶走吐蕃、收复敦煌,三年后唐朝在这里设归义军,由他统领。',
