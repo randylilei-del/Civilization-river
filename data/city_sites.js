@@ -93,7 +93,7 @@ const CITY_SITES = {
 '敦煌': [
  { n:['莫高窟','the Mogao Caves'], y:366, e:['十六国·前秦','Former Qin'] },
  { n:['玉门关','the Jade Gate'], y:-111, e:['西汉','Western Han'] },
- { n:['阳关','the Yang Pass'], y:-111, e:['西汉','Western Han'], ca:1 },
+ { n:['汉长城遗址','the Han Great Wall'], y:-101, e:['西汉','Western Han'], ca:1 },
 ],
 '拉萨': [
  { n:['大昭寺','the Jokhang Temple'], y:647, e:['吐蕃','Tibetan Empire'] },
