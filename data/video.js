@@ -94,7 +94,7 @@ const VIDEO = {
   ],
   '帕提亚·萨珊': [ { b:'BV19o4y1D71a', t:['一口气看完伊朗(波斯)的历史','Iran (Persia) in one sitting'] } ],
   '萨法维·波斯': [ { b:'BV19o4y1D71a', t:['一口气看完伊朗(波斯)的历史','Iran (Persia) in one sitting'] } ],
-  '日本': [ { b:'BV1qP4y1J7iw', t:['一口气看完日本历史','Japanese history in one sitting'] } ],
+  '古代日本': [ { b:'BV1qP4y1J7iw', t:['一口气看完日本历史','Japanese history in one sitting'] } ],
   '大英帝国·英国': [ { b:'BV1TQ4y1n7kK', t:['英国:从边缘岛国到世界霸主再到退缩','Britain: island, empire, and after'] } ],
   '中世纪西欧': [ { b:'BV1ip411Z7yG', t:['纪录片:英国玫瑰战争','Documentary: the Wars of the Roses'] } ],
   '莫卧儿帝国': [ { b:'BV1th4y1T7q2', t:['一口气看完《莫卧儿帝国》','The Mughal Empire in one sitting'] } ],

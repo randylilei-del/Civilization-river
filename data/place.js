@@ -80,7 +80,7 @@ const PLACE = {
 '深圳':['中国','China','深圳','Shenzhen'], '重庆(战时)':['中国','China','重庆','Chongqing'],
 '庆州':['韩国','South Korea','庆州','Gyeongju'], '汉阳':['韩国','South Korea','首尔','Seoul'],
 '首尔':['韩国','South Korea','首尔','Seoul'], '开京':['朝鲜','North Korea','开城','Kaesong'],
-'京都':['日本','Japan','京都','Kyoto'], '江户/东京':['日本','Japan','东京','Tokyo'],
+'京都':['日本','Japan','京都','Kyoto'], '奈良':['日本','Japan','奈良','Nara'], '镰仓':['日本','Japan','镰仓','Kamakura'], '东京':['日本','Japan','东京','Tokyo'], '江户/东京':['日本','Japan','东京','Tokyo'],
 /* 撒南非洲 */
 '纳帕塔':['苏丹','Sudan'], '麦罗埃':['苏丹','Sudan'], '昆比萨莱':['毛里塔尼亚','Mauritania'],
 '姆班扎刚果':['安哥拉','Angola','姆班扎刚果','Mbanza Kongo'],
