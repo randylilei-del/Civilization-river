@@ -13,7 +13,7 @@
 const PEAK = {
 // 中东·北非
 '古王国埃及': { a:35, ay:-2500, an:['示意值:尼罗河谷与三角洲,不含西奈与努比亚深处','indicative: the Nile valley and delta, without Sinai or deep Nubia'], as:['非 Taagepera 主序列','not from the Taagepera series'] },
-'中王国埃及': { a:45, ay:-1850, an:['示意值:河谷、三角洲与推进到第二瀑布的努比亚','indicative: valley, delta and Nubia as far as the Second Cataract'], as:['非 Taagepera 主序列','not from the Taagepera series'] },
+'中王国埃及': { a:45, ay:-1850, an:['示意值:河谷与三角洲;努比亚的要塞线推到第二瀑布,在图幅之外','indicative: the valley and the delta; the fort line in Nubia reached the Second Cataract, beyond the edge of the map'], as:['非 Taagepera 主序列','not from the Taagepera series'] },
 '新王国埃及':{a:100,ay:-1450,p:400,w:.08}, '波斯(阿契美尼德)':{a:550,ay:-500,p:1750,w:.17},
 '希腊化王朝':{a:520}, '罗马帝国':{a:500,ay:117,p:6000,py:150,w:.25}, '拜占庭':{a:270,p:2600,w:.13,as:['Turchin 数据','after Turchin']},
 '帕提亚·萨珊':{a:350}, '阿拉伯哈里发':{a:1110,ay:720,p:3400,w:.16},
@@ -108,7 +108,7 @@ const PEAK = {
 '吕底亚': { a:45, ay:-560, as:['示意值:克罗伊斯治下哈吕斯河以西安纳托利亚的大致范围,非 Taagepera 主序列','indicative: Anatolia west of the Halys under Croesus; not from the Taagepera series'] },
 '鲜卑': { a:450, ay:177, as:['示意值:檀石槐联盟全盛时草原故地的大致范围,非 Taagepera 主序列','indicative: the steppe under Tanshihuai\'s confederation at its height; not from the Taagepera series'] },
 '归义军': { a:10, ay:930, as:['示意值:曹氏当政时瓜、沙二州绿洲带的大致范围,非 Taagepera 主序列','indicative: the Gua-Sha oasis belt under the Cao family; not from the Taagepera series'] },
-'三国与统一新罗': { a:12, ay:700, an:['示意值:统一新罗实控的大同江以南,不含高句丽极盛时的辽东','indicative: Silla south of the Taedong after unification; the Liaodong of Koguryo at its height is not included'], as:['非 Taagepera 主序列','not from the Taagepera series'] },
-'高丽': { a:19, ay:1100, an:['示意值:高丽北界推进至鸭绿江一线后的半岛范围','indicative: the peninsula once Koryo had pushed its northern border to the Yalu'], as:['非 Taagepera 主序列','not from the Taagepera series'] },
+'三国与统一新罗': { a:12, ay:700, an:['示意值:统一新罗实控的大同江以南;图上画的是三国合计的范围,高句丽极盛时还有辽东,不在图内','indicative: Silla south of the Daedong after unification; the map shows the three kingdoms together, and the Liaodong of Goguryeo at its height lies outside it'], as:['非 Taagepera 主序列','not from the Taagepera series'] },
+'高丽': { a:19, ay:1100, an:['示意值:高丽北界推进至鸭绿江一线后的半岛范围','indicative: the peninsula once Goryeo had pushed its northern border to the Yalu'], as:['非 Taagepera 主序列','not from the Taagepera series'] },
 '朝鲜王朝': { a:22, ay:1450, an:['示意值:世宗朝拓边至图们江后的半岛全境','indicative: the whole peninsula after Sejong pushed the frontier to the Tumen'], as:['非 Taagepera 主序列','not from the Taagepera series'] },
 };

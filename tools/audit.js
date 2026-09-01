@@ -1888,6 +1888,21 @@ CIVS.forEach(c => {
     }
 }
 
+/* 82b(v354.1). tools/civ_photo_dynasty_map.json 的 value 必须是现存色带名。
+   为什么:那张表是照片生成脚本的输入,拆带时改了 data/civ_photo.js 却忘了改它——
+   v352.2 改过一次,v353/v354 两次又忘,而 audit 规则 63 只查 data/,这张 json 无任何工具兜底
+   (第二十一轮核查抓到三条指向已删带名的映射)。下次重生成会照着它把旧键写回来。 */
+{
+  const fs2 = require('fs'), pth = require('path');
+  const mp = pth.join(__dirname, 'civ_photo_dynasty_map.json');
+  if (fs2.existsSync(mp)) {
+    const map = JSON.parse(fs2.readFileSync(mp, 'utf8'));
+    const names = new Set(CIVS.map(c => c.n));
+    for (const [k, v] of Object.entries(map))
+      if (!names.has(v)) P.push(`[朝代映射表 value 不是现存色带] ${k} → ${v} —— tools/civ_photo_dynasty_map.json,拆带后忘了跟改`);
+  }
+}
+
 /* 79–81. 跨色带与同带内的结构冲突(v279;2026-08-20 对抗核查的产物)。
  *
  * 为什么存在:那一轮核查里最硬的两条错,audit 一条都查不出——

@@ -371,7 +371,7 @@ const CITY_SITES = {
  { n:['额尔德尼召','Erdene Zuu Monastery'], y:1585, e:['北元·蒙古','Northern Yuan Mongolia'] },
 ],
 '平壤': [
- { n:['高句丽古墓群','the Koguryo tombs'], y:500, e:['高句丽','Goguryeo'], ca:1 },
+ { n:['高句丽古墓群','the Goguryeo tombs'], y:500, e:['高句丽','Goguryeo'], ca:1 },
  { n:['大同门(现建筑)','the Taedong Gate (present gate)'], y:1635, e:['朝鲜王朝','Joseon'] },
 ],
 '巨港': [

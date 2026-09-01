@@ -436,7 +436,7 @@ const CIV_PHOTO = {
  { f:'Gandantegchinlen_Monastery_(2024).jpg', h:'f/ff', t:['甘丹寺','Gandan Monastery'], by:'Chongkian', lic:'CC BY-SA 4.0' },
 ],
 '三国与统一新罗': [
- { f:'Tomb_of_King_Tongmyong.jpg', h:'d/d4', t:['高句丽古墓群','the Koguryo tombs'], by:'Sgnpkd', lic:'CC BY-SA 4.0' },
+ { f:'Tomb_of_King_Tongmyong.jpg', h:'d/d4', t:['高句丽古墓群','the Goguryeo tombs'], by:'Sgnpkd', lic:'CC BY-SA 4.0' },
 ],
 '朝鲜王朝': [
  { f:'Jeongjeon,_Jongmyo_(Autumn,_2012).jpg', h:'1/1a', t:['宗庙','the Jongmyo Shrine'], by:'문화재청', lic:'KOGL Type 1' },
