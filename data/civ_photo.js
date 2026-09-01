@@ -437,11 +437,14 @@ const CIV_PHOTO = {
  { f:'Jeongjeon,_Jongmyo_(Autumn,_2012).jpg', h:'1/1a', t:['宗庙','the Jongmyo Shrine'], by:'문화재청', lic:'KOGL Type 1' },
  { f:'광화문_월대.jpg', h:'6/63', t:['景福宫','Gyeongbokgung Palace'], by:'서울관광 아카이브', lic:'KOGL Type 1' },
 ],
-'日本': [
- { f:'Sensoji_2023.jpg', h:'4/43', t:['浅草寺','Senso-ji'], by:'Akonnchiroll', lic:'CC0' },
+'古代日本': [
  { f:'Kiyomizu.jpg', h:'3/3c', t:['清水寺','Kiyomizu-dera'], by:'Jordy Meow', lic:'CC BY-SA 3.0' },
  { f:'Phoenix_Hall,_Byodo-in,_November_2016_-01.jpg', h:'6/69', t:['平等院凤凰堂','the Phoenix Hall of Byodo-in'], by:'Martin Falbisoner', lic:'CC BY-SA 4.0' },
 ],
+'江户日本': [
+ { f:'Sensoji_2023.jpg', h:'4/43', t:['浅草寺','Senso-ji'], by:'Akonnchiroll', lic:'CC0' },
+],
+
 '韩国': [
  { f:'Dongdaemun_Design_Plaza_at_night,_Seoul,_Korea.jpg', h:'8/8f', t:['东大门设计广场','Dongdaemun Design Plaza'], by:'Eugene Lim', lic:'CC BY 2.0' },
 ],

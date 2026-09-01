@@ -13,7 +13,7 @@ try { D = require('./load')(); } catch (e) {
 }
 const fs = require('fs');
 const path = require('path');
-const { LANES, SPHERES, ERAS, EV_NAME, CIVS, EVENTS, GEO, CHRONO, GL, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME, PEAK, ACHV, AGLYPH, GEO_CITY, PLACE_LORE, UNIONS, SEARCH_ALIAS, CITY_VIDEO, CITY_LORE, CITY_NAMES, CITY_SITES, RIVERS, RANGES, DESERTS, LAKES } = D;
+const { LANES, SPHERES, ERAS, EV_NAME, CIVS, EVENTS, GEO, CHRONO, GL, TRACES, PLACE, VIDEO, PEOPLE, PGLYPH, PGNAME, PEAK, ACHV, AGLYPH, GEO_CITY, PLACE_LORE, UNIONS, SEARCH_ALIAS, CITY_VIDEO, CITY_LORE, CITY_NAMES, CITY_SITES, CITY_PHOTO, CIV_PHOTO, RIVERS, RANGES, DESERTS, LAKES } = D;  /* v352.2:CITY_PHOTO/CIV_PHOTO 原本不在解构里,规则 62/63 的 typeof 判空恒真——自 v202 起一直在校验空对象(第二十轮核查抓到) */
 
 const P = [];
 const W = [];   /* v248.1:warn 通道——不计入退出码,给「清不完的旧问题」用 */
@@ -1592,7 +1592,7 @@ CIVS.forEach(c => {
 {
   const crypto = require('crypto');
   const cityNames = new Set(GEO_CITY.map(g => g[0]));
-  const okLic = /^(CC|Public domain|FAL|GFDL|KOGL)/;
+  const okLic = /^(CC|Public domain|FAL|GFDL|KOGL|No restrictions|Attribution)/;  /* v352.2:规则 62 从死代码复活后挖出两条旧账——「No restrictions」(Flickr Commons 无已知版权限制)与「Attribution」(仅要求署名)都是 Commons 的合法许可标记,当初写白名单时没收进来,不是压基线 */
   /* 规则 63(v204):文明照片同一套校验,键改为 CIVS.n */
   const civNames = new Set(CIVS.map(c => c.n));
   const both = [...Object.entries(typeof CITY_PHOTO !== 'undefined' ? CITY_PHOTO : {}).map(([k, arr]) => ['[城市照片]', cityNames, k, arr, 'GEO_CITY 里的城市名']),

@@ -44,9 +44,9 @@ const PEAK = {
    Taagepera 记前1122 是传统纪年,站内用夏商周断代工程的前1046,同一件事两套纪年;
    而前1046 又正是西周 k 的首帧(影响力按渲染约定写 0),标上去会读成「峰值在色带最左端」。 */
 '商':{a:110,ay:-1150}, '西周':{a:125}, '吐蕃':{a:460,ay:800},
-'古代日本': { a:30, ay:1000, as:['示意值:律令制名义所及的本州与九州大部,非 Taagepera 主序列','indicative: the provinces nominally under the law-code state; not from the Taagepera series'] },
-'幕府时代': { a:33, ay:1350, as:['示意值:武家政权名义所及的列岛本土,非 Taagepera 主序列','indicative: the home islands under warrior government; not from the Taagepera series'] },
-'江户日本': { a:38, ay:1700, as:['示意值:幕藩体制下的列岛本土(含虾夷地南端),非 Taagepera 主序列','indicative: the home islands under the shogunate, including southern Ezo; not from the Taagepera series'] },
+'古代日本': { a:26, ay:1000, an:['示意值:律令诸国所及的本州、四国与九州,不含北奥羽与北海道','indicative: the provinces of the law-code state — Honshu, Shikoku and Kyushu, excluding the far north and Hokkaido'], as:['非 Taagepera 主序列','not from the Taagepera series'] },
+'幕府时代': { a:29, ay:1350, an:['示意值:本州、四国、九州,不含北海道','indicative: Honshu, Shikoku and Kyushu, without Hokkaido'], as:['非 Taagepera 主序列','not from the Taagepera series'] },
+'江户日本': { a:30, ay:1700, an:['示意值:幕藩体制下的三岛,加松前藩实控的渡岛半岛;不含琉球与北海道大部','indicative: the three main islands under the shogunate plus the Matsumae foothold on Hokkaido; the Ryukyus and most of Hokkaido excluded'], as:['非 Taagepera 主序列','not from the Taagepera series'] }  /* v352.2:地图上四条带共用一副含整个北海道的本土多边形(见 geo.js 旁注),数值口径则按各时代实控范围给——两层各说各的,注释在此互指 */,
 '近现代日本':{a:740,ay:1942,an:['含殖民地与战时占领区','colonies and wartime occupations included'],as:['非 Taagepera 序列','not from the Taagepera series']},
 '三国':{a:200,ay:263,an:['三家合计以曹魏为主','mainly Cao Wei, three states combined']}, '西晋':{a:310,ay:280}, '南北朝':{a:200,ay:450,an:['北魏一方','the Northern Wei side']},
 '秦':{a:340,ay:-215,p:2000,py:-210,w:.125}, '西汉':{a:600,ay:-50,p:5960,py:2,pc:1,w:.25}, '东汉':{a:650,ay:100,p:5650,py:157,pc:1,w:.25},
