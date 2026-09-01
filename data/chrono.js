@@ -198,7 +198,7 @@ const CHRONO = {
 '高丽': [
 [918,['高丽建国','Goryeo founded'],['王建建高丽——今天英语里的 Korea,就是从这个国名来的。','Wang Geon founded Goryeo — the name that became, in time, the English word Korea.']],
 [1170,["武臣政变","The military coup"],["长期被压的武将夺权,此后百年实权在武人手里,国王仍在位。","The soldiers, long held down by the civil officials, seized power; for a century after, the kings reigned and the generals ruled."]],
-[1231,["蒙古第一次入侵","The first Mongol invasion"],["此后六次来攻,朝廷退守江华岛。","Six invasions followed, and the court withdrew to Ganghwa island."]],
+[1231,["蒙古第一次入侵","The first Mongol invasion"],["此后近三十年一次次再来,朝廷退守江华岛,在岛上守了三十八年。","They came back again and again for close on thirty years; the court withdrew to Ganghwa island and held out there for thirty-eight."]],
 [1234,['金属活字印书','Metal type'],['早古腾堡两百年','Two centuries before Gutenberg']],
 [1251,["八万大藏经刻成","The Tripitaka Koreana completed"],["八万一千余块木版,十六年刻完,今存海印寺,一块不缺。","Eighty-one thousand blocks cut over sixteen years, kept at Haeinsa, not one of them missing."]],
 [1388,["威化岛回军","The turn at Wihwa Island"],["李成桂奉命北征,行至鸭绿江中掉头夺权,四年后改朝换代。","Sent north to campaign, Yi Seong-gye turned his army round in the Yalu and seized power; four years later the dynasty changed."]]],
