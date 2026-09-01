@@ -9,7 +9,7 @@
      「特洛伊木马」的子串仍会带出第一条,属预期(别名句排最前,全文命中跟在后面);
    - 新词来源:localStorage `whviz-sq` 里攒的真实搜索记录(零命中的那些就是下一批别名)。 */
 const SEARCH_ALIAS = [
-  { t:['奥德赛','木马屠城','特洛伊木马','odyssey','troy','trojan horse','trojan war'], c:'米诺斯·迈锡尼',
+  { t:['奥德赛','木马屠城','特洛伊木马','odyssey','troy','trojan horse','trojan war'], c:'迈锡尼',
     why:['《奥德赛》和木马屠城的故事都和特洛伊战争有关——传说就发生在这个时代','The Odyssey and the Trojan Horse both come from the Trojan War, set in this age'] },
   { t:['宙斯','奥林匹斯','希腊神话','zeus','olympus','greek gods'], c:'古希腊',
     why:['宙斯是古希腊神话的主神,住在奥林匹斯山','Zeus, king of the ancient Greek gods, lives on Mount Olympus'] },

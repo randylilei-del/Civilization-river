@@ -10,7 +10,7 @@
    要么真没有拿得出手的实物,要么维基条目首图是地图),没条目就不渲染按钮,不硬凑。第二批手工清单见 tools/civ_photo_curated_titles2.json。
    ⚠ 缩略图宽度只能用 960(Commons 对站外只出标准档),同 city_photo.js。 */
 const CIV_PHOTO = {
-'米诺斯·迈锡尼': [
+'迈锡尼': [
  { f:'Lion_Gate_-_Mycenae_by_Joy_of_Museums.jpg', h:'3/37', t:['迈锡尼狮子门','the Lion Gate of Mycenae'], by:'Joyofmuseums', lic:'CC BY-SA 4.0' },
 ],
 '古希腊': [

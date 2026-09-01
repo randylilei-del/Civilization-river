@@ -3,7 +3,7 @@ const PLACE = {
 '三星堆(今广汉)':['中国','China','广汉','Guanghan'], '金沙(今成都)':['中国','China','成都','Chengdu'],
 /* 欧洲 */
 '克诺索斯':['希腊·克里特岛','Crete, Greece'], '迈锡尼':['希腊','Greece'],
-'雅典':['希腊','Greece','雅典','Athens'], '斯巴达':['希腊','Greece','斯巴达','Sparta'],
+'雅典':['希腊','Greece','雅典','Athens'], '梯林斯':['希腊','Greece','纳夫普利翁附近','near Nafplio'], '皮洛斯':['希腊','Greece','皮洛斯','Pylos'], '斯巴达':['希腊','Greece','斯巴达','Sparta'],
 '罗马城':['意大利','Italy','罗马','Rome'], '罗马':['意大利','Italy','罗马','Rome'],
 '佛罗伦萨':['意大利','Italy','佛罗伦萨','Florence'], '威尼斯':['意大利','Italy','威尼斯','Venice'],
 '萨第斯':['土耳其','Turkey','萨尔特(马尼萨省)','Sart, Manisa'], '弹汗山':['中国','China','张家口以北一带(今址有诸说)','north of Zhangjiakou (site debated)'], '沙州(敦煌)':['中国','China','敦煌','Dunhuang'], '阿马西亚':['土耳其','Turkey','阿马西亚','Amasya'], '锡诺普':['土耳其','Turkey','锡诺普','Sinop'],

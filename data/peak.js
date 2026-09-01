@@ -111,4 +111,6 @@ const PEAK = {
 '三国与统一新罗': { a:12, ay:700, an:['示意值:统一新罗实控的大同江以南;图上画的是三国合计的范围,高句丽极盛时还有辽东,不在图内','indicative: Silla south of the Daedong after unification; the map shows the three kingdoms together, and the Liaodong of Goguryeo at its height lies outside it'], as:['非 Taagepera 主序列','not from the Taagepera series'] },
 '高丽': { a:19, ay:1100, an:['示意值:高丽北界推进至鸭绿江一线后的半岛范围','indicative: the peninsula once Goryeo had pushed its northern border to the Yalu'], as:['非 Taagepera 主序列','not from the Taagepera series'] },
 '朝鲜王朝': { a:22, ay:1450, an:['示意值:世宗朝拓边至图们江后的半岛全境','indicative: the whole peninsula after Sejong pushed the frontier to the Tumen'], as:['非 Taagepera 主序列','not from the Taagepera series'] },
+'米诺斯': { a:0.9, ay:-1700, an:['示意值:克里特岛与南爱琴几处据点','indicative: Crete and a few footholds in the southern Aegean'], as:['非 Taagepera 主序列','not from the Taagepera series'] },
+'迈锡尼': { a:5, ay:-1300, an:['示意值:希腊本土南部诸中心加接管后的克里特','indicative: the southern mainland centres plus Crete after the takeover'], as:['非 Taagepera 主序列','not from the Taagepera series'] },
 };
