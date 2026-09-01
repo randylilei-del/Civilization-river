@@ -86,7 +86,7 @@ const VIDEO = {
   /* ---- 2026-08-15 Ray 第二批(v210):每条经 B 站公开接口核实标题 / UP 主 / 播放量(均百万级或接近)。
      单里另有两条「世界通史」公开课(71h / 146h)——没有对应色带、也不是给 7 岁看的,不入表;
      「维京」那条(狼群与长船)等维京·北欧色带建起来再挂。 ---- */
-  '古埃及': [ { b:'BV1GV411p79Y', t:['一口气看完古埃及的历史','Ancient Egypt in one sitting'] } ],
+  '新王国埃及': [ { b:'BV1GV411p79Y', t:['一口气看完古埃及的历史','Ancient Egypt in one sitting'] } ],
   '罗马共和国': [ { b:'BV1wd4y1h7pP', t:['罗马史合集:从城邦到帝国','Rome: from city-state to empire'] } ],
   '波斯(阿契美尼德)': [
     { b:'BV1Sf4y167yD', t:['一个视频看懂波斯崛起','The rise of Persia in one video'] },

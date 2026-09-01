@@ -12,7 +12,9 @@
    w 是占当时世界人口的比例,分母用 McEvedy & Jones 的世界人口序列按 py 年取值。 */
 const PEAK = {
 // 中东·北非
-'古埃及':{a:100,ay:-1450,p:400,w:.08}, '波斯(阿契美尼德)':{a:550,ay:-500,p:1750,w:.17},
+'古王国埃及': { a:35, ay:-2500, an:['示意值:尼罗河谷与三角洲,不含西奈与努比亚深处','indicative: the Nile valley and delta, without Sinai or deep Nubia'], as:['非 Taagepera 主序列','not from the Taagepera series'] },
+'中王国埃及': { a:45, ay:-1850, an:['示意值:河谷、三角洲与推进到第二瀑布的努比亚','indicative: valley, delta and Nubia as far as the Second Cataract'], as:['非 Taagepera 主序列','not from the Taagepera series'] },
+'新王国埃及':{a:100,ay:-1450,p:400,w:.08}, '波斯(阿契美尼德)':{a:550,ay:-500,p:1750,w:.17},
 '希腊化王朝':{a:520}, '罗马帝国':{a:500,ay:117,p:6000,py:150,w:.25}, '拜占庭':{a:270,p:2600,w:.13,as:['Turchin 数据','after Turchin']},
 '帕提亚·萨珊':{a:350}, '阿拉伯哈里发':{a:1110,ay:720,p:3400,w:.16},
 '奥斯曼帝国':{a:520,ay:1683,p:3000,w:.055}, '萨法维·波斯':{a:290,as:['非 Taagepera 序列','not from the Taagepera series']}, '塞尔柱突厥':{a:390,ay:1080},

@@ -13,7 +13,7 @@ const SEARCH_ALIAS = [
     why:['《奥德赛》和木马屠城的故事都和特洛伊战争有关——传说就发生在这个时代','The Odyssey and the Trojan Horse both come from the Trojan War, set in this age'] },
   { t:['宙斯','奥林匹斯','希腊神话','zeus','olympus','greek gods'], c:'古希腊',
     why:['宙斯是古希腊神话的主神,住在奥林匹斯山','Zeus, king of the ancient Greek gods, lives on Mount Olympus'] },
-  { t:['木乃伊','法老','狮身人面像','mummy','pharaoh','sphinx'], c:'古埃及',
+  { t:['木乃伊','法老','狮身人面像','mummy','pharaoh','sphinx'], c:'新王国埃及',
     why:['木乃伊、法老和狮身人面像都来自古埃及','Mummies, pharaohs and the Sphinx all come from Ancient Egypt'] },
   { t:['一千零一夜','阿拉丁','辛巴达','aladdin','arabian nights','sinbad'], c:'阿拉伯哈里发',
     why:['《一千零一夜》里的许多故事发生在哈里发时代的巴格达','Many of the Arabian Nights tales are set in Baghdad under the Caliphate'] },

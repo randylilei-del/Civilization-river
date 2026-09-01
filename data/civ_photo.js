@@ -89,11 +89,14 @@ const CIV_PHOTO = {
  { f:'Ziggarat_of_Ur_001.jpg', h:'6/6b', t:['乌尔塔庙','the Ziggurat of Ur'], by:'Tla2006 at English Wikipedia', lic:'Public domain' },
  { f:'Denis_Bourez_-_British_Museum,_London_(8747049029)_(2).jpg', h:'3/38', t:['乌尔军旗','the Standard of Ur'], by:'Denis Bourez from France', lic:'CC BY 2.0' },
 ],
-'古埃及': [
+'古王国埃及': [
  { f:'Pyramids_of_the_Giza_Necropolis.jpg', h:'9/96', t:['吉萨金字塔','the Pyramids of Giza'], by:'KennyOMG', lic:'CC BY-SA 4.0' },
  { f:'Sphinx_with_the_third_pyramid.jpg', h:'4/42', t:['狮身人面像','the Great Sphinx'], by:'Hesham Ebaid', lic:'CC0' },
+],
+'新王国埃及': [
  { f:'CairoEgMuseumTaaMaskMostlyPhotographed.jpg', h:'2/27', t:['图坦卡蒙金面具','the mask of Tutankhamun'], by:'Roland Unger', lic:'Public domain' },
 ],
+
 '赫梯': [
  { f:'Lion_Gate,_Hattusa_13_(cropped).jpg', h:'1/14', t:['哈图沙狮子门','the Lion Gate at Hattusa'], by:'Carole Raddato from FRANKFURT, Germany', lic:'CC BY-SA 2.0' },
  { f:'Yazilikaya_Kammer_A.jpg', h:'5/58', t:['亚兹勒卡亚岩刻','Yazılıkaya'], by:'Klaus-Peter Simon', lic:'CC BY 3.0' },
