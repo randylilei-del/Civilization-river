@@ -432,11 +432,14 @@ const CIV_PHOTO = {
  { f:'Bangka_Lungshan_Temple_07.23.jpg', h:'8/87', t:['艋舺龙山寺','the Longshan Temple'], by:'Supanut Arunoprayote. Feel free to use any of my images', lic:'CC BY 4.0' },
  { f:'Gandantegchinlen_Monastery_(2024).jpg', h:'f/ff', t:['甘丹寺','Gandan Monastery'], by:'Chongkian', lic:'CC BY-SA 4.0' },
 ],
-'朝鲜半岛诸王朝': [
+'三国与统一新罗': [
  { f:'Tomb_of_King_Tongmyong.jpg', h:'d/d4', t:['高句丽古墓群','the Koguryo tombs'], by:'Sgnpkd', lic:'CC BY-SA 4.0' },
+],
+'朝鲜王朝': [
  { f:'Jeongjeon,_Jongmyo_(Autumn,_2012).jpg', h:'1/1a', t:['宗庙','the Jongmyo Shrine'], by:'문화재청', lic:'KOGL Type 1' },
  { f:'광화문_월대.jpg', h:'6/63', t:['景福宫','Gyeongbokgung Palace'], by:'서울관광 아카이브', lic:'KOGL Type 1' },
 ],
+
 '古代日本': [
  { f:'Kiyomizu.jpg', h:'3/3c', t:['清水寺','Kiyomizu-dera'], by:'Jordy Meow', lic:'CC BY-SA 3.0' },
  { f:'Phoenix_Hall,_Byodo-in,_November_2016_-01.jpg', h:'6/69', t:['平等院凤凰堂','the Phoenix Hall of Byodo-in'], by:'Martin Falbisoner', lic:'CC BY-SA 4.0' },

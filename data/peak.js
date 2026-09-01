@@ -106,4 +106,7 @@ const PEAK = {
 '吕底亚': { a:45, ay:-560, as:['示意值:克罗伊斯治下哈吕斯河以西安纳托利亚的大致范围,非 Taagepera 主序列','indicative: Anatolia west of the Halys under Croesus; not from the Taagepera series'] },
 '鲜卑': { a:450, ay:177, as:['示意值:檀石槐联盟全盛时草原故地的大致范围,非 Taagepera 主序列','indicative: the steppe under Tanshihuai\'s confederation at its height; not from the Taagepera series'] },
 '归义军': { a:10, ay:930, as:['示意值:曹氏当政时瓜、沙二州绿洲带的大致范围,非 Taagepera 主序列','indicative: the Gua-Sha oasis belt under the Cao family; not from the Taagepera series'] },
+'三国与统一新罗': { a:12, ay:700, an:['示意值:统一新罗实控的大同江以南,不含高句丽极盛时的辽东','indicative: Silla south of the Taedong after unification; the Liaodong of Koguryo at its height is not included'], as:['非 Taagepera 主序列','not from the Taagepera series'] },
+'高丽': { a:19, ay:1100, an:['示意值:高丽北界推进至鸭绿江一线后的半岛范围','indicative: the peninsula once Koryo had pushed its northern border to the Yalu'], as:['非 Taagepera 主序列','not from the Taagepera series'] },
+'朝鲜王朝': { a:22, ay:1450, an:['示意值:世宗朝拓边至图们江后的半岛全境','indicative: the whole peninsula after Sejong pushed the frontier to the Tumen'], as:['非 Taagepera 主序列','not from the Taagepera series'] },
 };
