@@ -1400,8 +1400,8 @@ const CIVS = [
       legacy:['军事上的那套改革被普鲁士与后来的欧洲各国吸收,是近代军队的源头之一。更长远的是教区办学:17世纪起路德宗教会要求教民能自己读《教理问答》,由教区逐户查验,到18世纪瑞典能读的人口比例已高于欧洲多数地区——这与后来北欧的教育与社会模式有直接关系。但1721年并没有立刻带来和平:此后瑞典1741、1788、1808年三次对俄开战,1809年丢掉芬兰——那是它领土的三分之一。真正的分水岭是1814年,从那以后它再没有打过仗,是近代欧洲和平持续最久的国家;长期奉行的不结盟到2024年结束,瑞典加入了北约。','Its military reforms were absorbed by Prussia and by Europe generally, and are one of the sources of the modern army. Longer-lasting was the parish school: from the seventeenth century the Lutheran church required people to be able to read the catechism for themselves, and checked household by household, so that by the eighteenth century the share of Swedes who could read was above most of Europe — which bears directly on later Nordic education and social models. But 1721 did not bring peace at once: Sweden went to war with Russia again in 1741, 1788 and 1808, and in 1809 lost Finland — a third of its territory. The real dividing line is 1814, after which it has not fought at all, the longest unbroken peace of any country in modern Europe; the non-alignment that followed ended in 2024, when Sweden joined NATO.'] },
   d:'1611年古斯塔夫二世即位时瑞典只有一百万出头的人口。他按教区征兵、以铜铁出口换现金,并推行那套后来出名的军事改革。1631年布赖滕费尔德击溃帝国军,改变三十年战争走向,他本人次年战死。此后瑞典握有芬兰、爱沙尼亚、利沃尼亚与德意志北部据点。但体量终究撑不住:1709年波尔塔瓦败于彼得一世,1721年《尼斯塔德和约》把波罗的海东岸割给俄国。' },
 { l:'eu', s:'west', v:2, n:'大英帝国·英国', k:[[1585,0],[1620,.15],[1700,.4],[1763,.6],[1815,.85],[1870,1],[1914,.9],[1945,.5],[1960,.3],[2025,.25]], b:'工业革命发源地,19世纪的全球霸主,统治世界四分之一人口。',
-  e:{ n:'British Empire', b:'Cradle of the Industrial Revolution; the 19th century\'s global hegemon.', d:'The island state rose through navy, commerce and parliament, defeating Spain, Holland and France to command the oceans; it lit the Industrial Revolution and became the world\'s workshop and the empire on which the sun never set. Two world wars drained it, yet English, common law and its trade-finance rules remain the world\'s base protocols.', f:{ 'Peak':'1870–1914', 'Center':'London', 'Figures':'Elizabeth I, Watt, Victoria, Churchill, William Shakespeare, Florence Nightingale', 'Legacy':'Industrial Revolution, parliamentary politics, a global financial system' } },
-  f:{ '鼎盛':'1870—1914年', '中心':'伦敦', '人物':'伊丽莎白一世、瓦特、维多利亚、丘吉尔、莎士比亚、南丁格尔', '成就':'工业革命、议会政治、全球金融体系' },
+  e:{ n:'British Empire', b:'Cradle of the Industrial Revolution; the 19th century\'s global hegemon.', d:'The island state rose through navy, commerce and parliament, defeating Spain, Holland and France to command the oceans; it lit the Industrial Revolution and became the world\'s workshop and the empire on which the sun never set. Two world wars drained it, yet English, common law and its trade-finance rules remain the world\'s base protocols.', f:{ 'Peak':'1870–1914', 'Center':'London', 'Figures':'Elizabeth I, Watt, Victoria, Churchill, William Shakespeare, Florence Nightingale', 'Legacy':'The Industrial Revolution; parliamentary politics; a global financial system; why the things are not where they were made' } },
+  f:{ '鼎盛':'1870—1914年', '中心':'伦敦', '人物':'伊丽莎白一世、瓦特、维多利亚、丘吉尔、莎士比亚、南丁格尔', '成就':'工业革命、议会政治、全球金融体系、东西为什么不在原地' },
   qh:{ born:['这个帝国是生意做出来的','This empire was built as a business'],
        rule:['几千名文官,管着三亿人的印度','A few thousand officials ran India of three hundred million'],
        money:['全球贸易的账,记在英镑上','World trade was kept in pounds sterling'],
@@ -5960,6 +5960,8 @@ const CITY_LORE = {
 const CITY_SITES = {
 /* 中国 */
 '西安': [
+ { n:['跪射俑','the kneeling archer'], y:-210, e:['秦','Qin'], mu:['秦始皇帝陵博物院','Museum of the First Qin Emperor'] },
+ { n:['何尊(铭文里已知最早的「中国」二字)','the He zun, bearing the earliest known written 中国'], y:-1038, e:['西周','Western Zhou'], ca:1, mu:['宝鸡青铜器博物院','Baoji Bronze Museum'] },
  { n:['秦始皇兵马俑','the Terracotta Army'], y:-210, e:['秦','Qin'] },
  { n:['大雁塔','the Giant Wild Goose Pagoda'], y:652, e:['唐','Tang'] },
  { n:['西安城墙','the city walls'], y:1378, e:['明','Ming'] },
@@ -5970,6 +5972,7 @@ const CITY_SITES = {
  { n:['隋唐洛阳城遗址','the Sui-Tang city site'], y:605, e:['隋','Sui'] },
 ],
 '北京': [
+ { n:['清明上河图','Along the River During the Qingming Festival'], y:1120, e:['北宋','Northern Song'], ca:1, mu:['故宫博物院','the Palace Museum'] },
  { n:['卢沟桥','the Marco Polo Bridge'], y:1192, e:['金','Jin'] },
  { n:['紫禁城','the Forbidden City'], y:1420, e:['明','Ming'] },
  { n:['天坛','the Temple of Heaven'], y:1420, e:['明','Ming'] },
@@ -6053,11 +6056,13 @@ const CITY_SITES = {
 ],
 /* 东亚其余 · 东南亚 */
 '首尔': [
+ { n:['金冠(新罗)','a Silla gold crown'], y:500, e:['三国与统一新罗','Three Kingdoms and Unified Silla'], ca:1, mu:['韩国国立中央博物馆','National Museum of Korea'] },
  { n:['景福宫','Gyeongbokgung Palace'], y:1395, e:['朝鲜王朝','Joseon'] },
  { n:['宗庙','the Jongmyo Shrine'], y:1394, e:['朝鲜王朝','Joseon'] },
  { n:['崇礼门(南大门)','Namdaemun Gate'], y:1398, e:['朝鲜王朝','Joseon'] },
 ],
 '京都': [
+ { n:['源氏物语绘卷','the Tale of Genji scrolls'], y:1130, e:['古代日本','Ancient Japan'], ca:1, mu:['名古屋 德川美术馆等','Tokugawa Art Museum, Nagoya, and others'] },
  { n:['清水寺','Kiyomizu-dera'], y:778, e:['奈良末·平安初','late Nara'] },
  { n:['平等院凤凰堂','the Phoenix Hall of Byodo-in'], y:1053, e:['平安','Heian'] },
  { n:['金阁寺','Kinkaku-ji'], y:1397, e:['室町','Muromachi'] },
@@ -6115,6 +6120,8 @@ const CITY_SITES = {
  { n:['战车神庙(维塔拉)','the stone chariot of Vittala'], y:1520, e:['毗奢耶那伽罗','Vijayanagara'] },
 ],
 '摩亨佐达罗': [
+ { n:['祭司王石像','the Priest-King'], y:-2000, e:['印度河文明','Indus Valley'], ca:1, mu:['卡拉奇 国家博物馆','National Museum, Karachi'] },
+ { n:['青铜舞女像','the Dancing Girl'], y:-2300, e:['印度河文明','Indus Valley'], ca:1, mu:['新德里 印度国家博物馆','National Museum, New Delhi'] },
  { n:['大浴场','the Great Bath'], y:-2500, e:['印度河文明','Indus Valley'], ca:1 },
 ],
 '拉合尔': [
@@ -6132,6 +6139,7 @@ const CITY_SITES = {
 ],
 /* 中东 · 北非 */
 '伊斯坦布尔': [
+ { n:['亚历山大石棺','the Alexander Sarcophagus'], y:-320, e:['希腊化王朝','Hellenistic'], ca:1, mu:['伊斯坦布尔考古博物馆','Istanbul Archaeology Museums'] },
  { n:['圣索菲亚','Hagia Sophia'], y:537, e:['拜占庭','Byzantine'] },
  { n:['托普卡帕宫','Topkapi Palace'], y:1478, e:['奥斯曼','Ottoman'] },
  { n:['苏莱曼尼耶清真寺','the Suleymaniye Mosque'], y:1557, e:['奥斯曼','Ottoman'] },
@@ -6142,12 +6150,15 @@ const CITY_SITES = {
  { n:['圣墓教堂','the Church of the Holy Sepulchre'], y:335, e:['罗马·君士坦丁','Constantinian'] },
 ],
 '大马士革': [
+ { n:['乌加里特字母表泥板','the Ugaritic alphabet tablet'], y:-1300, e:['腓尼基','Phoenicia'], ca:1, mu:['大马士革 国家博物馆','National Museum of Damascus'] },
  { n:['倭马亚大清真寺','the Umayyad Mosque'], y:715, e:['倭马亚','Umayyad'] },
 ],
 '巴格达': [
  { n:['穆斯坦西里亚学院','the Mustansiriya Madrasa'], y:1233, e:['阿拔斯','Abbasid'] },
 ],
 '开罗': [
+ { n:['图坦卡蒙的金面具','the mask of Tutankhamun'], y:-1323, e:['新王国埃及','New Kingdom Egypt'], mu:['开罗 埃及博物馆','Egyptian Museum, Cairo'] },
+ { n:['罗塞塔石碑(出自尼罗河口的拉希德)','the Rosetta Stone, from Rashid at the Nile mouth'], y:-196, e:['希腊化王朝','Hellenistic'], mu:['伦敦 大英博物馆','British Museum, London'] },
  { n:['吉萨金字塔','the Pyramids of Giza'], y:-2560, e:['古埃及古王国','Old Kingdom'] },
  { n:['伊本·图伦清真寺','the Mosque of Ibn Tulun'], y:879, e:['图伦','Tulunid'] },
  { n:['萨拉丁城堡','the Citadel of Saladin'], y:1183, e:['阿尤布','Ayyubid'] },
@@ -6160,6 +6171,7 @@ const CITY_SITES = {
  { n:['卡鲁因大学','the Qarawiyyin'], y:859, e:['伊德里斯','Idrisid'] },
 ],
 '巴比伦': [
+ { n:['伊什塔尔门','the Ishtar Gate'], y:-575, e:['新巴比伦','Neo-Babylonian'], mu:['柏林 佩加蒙博物馆','Pergamon Museum, Berlin'] },
  { n:['伊什塔尔门遗址','the Ishtar Gate'], y:-575, e:['新巴比伦','Neo-Babylonian'] },
 ],
 '亚历山大': [
@@ -6168,6 +6180,8 @@ const CITY_SITES = {
 ],
 /* 欧洲 */
 '雅典': [
+ { n:['帕特农神庙雕刻(部分)','part of the Parthenon sculptures'], y:-438, e:['古希腊','Ancient Greece'], mu:['伦敦 大英博物馆','British Museum, London'] },
+ { n:['帕特农神庙雕刻(留在雅典的那部分)','the Parthenon sculptures that stayed in Athens'], y:-438, e:['古希腊','Ancient Greece'], mu:['雅典 卫城博物馆','Acropolis Museum, Athens'] },
  { n:['帕特农神庙','the Parthenon'], y:-432, e:['古典希腊','Classical Greece'] },
  { n:['狄俄尼索斯剧场','the Theatre of Dionysus'], y:-325, e:['古典希腊','Classical Greece'] },
 ],
@@ -6177,11 +6191,15 @@ const CITY_SITES = {
  { n:['圣彼得大教堂','St Peter\'s Basilica'], y:1626, e:['文艺复兴至巴洛克','Renaissance to Baroque'] },
 ],
 '巴黎': [
+ { n:['汉谟拉比法典石柱','the stele of Hammurabi'], y:-1754, e:['古巴比伦','Old Babylonian'], mu:['巴黎 卢浮宫','the Louvre, Paris'] },
+ { n:['萨莫色雷斯的胜利女神','the Winged Victory of Samothrace'], y:-190, e:['希腊化王朝','Hellenistic'], ca:1, mu:['巴黎 卢浮宫','the Louvre, Paris'] },
  { n:['巴黎圣母院','Notre-Dame'], y:1345, e:['哥特时期','Gothic'] },
  { n:['卢浮宫','the Louvre'], y:1546, e:['文艺复兴','Renaissance'] },
  { n:['埃菲尔铁塔','the Eiffel Tower'], y:1889, e:['第三共和国','Third Republic'] },
 ],
 '伦敦': [
+ { n:['亚述拉吉浮雕','the Lachish reliefs'], y:-700, e:['亚述','Assyria'], ca:1, mu:['伦敦 大英博物馆','British Museum, London'] },
+ { n:['萨顿胡船葬头盔','the Sutton Hoo helmet'], y:625, e:['盎格鲁-撒克逊','Anglo-Saxon'], ca:1, mu:['伦敦 大英博物馆','British Museum, London'] },
  { n:['伦敦塔','the Tower of London'], y:1078, e:['诺曼','Norman'] },
  { n:['威斯敏斯特教堂','Westminster Abbey'], y:1269, e:['哥特时期','Gothic'] },
  { n:['圣保罗大教堂','St Paul\'s Cathedral'], y:1710, e:['斯图亚特末','late Stuart'] },
@@ -6218,6 +6236,7 @@ const CITY_SITES = {
  { n:['贝伦塔','the Belem Tower'], y:1519, e:['曼努埃尔时期','Manueline'] },
 ],
 '柏林': [
+ { n:['娜芙蒂蒂胸像','the bust of Nefertiti'], y:-1345, e:['新王国埃及','New Kingdom Egypt'], ca:1, mu:['柏林 新博物馆','Neues Museum, Berlin'] },
  { n:['勃兰登堡门','the Brandenburg Gate'], y:1791, e:['勃兰登堡·普鲁士','Brandenburg-Prussia'] },
 ],
 '斯德哥尔摩': [
@@ -6229,9 +6248,11 @@ const CITY_SITES = {
  { n:['桑科雷清真寺','the Sankore Mosque'], y:1400, e:['马里帝国','Mali Empire'], ca:1 },
 ],
 '阿克苏姆': [
+ { n:['阿克苏姆方尖碑(2005 年从罗马运回)','the Axum obelisk, returned from Rome in 2005'], y:350, e:['阿克苏姆','Aksum'], ca:1, mu:['阿克苏姆 现场','on site at Axum'] },
  { n:['阿克苏姆方尖碑','the Aksum obelisks'], y:350, e:['阿克苏姆','Aksumite'], ca:1 },
 ],
 '大津巴布韦': [
+ { n:['津巴布韦鸟石雕(1980 年代起陆续归还)','the Zimbabwe Birds, returned from the 1980s'], y:1300, e:['大津巴布韦','Great Zimbabwe'], ca:1, mu:['大津巴布韦 遗址博物馆','Great Zimbabwe site museum'] },
  { n:['大围场','the Great Enclosure'], y:1250, e:['大津巴布韦','Great Zimbabwe'], ca:1 },
 ],
 '基尔瓦': [
@@ -6253,6 +6274,7 @@ const CITY_SITES = {
  { n:['大教堂','the Metropolitan Cathedral'], y:1656, e:['西属新西班牙','New Spain'] },
 ],
 '特奥蒂瓦坎': [
+ { n:['羽蛇神庙石雕头像','the feathered serpent heads'], y:200, e:['特奥蒂瓦坎','Teotihuacan'], ca:1, mu:['墨西哥城 国立人类学博物馆','National Museum of Anthropology, Mexico City'] },
  { n:['太阳金字塔','the Pyramid of the Sun'], y:200, e:['特奥蒂瓦坎','Teotihuacan'], ca:1 },
  { n:['月亮金字塔','the Pyramid of the Moon'], y:250, e:['特奥蒂瓦坎','Teotihuacan'], ca:1 },
 ],
@@ -6261,9 +6283,11 @@ const CITY_SITES = {
  { n:['大球场','the Great Ball Court'], y:864, e:['后古典玛雅','Postclassic Maya'] },
 ],
 '蒂卡尔': [
+ { n:['玛雅石碑与陶器','Maya stelae and pottery'], y:700, e:['玛雅','Maya'], ca:1, mu:['危地马拉城 国家考古博物馆','National Museum of Archaeology, Guatemala City'] },
  { n:['一号神庙','Temple I'], y:732, e:['古典玛雅','Classic Maya'] },
 ],
 '库斯科': [
+ { n:['马丘比丘出土文物(2011 年起分批归还)','finds from Machu Picchu, returned from 2011'], y:1450, e:['印加','Inca'], ca:1, mu:['库斯科 印加博物馆','Museo Inka, Cusco'] },
  { n:['萨克塞华曼','Sacsayhuaman'], y:1450, e:['印加','Inca'], ca:1 },
  { n:['太阳神殿(科里坎查)','the Qorikancha'], y:1438, e:['印加','Inca'], ca:1 },
 ],
@@ -6362,6 +6386,7 @@ const CITY_SITES = {
  { n:['特拉布宗圣索菲亚教堂','Hagia Sophia of Trebizond'], y:1260, e:['特拉比松帝国','Empire of Trebizond'], ca:1 },
 ],
 '德黑兰': [
+ { n:['波斯波利斯出土浮雕与金器','reliefs and gold from Persepolis'], y:-500, e:['波斯(阿契美尼德)','Achaemenid Persia'], ca:1, mu:['伊朗国家博物馆','National Museum of Iran'] },
  { n:['古列斯坦宫','the Golestan Palace'], y:1865, e:['恺加','Qajar'], ca:1 },
  { n:['自由纪念塔','the Azadi Tower'], y:1971, e:['巴列维','Pahlavi'] },
 ],
@@ -6491,6 +6516,24 @@ const CITY_SITES = {
  { n:['罗森堡宫','Rosenborg Castle'], y:1624, e:['丹麦-挪威','Denmark-Norway'] },
  { n:['圆塔','the Round Tower'], y:1642, e:['丹麦-挪威','Denmark-Norway'] },
  { n:['小美人鱼像','the Little Mermaid'], y:1913, e:['丹麦','Denmark'] },
+],
+'克诺索斯': [
+ { n:['克诺索斯宫遗址','the palace at Knossos'], y:-1700, e:['米诺斯','Minoan'], ca:1 },
+ { n:['跳牛壁画与蛇女神像','the bull-leaping fresco and the snake goddess'], y:-1600, e:['米诺斯','Minoan'], ca:1, mu:['伊拉克利翁考古博物馆','Heraklion Archaeological Museum'] },
+],
+'以弗所': [
+ { n:['塞尔苏斯图书馆','the Library of Celsus'], y:117, e:['罗马帝国','Roman Empire'] },
+ { n:['大剧场(可容两万五千人)','the great theatre, seating twenty-five thousand'], y:-250, e:['希腊化王朝','Hellenistic'], ca:1 },
+ { n:['阿尔忒弥斯神庙的一根柱子','one column of the temple of Artemis'], y:-550, e:['吕底亚','Lydia'], ca:1 },
+ { n:['神庙地基出土的最早期硬币','the earliest coins, from the temple foundations'], y:-600, e:['吕底亚','Lydia'], ca:1, mu:['伦敦 大英博物馆','British Museum, London'] },
+],
+'罗德岛': [
+ { n:['罗德老城与骑士团城墙','the old town and the walls of the Knights'], y:1309, e:['奥斯曼帝国','Ottoman'], ca:1 },
+ { n:['林多斯卫城','the acropolis of Lindos'], y:-300, e:['希腊化王朝','Hellenistic'], ca:1 },
+],
+'金沙萨': [
+ { n:['刚果河码头与老城区','the river port and the old town'], y:1881, e:['欧洲殖民非洲','Colonial Africa'] },
+ { n:['刚果王国的恩金加雕像等','Kongo power figures and regalia'], y:1600, e:['刚果王国','Kingdom of Kongo'], ca:1, mu:['金沙萨 国立博物馆','National Museum, Kinshasa'] },
 ],
 };
 /*__DATA:city_sites:end__*/
@@ -14721,6 +14764,12 @@ const ACHV = {
        ['他们先后打退了法国、西班牙与英国三国的军队。1802 年拿破仑派出一支大军要恢复奴隶制,黄热病与抵抗一起把它拖垮;1804 年元旦宣布独立,并把国名改回原住民对这座岛的叫法——海地','They beat off the armies of France, Spain and Britain in turn. In 1802 Napoleon sent a large force to restore slavery, and yellow fever and resistance together wore it down. Independence was declared on the first day of 1804, and the country took back the name the island\'s first inhabitants had used for it — Haiti'],
        ['代价拖了很久:欧美各国长期不予承认,法国后来要求巨额赔款作为承认的条件,这笔债让海地背了一百多年','The reckoning went on a long time. The European and American powers withheld recognition for decades, France later demanded an enormous indemnity as its price for granting it, and that debt lay on Haiti for more than a century']],
     s:['这是已知唯一一次奴隶起义既成功、又建成了国家。它把法国大革命那句话推到了尽头:如果人真的生而自由平等,那么甘蔗地里的人也算——而当时的法国并不打算这样理解。此后几十年里,美洲各处的奴隶主一提起海地就紧张,而各处的奴隶一提起海地就知道那是可能的。','This is the one slave revolt known both to have succeeded and to have founded a state. It pushed the sentence from the French Revolution as far as it would go: if men really are born free and equal then the men in the cane fields are included — which was not how France meant it. For decades afterwards slave owners across the Americas grew uneasy at the mention of Haiti, and slaves across the Americas knew from it that the thing could be done.'] },
+  '东西为什么不在原地': { g:'idea', c:'大英帝国·英国', y:[1750,2025], n:['东西为什么不在原地','Why the things are not where they were made'],
+    t:['巴比伦的城门在柏林,埃及的石碑在伦敦,巴比伦的法典在巴黎。','Babylon\'s gate is in Berlin, Egypt\'s stone is in London, and Babylon\'s law code is in Paris.'],
+    a:[['去向大致三种。考古分成:19 到 20 世纪初,发掘队与所在国政府按约定分掉出土物,伊什塔尔门就是这样一块块运到柏林重砌起来的。趁着占领拿走:罗塞塔石碑是拿破仑的远征军在埃及挖出来的,英国打赢之后按投降条款拿走。买卖与转手:很多东西经过古董商几道手,来路已经查不清','There are roughly three ways. A share of the dig: through the nineteenth and early twentieth centuries excavators and host governments divided the finds by agreement, and the Ishtar Gate went to Berlin that way, crate by crate, to be rebuilt there. Taken under occupation: the Rosetta Stone was dug up by Napoleon\'s expedition in Egypt and handed to Britain under the terms of surrender when France lost. Bought and passed on: a great many objects went through dealers\' hands and their origin can no longer be traced'],
+        ['该不该还回去,近几十年一直争得很厉害,两边的说法都不能不听。要求归还的一方说:这些东西是在别人做不了主的时候被拿走的,它属于做出它的地方,放在原地才讲得通——雅典专门盖了一座卫城博物馆,留着空位等帕特农的雕刻回来。收藏方说:分散在各地反而更安全(战乱与盗掘毁掉过很多),而大馆能让不同文明的东西并排展出、免费向所有人开放','Whether they should go back is argued hard, and both sides have to be heard. Those asking for return say the things were taken when the people they came from had no say, that they belong where they were made and only make sense there — Athens built a museum below the Acropolis with the gaps left open for the Parthenon sculptures to come back to. The museums holding them say that being spread out is safer, since war and looting have destroyed a great deal, and that a large museum can set the civilisations side by side and open the doors to everyone for nothing'],
+        ['已经在还了,而且越来越多:阿克苏姆的方尖碑 2005 年从罗马运回埃塞俄比亚,大津巴布韦的石鸟从 1980 年代起陆续回去,马丘比丘的出土文物 2011 年起从耶鲁分批还给秘鲁,贝宁青铜器近年也有多家博物馆陆续交还。而帕特农雕刻与罗塞塔石碑到 2026 年仍未归还','Returns are happening, and more of them: the Axum obelisk went back from Rome to Ethiopia in 2005, the Zimbabwe Birds began going home in the 1980s, the Machu Picchu finds started returning from Yale to Peru in 2011, and several museums have lately handed back Benin bronzes. As of 2026 the Parthenon sculptures and the Rosetta Stone have not']],
+    s:['这个站的城市面板现在分两行:「还看得见的」和「收在博物馆里的」。分开之后有件事自己就露出来了——有些城最有名的东西不在这座城。点开巴比伦,那座门写着柏林;点开开罗,罗塞塔石碑写着伦敦。这不是要谁认错,是让人看见:今天能看到什么、在哪儿看到,本身也是历史的一部分,而且是离我们最近的那一段。','The city panel in this site now has two lines: what is still standing, and what is in a museum. Splitting them makes one thing show itself — the most famous object of a city is sometimes not in that city. Open Babylon and its gate says Berlin; open Cairo and the Rosetta Stone says London. This is not about assigning blame. It is so that a reader can see that what we are able to look at, and where we have to go to look at it, is itself part of the history — and the part nearest to us.'] },
   '为什么留下来的是这些': { g:'idea', c:'古王国埃及', y:[-2600,2025], n:['为什么留下来的是这些','Why these are the things that survived'],
     t:['我们对古埃及人怎么死的了如指掌,对他们怎么过日子知道得少得多。','We know a great deal about how the Egyptians died and much less about how they lived.'],
     a:[['原因不在他们,在材料:陵墓是石头砌在沙漠里的,而活人的房子是尼罗河边的泥砖盖的,一场洪水就化回泥。石头、陶、青铜、金玉留得下来;木头、布、食物、纸,除非碰上极干或极湿的地方,几乎都烂光了','The reason lies not in them but in the materials. Tombs were built of stone out in the desert; the houses of the living were mud brick beside the Nile, and a flood turned them back into mud. Stone, pottery, bronze, gold and jade survive; wood, cloth, food and paper are gone unless the ground happened to be very dry or very wet'],
@@ -16625,9 +16674,15 @@ function gvQuery(lon, lat, ci) {
      自己就排成一条时间线——西安的兵马俑(秦)、大雁塔(唐)、城墙(明),一眼看出这座城
      被三个不同的时代分别留下过什么。顺带把左栏填起来,不至于右边地图长、左边空一截。 */
   const cs = city ? (CITY_SITES[city[0]] || []) : [];
-  const csHtml = cs.length ? `<div class="gv-sites"><div class="gs-lab">${T('还看得见的:', 'Still standing:')}</div>${
-    cs.slice().sort((a, b) => a.y - b.y).map(x =>
-      `<div class="gs-i"><b>${x.n[LANG === 'zh' ? 0 : 1]}</b><span>${x.e[LANG === 'zh' ? 0 : 1]} · ${x.ca ? T('约', 'c. ') : ''}${fmtY(x.y)}</span></div>`).join('')}</div>` : '';
+  /* v365(Ray:「城市视图能不能加博物馆」):同一张表分两组渲染。带 mu 字段的条目是
+     「东西还在,但收在博物馆里」,不带的是「原地还站着」。这么分而不是新建一张表,
+     是因为两者本质相同(都是今天摸得着的实物),而且分开之后自动带出一件事:
+     **有些城最有名的东西不在这座城**——巴比伦的伊什塔尔门在柏林,馆名自己就说明了。 */
+  const li = x => `<div class="gs-i"><b>${x.n[LANG === 'zh' ? 0 : 1]}</b><span>${x.e[LANG === 'zh' ? 0 : 1]} · ${x.ca ? T('约', 'c. ') : ''}${fmtY(x.y)}${x.mu ? ' · ' + x.mu[LANG === 'zh' ? 0 : 1] : ''}</span></div>`;
+  const grp = (arr, zh, en) => arr.length ? `<div class="gv-sites"><div class="gs-lab">${T(zh, en)}</div>${
+    arr.slice().sort((a, b) => a.y - b.y).map(li).join('')}</div>` : '';
+  const csHtml = grp(cs.filter(x => !x.mu), '还看得见的:', 'Still standing:')
+    + grp(cs.filter(x => x.mu), '收在博物馆里的:', 'In a museum:');
   const cmHtml = city ? `<div class="gv-terr">${cityMapHTML(ci)}<div class="gv-mcap">${GV.nLab ? T('这一带的地形:河流、山脉与沙漠', 'The terrain around here: rivers, ranges and deserts') : T('这一带的海陆轮廓(站内还没有收录这附近的河流与山脉)', 'The coastline around here (no rivers or ranges recorded nearby yet)')}</div></div>` : '';
   /* 总览行:这座城历史上叫过什么。与行内那一处是两个粒度——这里回答「一共叫过哪些」,
      行内回答「那个朝代叫什么」。没有古称的城不渲染。 */

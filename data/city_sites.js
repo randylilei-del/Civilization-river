@@ -25,6 +25,8 @@
 const CITY_SITES = {
 /* 中国 */
 '西安': [
+ { n:['跪射俑','the kneeling archer'], y:-210, e:['秦','Qin'], mu:['秦始皇帝陵博物院','Museum of the First Qin Emperor'] },
+ { n:['何尊(铭文里已知最早的「中国」二字)','the He zun, bearing the earliest known written 中国'], y:-1038, e:['西周','Western Zhou'], ca:1, mu:['宝鸡青铜器博物院','Baoji Bronze Museum'] },
  { n:['秦始皇兵马俑','the Terracotta Army'], y:-210, e:['秦','Qin'] },
  { n:['大雁塔','the Giant Wild Goose Pagoda'], y:652, e:['唐','Tang'] },
  { n:['西安城墙','the city walls'], y:1378, e:['明','Ming'] },
@@ -35,6 +37,7 @@ const CITY_SITES = {
  { n:['隋唐洛阳城遗址','the Sui-Tang city site'], y:605, e:['隋','Sui'] },
 ],
 '北京': [
+ { n:['清明上河图','Along the River During the Qingming Festival'], y:1120, e:['北宋','Northern Song'], ca:1, mu:['故宫博物院','the Palace Museum'] },
  { n:['卢沟桥','the Marco Polo Bridge'], y:1192, e:['金','Jin'] },
  { n:['紫禁城','the Forbidden City'], y:1420, e:['明','Ming'] },
  { n:['天坛','the Temple of Heaven'], y:1420, e:['明','Ming'] },
@@ -118,11 +121,13 @@ const CITY_SITES = {
 ],
 /* 东亚其余 · 东南亚 */
 '首尔': [
+ { n:['金冠(新罗)','a Silla gold crown'], y:500, e:['三国与统一新罗','Three Kingdoms and Unified Silla'], ca:1, mu:['韩国国立中央博物馆','National Museum of Korea'] },
  { n:['景福宫','Gyeongbokgung Palace'], y:1395, e:['朝鲜王朝','Joseon'] },
  { n:['宗庙','the Jongmyo Shrine'], y:1394, e:['朝鲜王朝','Joseon'] },
  { n:['崇礼门(南大门)','Namdaemun Gate'], y:1398, e:['朝鲜王朝','Joseon'] },
 ],
 '京都': [
+ { n:['源氏物语绘卷','the Tale of Genji scrolls'], y:1130, e:['古代日本','Ancient Japan'], ca:1, mu:['名古屋 德川美术馆等','Tokugawa Art Museum, Nagoya, and others'] },
  { n:['清水寺','Kiyomizu-dera'], y:778, e:['奈良末·平安初','late Nara'] },
  { n:['平等院凤凰堂','the Phoenix Hall of Byodo-in'], y:1053, e:['平安','Heian'] },
  { n:['金阁寺','Kinkaku-ji'], y:1397, e:['室町','Muromachi'] },
@@ -180,6 +185,8 @@ const CITY_SITES = {
  { n:['战车神庙(维塔拉)','the stone chariot of Vittala'], y:1520, e:['毗奢耶那伽罗','Vijayanagara'] },
 ],
 '摩亨佐达罗': [
+ { n:['祭司王石像','the Priest-King'], y:-2000, e:['印度河文明','Indus Valley'], ca:1, mu:['卡拉奇 国家博物馆','National Museum, Karachi'] },
+ { n:['青铜舞女像','the Dancing Girl'], y:-2300, e:['印度河文明','Indus Valley'], ca:1, mu:['新德里 印度国家博物馆','National Museum, New Delhi'] },
  { n:['大浴场','the Great Bath'], y:-2500, e:['印度河文明','Indus Valley'], ca:1 },
 ],
 '拉合尔': [
@@ -197,6 +204,7 @@ const CITY_SITES = {
 ],
 /* 中东 · 北非 */
 '伊斯坦布尔': [
+ { n:['亚历山大石棺','the Alexander Sarcophagus'], y:-320, e:['希腊化王朝','Hellenistic'], ca:1, mu:['伊斯坦布尔考古博物馆','Istanbul Archaeology Museums'] },
  { n:['圣索菲亚','Hagia Sophia'], y:537, e:['拜占庭','Byzantine'] },
  { n:['托普卡帕宫','Topkapi Palace'], y:1478, e:['奥斯曼','Ottoman'] },
  { n:['苏莱曼尼耶清真寺','the Suleymaniye Mosque'], y:1557, e:['奥斯曼','Ottoman'] },
@@ -207,12 +215,15 @@ const CITY_SITES = {
  { n:['圣墓教堂','the Church of the Holy Sepulchre'], y:335, e:['罗马·君士坦丁','Constantinian'] },
 ],
 '大马士革': [
+ { n:['乌加里特字母表泥板','the Ugaritic alphabet tablet'], y:-1300, e:['腓尼基','Phoenicia'], ca:1, mu:['大马士革 国家博物馆','National Museum of Damascus'] },
  { n:['倭马亚大清真寺','the Umayyad Mosque'], y:715, e:['倭马亚','Umayyad'] },
 ],
 '巴格达': [
  { n:['穆斯坦西里亚学院','the Mustansiriya Madrasa'], y:1233, e:['阿拔斯','Abbasid'] },
 ],
 '开罗': [
+ { n:['图坦卡蒙的金面具','the mask of Tutankhamun'], y:-1323, e:['新王国埃及','New Kingdom Egypt'], mu:['开罗 埃及博物馆','Egyptian Museum, Cairo'] },
+ { n:['罗塞塔石碑(出自尼罗河口的拉希德)','the Rosetta Stone, from Rashid at the Nile mouth'], y:-196, e:['希腊化王朝','Hellenistic'], mu:['伦敦 大英博物馆','British Museum, London'] },
  { n:['吉萨金字塔','the Pyramids of Giza'], y:-2560, e:['古埃及古王国','Old Kingdom'] },
  { n:['伊本·图伦清真寺','the Mosque of Ibn Tulun'], y:879, e:['图伦','Tulunid'] },
  { n:['萨拉丁城堡','the Citadel of Saladin'], y:1183, e:['阿尤布','Ayyubid'] },
@@ -225,6 +236,7 @@ const CITY_SITES = {
  { n:['卡鲁因大学','the Qarawiyyin'], y:859, e:['伊德里斯','Idrisid'] },
 ],
 '巴比伦': [
+ { n:['伊什塔尔门','the Ishtar Gate'], y:-575, e:['新巴比伦','Neo-Babylonian'], mu:['柏林 佩加蒙博物馆','Pergamon Museum, Berlin'] },
  { n:['伊什塔尔门遗址','the Ishtar Gate'], y:-575, e:['新巴比伦','Neo-Babylonian'] },
 ],
 '亚历山大': [
@@ -233,6 +245,8 @@ const CITY_SITES = {
 ],
 /* 欧洲 */
 '雅典': [
+ { n:['帕特农神庙雕刻(部分)','part of the Parthenon sculptures'], y:-438, e:['古希腊','Ancient Greece'], mu:['伦敦 大英博物馆','British Museum, London'] },
+ { n:['帕特农神庙雕刻(留在雅典的那部分)','the Parthenon sculptures that stayed in Athens'], y:-438, e:['古希腊','Ancient Greece'], mu:['雅典 卫城博物馆','Acropolis Museum, Athens'] },
  { n:['帕特农神庙','the Parthenon'], y:-432, e:['古典希腊','Classical Greece'] },
  { n:['狄俄尼索斯剧场','the Theatre of Dionysus'], y:-325, e:['古典希腊','Classical Greece'] },
 ],
@@ -242,11 +256,15 @@ const CITY_SITES = {
  { n:['圣彼得大教堂','St Peter\'s Basilica'], y:1626, e:['文艺复兴至巴洛克','Renaissance to Baroque'] },
 ],
 '巴黎': [
+ { n:['汉谟拉比法典石柱','the stele of Hammurabi'], y:-1754, e:['古巴比伦','Old Babylonian'], mu:['巴黎 卢浮宫','the Louvre, Paris'] },
+ { n:['萨莫色雷斯的胜利女神','the Winged Victory of Samothrace'], y:-190, e:['希腊化王朝','Hellenistic'], ca:1, mu:['巴黎 卢浮宫','the Louvre, Paris'] },
  { n:['巴黎圣母院','Notre-Dame'], y:1345, e:['哥特时期','Gothic'] },
  { n:['卢浮宫','the Louvre'], y:1546, e:['文艺复兴','Renaissance'] },
  { n:['埃菲尔铁塔','the Eiffel Tower'], y:1889, e:['第三共和国','Third Republic'] },
 ],
 '伦敦': [
+ { n:['亚述拉吉浮雕','the Lachish reliefs'], y:-700, e:['亚述','Assyria'], ca:1, mu:['伦敦 大英博物馆','British Museum, London'] },
+ { n:['萨顿胡船葬头盔','the Sutton Hoo helmet'], y:625, e:['盎格鲁-撒克逊','Anglo-Saxon'], ca:1, mu:['伦敦 大英博物馆','British Museum, London'] },
  { n:['伦敦塔','the Tower of London'], y:1078, e:['诺曼','Norman'] },
  { n:['威斯敏斯特教堂','Westminster Abbey'], y:1269, e:['哥特时期','Gothic'] },
  { n:['圣保罗大教堂','St Paul\'s Cathedral'], y:1710, e:['斯图亚特末','late Stuart'] },
@@ -283,6 +301,7 @@ const CITY_SITES = {
  { n:['贝伦塔','the Belem Tower'], y:1519, e:['曼努埃尔时期','Manueline'] },
 ],
 '柏林': [
+ { n:['娜芙蒂蒂胸像','the bust of Nefertiti'], y:-1345, e:['新王国埃及','New Kingdom Egypt'], ca:1, mu:['柏林 新博物馆','Neues Museum, Berlin'] },
  { n:['勃兰登堡门','the Brandenburg Gate'], y:1791, e:['勃兰登堡·普鲁士','Brandenburg-Prussia'] },
 ],
 '斯德哥尔摩': [
@@ -294,9 +313,11 @@ const CITY_SITES = {
  { n:['桑科雷清真寺','the Sankore Mosque'], y:1400, e:['马里帝国','Mali Empire'], ca:1 },
 ],
 '阿克苏姆': [
+ { n:['阿克苏姆方尖碑(2005 年从罗马运回)','the Axum obelisk, returned from Rome in 2005'], y:350, e:['阿克苏姆','Aksum'], ca:1, mu:['阿克苏姆 现场','on site at Axum'] },
  { n:['阿克苏姆方尖碑','the Aksum obelisks'], y:350, e:['阿克苏姆','Aksumite'], ca:1 },
 ],
 '大津巴布韦': [
+ { n:['津巴布韦鸟石雕(1980 年代起陆续归还)','the Zimbabwe Birds, returned from the 1980s'], y:1300, e:['大津巴布韦','Great Zimbabwe'], ca:1, mu:['大津巴布韦 遗址博物馆','Great Zimbabwe site museum'] },
  { n:['大围场','the Great Enclosure'], y:1250, e:['大津巴布韦','Great Zimbabwe'], ca:1 },
 ],
 '基尔瓦': [
@@ -318,6 +339,7 @@ const CITY_SITES = {
  { n:['大教堂','the Metropolitan Cathedral'], y:1656, e:['西属新西班牙','New Spain'] },
 ],
 '特奥蒂瓦坎': [
+ { n:['羽蛇神庙石雕头像','the feathered serpent heads'], y:200, e:['特奥蒂瓦坎','Teotihuacan'], ca:1, mu:['墨西哥城 国立人类学博物馆','National Museum of Anthropology, Mexico City'] },
  { n:['太阳金字塔','the Pyramid of the Sun'], y:200, e:['特奥蒂瓦坎','Teotihuacan'], ca:1 },
  { n:['月亮金字塔','the Pyramid of the Moon'], y:250, e:['特奥蒂瓦坎','Teotihuacan'], ca:1 },
 ],
@@ -326,9 +348,11 @@ const CITY_SITES = {
  { n:['大球场','the Great Ball Court'], y:864, e:['后古典玛雅','Postclassic Maya'] },
 ],
 '蒂卡尔': [
+ { n:['玛雅石碑与陶器','Maya stelae and pottery'], y:700, e:['玛雅','Maya'], ca:1, mu:['危地马拉城 国家考古博物馆','National Museum of Archaeology, Guatemala City'] },
  { n:['一号神庙','Temple I'], y:732, e:['古典玛雅','Classic Maya'] },
 ],
 '库斯科': [
+ { n:['马丘比丘出土文物(2011 年起分批归还)','finds from Machu Picchu, returned from 2011'], y:1450, e:['印加','Inca'], ca:1, mu:['库斯科 印加博物馆','Museo Inka, Cusco'] },
  { n:['萨克塞华曼','Sacsayhuaman'], y:1450, e:['印加','Inca'], ca:1 },
  { n:['太阳神殿(科里坎查)','the Qorikancha'], y:1438, e:['印加','Inca'], ca:1 },
 ],
@@ -427,6 +451,7 @@ const CITY_SITES = {
  { n:['特拉布宗圣索菲亚教堂','Hagia Sophia of Trebizond'], y:1260, e:['特拉比松帝国','Empire of Trebizond'], ca:1 },
 ],
 '德黑兰': [
+ { n:['波斯波利斯出土浮雕与金器','reliefs and gold from Persepolis'], y:-500, e:['波斯(阿契美尼德)','Achaemenid Persia'], ca:1, mu:['伊朗国家博物馆','National Museum of Iran'] },
  { n:['古列斯坦宫','the Golestan Palace'], y:1865, e:['恺加','Qajar'], ca:1 },
  { n:['自由纪念塔','the Azadi Tower'], y:1971, e:['巴列维','Pahlavi'] },
 ],
@@ -556,5 +581,23 @@ const CITY_SITES = {
  { n:['罗森堡宫','Rosenborg Castle'], y:1624, e:['丹麦-挪威','Denmark-Norway'] },
  { n:['圆塔','the Round Tower'], y:1642, e:['丹麦-挪威','Denmark-Norway'] },
  { n:['小美人鱼像','the Little Mermaid'], y:1913, e:['丹麦','Denmark'] },
+],
+'克诺索斯': [
+ { n:['克诺索斯宫遗址','the palace at Knossos'], y:-1700, e:['米诺斯','Minoan'], ca:1 },
+ { n:['跳牛壁画与蛇女神像','the bull-leaping fresco and the snake goddess'], y:-1600, e:['米诺斯','Minoan'], ca:1, mu:['伊拉克利翁考古博物馆','Heraklion Archaeological Museum'] },
+],
+'以弗所': [
+ { n:['塞尔苏斯图书馆','the Library of Celsus'], y:117, e:['罗马帝国','Roman Empire'] },
+ { n:['大剧场(可容两万五千人)','the great theatre, seating twenty-five thousand'], y:-250, e:['希腊化王朝','Hellenistic'], ca:1 },
+ { n:['阿尔忒弥斯神庙的一根柱子','one column of the temple of Artemis'], y:-550, e:['吕底亚','Lydia'], ca:1 },
+ { n:['神庙地基出土的最早期硬币','the earliest coins, from the temple foundations'], y:-600, e:['吕底亚','Lydia'], ca:1, mu:['伦敦 大英博物馆','British Museum, London'] },
+],
+'罗德岛': [
+ { n:['罗德老城与骑士团城墙','the old town and the walls of the Knights'], y:1309, e:['奥斯曼帝国','Ottoman'], ca:1 },
+ { n:['林多斯卫城','the acropolis of Lindos'], y:-300, e:['希腊化王朝','Hellenistic'], ca:1 },
+],
+'金沙萨': [
+ { n:['刚果河码头与老城区','the river port and the old town'], y:1881, e:['欧洲殖民非洲','Colonial Africa'] },
+ { n:['刚果王国的恩金加雕像等','Kongo power figures and regalia'], y:1600, e:['刚果王国','Kingdom of Kongo'], ca:1, mu:['金沙萨 国立博物馆','National Museum, Kinshasa'] },
 ],
 };

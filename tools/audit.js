@@ -1684,12 +1684,18 @@ CIVS.forEach(c => {
     const city = cityByZh[k];
     if (!city) { P.push(`${tag} 不是 GEO_CITY 里的城市名`); return; }
     if (!Array.isArray(arr) || !arr.length) { P.push(`${tag} 值应为非空数组`); return; }
-    if (arr.length > 3) P.push(`${tag} 超过三处(${arr.length}),这一层是引子不是清单`);
+    /* v365:加了 mu(收在博物馆里的)之后按组各限三处——两组是两个问题
+       (「原地还站着什么」与「东西收在哪儿」),合并限 3 会逼人二选一。 */
+    const nStand = arr.filter(x => !x.mu).length, nMu = arr.filter(x => x.mu).length;
+    if (nStand > 3) P.push(`${tag} 原地古迹超过三处(${nStand}),这一层是引子不是清单`);
+    if (nMu > 3) P.push(`${tag} 馆藏超过三处(${nMu}),这一层是引子不是清单`);
     const seen = new Set();
     arr.forEach((x, i) => {
       const t = `${tag}[${i}]`;
       if (!Array.isArray(x.n) || x.n.length !== 2 || !x.n[0] || !x.n[1]) { P.push(`${t} 名字非双语`); return; }
       if (!Array.isArray(x.e) || x.e.length !== 2 || !x.e[0] || !x.e[1]) P.push(`${t} 朝代非双语`);
+      if (x.mu !== undefined && (!Array.isArray(x.mu) || x.mu.length !== 2 || !x.mu[0] || !x.mu[1]))
+        P.push(`${t} mu(收藏地)非双语`);
       if (seen.has(x.n[0])) P.push(`${t} 同城古迹重名:${x.n[0]}`); else seen.add(x.n[0]);
       if (typeof x.y !== 'number') { P.push(`${t} 缺年份`); return; }
       if (x.y < -3500 || x.y > 2025) P.push(`${t} 年份出图幅范围:${x.y}`);
