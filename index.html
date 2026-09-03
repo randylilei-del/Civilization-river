@@ -8518,13 +8518,13 @@ const CITY_NAMES = {
      「特洛伊木马」的子串仍会带出第一条,属预期(别名句排最前,全文命中跟在后面);
    - 新词来源:localStorage `whviz-sq` 里攒的真实搜索记录(零命中的那些就是下一批别名)。 */
 const SEARCH_ALIAS = [
-  { t:['奥德赛','木马屠城','特洛伊木马','odyssey','troy','trojan horse','trojan war'], c:'迈锡尼',
+  { t:['奥德赛','木马屠城','木马计','特洛伊木马','odyssey','troy','trojan horse','trojan war'], c:'迈锡尼',
     why:['《奥德赛》和木马屠城的故事都和特洛伊战争有关——传说就发生在这个时代','The Odyssey and the Trojan Horse both come from the Trojan War, set in this age'] },
   { t:['宙斯','奥林匹斯','希腊神话','zeus','olympus','greek gods'], c:'古希腊',
     why:['宙斯是古希腊神话的主神,住在奥林匹斯山','Zeus, king of the ancient Greek gods, lives on Mount Olympus'] },
   { t:['木乃伊','法老','狮身人面像','mummy','pharaoh','sphinx'], c:'新王国埃及',
     why:['木乃伊、法老和狮身人面像都来自古埃及','Mummies, pharaohs and the Sphinx all come from Ancient Egypt'] },
-  { t:['一千零一夜','阿拉丁','辛巴达','aladdin','arabian nights','sinbad'], c:'阿拉伯哈里发',
+  { t:['一千零一夜','天方夜谭','阿拉丁','辛巴达','aladdin','arabian nights','sinbad'], c:'阿拉伯哈里发',
     why:['《一千零一夜》里的许多故事发生在哈里发时代的巴格达','Many of the Arabian Nights tales are set in Baghdad under the Caliphate'] },
   { t:['孙悟空','西游记','monkey king','journey to the west'], c:'唐',
     why:['《西游记》是从唐朝玄奘取经的真实旅程里长出来的','Journey to the West grew out of the real journey of the Tang monk Xuanzang'] },
@@ -8538,6 +8538,57 @@ const SEARCH_ALIAS = [
     why:['今天看到的长城大多是明朝修的;最早把各国的墙连起来的是秦','Most of the Great Wall you see today is Ming work; Qin first linked the earlier walls'] },
   { t:['角斗士','斗兽场','竞技场','gladiator','colosseum'], c:'罗马帝国',
     why:['角斗士在罗马帝国的斗兽场里搏斗,最大的一座能坐五万人','Gladiators fought in Roman arenas; the Colosseum held some fifty thousand people'] },
+  /* ── v366 首批词汇体检(tools/vocab-check.js)的产出:138 词实测,45 词零命中或跑偏 ── */
+  { t:['河西走廊','silk road'], c:'西汉',
+    why:['中国西边一条一千公里的窄走廊,两边是山和沙漠。汉朝打通它,中原第一次能一直走到西域——丝绸之路就走这条路。地图上点敦煌,能看到十七个朝代先后管过这里','A thousand-kilometre corridor in China\'s west, mountains one side and desert the other. The Han opened it, and the Silk Road ran through it. Tap Dunhuang on the map to see seventeen dynasties pass over it'] },
+  { t:['两河文明','两河流域','美索不达米亚','mesopotamia'], c:'苏美尔·阿卡德',
+    why:['「两河」是幼发拉底河和底格里斯河,中间那片地方最早出现了城市和文字,今天的伊拉克就在这里','The two rivers are the Euphrates and the Tigris; the land between them had the first cities and the first writing. It is Iraq today'] },
+  { t:['释迦牟尼','buddha'], c:'孔雀王朝',
+    why:['释迦牟尼就是佛陀——他的人物卡挂在孔雀王朝这条带上,阿育王把他的学说传遍了印度','Shakyamuni is the Buddha; his card sits on the Maurya band, whose king Ashoka spread his teaching across India'] },
+  { t:['亚历山大大帝','alexander'], c:'希腊化王朝',
+    why:['亚历山大征服了从希腊到印度的土地,他骤逝后部将瓜分帝国——这条带讲的正是他身后的世界','Alexander conquered from Greece to India; this band is the world his generals divided after his sudden death'] },
+  { t:['达芬奇','da vinci','leonardo','renaissance'], c:'文艺复兴意大利',
+    why:['达·芬奇是文艺复兴时期的画家、解剖学家和工程师,他一生画完的画不到二十幅','Leonardo was a Renaissance painter, anatomist and engineer who finished fewer than twenty paintings in his life'] },
+  { t:['马丁路德','luther'], c:'勃兰登堡·普鲁士',
+    why:['马丁·路德 1517 年在维滕贝格贴出九十五条论纲,把西方基督教劈成了两半——注意别和四百年后美国的马丁·路德·金弄混','Martin Luther posted his theses at Wittenberg in 1517 and split Western Christianity — not to be confused with Martin Luther King, four centuries later in America'] },
+  { t:['南北战争','civil war'], c:'美国',
+    why:['美国内战(1861—1865),北方赢了,奴隶制废除——林肯的人物卡也在这条带上','The American Civil War, 1861 to 1865: the North won and slavery was abolished. Lincoln\'s card is on this band'] },
+  { t:['美国独立','independence'], c:'美国',
+    why:['1776 年十三块殖民地宣布脱离英国,《独立宣言》开篇写着「人人生而平等」','In 1776 thirteen colonies broke with Britain; the Declaration opens with all men are created equal'] },
+  { t:['埃及艳后','克利奥帕特拉','cleopatra'], c:'希腊化王朝',
+    why:['「埃及艳后」克娄巴特拉是托勒密王朝的末代女王——她其实是希腊人,不是埃及人','Cleopatra, the last queen of the Ptolemies — Greek by descent, not Egyptian'] },
+  { t:['维京海盗','维京人','海盗','vikings'], c:'维京·北欧',
+    why:['维京人是八到十一世纪从北欧出海的海盗、商人和移民,他们的船最远到过北美','The Vikings sailed out of the North from the eighth century as raiders, traders and settlers, and their ships reached North America'] },
+  { t:['玛雅预言','2012','maya','mayan'], c:'玛雅',
+    why:['「2012 世界末日」是把玛雅历法一个周期的结束误读成了世界的结束——就像把「一年翻完了」当成「时间没有了」','The 2012 end of the world misread the end of one Maya calendar cycle as the end of time — like mistaking the last page of a calendar for the last day'] },
+  { t:['忍者','武士刀','samurai','ninja'], c:'幕府时代',
+    why:['武士与忍者都出自日本的武家时代:武士是公开的军人阶层,忍者做的是打探消息的暗活,传说把他们夸得神乎其神','Samurai and ninja both come from Japan\'s warrior age: samurai were the open military class, ninja did the covert scouting — legend has exaggerated both'] },
+  { t:['国际象棋','chess'], c:'笈多王朝',
+    why:['国际象棋的祖先「恰图兰卡」出自古印度,经波斯与阿拉伯传到欧洲——地图上有一条它的传播轨迹','Chess began as chaturanga in ancient India and travelled through Persia and the Arab world to Europe — there is a trace of its journey on the map'] },
+  { t:['伊索寓言','aesop'], c:'古希腊',
+    why:['龟兔赛跑、狼来了都出自《伊索寓言》——相传伊索是古希腊的一个奴隶','The tortoise and the hare and the boy who cried wolf are Aesop\'s — by tradition a slave in ancient Greece'] },
+  { t:['格林童话','grimm'], c:'勃兰登堡·普鲁士',
+    why:['格林兄弟在 19 世纪初的德意志各地收集民间故事,灰姑娘、白雪公主都在其中','The Grimm brothers collected folk tales across the German lands in the early 1800s — Cinderella and Snow White among them'] },
+  { t:['安徒生','andersen'], c:'北欧诸王国',
+    why:['安徒生是 19 世纪丹麦人,《卖火柴的小女孩》《丑小鸭》都是他写的','Andersen was a nineteenth-century Dane; The Little Match Girl and The Ugly Duckling are his'] },
+  { t:['伊斯兰教','islam'], c:'阿拉伯哈里发',
+    why:['伊斯兰教七世纪兴起于阿拉伯半岛,一百年内传到了西班牙和中亚','Islam rose in Arabia in the seventh century and within a hundred years had reached Spain and Central Asia'] },
+  { t:['一战','第一次世界大战','world war'], c:'现代欧洲诸国',
+    why:['第一次世界大战(1914—1918)打倒了三个欧洲帝国,一排新国家从废墟里出现','The First World War, 1914 to 1918, brought down three European empires and a row of new countries rose from the wreck'] },
+  { t:['法国大革命','napoleon'], c:'法兰西',
+    why:['1789 年巴黎人攻占巴士底狱,《人权宣言》说主权属于国民不属于国王','In 1789 Paris took the Bastille, and the Declaration of Rights said sovereignty belongs to the nation, not the king'] },
+  { t:['pyramid','giza'], c:'古王国埃及',
+    why:['吉萨的大金字塔是七大奇迹里唯一还站着的一个,比那份名单本身还老两千多年','The Great Pyramid at Giza is the one wonder still standing, older than the list itself by two thousand years'] },
+  { t:['rome','roman'], c:'罗马帝国',
+    why:['条条大路通罗马——鼎盛时的罗马帝国环抱整个地中海','All roads led to Rome; at its height the empire wrapped the whole Mediterranean'] },
+  { t:['郑和下西洋','下西洋'], c:'明',
+    why:['1405 到 1433 年,郑和七次率船队远航,最远到了东非——比哥伦布早了将近一百年,船也大得多','Between 1405 and 1433 Zheng He led seven voyages, reaching East Africa — almost a century before Columbus, in far larger ships'] },
+  { t:['抗日战争','抗战'], c:'民国',
+    why:['1937 到 1945 年中国全面抗击日本侵略,是第二次世界大战的东方主战场','From 1937 to 1945 China fought Japan\'s invasion in full — the eastern main front of the Second World War'] },
+  { t:['夏朝'], c:'二里头·夏',
+    why:['站里把它叫「二里头·夏」:二里头遗址挖出了宫殿与青铜作坊,年代与古书里的夏对得上,但还没挖到能自证「我是夏」的文字——所以名字里带着遗址','Here it is called Erlitou-Xia: the Erlitou site has palaces and bronze workshops in the right period for the Xia of the old books, but no writing has yet been found that names itself Xia — so the site keeps the dig in the name'] },
+  { t:['春秋战国'], c:'春秋',
+    why:['站里分成两条带:前半是春秋(诸侯还讲名分),后半是战国(只剩七雄硬打)——孔子在春秋,百家争鸣的大部分在战国','Two bands here: Spring and Autumn first, when the lords still kept up appearances, then the Warring States, when seven powers simply fought. Confucius belongs to the first, most of the hundred schools to the second'] },
 ];
 /*__DATA:search_alias:end__*/
 /*__DATA:place_lore:start__*/
@@ -17022,6 +17073,19 @@ function sBuild() {
     const f = cF(c);
     if (f) for (const v of Object.values(f)) push(c, 2, v);
     for (const e of chronoOf(c)) push(c, 2, e[2] ? e[1] + ':' + e[2] : e[1], e[0]);
+    /* v366:鼎盛段也进索引——此前搜索只扫带级字段,整层内容搜不到 */
+    for (const g of (GL[c.n] || c.gl || [])) { push(c, 2, g.t[li]); push(c, 1, g.d[li]); }
+  }
+  /* v366(词汇体检的发现):人物卡与成就卡的正文此前完全不在索引里——
+     「安徒生」「伊索寓言」这类词站内其实有没有内容、搜索都答不上来。
+     卡片挂在带上(c 字段),命中即落到该带;标题权重 3,正文 1。 */
+  const byN = Object.fromEntries(CIVS.map(c => [c.n, c]));
+  for (const [nm, o] of [...Object.entries(PEOPLE), ...Object.entries(ACHV)]) {
+    const c = byN[o.c]; if (!c) continue;
+    push(c, 3, o.n ? o.n[li] : nm);
+    if (o.t) push(c, 2, o.t[li]);
+    if (o.a) for (const a of o.a) push(c, 1, a[li]);
+    if (o.s) push(c, 1, o.s[li]);
   }
 }
 const sEsc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
@@ -17089,6 +17153,20 @@ const sIn = document.getElementById('searchIn'), sRes = document.getElementById(
 let sTm = 0, sZeroTm = 0;
 function sRender() {
   const q = sIn.value.trim();
+  /* v366:搜「??」看真实搜索日志——sLog 攒了很久(最近 100 条),一直没有出口。
+     零命中的词就是下一批别名(data/search_alias.js 头注写的闭环,至此才通)。
+     给 Ray 用的,孩子碰不到:没人会搜两个问号。 */
+  if (q === '??') {
+    let log = [];
+    try { log = JSON.parse(localStorage.getItem('whviz-sq') || '[]'); } catch (e) {}
+    const miss = log.filter(x => !x.hit), hit = log.filter(x => x.hit);
+    sRes.innerHTML = `<div class="sr-none" style="text-align:left">${
+      T(`搜索日志(最近 ${log.length} 条)。零命中 ${miss.length} 条:`, `Search log (last ${log.length}). ${miss.length} with no hits:`)}<br>${
+      miss.length ? miss.map(x => `「${sEsc(x.q)}」${x.d}`).join('<br>') : T('(没有——都搜到了)', '(none)')}<br><br>${
+      T('搜到过的:', 'Found:')} ${hit.slice(-20).map(x => sEsc(x.q)).join('、') || '—'}</div>`;
+    sRes.hidden = false;
+    return;
+  }
   const min = /[a-z0-9]/i.test(q) ? 2 : 1;
   if (q.length < min) { sRes.hidden = true; sRes.innerHTML = ''; return; }
   const rs = sQuery(q);
