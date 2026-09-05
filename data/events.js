@@ -16,6 +16,7 @@ const EVENTS = [
 { y:1453, ls:['me','eu'], t:'war', n:['君士坦丁堡陷落','Fall of Constantinople'], d:['千年拜占庭终结;学者西逃助燃文艺复兴,欧洲被迫另寻通往东方的航路。','Byzantium ends; fleeing scholars feed the Renaissance and Europe seeks new sea routes.'] },
 { y:1492, ls:['eu','am'], t:'migration', n:['哥伦布抵美·大航海','Columbus & the Age of Sail'], d:['两个半球从此相连;随后的"哥伦布大交换"交换了作物、人口,也交换了瘟疫。','Two hemispheres joined; the Columbian Exchange trades crops, people — and plagues.'] },
 { y:1600, ls:['eu','af','am'], t:'trade', n:['大西洋三角贸易','Atlantic Triangular Trade'], d:['工业品—奴隶—种植园产品的三角循环,以千万非洲人的苦难滋养欧洲资本积累。','Goods, slaves and plantation produce bind three continents in a brutal circuit.'] },
+{ y:1700, ls:['sa','eu'], t:'trade', n:['印花布热','The calico craze'], d:['印度印花棉布风靡欧洲,英国 1700 年禁进口、1721 年禁穿;挡不住,只好自己造机器仿——纺纱机就是这么来的。','Indian printed cotton swept Europe; England banned its import in 1700 and its wearing in 1721. It could not be stopped, so they built machines to copy it — and the spinning machines came from that.'] },
 { y:1769, ls:['eu'], t:'tech', n:['工业革命','Industrial Revolution'], d:['蒸汽机点燃指数增长,此后两百年"西方主导"的实力差距皆源于此。','Steam ignites exponential growth — the source of two centuries of Western dominance.'] },
 { y:1840, ls:['eu','ea'], t:'war', n:['鸦片战争','Opium War'], d:['工业化欧洲叩开东亚大门,中日先后被迫开国,东亚开始百年变局。','Industrial Europe forces East Asia open; a century of upheaval begins.'] },
 { y:1914, ls:['eu','me','af','am','ea'], t:'war', n:['第一次世界大战','World War I'], d:['欧洲列强自相残杀,四大帝国解体,美国初次登上世界舞台中心。','Europe devours itself; four empires fall and America steps onto the world stage.'] },
