@@ -1696,6 +1696,24 @@ CIVS.forEach(c => {
       if (!Array.isArray(x.e) || x.e.length !== 2 || !x.e[0] || !x.e[1]) P.push(`${t} 朝代非双语`);
       if (x.mu !== undefined && (!Array.isArray(x.mu) || x.mu.length !== 2 || !x.mu[0] || !x.mu[1]))
         P.push(`${t} mu(收藏地)非双语`);
+      /* 84. 有 mu 就必须有 asof 复核时点(v366.2;2026-09-05,第二十三轮核查的产物)。
+         起因:v365 的馆藏行上线四天内就有一条过期——图坦卡蒙金面具已随全套迁入吉萨大埃及博物馆(GEM
+         2025-11 全面开馆),而站里还写着开罗埃及博物馆;孩子照这行去解放广场会站在空展柜前。
+         **馆藏是全站最高频变动的一类事实**(迁馆、闭馆整修、归还、外借),而它此前是无时间戳、
+         无复核期的纯静态断言,过期了没有任何机制会发现。
+         两档:缺 asof 或格式不是 YYYY-MM → 红(装上时零基线);asof 超过 18 个月 → warn(该复核,不拦提交)。
+         另两条纪律工具查不了,写在 docs/DATA.md 靠人守:①mu 只写**原件**所在(以弗所那条曾把大英的
+         电铸复制品当原件送读者去伦敦)②闭馆/整修写进 mu 文本本身(佩加蒙 2023-10 起全馆闭)。 */
+      if (x.mu !== undefined) {
+        if (typeof x.asof !== 'string' || !/^\d{4}-(0[1-9]|1[0-2])$/.test(x.asof))
+          P.push(`${t} 有 mu 却缺 asof 复核时点(或格式不是 YYYY-MM):${x.asof} —— 馆藏会过期,没有时点就没人知道该不该复核`);
+        else {
+          const now = new Date(), av = x.asof.split('-').map(Number);
+          const months = (now.getFullYear() - av[0]) * 12 + (now.getMonth() + 1 - av[1]);
+          if (months > 18)
+            W.push(`[馆藏该复核了] ${k}/${x.n[0]}:asof=${x.asof},已 ${months} 个月没核过 —— 迁馆、闭馆整修、归还都发生在这个窗口里`);
+        }
+      }
       if (seen.has(x.n[0])) P.push(`${t} 同城古迹重名:${x.n[0]}`); else seen.add(x.n[0]);
       if (typeof x.y !== 'number') { P.push(`${t} 缺年份`); return; }
       if (x.y < -3500 || x.y > 2025) P.push(`${t} 年份出图幅范围:${x.y}`);

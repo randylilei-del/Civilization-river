@@ -31,14 +31,15 @@ icons/                # SVG 图标 + apple-touch-icon.png(iOS 主屏用)
 docs/ARCH.md          # 数据迁出架构:决策理由、分阶段路线、成功标准(动数据住处前必读)
 docs/IDEAS.md         # 产品想法库:想清楚了但现在不做的东西,**带触发条件,到点要主动拿出来讨论**
 docs/DESIGN.md        # 设计决策与理由(改视觉/交互前必读)
-docs/DATA.md          # 数据模型与增改内容指南(加文明/事件/轨迹前必读)
+docs/DATA.md          # 数据模型与增改内容指南(加文明/事件/轨迹前必读)。**动城市馆藏(`mu`)前先看「馆藏三条纪律」**:
+                      #   asof 复核时点必填(规则 84)/ 只写原件所在 / 闭馆整修写进 mu 文本
 docs/CHANGELOG.md     # 版本史
 ```
 
 ## 修改工作流
 
 1. **写新内容前先 `node tools/context.js <带名|城市名>`**(把站内已有的摊在眼前——核查必修里一半是「站内早写对了、新文案写错或重讲」)。**改数据(30 张内容表全在 `data/`):改 `data/<表名>.js` → `node tools/build.js`**(直接改 index.html 的数据区间会被 audit 规则 45 拦下)。改代码/样式/config 常量:直接改 `index.html`
-2. **改完一条命令:`node tools/check.js`**(= build 一致性 → audit → 语法 → headless 烟测,任一红退出码 1;`--quick` 跳过烟测≈3 秒)。首次先在仓库根 `npm install`(只装 `playwright-core`,用本机 Chrome,不下载浏览器;产品 index.html 零依赖不受影响)。三步的判据分别在 `tools/build.js` / `tools/audit.js`(83 条结构规则,含 78c/79b/79c;其中若干条走 warn 通道不计退出码——卡片复述母条目、小段与本带正文重合、版图新增命中。**规则 80/81/82 的基线在 `tools/.crossband-baseline.json`(三个键 titles/books/areas),入库而非 gitignore,每条带 why,新增命中即红且不会自动写入**)/ `tools/smoke.js`
+2. **改完一条命令:`node tools/check.js`**(= build 一致性 → audit → 语法 → headless 烟测,任一红退出码 1;`--quick` 跳过烟测≈3 秒)。首次先在仓库根 `npm install`(只装 `playwright-core`,用本机 Chrome,不下载浏览器;产品 index.html 零依赖不受影响)。三步的判据分别在 `tools/build.js` / `tools/audit.js`(84 条结构规则,含 78c/79b/79c/84;其中若干条走 warn 通道不计退出码——卡片复述母条目、小段与本带正文重合、版图新增命中。**规则 80/81/82 的基线在 `tools/.crossband-baseline.json`(三个键 titles/books/areas),入库而非 gitignore,每条带 why,新增命中即红且不会自动写入**)/ `tools/smoke.js`
 3. `tools/smoke.js` 管**渲染层**——以前只能实机点的那些:四态(中英×深浅)零 pageerror 零站外请求、引导层点完真消失(量真实盒子)、322 卡零脏值 + 中英 class 直方图一致(拦「英文卡少一行」)、127 城×中英每行有正文、色带真实填充色非黑、标签中心在色带内且不出视口、选轨迹后站点进视口、列表同列字号一致、iPad 竖屏/手机关键入口可见。**加新断言必须先注入反例看它红**(`SMOKE_INDEX=<反例html> node tools/smoke.js`),验证记录写在断言旁注释里;清不完的旧问题用 warn 不用 fail;标签重叠基线 **5 处冻结在 `smoke.js` 的 `OVERLAP_BASELINE`**(2026-08-18 起),**基线外的新增重叠直接 fail**——新带引入新重叠要么挪标签,要么有意识地加进那张表并在 CHANGELOG 说明
 4. 仍需人眼的:iPad 实机手感、史实、中英同义、儿童文风、图片内容——走 adversarial-verifier + Ray 实机。需要在 claude-in-chrome 里看图时:`python3 -m http.server 8777 --bind 127.0.0.1 --directory "<项目路径>"`(后台任务方式起),深色用 `document.documentElement.setAttribute('data-theme','dark')`
 5. commit + push → Vercel 自动部署
