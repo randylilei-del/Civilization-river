@@ -172,7 +172,7 @@ if (ONE) {
 
 const thinCivs = civRows.filter(r => r.thin.length).sort((a, b) => b.score - a.score);
 const thinCities = cityRows.filter(r => r.thin.length).sort((a, b) => b.score - a.score);
-console.log(`depth: 172 带 / 127 城。「薄」只看正文层(权重见文件头);人物/成就卡走绝对缺口,照片/视频走素材缺口。\n`);
+console.log(`depth: ${civRows.length} 带 / ${cityRows.length} 城。「薄」只看正文层(权重见文件头);人物/成就卡走绝对缺口,照片/视频走素材缺口。\n`);
 console.log(`── 文明 · 正文薄(${thinCivs.length} 条,列最薄 ${TOP};▁ 最薄 … █ 最厚,括号里是原值)──`);
 thinCivs.slice(0, TOP).forEach(r => console.log(fmtRow(r) + `   [组 ${r.group}]`));
 console.log(`\n── 城市 · 正文薄(${thinCities.length} 座,列最薄 ${TOP})──`);

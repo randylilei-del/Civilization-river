@@ -14,13 +14,17 @@ data/                 # 全部 30 张内容表的正本(.js 文本片段,性质�
 tools/build.js        # 把 data/*.js 注入回 index.html 的标记区间;改 data 后必跑
 tools/check.js        # 改完一条命令:build 一致性 → audit → 语法 → smoke;--quick 跳过 smoke
 tools/smoke.js        # headless 渲染层烟测(playwright-core + 本机 Chrome),断言清单见「修改工作流」第 3 步
-tools/depth.js        # 内容厚度体检:172 带/127 城同组相对排名,列「最薄 N」清单(不是红灯);`depth.js 唐` 看单条体检表
+tools/depth.js        # 内容厚度体检:全部带/城同组相对排名,列「最薄 N」清单(不是红灯);`depth.js 唐` 看单条体检表。**表头的带数城数由数据实算,不要往这里写死数**(2026-09-05 修:曾硬编码「172 带/127 城」,数据涨到 191/132 之后表头一直在说谎)
 tools/context.js      # **写新内容前必跑**:`context.js <带名|城市名>` 一条命令摊开同卡/同城/同城别带的全部既有字段 + SETTLED 裁决 + depth 体检
 tools/lint-content.js # 新写内容的可疑句清单(最高级/现在时/大数字/因果词),只扫 HEAD..工作区 diff(工作区干净时自动退到 HEAD~1);check.js 会顺带打印,不计入退出码。**批量写完 commit 后,用该批第一个 commit 的 sha 再跑一次 `node tools/lint-content.js <sha>~1` 并逐条销账**——它是 warn 通道,不销账就等于没跑(核查员两次抓到「清单当时就报了、没人回头看」)
 tools/gap.js          # 城市时间断层诊断:拿补带选题名单 / 补完复核清没清零(node tools/gap.js 150 [城市名])
 tools/vocab-check.js  # 词汇覆盖体检:tools/vocab-probes.tsv(词→期望带)全量过真实搜索,零命中/跑偏=退出码1;加新带后跑;页面里搜「??」看真实搜索日志,零命中词就是下一批词表
 tools/newband.js      # 新色带内容**插入前**预检(markdown / 钩子重复 / 缺中文 d / f 项数 / PLACE / PEAK)
 tools/load.js         # audit/coverage/peakgap/refs 共用的数据加载器(含 GL_X 合并镜像)
+tang.html / qin.html  # **六个故事页(唐/秦/汉/宋/明/清)**:「六个问题看懂 X 朝」,唐朝实验的材料,各自独立单文件、
+han.html / song.html  #   中文单语、无主站入口(实验期有意不导流)。**不在 check/audit/smoke/lint 的覆盖范围内**,
+ming.html / qing.html #   也不在 sw.js 缓存清单、自身不注册 sw(离线打不开——v133 记的已知缺口)。
+                      #   实验判据见 docs/TANG-EXPERIMENT.md;改它们不要指望工具兜底
 manifest.webmanifest  # PWA 清单
 sw.js                 # 离线缓存(network-first);改缓存策略记得升 CACHE 版本号
 icons/                # SVG 图标 + apple-touch-icon.png(iOS 主屏用)
@@ -56,7 +60,10 @@ docs/CHANGELOG.md     # 版本史
 > (目前 001「从浏览一条长河到回答孩子的问题」——搜索/别名/故事级颗粒三层缺口,分析与实测数据已备)。
 > **别让它烂在文件里**:主体待办清空、或唐朝实验出结论时,主动把它拿出来讨论。
 
-- [ ] 首次发布:Ray 建 GitHub 公开仓库 → 推送 → Vercel 导入 → iPad 主屏(两步待办在 Ray 手里)
+- [x] 首次发布:GitHub 仓库已建并推送、Vercel 已部署(`civilization-river.vercel.app`)
+- [ ] **国内访问链路仍是断的**(2026-08-14 起卡到现在):Vercel 站国内要挂 VPN;EdgeOne 已部署但平台默认域名未备案,
+      国内节点 401。解法=买域名+备案(在 Ray 手里,见 `docs/DEPLOY-CN.md`)。**在这之前给 Jasper 的唯一路径是微信发文件**
+      ——index.html 自包含验证过(v148),但那时它 2.36MB,现在 4.24MB,重测一次再当结论用
 - [ ] 数据校对:逐泳道核对年代/曲线/版图/大事记/传播节点(Ray 主导,中国史优先)
 - [ ] 非中国文明的"鼎盛区间"补齐(机制已就绪,gl 字段)
 - [ ] 可选:儿童模式(更大字号/更简语言)、单文明聚焦视图、数据外接(Wikidata/Seshat)
