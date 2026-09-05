@@ -2196,6 +2196,64 @@ for (const civ in CHRONO) for (const e of CHRONO[civ]) {
 }
 
 console.log(P.length ? P.join('\n') : '✅ 结构校验全通过');
+/* 85. 中英同一句话里的四位年份必须一致(v366.3;2026-09-05,第二十三轮核查的产物)。
+ *
+ * 为什么存在:第二十三轮 27 条必修里有一整类是「中英说的不是同一件事」——中文「上千年」英文
+ * hundreds of years、中文没写「几乎」英文写了 almost、中英年份对不上。这一类**不需要懂历史就能查**,
+ * 但此前全站零覆盖:audit 只查双语「有没有」(规则 49/83),从不查双语「说的是不是同一件事」。
+ *
+ * **先量精度再装(第 26 条),量了六轮**,过程值得记下来,免得下次有人再从头试一遍:
+ *   - 对冲词配对(几乎↔almost、已知↔known、据说↔said to、大多↔most):命中 188/118/119/363 条,
+ *     逐条读下来精度接近 0。病根是英文一词多义——known as(被称作)、most important(最重要)、
+ *     nearly fifty thousand(近五万)全被当成对冲词;中文侧同样有「九十六分之一」里的「之一」。
+ *     **每收窄一轮就冒出一类新的误报,是打地鼠,放弃。**
+ *   - 年数量级(hundreds/thousands of years ↔ 百年/千年):全站只命中 1 条且是误报(一句话里
+ *     同时有「几百年」和「几万年」)。真的那条已在 v366.1 修掉,零基线但也零信号,不单独装。
+ *   - **四位年份集合比对:可用。** 但必须先归一化三类表示差异,否则 171 条里几乎全是噪声:
+ *     ①英文缩写年段 1954–58 / 1519-22 要补全 ②年代式 1630s ↔「17世纪30年代」两边都不比
+ *     ③中文用相对年份或纪元词(次年/翌年/战后/明治维新)而英文展开成具体年份,是合法差异,跳过。
+ *     ④紧跟量词的四位数不是年份(「随葬 1928 件」「约 1700 美元」)。
+ *     归一化后 171 → 8 条,读下来约一半是真问题,**当场抓出两条**:王贞仪卡中文 2015 / 英文 2016
+ *     (Headstrong 实际出版于 2015,中文对);彼得大帝卡英文漏了迁都的 1712,而同库永乐卡英文
+ *     写的是 moved the capital there in 1421 —— 站内自己的写法本来就带年份。两条已在 v366.3 修掉。
+ *
+ * **走 warn 通道不走红灯**:残留的 6 条是「中文比英文详细」这类合法的行文差异(阿散蒂五次战争的
+ * 日期中文列了英文没列、英文把「明治维新」展开成 1868),不是错,但也不值得为它们再收窄规则——
+ * 收窄到零误报的代价是把真信号也一起筛掉。这条和规则 79-82 同性质:出清单给人看,不替人做判断。 */
+{
+  const CJK_RE = /[一-鿿]/;
+  const REL_RE = /(次年|翌年|同年|第二年|同一年|当年|隔年|年后|后来|此后|战后|抗战|二战|一战|世纪末|世纪初|年代|维新)/;
+  const expandRange = s => s.replace(/\b(\d{2})(\d{2})\s*[–—-]\s*(\d{2})\b(?!\d)/g,
+    (m, c, d, e) => { const a = +(c + d); let b = +(c + e); if (b < a) b += 100; return a + ' ' + b; });
+  const stripDecade = s => s.replace(/\b\d{3,4}0s\b/g, ' ');
+  const yearsOf = s => [...new Set([...stripDecade(expandRange(s))
+    .matchAll(/\d{4}(?!\s*(件|枚|人|座|匹|头|条|名|册|片|个|种|万|公里|米|平方米|美元|余|多))/g)]
+    .map(m => +m[0]).filter(v => v >= 1000 && v <= 2025))];
+
+  const pairSeen = new Set();
+  (function walkPairs(o) {
+    if (o == null) return;
+    if (Array.isArray(o)) {
+      if (o.length === 2 && typeof o[0] === 'string' && typeof o[1] === 'string'
+          && CJK_RE.test(o[0]) && !CJK_RE.test(o[1]) && o[0].length > 6) {
+        const key = o[0] + '||' + o[1];
+        if (pairSeen.has(key)) return;
+        pairSeen.add(key);
+        if (REL_RE.test(o[0])) return;
+        const a = yearsOf(o[0]), b = yearsOf(o[1]);
+        if (!a.length || !b.length) return;
+        const onlyZh = a.filter(v => !b.includes(v)), onlyEn = b.filter(v => !a.includes(v));
+        if (onlyZh.length || onlyEn.length)
+          W.push(`[中英年份不一致] 中文独有[${onlyZh.join('、') || '—'}] 英文独有[${onlyEn.join('、') || '—'}]:「${o[0].slice(0, 34)}…」—— 同一句话中英给出的年份对不上,要么是一边写错,要么是一边漏了`);
+        return;
+      }
+      o.forEach(walkPairs);
+      return;
+    }
+    if (typeof o === 'object') for (const k in o) walkPairs(o[k]);
+  })(D);
+}
+
 if (W.length) console.log(`\n⚠ ${W.length} 条警告(不影响退出码):\n` + W.join('\n'));
 
 const nChrono = Object.values(CHRONO).reduce((s, a) => s + a.length, 0);
