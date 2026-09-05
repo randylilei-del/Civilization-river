@@ -12,8 +12,10 @@
 index.html            # 交付产物 + 代码手写源:样式、渲染器、config 常量(数据表已全部迁出)
 data/                 # 全部 30 张内容表的正本(.js 文本片段,性质分类见 docs/DATA.md)
 tools/build.js        # 把 data/*.js 注入回 index.html 的标记区间;改 data 后必跑
-tools/check.js        # 改完一条命令:build 一致性 → audit → 语法 → smoke;--quick 跳过 smoke
+tools/check.js        # 改完一条命令:build 一致性 → audit → 语法 → smoke → story-smoke;--quick 跳过后两项
 tools/smoke.js        # headless 渲染层烟测(playwright-core + 本机 Chrome),断言清单见「修改工作流」第 3 步
+tools/story-smoke.js  # 六个故事页的 headless 烟测(零 pageerror / 零站外请求 / 点「开始」真进第一幕),check.js 顺带跑;反例注入记录在文件头
+tools/stats.js        # HANDOFF「当前状态」统计行的唯一来源:改完数据跑一次、整行替换,不手改任何一个数(那行已两次说谎)
 tools/depth.js        # 内容厚度体检:全部带/城同组相对排名,列「最薄 N」清单(不是红灯);`depth.js 唐` 看单条体检表。**表头的带数城数由数据实算,不要往这里写死数**(2026-09-05 修:曾硬编码「172 带/127 城」,数据涨到 191/132 之后表头一直在说谎)
 tools/context.js      # **写新内容前必跑**:`context.js <带名|城市名>` 一条命令摊开同卡/同城/同城别带的全部既有字段 + SETTLED 裁决 + depth 体检
 tools/lint-content.js # 新写内容的可疑句清单(最高级/现在时/大数字/因果词),只扫 HEAD..工作区 diff(工作区干净时自动退到 HEAD~1);check.js 会顺带打印,不计入退出码。**批量写完 commit 后,用该批第一个 commit 的 sha 再跑一次 `node tools/lint-content.js <sha>~1` 并逐条销账**——它是 warn 通道,不销账就等于没跑(核查员两次抓到「清单当时就报了、没人回头看」)
@@ -22,9 +24,9 @@ tools/vocab-check.js  # 词汇覆盖体检:tools/vocab-probes.tsv(词→期望�
 tools/newband.js      # 新色带内容**插入前**预检(markdown / 钩子重复 / 缺中文 d / f 项数 / PLACE / PEAK)
 tools/load.js         # audit/coverage/peakgap/refs 共用的数据加载器(含 GL_X 合并镜像)
 tang.html / qin.html  # **六个故事页(唐/秦/汉/宋/明/清)**:「六个问题看懂 X 朝」,唐朝实验的材料,各自独立单文件、
-han.html / song.html  #   中文单语、无主站入口(实验期有意不导流)。**不在 check/audit/smoke/lint 的覆盖范围内**,
+han.html / song.html  #   中文单语、无主站入口(实验期有意不导流)。**只有 story-smoke 管它们能不能打开、点开始有没有反应**(v366.4 起);内容不在 audit/lint 范围内,
 ming.html / qing.html #   也不在 sw.js 缓存清单、自身不注册 sw(离线打不开——v133 记的已知缺口)。
-                      #   实验判据见 docs/TANG-EXPERIMENT.md;改它们不要指望工具兜底
+                      #   实验判据见 docs/TANG-EXPERIMENT.md;改内容不要指望工具兜底
 manifest.webmanifest  # PWA 清单
 sw.js                 # 离线缓存(network-first);改缓存策略记得升 CACHE 版本号
 icons/                # SVG 图标 + apple-touch-icon.png(iOS 主屏用)
@@ -40,7 +42,7 @@ docs/CHANGELOG.md     # 版本史
 
 1. **写新内容前先 `node tools/context.js <带名|城市名>`**(把站内已有的摊在眼前——核查必修里一半是「站内早写对了、新文案写错或重讲」)。**改数据(30 张内容表全在 `data/`):改 `data/<表名>.js` → `node tools/build.js`**(直接改 index.html 的数据区间会被 audit 规则 45 拦下)。改代码/样式/config 常量:直接改 `index.html`
 2. **改完一条命令:`node tools/check.js`**(= build 一致性 → audit → 语法 → headless 烟测,任一红退出码 1;`--quick` 跳过烟测≈3 秒)。首次先在仓库根 `npm install`(只装 `playwright-core`,用本机 Chrome,不下载浏览器;产品 index.html 零依赖不受影响)。三步的判据分别在 `tools/build.js` / `tools/audit.js`(85 条结构规则,含 78c/79b/79c/84/85;其中若干条走 warn 通道不计退出码——卡片复述母条目、小段与本带正文重合、版图新增命中。**规则 80/81/82 的基线在 `tools/.crossband-baseline.json`(三个键 titles/books/areas),入库而非 gitignore,每条带 why,新增命中即红且不会自动写入**)/ `tools/smoke.js`
-3. `tools/smoke.js` 管**渲染层**——以前只能实机点的那些:四态(中英×深浅)零 pageerror 零站外请求、引导层点完真消失(量真实盒子)、322 卡零脏值 + 中英 class 直方图一致(拦「英文卡少一行」)、127 城×中英每行有正文、色带真实填充色非黑、标签中心在色带内且不出视口、选轨迹后站点进视口、列表同列字号一致、iPad 竖屏/手机关键入口可见。**加新断言必须先注入反例看它红**(`SMOKE_INDEX=<反例html> node tools/smoke.js`),验证记录写在断言旁注释里;清不完的旧问题用 warn 不用 fail;标签重叠基线 **5 处冻结在 `smoke.js` 的 `OVERLAP_BASELINE`**(2026-08-18 起),**基线外的新增重叠直接 fail**——新带引入新重叠要么挪标签,要么有意识地加进那张表并在 CHANGELOG 说明
+3. `tools/smoke.js` 管**渲染层**——以前只能实机点的那些:四态(中英×深浅)零 pageerror 零站外请求、引导层点完真消失(量真实盒子)、全部卡零脏值 + 中英 class 直方图一致(拦「英文卡少一行」)、全部城×中英每行有正文、色带真实填充色非黑、标签中心在色带内且不出视口、选轨迹后站点进视口、列表同列字号一致、iPad 竖屏/手机关键入口可见。**加新断言必须先注入反例看它红**(`SMOKE_INDEX=<反例html> node tools/smoke.js`),验证记录写在断言旁注释里;清不完的旧问题用 warn 不用 fail;标签重叠基线 **5 处冻结在 `smoke.js` 的 `OVERLAP_BASELINE`**(2026-08-18 起),**基线外的新增重叠直接 fail**——新带引入新重叠要么挪标签,要么有意识地加进那张表并在 CHANGELOG 说明
 4. 仍需人眼的:iPad 实机手感、史实、中英同义、儿童文风、图片内容——走 adversarial-verifier + Ray 实机。需要在 claude-in-chrome 里看图时:`python3 -m http.server 8777 --bind 127.0.0.1 --directory "<项目路径>"`(后台任务方式起),深色用 `document.documentElement.setAttribute('data-theme','dark')`
 5. commit + push → Vercel 自动部署
 6. 记录:每版写进 `docs/CHANGELOG.md`(判断依据也写在那里),设计决策进 `docs/DESIGN.md`。(2026-08-15 起不再指向 Plans 库——`06 Plans/learning/world-history-viz.md` 从未建立,原指针失效)

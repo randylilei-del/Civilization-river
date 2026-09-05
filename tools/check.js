@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /* 文明长河 — 改完一条命令(2026-08-16 立)
  *
- *   node tools/check.js          build 一致性 → audit → 语法 → headless 烟测(smoke),任一红 → exit 1
+ *   node tools/check.js          build 一致性 → audit → 语法 → headless 烟测(smoke) → 故事页烟测(story-smoke),任一红 → exit 1
  *   node tools/check.js --quick  只跑前三项(≈3 秒;不起浏览器)
  *
  * 为什么存在:以前 CLAUDE.md「修改工作流」第 2–4 步是四条散命令 + 一段手粘进浏览器的脚本,
@@ -70,6 +70,17 @@ if (!QUICK) run('smoke(headless 渲染层)', () => {
   return { ok: r.status === 0, note: r.status === 0 ? '' : '见上' };
 });
 else console.log('· smoke 已跳过(--quick)');
+
+/* 5. story-smoke:六个故事页(tang/qin/han/song/ming/qing.html)的 headless 断言(--quick 跳过)。
+   2026-09-05 体检加入:此前六页长期在工具覆盖之外,v334.2「点开始没反应」靠 Ray 实机才发现。 */
+if (!QUICK) run('story-smoke(六个故事页)', () => {
+  const r = node(['tools/story-smoke.js']);
+  process.stdout.write(r.stdout);
+  if (r.stderr) process.stderr.write(r.stderr);
+  if (r.status === 2) return { ok: false, note: 'story-smoke 自身没跑起来,见上' };
+  return { ok: r.status === 0, note: r.status === 0 ? '' : '见上' };
+});
+else console.log('· story-smoke 已跳过(--quick)');
 
 const bad = steps.filter(s => !s.ok);
 console.log(`\ncheck: ${bad.length ? bad.length + ' 步失败:' + bad.map(s => s.name).join(' / ') : '全通过'}(${Date.now() - t0} ms)`);
