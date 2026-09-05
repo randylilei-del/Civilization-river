@@ -1924,6 +1924,71 @@ CIVS.forEach(c => {
     }
 }
 
+/* 86(v370). 六问 ↔ 同带大事记 的整句复读:≥20 字红灯(零基线)、17–19 字 warn。
+   为什么存在:第二十六轮核查抓到孔雀 q.fall 自称「有意不重讲、只指路给隔壁带」,却与巽伽带大事记
+   逐字重合 17 字——而规则 78 系只比「卡片/小段 ↔ 本带正文」、78b 只比「d ↔ q/chrono」,
+   **六问正文对大事记从来没人管**,这次就是从这个洞过去的。
+
+   装前按第 26 条量精度(2026-09-05 全站实测):
+     ≥10 命中 58 —— 不可用,大量是同一件事两层各自提到的必要专名。
+     ≥14 命中 24 —— 逐条读过,过半是「在帝国的几十个诸侯里毫不起眼」「坎大哈由部落长老会议推举为王」
+                    这类**只有一种自然说法**的句子,压到这条线会把正常写作判死。
+     ≥17 命中 9、≥20 命中 4 —— ≥20 那 4 条(弗里吉亚 31 字/商 20/三国与统一新罗 20/托尔特克 20)
+                    逐条读全是大事记整句抄回六问,精度 4/4;v370 已把四条大事记改成自己的角度、清到零。
+   所以红灯定在 20、warn 定在 17,14–16 有意不报(理由同上)。
+   分层原则:**大事记讲「那一年发生了什么」,六问讲这个文明**;两层撞车时收的是大事记(它是摘要层)。
+   反例注入:把任一带的大事记描述抄一句 ≥20 字的六问原文 → 红(2026-09-05 实测,见 CHANGELOG v370)。 */
+{
+  const norm = t => (String(t).match(/[一-龥]/g) || []).join('');
+  const lcs = (a, b) => { let best = ''; let prev = new Array(b.length + 1).fill(0);
+    for (let i = 1; i <= a.length; i++) { const cur = new Array(b.length + 1).fill(0);
+      for (let j = 1; j <= b.length; j++) { if (a[i - 1] === b[j - 1]) { cur[j] = prev[j - 1] + 1;
+        if (cur[j] > best.length) best = a.slice(i - cur[j], i); } } prev = cur; } return best; };
+  for (const c of CIVS) {
+    for (const [k, v] of Object.entries(c.q || {})) {
+      const q = norm(v && v[0]); if (!q) continue;
+      for (const e of (CHRONO[c.n] || [])) {
+        if (!e[2] || !e[2][0]) continue;
+        const l = lcs(q, norm(e[2][0])); if (l.length < 17) continue;
+        const msg = `${c.n} q.${k} 与大事记 ${e[0]} 逐字重合 ${l.length} 字:「${l.slice(0, 24)}」—— 大事记讲那一年发生了什么、六问讲这个文明,细节归六问,大事记换自己的角度`;
+        (l.length >= 20 ? P : W).push(`[六问与大事记复读] ${msg}`);
+      }
+    }
+  }
+}
+
+/* 87(v370). 相邻带(同泳道 + 时间重叠或首尾相接 30 年内)的六问互查:≥20 字红灯(零基线)、17–19 warn。
+   为什么存在:一个王朝的 fall 与下一个王朝的 born 讲的是同一场政变,是站内最容易两边各抄一遍的接缝,
+   而规则 80/81/82 只查跨带的**标题/书名/版图**,不查正文。
+   量精度(2026-09-05 全站实测):相邻对里 ≥10 命中 16 对,≥14 命中 4,≥17 与 ≥20 各 1——
+   扎格维王朝 ↔ 埃塞俄比亚帝国 31 字(1270 年那场政变两边各写一遍),读下来是真复读,已在 v370 让
+   埃塞俄比亚一侧压缩并指路。命中量本来就极低,信噪比高,故与规则 86 用同一组阈值。
+   哪一侧让:**谁的落点更依赖这段,谁留下**(扎格维留「教会把被推翻的国王封成圣人」,
+   埃塞俄比亚留《君王的荣耀》,共用的那句设定由后者压缩)。
+   反例注入:把任一带的 q.born 抄一句 ≥20 字的前朝 q.fall 原文 → 红(2026-09-05 实测)。 */
+{
+  const norm = t => (String(t).match(/[一-龥]/g) || []).join('');
+  const lcs = (a, b) => { let best = ''; let prev = new Array(b.length + 1).fill(0);
+    for (let i = 1; i <= a.length; i++) { const cur = new Array(b.length + 1).fill(0);
+      for (let j = 1; j <= b.length; j++) { if (a[i - 1] === b[j - 1]) { cur[j] = prev[j - 1] + 1;
+        if (cur[j] > best.length) best = a.slice(i - cur[j], i); } } prev = cur; } return best; };
+  const lanes = {};
+  for (const c of CIVS) {
+    if (!c.q || !c.k || !c.k.length) continue;
+    const yrs = c.k.map(p => p[0]);
+    (lanes[c.l] = lanes[c.l] || []).push({ c, a: Math.min(...yrs), b: Math.max(...yrs),
+      q: norm(Object.values(c.q).map(v => v && v[0]).join('')) });
+  }
+  for (const L of Object.values(lanes)) for (let i = 0; i < L.length; i++) for (let j = i + 1; j < L.length; j++) {
+    const x = L[i], y = L[j];
+    if (x.b < y.a - 30 || y.b < x.a - 30) continue;   /* 只查时间上挨着的,隔了几百年的带撞不到一起 */
+    if (!x.q || !y.q) continue;
+    const l = lcs(x.q, y.q); if (l.length < 17) continue;
+    const msg = `${x.c.n} 与 ${y.c.n} 的六问逐字重合 ${l.length} 字:「${l.slice(0, 24)}」—— 交接处的同一件事两边各写了一遍,一侧压缩并指路给另一侧`;
+    (l.length >= 20 ? P : W).push(`[相邻带六问复读] ${msg}`);
+  }
+}
+
 /* 82b(v354.1). tools/civ_photo_dynasty_map.json 的 value 必须是现存色带名。
    为什么:那张表是照片生成脚本的输入,拆带时改了 data/civ_photo.js 却忘了改它——
    v352.2 改过一次,v353/v354 两次又忘,而 audit 规则 63 只查 data/,这张 json 无任何工具兜底

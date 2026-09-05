@@ -53,11 +53,15 @@ const zhOf = v => Array.isArray(v) ? (v[0] || '') : (typeof v === 'string' ? v :
    **v285 之前 CHANGELOG 里记过的密度数字与之后不可比。**
    误判量过:全站 1399 处中文数字串里,非计量的只有「一两」×2、「一一」×6,合计 0.6%,可忽略。 */
 const CN_NUM = /[零一二两三四五六七八九十百千万亿]{2,}/g;
+/* v370:绝对锚点数——密度是比值,写得长会被稀释;这个数不受篇幅影响,专门用来给密度当闸门(见下面 W_CIV 旁注)。 */
+const anchors = txt => { if (!txt) return 0; return (txt.match(/\d{2,4}/g) || []).length + (txt.match(CN_NUM) || []).length + (txt.match(nameRe) || []).length; };
 const density = txt => { if (!txt) return 0; const nums = (txt.match(/\d{2,4}/g) || []).length; const cn = (txt.match(CN_NUM) || []).length; const names = (txt.match(nameRe) || []).length; return +(100 * (nums + cn + names) / txt.length).toFixed(1); };
 
 /* ── 文明体检 ─────────────────────────────────────────────────────────────── */
 const peopleByCiv = {}; for (const [n, p] of Object.entries(PEOPLE)) (peopleByCiv[p.c] = peopleByCiv[p.c] || []).push(n);
 const achvByCiv = {}; for (const [n, a] of Object.entries(ACHV)) (achvByCiv[a.c] = achvByCiv[a.c] || []).push(n);
+/* v370:全站具体物数的中位,给密度闸门用(实算,不写死——写死数字是这个项目栽过两次的坑)。 */
+let ANCHOR_MED = 0;
 const civRows = CIVS.map(c => {
   const y0 = c.k[0][0], y1 = c.k[c.k.length - 1][0];
   const peak = Math.max(...c.k.map(p => p[1]));
@@ -84,9 +88,13 @@ const civRows = CIVS.map(c => {
       照片: (CIV_PHOTO[c.n] || []).length,
       视频: (VIDEO[c.n] || []).length,
       正文密度: density(body),
+      具体物数: anchors(body),
     },
   };
 });
+
+{ const a = civRows.map(r => r.dims.具体物数).filter(v => v !== undefined).sort((x, y) => x - y);
+  ANCHOR_MED = a.length ? a[Math.floor(a.length / 2)] : 0; }
 
 /* ── 城市体检 ─────────────────────────────────────────────────────────────── */
 const pip = (lon, lat, poly) => { let inside = false; for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) { const [xi, yi] = poly[i], [xj, yj] = poly[j]; if (((yi > lat) !== (yj > lat)) && (lon < (xj - xi) * (lat - yi) / (yj - yi) + xi)) inside = !inside; } return inside; };
@@ -113,7 +121,7 @@ const cityRows = GEO_CITY.map(g => {
 /* ── 三层权重 ─────────────────────────────────────────────────────────────── */
 const W_CIV = { 大事记条数: 3, 六问字数: 2, 六问最短格: 3, 鼎盛段数: 3, 鼎盛非短段数: 3, 正文密度: 3,
                 大事记描述率: 1, 六问非空格数: 1, 交往: 1,
-                人物数: 0, 成就卡数: 0, 照片: 0, 视频: 0 };   // 0 = 不参与判薄(人物/成就走绝对缺口,照片/视频走素材缺口)
+                人物数: 0, 成就卡数: 0, 照片: 0, 视频: 0, 具体物数: 0 };   // 0 = 不参与判薄(人物/成就走绝对缺口,照片/视频走素材缺口)
 const W_CITY = { 总结段字数: 3, 古迹条数: 3, 小段覆盖率: 3, 小段均长: 3, 小段密度: 3, 古称条数: 0.5, 照片: 0, 视频: 0 };
 /* 人物留空名单直接读 audit.js 里的 FIGURES_NA,不另抄一份 */
 const FIGURES_NA = (() => { try { const src = require('fs').readFileSync(require('path').join(__dirname, 'audit.js'), 'utf-8');
@@ -135,9 +143,21 @@ function rank(rows, groupOf, fallbackOf, W) {
       const distinct = new Set(vals).size;
       // 存续不到百年的带(秦 15 年、西晋 51 年)大事记条数和交往天然少,这两维不判薄
       const shortSpan = r.span !== undefined && r.span < 100 && (d === '大事记条数' || d === '交往');
+      /* v370:正文密度的闸门(Ray 2026-09-05 拍板改判据)。
+         密度 = 每百字几个具体物,是**比值**:补厚时写的叙事段落让分子分母一起涨,比值反而掉——
+         v368 之后西葡密度 2.1 却有 54 个具体物,比密度 2.8、正文只有 1416 字的唐还多三成,
+         却被判「薄」,而唐不算。要把这个数拉上去只能删掉叙事的连接句、把正文压成条目式,
+         正好撞铁律「可读优先于精确」;它又是组内百分位,十九条带里永远有垫底的,清不空。
+         **改法不是不看密度,是给它加一条绝对闸门**:只有当这条带的具体物**绝对数**也低于全站中位数时,
+         密度低才算薄。密度回答「这段话有没有货」,绝对数回答「这条带一共有多少货」——
+         两个都低才是真薄(印度河文明 870 字只有 4 个锚点),只有比值低是文体差异,不是欠账。
+         2026-09-05 实测:全站锚点数中位 22;加闸门前判薄 130 条带、密度维度出现 41 次,加闸门后 124 条、
+         密度 33 次——放行的 8 条正是 v367/v368 补厚过的长文带与同类叙事体(西葡与莫卧儿的薄维度归零),
+         而印度河文明(870 字只有 4 个锚点)照旧判薄,说明闸门没有把真信号一起筛掉。 */
+      const denseGate = d === '正文密度' && r.dims.具体物数 !== undefined && r.dims.具体物数 > ANCHOR_MED;
       const w = W[d] ?? 1;
       const BOTTOM = BOTTOM_OF[r.tier];
-      if (w > 0 && p <= BOTTOM && distinct > 1 && r.dims[d] < Math.max(...vals) && !shortSpan) { r.thin.push(d); r.score += TIER_W[r.tier] * w * (BOTTOM - p + 0.05); }
+      if (w > 0 && p <= BOTTOM && distinct > 1 && r.dims[d] < Math.max(...vals) && !shortSpan && !denseGate) { r.thin.push(d); r.score += TIER_W[r.tier] * w * (BOTTOM - p + 0.05); }
     }
     // 绝对缺口:不看组
     r.gaps = [];
