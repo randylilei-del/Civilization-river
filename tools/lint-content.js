@@ -27,7 +27,7 @@ if (!args.find(a => !a.startsWith('--'))) {
 }
 
 const CHECKS = [
-  ['最高级', /最早|最大|最长|最高|最强|最富|最先|第一个|第一座|第一次|唯一|从未|从来没有|史上|空前|绝无仅有|\b(first|earliest|largest|biggest|greatest|longest|highest|only|never|unprecedented|the first)\b/i,
+  ['最高级', /最早|最大|最长|最高|最强|最富饶|最富|最肥|最先|第一个|第一座|第一次|唯一|从未|从来没有|史上|空前|绝无仅有|\b(first|earliest|largest|biggest|greatest|longest|highest|richest|only|never|unprecedented|the first)\b/i,
     '站内对冲写法是「之一」「同类更早就有」「已知最早」;真是第一要能给出处'],
   ['现在时', /今天|至今|如今|现在仍|仍然|仍在|还能看到|还在|目前|\b(today|still|now|currently|to this day|remains?|survives?)\b/i,
     '现在时会过期(维京船博物馆 2021 闭馆、欧元 20→21 国);带年份口径,或改成不依赖「现在」的说法'],

@@ -2341,7 +2341,7 @@ const PEOPLE = {
      'He overthrew the Turkic Khaganate, founded the Uyghur one, and accepted a Chinese title for it.'],
   a:[['744 年联合各部灭后突厥汗国,建回鹘汗国','Destroyed the Second Turkic Khaganate in 744 with allied tribes and founded the Uyghur Khaganate'],
      ['接受唐玄宗册封为"怀仁可汗",与唐建立同盟','Was invested by the Tang emperor and entered into alliance with China'],
-     ['定牙帐于鄂尔浑河畔,即后来的哈剌巴剌哈孙城','Set his court on the Orkhon, at the site later known as Ordu-Baliq']],
+     ['定牙帐于鄂尔浑河畔,即后来的哈拉巴拉嘎斯城','Set his court on the Orkhon, at the site later known as Ordu-Baliq']],
   s:['他建立的同盟关系在十一年后派上用场:安史之乱中回鹘出兵助唐收复长安、洛阳,唐朝由此得以延续。回鹘后来成为唯一以摩尼教为国教的政权,西迁后由游牧转为定居农耕——这是草原民族极少见的转型,今天新疆的维吾尔族即由此而来。',
      'The alliance mattered eleven years later: Uyghur cavalry helped the Tang retake both its capitals during the An Lushan rebellion, and the dynasty survived because of it. The Uyghurs later became the only state ever to adopt Manichaeism as its religion, and after migrating west they turned from herding to settled farming — a rare transition on the steppe, and the origin of today\'s Uyghurs in Xinjiang.'] },
 '萨图克·博格拉汗': { g:'faith', y:[901,955], ca:1, c:'喀喇汗王朝', n:['萨图克·博格拉汗','Satuq Bughra Khan'],
