@@ -215,14 +215,14 @@ const CITY_SITES = {
  { n:['圣墓教堂','the Church of the Holy Sepulchre'], y:335, e:['罗马·君士坦丁','Constantinian'] },
 ],
 '大马士革': [
- { n:['乌加里特字母表泥板','the Ugaritic alphabet tablet'], y:-1300, e:['腓尼基','Phoenicia'], ca:1, mu:['大马士革 国家博物馆','National Museum of Damascus'] },
+ { n:['乌加里特字母表泥板(乌加里特文,和腓尼基字母是两套东西)','the Ugaritic alphabet tablet — a different system from the Phoenician alphabet'], y:-1300, e:['腓尼基','Phoenicia'], ca:1, mu:['大马士革 国家博物馆','National Museum of Damascus'] },
  { n:['倭马亚大清真寺','the Umayyad Mosque'], y:715, e:['倭马亚','Umayyad'] },
 ],
 '巴格达': [
  { n:['穆斯坦西里亚学院','the Mustansiriya Madrasa'], y:1233, e:['阿拔斯','Abbasid'] },
 ],
 '开罗': [
- { n:['图坦卡蒙的金面具','the mask of Tutankhamun'], y:-1323, e:['新王国埃及','New Kingdom Egypt'], mu:['开罗 埃及博物馆','Egyptian Museum, Cairo'] },
+ { n:['图坦卡蒙的金面具','the mask of Tutankhamun'], y:-1323, e:['新王国埃及','New Kingdom Egypt'], mu:['吉萨 大埃及博物馆','Grand Egyptian Museum, Giza'] },
  { n:['罗塞塔石碑(出自尼罗河口的拉希德)','the Rosetta Stone, from Rashid at the Nile mouth'], y:-196, e:['希腊化王朝','Hellenistic'], mu:['伦敦 大英博物馆','British Museum, London'] },
  { n:['吉萨金字塔','the Pyramids of Giza'], y:-2560, e:['古埃及古王国','Old Kingdom'] },
  { n:['伊本·图伦清真寺','the Mosque of Ibn Tulun'], y:879, e:['图伦','Tulunid'] },
@@ -236,8 +236,8 @@ const CITY_SITES = {
  { n:['卡鲁因大学','the Qarawiyyin'], y:859, e:['伊德里斯','Idrisid'] },
 ],
 '巴比伦': [
- { n:['伊什塔尔门','the Ishtar Gate'], y:-575, e:['新巴比伦','Neo-Babylonian'], mu:['柏林 佩加蒙博物馆','Pergamon Museum, Berlin'] },
- { n:['伊什塔尔门遗址','the Ishtar Gate'], y:-575, e:['新巴比伦','Neo-Babylonian'] },
+ { n:['伊什塔尔门','the Ishtar Gate'], y:-575, e:['新巴比伦','Neo-Babylonian'], mu:['柏林 佩加蒙博物馆(整修闭馆中)','Pergamon Museum, Berlin (closed for rebuilding)'] },
+ { n:['伊什塔尔门遗址','the Ishtar Gate, on site'], y:-575, e:['新巴比伦','Neo-Babylonian'] },
 ],
 '亚历山大': [
  { n:['庞培柱','Pompey\'s Pillar'], y:297, e:['罗马','Roman'] },
@@ -313,8 +313,7 @@ const CITY_SITES = {
  { n:['桑科雷清真寺','the Sankore Mosque'], y:1400, e:['马里帝国','Mali Empire'], ca:1 },
 ],
 '阿克苏姆': [
- { n:['阿克苏姆方尖碑(2005 年从罗马运回)','the Axum obelisk, returned from Rome in 2005'], y:350, e:['阿克苏姆','Aksum'], ca:1, mu:['阿克苏姆 现场','on site at Axum'] },
- { n:['阿克苏姆方尖碑','the Aksum obelisks'], y:350, e:['阿克苏姆','Aksumite'], ca:1 },
+ { n:['阿克苏姆方尖碑群(其中一座 2005 年从罗马运回)','the Aksum obelisks, one of them brought back from Rome in 2005'], y:350, e:['阿克苏姆','Aksum'], ca:1 },
 ],
 '大津巴布韦': [
  { n:['津巴布韦鸟石雕(1980 年代起陆续归还)','the Zimbabwe Birds, returned from the 1980s'], y:1300, e:['大津巴布韦','Great Zimbabwe'], ca:1, mu:['大津巴布韦 遗址博物馆','Great Zimbabwe site museum'] },
@@ -352,7 +351,7 @@ const CITY_SITES = {
  { n:['一号神庙','Temple I'], y:732, e:['古典玛雅','Classic Maya'] },
 ],
 '库斯科': [
- { n:['马丘比丘出土文物(2011 年起分批归还)','finds from Machu Picchu, returned from 2011'], y:1450, e:['印加','Inca'], ca:1, mu:['库斯科 印加博物馆','Museo Inka, Cusco'] },
+ { n:['马丘比丘出土文物(2011 年起分批归还)','finds from Machu Picchu, returned from 2011'], y:1450, e:['印加','Inca'], ca:1, mu:['库斯科 马丘比丘博物馆(康查之家)','Museo Machupicchu – Casa Concha, Cusco'] },
  { n:['萨克塞华曼','Sacsayhuaman'], y:1450, e:['印加','Inca'], ca:1 },
  { n:['太阳神殿(科里坎查)','the Qorikancha'], y:1438, e:['印加','Inca'], ca:1 },
 ],
@@ -590,14 +589,13 @@ const CITY_SITES = {
  { n:['塞尔苏斯图书馆','the Library of Celsus'], y:117, e:['罗马帝国','Roman Empire'] },
  { n:['大剧场(可容两万五千人)','the great theatre, seating twenty-five thousand'], y:-250, e:['希腊化王朝','Hellenistic'], ca:1 },
  { n:['阿尔忒弥斯神庙的一根柱子','one column of the temple of Artemis'], y:-550, e:['吕底亚','Lydia'], ca:1 },
- { n:['神庙地基出土的最早期硬币','the earliest coins, from the temple foundations'], y:-600, e:['吕底亚','Lydia'], ca:1, mu:['伦敦 大英博物馆','British Museum, London'] },
+ { n:['神庙地基出土的已知最早的硬币','the earliest known coins, from the temple foundations'], y:-600, e:['吕底亚','Lydia'], ca:1, mu:['伊斯坦布尔 考古博物馆','Istanbul Archaeological Museums'] },
 ],
 '罗德岛': [
- { n:['罗德老城与骑士团城墙','the old town and the walls of the Knights'], y:1309, e:['奥斯曼帝国','Ottoman'], ca:1 },
+ { n:['罗德老城与骑士团城墙(1309 年医院骑士团所建,1522 年奥斯曼攻下)','the old town and the walls of the Knights, built from 1309 and taken by the Ottomans in 1522'], y:1309, e:['奥斯曼帝国','Ottoman'], ca:1 },
  { n:['林多斯卫城','the acropolis of Lindos'], y:-300, e:['希腊化王朝','Hellenistic'], ca:1 },
 ],
 '金沙萨': [
  { n:['刚果河码头与老城区','the river port and the old town'], y:1881, e:['欧洲殖民非洲','Colonial Africa'] },
- { n:['刚果王国的恩金加雕像等','Kongo power figures and regalia'], y:1600, e:['刚果王国','Kingdom of Kongo'], ca:1, mu:['金沙萨 国立博物馆','National Museum, Kinshasa'] },
 ],
 };
