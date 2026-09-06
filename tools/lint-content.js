@@ -107,6 +107,44 @@ for (const { file, no, text } of lines) {
     why: '中文用「之一」对冲了,英文可能把话说死(核查员抓到过两次:the earliest standing army / the first infantry force anywhere)' });
 }
 
+/* 鼎盛段:正文改了,标题或领域标签没跟着改(2026-09-06 立)。
+   为什么存在:「条上印出错标签」这个毛病在核查里复发了六次——第十八轮的「思想 · 两套军队」、
+   v373.1 的回鹘(正文换成三体碑、标题还挂着「绢马贸易」)、v374.1 的瓦里(标题「高原农业工程」
+   而后三分之一在讲巨石)、v375.1 的大津巴布韦(整段零经济内容而 k 还是 econ)……渲染层把
+   `GL_KIND[k].n · t` 直接拼在正文前面(index.html:15474),标题脱靶就是明晃晃地教错。
+
+   **它不能靠语义判**(那是 v370/v371.1/v375.1 连着驳回三条启发式的地方),但它的**发生形状**很固定:
+   六次全是「改了 d,没动 t 或没动 k」。这一条不判对错,只在这种形状出现时提醒一句。
+
+   ⚠ 精度如实记:对本会话 v373/v374/v375 三批回放,每批响 5–6 条,而每批真正脱靶的只有 1 条——
+   **多数「保留 t/k」是对的**(大越保 inst、五代十国保 art 都没问题)。所以它和上面那条「中英对冲不成对」
+   同一性质:**精度不高,但放在 lint 里划算**——只扫刚改的段,一批就几行,而六次真错无一例外是这个形状,
+   漏报为零。收窄到「t 与 k 都没动」能把噪音减半,但那样会漏掉 v375.1 大津巴布韦那种「改了标题、忘了标签」,
+   所以维持宽口径。清单不是红灯,写的人自己看一眼即可。 */
+{
+  const segRe = /\{\s*a:(-?\d+),\s*b:(-?\d+),\s*k:'([a-z]+)',\s*t:\[('(?:[^'\\]|\\.)*')\s*,\s*('(?:[^'\\]|\\.)*')\]\s*,\s*d:\[/g;
+  const sigOf = txt => { const m = {}; let x;
+    const re = new RegExp(segRe.source, 'g');
+    while ((x = re.exec(txt))) m[`${x[1]}|${x[2]}`] = { k: x[3], t: x[4] };
+    return m; };
+  const oldSig = sigOf(OLD.join('\n')), newSig = {};
+  for (const { file, no, text } of lines) {
+    if (/^\s*(\/\/|\/\*|\*)/.test(text)) continue;
+    const re = new RegExp(segRe.source, 'g'); let x;
+    while ((x = re.exec(text))) newSig[`${x[1]}|${x[2]}`] = { k: x[3], t: x[4], file, no };
+  }
+  for (const [key, cur] of Object.entries(newSig)) {
+    const prev = oldSig[key]; if (!prev) continue;          // 全新的段,没有「没跟着改」的问题
+    const same = [];
+    if (prev.k === cur.k) same.push(`领域标签 ${cur.k}`);
+    if (prev.t === cur.t) same.push(`标题 ${cur.t.slice(0, 18)}`);
+    if (!same.length) continue;                              // t 与 k 都换过了,不提醒
+    hits.push({ tag: '鼎盛段标题/标签没跟着正文改', file: cur.file, no: cur.no, m: same.join(' + '),
+      s: `区间 ${key.replace('|', '—')} 的正文改了,而 ${same.join('、')} 原样没动`,
+      why: '渲染时「领域 · 标题」直接印在正文前面,标题脱靶等于明晃晃地教错(同类问题已复发六次);确认它们还说的是同一件事' });
+  }
+}
+
 if (!hits.length) { console.log(`lint-content: ${ALL ? '全站' : REF + '..工作区'} 的 data/ 里没有命中(扫了 ${lines.length} 行)`); process.exit(0); }
 console.log(`lint-content: ${ALL ? '全站' : REF + '..工作区'} 新写的 ${lines.length} 行里,${hits.length} 句值得看一眼(清单不是红灯):`);
 const byTag = {}; hits.forEach(h => (byTag[h.tag] = byTag[h.tag] || []).push(h));
