@@ -210,6 +210,68 @@ async function newPage(browser, { width, height, dark = false }) {
   }
   stats.trbar = tbar.chips || 0;
 
+  /* ── 4d. 卡内中英对照(v384,Ray:「看英文卡时能对照到中文」) ──
+     每段成段文字中英同在(.bi 里 .l0/.l1),当前语言可见;点正文段落 → 另一种展开(.both);
+     钩子句在 summary 里,点文字只开合 details、点小标 .bi-t 才展开对照;英文态下中文段默认不可见。
+     反例验证(2026-09-06 实测):①把点击处理里的 classList.toggle('both') 换成空操作 → 三条红;
+     ②把「html[data-lang] #panel .bi.both …{display:block}」的 html[data-lang] 前缀去掉(特异性输给 display:none)
+       → 只红「点段落后英文没有展开」——这正是开发时真踩到的坑。 */
+  const bi = await page.evaluate(async () => {
+    const out = { err: [] }; const vis = el => el && el.offsetHeight > 0;
+    const wait = ms => new Promise(r => setTimeout(r, ms));
+    document.querySelector('[data-l=zh]').click(); await wait(150);
+    openCiv(CIVS.find(c => c.n === '唐')); await wait(150);
+    const panel = document.getElementById('panel');
+    out.n = panel.querySelectorAll('.bi').length;
+    if (out.n < 5) out.err.push(`.bi 块只有 ${out.n} 个`);
+    const body = panel.querySelector('.q-item .bi:not(summary .bi)');
+    if (!body) out.err.push('六问正文没有 .bi');
+    else {
+      body.closest('details').open = true;
+      const l1 = body.querySelector('.l1');
+      if (vis(l1)) out.err.push('中文态下英文段一开始就可见');
+      body.click(); await wait(40);
+      if (!body.classList.contains('both')) out.err.push('点段落后没有 .both');
+      if (!vis(l1)) out.err.push('点段落后英文没有展开');
+      body.click(); await wait(40);
+      if (vis(l1)) out.err.push('再点一次没有收起');
+    }
+    const hook = panel.querySelector('summary .bi');
+    if (!hook) out.err.push('没有带 .bi 的钩子句');
+    else {
+      const det = hook.closest('details'); const was = det.open;
+      hook.querySelector('.l0').click(); await wait(40);
+      if (hook.classList.contains('both')) out.err.push('点钩子文字不该展开对照');
+      if (det.open === was) out.err.push('点钩子文字应当开合 details');
+      hook.querySelector('.bi-t').click(); await wait(40);
+      if (!hook.classList.contains('both')) out.err.push('点钩子小标没有展开对照');
+    }
+    const gl = panel.querySelectorAll('p.gl-d[data-gl]');
+    if (!gl.length) out.err.push('没有 p.gl-d[data-gl]'); else if ([...gl].some(x => !x.hidden)) out.err.push('gl-d 默认应当 hidden');
+    document.querySelector('[data-l=en]').click(); await wait(200);
+    if (document.documentElement.dataset.lang !== 'en') out.err.push('data-lang 没跟着切');
+    const b2 = panel.querySelector('.q-item .bi:not(summary .bi)');
+    if (b2 && vis(b2.querySelector('.l0'))) out.err.push('英文态下中文段一开始就可见');
+    /* 英文态展开后,英文要留在上面、中文落在下面(DOM 里中文在前,靠 CSS order 翻过来;
+       反例:去掉 order 规则 → 中文跑到英文上面,红) */
+    if (b2) { b2.closest('details').open = true; b2.classList.add('both'); await wait(40);
+      const t0 = b2.querySelector('.l0').getBoundingClientRect().top, t1 = b2.querySelector('.l1').getBoundingClientRect().top;
+      if (!(t1 < t0)) out.err.push(`英文态展开后中文跑到了英文上面(zh top ${t0.toFixed(0)} / en top ${t1.toFixed(0)})`);
+      b2.classList.remove('both'); }
+    /* 钩子句(summary 里的 strong.q-h)同样要英文在上——它另有 display:block 的规则,flex 容器规则特异性不够时
+       order 会静默失效(2026-09-06 实测就是这样),所以单独测一次 */
+    const h2 = panel.querySelector('summary .bi');
+    if (h2) { h2.classList.add('both'); await wait(40);
+      const t0 = h2.querySelector('.l0').getBoundingClientRect().top, t1 = h2.querySelector('.l1').getBoundingClientRect().top;
+      if (!(t1 < t0)) out.err.push(`英文态钩子句展开后中文跑到了英文上面(zh top ${t0.toFixed(0)} / en top ${t1.toFixed(0)})`);
+      h2.classList.remove('both'); }
+    document.querySelector('[data-l=zh]').click(); await wait(150);
+    panel.classList.remove('open');
+    return out;
+  });
+  bi.err.forEach(e => fail('中英对照', e));
+  stats.bi = bi.n;
+
   /* ── 5. 色带真实填充色:没有一条是纯黑/透明(v193 五条大洋洲带黑了好几版) ─────────────
      反例验证:临时删掉 CSS 里某圈 --c9-a 变量 → 报黑带(2026-08-16) */
   const bands = await page.evaluate(() => {

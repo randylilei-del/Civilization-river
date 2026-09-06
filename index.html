@@ -831,6 +831,24 @@ a.bk:hover { border-color: var(--ink-2); }
 #panel .fact b { font-weight: 600; font-size: 0.92em; }
 /* v155:总结段挪到卡片最顶(紧跟 meta 行)当概览——进来先一句话看懂,再细细展开 */
 #panel .p-body { color: var(--ink-2); font-size: 1em; margin: 8px 0 2px; }
+/* v384 卡内中英对照:两种语言都在 DOM 里,当前语言可见;.both 时另一种展开在底下、颜色退一档。
+   小标 .bi-t 只是一个提示,写的是「另一种语言的名字」;展开后写「收」。不引入新颜色。 */
+#panel .bi { position: relative; cursor: pointer; padding-right: 26px; }
+#panel summary .bi { cursor: inherit; padding-right: 0; }
+html[data-lang=zh] #panel .bi .l1, html[data-lang=en] #panel .bi .l0 { display: none; }
+html[data-lang] #panel .bi.both .l0, html[data-lang] #panel .bi.both .l1 { display: block; }   /* 特异性要压过上一行的 display:none */
+/* 展开时当前语言留在原位、另一种落在底下——DOM 里中文永远在前,英文态下要靠 order 把它压到后面 */
+html[data-lang] #panel .bi.both { display: flex; flex-direction: column; }   /* 要压过 #panel .q-item .q-h {display:block},否则钩子句上 order 无效 */
+html[data-lang=en] #panel .bi.both .l0 { order: 2; }
+#panel summary .bi.both .bi-t { order: 3; align-self: flex-start; margin-left: 0; margin-top: 2px; }
+html[data-lang=zh] #panel .bi.both .l1, html[data-lang=en] #panel .bi.both .l0 { color: var(--muted); font-size: .93em; margin-top: 5px; padding-left: 8px; border-left: 2px solid var(--grid); }
+#panel .bi-t { position: absolute; right: 0; top: 0; font-style: normal; font-size: .68em; line-height: 1.5; padding: 0 4px; color: var(--muted); opacity: .55; cursor: pointer; user-select: none; }
+#panel summary .bi .bi-t { position: static; margin-left: 6px; }
+#panel .bi:hover .bi-t, #panel .bi.both .bi-t { opacity: 1; }
+html[data-lang=zh] #panel .bi-t::before { content: 'EN'; }
+html[data-lang=en] #panel .bi-t::before { content: '中'; }
+html[data-lang=zh] #panel .bi.both .bi-t::before { content: '收'; }
+html[data-lang=en] #panel .bi.both .bi-t::before { content: 'hide'; }
 /* 分裂时期的并存政权。与 .p-tl 同一套区块骨架(细线+小标题),视觉上归为同类信息 */
 #panel .p-co { margin-top: 13px; border-top: 1px solid var(--grid); padding-top: 10px; }
 #panel .p-co h3 { font-size: 0.92em; color: var(--muted); margin: 0 0 7px; font-weight: 600; letter-spacing: .05em; }
@@ -14030,6 +14048,13 @@ function yearAt(px) {
 let LANG = 'zh';
 try { LANG = localStorage.getItem('whviz-lang') || 'zh'; } catch (e) {}
 const T = (zh, en) => LANG === 'zh' ? zh : en;
+/* v384(Ray:「看英文卡时能对照到中文」):卡内的成段文字改成中英同在——当前语言可见、另一种折叠,
+   点一下这段(钩子句点右端的小标)就把另一种展开在底下。全站语言开关不动,图上的东西不变。
+   数据里每段本来就是 [zh,en] 成对,所以这是纯渲染改动,不碰内容。缺英文或中英相同时退回普通块。 */
+const bi = (zh, en, tag = 'p', cls = '') => {
+  if (!en || en === zh) return `<${tag}${cls ? ` class="${cls}"` : ''}>${LANG === 'zh' ? zh : (en || zh)}</${tag}>`;
+  return `<${tag} class="bi${cls ? ' ' + cls : ''}"><span class="l0">${zh}</span><span class="l1">${en}</span><i class="bi-t" role="button"></i></${tag}>`;
+};
 const fmtY = y => y < 0 ? (LANG === 'zh' ? '前' + Math.round(-y) : Math.round(-y) + ' BCE') : '' + Math.round(y);
 /* v122 起英文块内联在 CIVS 条目的 e 字段里(c.e = {n,w?,b,d?,f}),EN.civ 字典退役 */
 const cN = c => LANG === 'zh' ? c.n : (c.e && c.e.n) || c.n;
@@ -15595,7 +15620,7 @@ function chartHTML(c) {
   /* d 正文预先渲染在这里、默认折叠 —— 不走查表,切语言时整块重渲染自然跟着换。
      v11 建这个功能起 d 就从来没显示过(v71 用哨兵字符串确认),Ray 拍板改为点开。 */
   const ds = rows.map((r, i) =>
-    `<p class="gl-d" data-gl="${i}" hidden><b>${r.label}</b>${r.g2.d[li]}</p>`).join('');
+    bi(`<b>${GL_KIND[r.g2.k].n[0]} · ${r.g2.t[0]}</b>${r.g2.d[0]}`, r.g2.d[1] ? `<b>${GL_KIND[r.g2.k].n[1]} · ${r.g2.t[1]}</b>${r.g2.d[1]}` : '', 'p', 'gl-d').replace('<p class=', `<p data-gl="${i}" hidden class=`)).join('');
   /* v157:说明覆盖两种可点元素——圆点此前没有任何提示,没人会想到去点(Ray) */
   const cap = `<div class="cap">${rows.length
     ? T('圆点 = 大事，点一下看；长条 = 领域鼎盛，点一段看详情', 'Dots = key moments, tap one; bars = golden ages, tap for detail')
@@ -15879,7 +15904,7 @@ function qHTML(c) {
        其余 138 个文明照旧只出正文——所以这是加法,不是替换,没有半成品状态。 */
     const h = c.qh && c.qh[k];
     /* v149:每问一个 details——summary 里问句+钩子句常驻可见,点开才见正文。 */
-    return `<details class="q-item"><summary><b>${li ? en : zh}</b>${h ? `<strong class="q-h">${h[li]}</strong>` : ''}</summary><p>${c.q[k][li]}</p></details>`;
+    return `<details class="q-item"><summary><b>${li ? en : zh}</b>${h ? bi(h[0], h[1], 'strong', 'q-h') : ''}</summary>${bi(c.q[k][0], c.q[k][1])}</details>`;
   }).join('');
   /* v134:alive 的旧标题「这个国家的六问」中文别扭;「六个问题」又和「六个麻烦」同形,索性用「六问」。 */
   const title = alive ? T('六问', 'Six questions about this country')
@@ -15996,19 +16021,20 @@ function openCiv(c) {
   const evs = EVENTS.filter(e => e.y >= c.k[0][0] - 30 && e.y <= c.k[c.k.length-1][0] + 30)
     .sort((a2, b2) => a2.y - b2.y);
   const ch = chronoOf(c);
+  const chRaw = CHRONO[c.n] || [];   /* v384:大事记的说明段要两种语言都拿到 */
   panel.innerHTML = `
     <div class="p-head"><span class="t-dot" style="background:${fill(c)}"></span><h2>${wkA(cN(c), LANG === 'zh' ? WIKI_NAME[c.n] : (c.e && c.e.w))}${bkA(WIKI_NAME[c.n] || c.n)}</h2>
       <button class="p-close" aria-label="${T('关闭','Close')}">×</button></div>
     <div class="p-meta">${civSpan(c)} · ${lName(c.l)} · ${sName(c.s)}${T('文明圈',' sphere')}</div>
-    <div class="p-body">${cD(c)}</div>
+    ${bi(c.d || c.b, (c.e && (c.e.d || c.e.b)) || '', 'div', 'p-body')}
     ${chartHTML(c)}
     ${mapHTML(c)}
     ${facts}
     ${photoHTML(c)}
     ${coHTML(c)}
     ${qHTML(c)}
-    ${ch.length ? `<div class="p-tl"><h3>${T('大事记（曲线上的小圆点）','Key moments (dots on the curve)')}</h3>${ch.map(([y, t2, d2]) =>
-      `<div class="tl-item" data-evy="${y}"><span class="tl-y">${fmtY(y)}</span><div><b>${wkA(t2, bkTerm(stripParen(t2)))}</b>${d2 ? `<p>${d2}</p>` : ''}</div></div>`).join('')}</div>` : ''}
+    ${ch.length ? `<div class="p-tl"><h3>${T('大事记（曲线上的小圆点）','Key moments (dots on the curve)')}</h3>${ch.map(([y, t2, d2], ci) =>
+      `<div class="tl-item" data-evy="${y}"><span class="tl-y">${fmtY(y)}</span><div><b>${wkA(t2, bkTerm(stripParen(t2)))}</b>${d2 ? bi(chRaw[ci][2][0], chRaw[ci][2][1] || '') : ''}</div></div>`).join('')}</div>` : ''}
     ${worldHTML(c, evs)}
     ${videoHTML(c)}`;
   panel.classList.add('open');
@@ -16020,7 +16046,7 @@ function openEvent(ev) {
     <div class="p-head"><h2>${EV_GLYPH[ev.t]} ${wkA(evTitle(ev), bkTerm(evTitle(ev)))}</h2>
       <button class="p-close" aria-label="${T('关闭','Close')}">×</button></div>
     <div class="p-meta">${T('约 ','c. ')}${fmtY(ev.y)}${T(' 年','')} · ${evType(ev.t)} · ${T('波及:','Regions: ')}${ev.ls.map(lName).join(T('、',', '))}</div>
-    <div class="p-body">${evDesc(ev)}</div>`;
+    ${bi(ev.d[0], ev.d[1] || '', 'div', 'p-body')}`;
   panel.classList.add('open');
 }
 /* 共同体卡(v143)。整张卡的重心是**成员名单**——因为它要回答的正是
@@ -16035,7 +16061,7 @@ function openUnion(u) {
     <div class="p-head"><h2>${u.g} ${wkA(u.n[li], u.w[li])}</h2>
       <button class="p-close" aria-label="${T('关闭','Close')}">×</button></div>
     <div class="p-meta">${fmtY(u.a)}—${T('今','present')} · ${lName(u.l)} · ${T('共同体','Community')}</div>
-    <div class="p-body">${u.d[li]}</div>
+    ${bi(u.d[0], u.d[1], 'div', 'p-body')}
     <div class="p-facts">
       <!-- 创始成员少就列名字(欧盟 6、东盟 5),多到列了也没人读就写一句话(非盟 32 国) -->
       <div class="fact"><span>${T('创始','Founders')}</span><b>${u.f ? nm(u.f) : u.fd[li]}</b></div>
@@ -16453,6 +16479,11 @@ panel.addEventListener('keydown', e => {
 });
 panel.addEventListener('click', e => {
   if (e.target.classList.contains('p-close')) panel.classList.remove('open');
+  /* v384 中英对照:点小标一定切;点整段只在段落不在 summary 里时切(summary 那一下要留给 details 开合)。
+     链接与按钮照旧不抢。 */
+  const biT = e.target.closest && e.target.closest('.bi-t');
+  const biB = !biT && e.target.closest && !e.target.closest('a,button,summary') && e.target.closest('.bi');
+  if (biT || biB) { (biT ? biT.closest('.bi') : biB).classList.toggle('both'); if (biT) e.preventDefault(); return; }
   /* v207.2 卡上「中心」的城市 → 关卡、切地图视角、开那座城 */
   const cityA = e.target.closest && e.target.closest('a.tv-city');
   if (cityA) { const i = +cityA.dataset.city; panel.classList.remove('open'); closeTableView(); openGeoView(); gvQuery(GEO_CITY[i][2], GEO_CITY[i][3], i); return; }
@@ -17464,6 +17495,7 @@ document.getElementById('vwGeo').addEventListener('click', fhDismiss);
 
 function applyLang() {
   document.documentElement.lang = LANG === 'zh' ? 'zh-CN' : 'en';
+  document.documentElement.dataset.lang = LANG;   /* v384:卡内中英对照的 CSS 靠它 */
   document.getElementById('h1T').textContent = T('文明长河', 'A River of Civilizations');
   document.getElementById('subT').textContent = T('从史前到现代：各区域主导文明的兴衰与往来。厚度 = 区域内相对影响力（示意），颜色 = 所属文明圈，同色的深浅只为区分相邻色带、没有含义。点击任意色带查看详情。',
     'Prehistory to the present: the rise, fall and exchanges of each region\'s dominant civilizations. Thickness = relative regional influence (illustrative); color = civilizational sphere; lighter and darker shades of one color only tell neighbouring bands apart and carry no meaning. Click any band for details.');
@@ -17500,6 +17532,7 @@ function applyLang() {
      全量扫描里也只有在「开着卡的时候切语言」这一个顺序下才会现形。 */
   if (cur && panel.classList.contains('open'))
     cur.type === 'civ' ? openCiv(cur.obj) : cur.type === 'un' ? openUnion(cur.obj) : openEvent(cur.obj);
+  /* v384 实测:innerHTML 重建不会把 panel.scrollTop 打回顶部(反例注入证实加一行 restore 完全是死码),所以这里不需要保位置。 */
 }
 document.getElementById('langSw').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b || b.dataset.l === LANG) return;
