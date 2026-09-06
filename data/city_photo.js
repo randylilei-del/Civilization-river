@@ -11,8 +11,29 @@
    选图流程(v202):每处古迹取对应英文维基条目的首图 → 查 Commons 存在与许可 → 220 张缩略图人眼过一遍,
    剔掉地图、logo、无关物、纯特写(共剔 20 张,见 CHANGELOG v202)。没有古迹图的城取城市条目首图(标城市名)。
    说明文字 t 用古迹表里的名字去掉「(动工)/(现建筑)」这类标记。
-   巴特那没有拿得准的图,留空——没条目的城市不渲染按钮。 */
+   巴特那没有拿得准的图,留空——没条目的城市不渲染按钮。
+   ⚠ 留空名单 v382 起搬进 audit.js 的 CITY_PHOTO_NA(规则 89)由机器查:此前只写在这里,
+   于是新入站的城会静默加入留空(2026-09-06 盘点发现无照片 6 座而名单只有巴特那一座,
+   多出的克诺索斯/以弗所/罗德岛是 v358 补七大奇迹时新入站、张掖/武威是写河西走廊时新入站,
+   配套的选图都没跟上,同批已补齐)。张掖两处古迹在英文维基都没有条目,按本节的兜底口径
+   本该取城市条目首图(丹霞地貌),但那是自然景观、与本站讲的河西走廊无关,改取古迹表里
+   大佛寺的 Commons 图。 */
 const CITY_PHOTO = {
+'张掖': [
+ { f:'Zhangye_Dafo_Si_2014.01.02_15-19-59.jpg', h:'2/25', t:['张掖大佛寺的牌坊','the archway of the Great Buddha Temple, Zhangye'], by:'Zhangzhugang', lic:'CC BY-SA 3.0' },
+],
+'武威': [
+ { f:'Gansu_Museum_2007_257.jpg', h:'2/25', t:['雷台汉墓出土的铜奔马','the bronze galloping horse from the Han tomb at Leitai'], by:'G41rn8', lic:'CC BY-SA 4.0' },
+],
+'克诺索斯': [
+ { f:'Knossos_north_entrance,_Crete_001.JPG', h:'c/cb', t:['克诺索斯宫的北入口','the north entrance of the palace at Knossos'], by:'Moonik', lic:'CC BY-SA 3.0' },
+],
+'以弗所': [
+ { f:'Ephesus_Celsus_Library_Façade.jpg', h:'8/84', t:['塞尔苏斯图书馆的正立面','the façade of the Library of Celsus'], by:'Benh LIEU SONG', lic:'CC BY-SA 3.0' },
+],
+'罗德岛': [
+ { f:'Street_of_Knights_(Rhodes)_01.jpg', h:'1/1a', t:['罗德老城的骑士街','the Street of the Knights in the old town of Rhodes'], by:'Bernard Gagnon', lic:'CC BY-SA 4.0' },
+],
 '西安': [
  { f:'51714-Terracota-Army.jpg', h:'8/88', t:['秦始皇兵马俑','the Terracotta Army'], by:'xiquinhosilva', lic:'CC BY 2.0' },
  { f:'Giant_Wild_Goose_Pagoda.jpg', h:'1/13', t:['大雁塔','the Giant Wild Goose Pagoda'], by:'Alex Kwok', lic:'CC BY-SA 3.0' },
