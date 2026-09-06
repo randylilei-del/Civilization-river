@@ -7074,10 +7074,27 @@ const CITY_PHOTO = {
       年份与图都已过 v201/v202 两轮核查——唐→大雁塔、明→紫禁城、奥斯曼→托普卡帕宫。这一路 76 条文明。
    ② 剩下的文明手工点名「拍得到的实物」(成就字段里的东西:乌尔塔庙、汉谟拉比法典、桑奇大塔、摩艾……),取英文维基条目首图,
       Commons 查许可,缩略图人眼过一遍(剔地图 / 黑白远景 / 糊图 10 张)。抽象成就(科举、法典条文)不配图;不配人像。
-   覆盖不到的文明留空(v342 第三批补 20 条后,留空=v209 的 11 条+喀布尔沙希——维基条目无首图,Commons 搜索也没有可用实物照;v209 时点 11 条:匈奴、柔然、匈人、嚈哒、准噶尔、俄国治下中亚、西晋、渤海国、卡涅姆·博尔努、加纳帝国、拉皮塔——
+   覆盖不到的文明留空——**名单 v382 起搬进 audit.js 的 PHOTO_NA(规则 88)由机器查**,
+   因为它只写在这里的时候,拆带拆出来的新带会静默加入留空(2026-09-06 盘点发现无照片 17 条而名单只有 12 条,
+   多出的米诺斯/中王国埃及/高丽/幕府时代/近现代日本全是拆带的另一半没继承照片,同批已补齐)。留空=v209 的 11 条+喀布尔沙希——维基条目无首图,Commons 搜索也没有可用实物照;v209 时点 11 条:匈奴、柔然、匈人、嚈哒、准噶尔、俄国治下中亚、西晋、渤海国、卡涅姆·博尔努、加纳帝国、拉皮塔——
    要么真没有拿得出手的实物,要么维基条目首图是地图),没条目就不渲染按钮,不硬凑。第二批手工清单见 tools/civ_photo_curated_titles2.json。
    ⚠ 缩略图宽度只能用 960(Commons 对站外只出标准档),同 city_photo.js。 */
 const CIV_PHOTO = {
+'米诺斯': [
+ { f:'Knossos_bull_leaping_fresco.jpg', h:'d/d8', t:['克诺索斯的跳牛壁画','the bull-leaping fresco from Knossos'], by:'Gsimonov', lic:'CC0' },
+],
+'中王国埃及': [
+ { f:'White_Chapel.jpg', h:'3/32', t:['辛努塞尔特一世的白色小神殿','the White Chapel of Senusret I'], by:'Markh', lic:'CC BY-SA 3.0' },
+],
+'高丽': [
+ { f:'Goryeo_Celadon.jpg', h:'b/b1', t:['青瓷象嵌云鹤纹梅瓶','a Goryeo celadon vase inlaid with cranes and clouds'], by:'Korea history', lic:'CC BY-SA 3.0' },
+],
+'幕府时代': [
+ { f:'230128_Kamakura_Daibutsu_Japan04s3.jpg', h:'c/cf', t:['镰仓大佛','the Great Buddha of Kamakura'], by:'663highland', lic:'CC BY-SA 4.0' },
+],
+'近现代日本': [
+ { f:'Shinkansen_Series0_R67_JNRcolor.jpg', h:'9/90', t:['0 系新干线','a 0 Series Shinkansen train'], by:'ナダテ', lic:'CC BY 3.0' },
+],
 '迈锡尼': [
  { f:'Lion_Gate_-_Mycenae_by_Joy_of_Museums.jpg', h:'3/37', t:['迈锡尼狮子门','the Lion Gate of Mycenae'], by:'Joyofmuseums', lic:'CC BY-SA 4.0' },
 ],
