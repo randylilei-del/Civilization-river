@@ -40,6 +40,22 @@ function depthLine(name) {
 }
 
 const civ = CIVS.find(c => c.n === NAME);
+/* v381 --find:按一样东西的名字直查全库的城市小段与城市总结段,打全文。
+   由来:2026-09-06 两轮核查各抓到一次「跨带撞车」——德里铁柱与撒马尔罕的六分仪弧槽,
+   两处都写在**别条带**的 place_lore 里,而第③节只列首句、看不见。
+   量过两条检测路线都装不成规则(见 CHANGELOG v381),所以不做检测,做直查。 */
+if (args.includes('--find')) {
+  const kw = args[args.indexOf('--find') + 1];
+  if (!kw) { console.error('用法: node tools/context.js --find <词>'); process.exit(2); }
+  let n = 0;
+  console.log(`# 全库直查「${kw}」—— 城市小段 place_lore\n`);
+  for (const k of Object.keys(PLACE_LORE)) if (PLACE_LORE[k][0].includes(kw)) { n++; console.log(`【${k}】${PLACE_LORE[k][0]}\n`); }
+  console.log(`# 城市总结段 city_lore\n`);
+  for (const k of Object.keys(CITY_LORE)) { const v = CITY_LORE[k]; const t = Array.isArray(v) ? v[0] : v; if (String(t).includes(kw)) { n++; console.log(`【${k}】${t}\n`); } }
+  console.log(`共 ${n} 处。鼎盛段/六问/人物卡/成就卡里的同名内容用 grep: grep -n "${kw}" data/*.js`);
+  process.exit(0);
+}
+
 const cityIdx = GEO_CITY.findIndex(g => g[0] === NAME);
 
 if (civ) {
@@ -66,17 +82,27 @@ if (civ) {
   for (const [n, p] of ppl) console.log(`${n}: ${p.t ? p.t[0] : ''}${p.a ? ' | ' + p.a.map(a => a[0]).join(' / ') : ''}`);
   const ach = Object.entries(ACHV).filter(([, a]) => a.c === civ.n);
   H(`① 同卡 · 成就卡(${ach.length})`);
-  for (const [n, a] of ach) console.log(`${n}: ${a.t ? a.t[0] : ''}`);
+  for (const [n, a] of ach) {
+    console.log(`${n}: ${a.t ? a.t[0] : ''}`);
+    /* v381:要点也打出来。鼎盛段最容易重讲的就是这三条(2026-09-06 帖木儿那段
+       把「兀鲁伯天文台」的三条要点按同一顺序讲了一遍,而这里当时只打了 t)。
+       全站最长的一条带(古希腊 5 张)放开后约 1200 字,代价可以忽略。 */
+    if (a.a) a.a.forEach(x => console.log(`    · ${x[0]}`));
+  }
   console.log(`\n照片 ${(CIV_PHOTO[civ.n] || []).length} 张 · 视频 ${(VIDEO[civ.n] || []).length} 条`);
 
   const cities = GEO_CITY.map((g, i) => [g, i]).filter(([g]) => { const p = GEO[civ.n]; return p && p.p && p.p.some(poly => pip(g[2], g[3], poly)); });
   H(`② 本带版图内的城 · 本带自己的地点小段(${cities.length} 城)`);
   for (const [g] of cities) { const l = PLACE_LORE[g[0] + '|' + civ.n]; console.log(`${g[0]}|${civ.n}: ${l ? pair(l) : '(无小段)'}`); }
-  H('③ 同城不同带 · 这些城在别的带里怎么写(只列带名与首句;要全文 context.js <城市名>)');
+  H('③ 同城不同带 · 这些城在别的带里怎么写(只列带名与首句;要全文 context.js <城市名>,或按东西名直查 --find)');
   for (const [g] of cities) {
     const others = civsAt(g[2], g[3]).filter(c => c.n !== civ.n).map(c => { const l = PLACE_LORE[g[0] + '|' + c.n]; return l ? `${c.n}「${l[0].slice(0, 28)}…」` : null; }).filter(Boolean);
     if (others.length) console.log(`${g[0]}: ${others.join(' / ')}`);
   }
+  /* v381:上面每条只截 28 字,而真正会撞车的那句常常在 28 字之后——德里铁柱(2026-09-06)
+     与撒马尔罕的六分仪弧槽(同日)两次都是这样,判词原话是「跨带的同一件实物没有任何
+     一条工具链路会把它并排放」。放开全文最长的带要 3 万字,太贵;改成按东西的名字直查。 */
+  console.log(`\n  ⚠ 要写某样具体的东西(一根柱子、一座台、一件出土物)之前,先跑:node tools/context.js --find <那样东西的名字>`);
 } else if (cityIdx >= 0) {
   const g = GEO_CITY[cityIdx];
   console.log(`# ${g[0]}(${g[1]}) ${g[2]}, ${g[3]}`);
