@@ -432,6 +432,28 @@ async function newPage(browser, { width, height, dark = false }) {
   });
   stats.traces = trace.tried;
   trace.off.forEach(x => fail('轨迹不进视口', x));
+  /* 7b(v386). 全部轨迹都要把站点摆全:第 7 段只抽三条看「进视口」(每条要等滚动),这里不等滚动。
+     数的是屏底全貌条的 .tb-stop(它按全部 stops 画,不裁),主图的 .trstop 会把视口外的裁掉(见渲染器
+     「p.x < -20 || p.x > INNER_W + 20 → return」),所以只要求主图至少画出一站。v377 新加的第 35 条轨迹
+     当时是另写脚本单独验的,这一层此前没有覆盖。反例(2026-09-06 实测):让全貌条少画一站 → 报「全貌条站数不齐」。 */
+  const sweep = await page.evaluate(async () => {
+    const sel = document.getElementById('traceSel');
+    const out = { n: 0, bad: [] };
+    for (let i = 0; i < TRACES.length; i++) {
+      sel.value = String(i); sel.dispatchEvent(new Event('change'));
+      await new Promise(r => setTimeout(r, 60));
+      const drawn = document.querySelectorAll('.trstop').length;
+      const bar = document.getElementById('trBar'); const chips = bar && !bar.hidden ? bar.querySelectorAll('.tb-stop').length : -1;
+      out.n++;
+      if (!drawn) out.bad.push(`${TRACES[i].n[0]}: 主图一站都没画出来`);
+      if (chips !== TRACES[i].stops.length) out.bad.push(`${TRACES[i].n[0]}: 全貌条 ${chips} 站 / 应有 ${TRACES[i].stops.length}`);
+    }
+    sel.value = ''; sel.dispatchEvent(new Event('change'));
+    window.scrollTo({ top: 0, behavior: 'auto' });
+    return out;
+  });
+  stats.tracesAll = sweep.n;
+  sweep.bad.forEach(x => fail('全貌条站数不齐/主图无站', x));
 
   /* ── 8. 列表视角:同一列字号一致、行数 = 文明数(Ray「列表字号不一致」) ─────────────
      反例验证:给某个 td 加 style="font-size:20px" → 报(2026-08-16) */
@@ -464,15 +486,34 @@ async function newPage(browser, { width, height, dark = false }) {
   for (const vp of [{ name: 'iPad竖', width: 820, height: 1180 }, { name: '手机', width: 390, height: 844 }]) {
     const { page: p2, ctx: c2, errs: e2 } = await newPage(browser, vp);
     await p2.evaluate(BOX_FN);
-    const r = await p2.evaluate(() => {
+    const r = await p2.evaluate(async () => {
+      const wait = ms => new Promise(r => setTimeout(r, ms));
       const go = document.getElementById('twGo'); if (go) go.click();
       const skip = document.getElementById('tourSkip'); if (skip && __box(skip).shown) skip.click();
       const need = ['playBtn', 'traceSel', 'langSw', 'searchIn', 'scroller'];
       const vw = innerWidth, vh = innerHeight;
-      return need.map(id => { const el = document.getElementById(id); if (!el) return id + ':缺';
+      const errs = need.map(id => { const el = document.getElementById(id); if (!el) return id + ':缺';
         const b = __box(el); if (!b.shown) return id + ':不可见';
         if (b.right < 0 || b.left > vw || b.bottom < 0 || b.top > vh) return id + ':在视口外';
         return null; }).filter(Boolean);
+      /* v386:今天新加的三样在窄视口也得点得到——卡片 ←(v385)、对照小标(v384)、地图 ←(v385)。
+         桌面视口的 4d/4f 段不管这层;反例:给 .p-back 加 @media(max-width:900px){display:none} → iPad竖/手机档报。 */
+      const inVp = b => b.shown && b.right > 0 && b.left < vw && b.bottom > 0 && b.top < vh;
+      const clk = el => el.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      openCiv(CIVS.find(c => c.n === '唐')); await wait(400);   // 窄屏下 #panel 是 0.25s 滑入的底部抽屉,没等它到位量出来全是「视口外」(第一版就栽在这)
+      const panel = document.getElementById('panel');
+      const jump = panel.querySelector('[data-goto]'); if (jump) clk(jump); await wait(400);   // 上面已有 const go = twGo,别撞名
+      const back = panel.querySelector('.p-back');
+      if (!back) errs.push('跳转后卡上没有←'); else if (!inVp(__box(back))) errs.push('卡上的←不在视口内/不可见');
+      const det = panel.querySelector('.q-item'); if (det) det.open = true;
+      const chip = panel.querySelector('.q-item .bi:not(summary .bi) .bi-t');
+      panel.scrollTop = 0; if (chip) chip.scrollIntoView({ block: 'center' });
+      if (!chip) errs.push('卡里没有对照小标'); else if (!inVp(__box(chip))) errs.push('对照小标不在视口内/不可见');
+      const cityA = panel.querySelector('a.tv-city'); if (cityA) clk(cityA); await wait(400);
+      const gb = document.getElementById('gvBack');
+      if (!gb || gb.hidden) errs.push('跳到地图后地图←没出现'); else if (!inVp(__box(gb))) errs.push('地图←不在视口内/不可见');
+      navClear(); closeGeoView();
+      return errs;
     });
     r.forEach(x => fail(`窄视口 ${vp.name}`, x));
     if (e2.length) fail('pageerror', `${vp.name}:` + e2[0]);

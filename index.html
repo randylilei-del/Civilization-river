@@ -929,6 +929,18 @@ html[data-lang=en] #panel .bi.both .bi-t::before { content: 'hide'; }
 #tableview a.tv-city, #panel a.tv-city { color: inherit; text-decoration: underline dotted; text-underline-offset: 3px; cursor: pointer; }
 #tableview a.tv-city:hover, #panel a.tv-city:hover { color: var(--civ-t, var(--ink)); }
 @media (max-width: 640px) { #tableview .gv-head b { display: none; } }
+/* v386(smoke 第 9 段抓到):390px 手机上地图头部的标题(flex:1 + min-width:0)被挤成一字一行、高 400 多像素,
+   缩放钮和 ×/← 全被推到屏外——× 在这之前就已经点不到了,只是没人在手机宽度上查过它。
+   实测两轮才弄对:①藏掉标题(照表视图那条);②按钮的自然宽度之和仍超过 390(不换行时是靠 flex 把按钮压扁才「放下」的,
+   触控目标跟着变小),所以允许换行,并用 order/margin 把 ← 和 × 留在第一行右端、其余落到第二行——
+   孩子要找的两个键始终在老位置。反例(2026-09-06):把①②都去掉 → 手机档「地图←不在视口内」红;只去掉其一都不红,两条各自能挡住。 */
+@media (max-width: 640px) {
+  #geoview .gv-head b { display: none; }
+  #geoview .gv-head { flex-wrap: wrap; row-gap: 6px; }
+  #geoview .gv-rand, #geoview .gv-zoom { order: 5; }
+  #geoview .gv-back { margin-left: auto; }
+  #geoview .gv-back[hidden] + .gv-x { margin-left: auto; }
+}
 table { border-collapse: collapse; min-width: 640px; }
 th, td { text-align: left; padding: 5px 12px; border-bottom: 1px solid var(--grid); }
 th { color: var(--muted); font-weight: 600; font-size: 12px; }
