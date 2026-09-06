@@ -603,6 +603,10 @@ svg.no-ev .evg { display: none; }
   border-radius: 9px; width: 40px; height: 40px; cursor: pointer; font-size: 18px; line-height: 1;
 }
 #panel .p-close:hover { color: var(--ink); border-color: var(--muted); }
+/* v385 返回键:与 × 同尺寸同样式(孩子点得中),只在有地方可回时渲染 */
+#panel .p-back { border: 1px solid var(--border); background: none; color: var(--ink-2); border-radius: 9px; width: 40px; height: 40px; cursor: pointer; font-size: 18px; line-height: 1; margin-right: 6px; flex: none; }
+#panel .p-back:hover { color: var(--ink); border-color: var(--muted); }
+#geoview .gv-back { margin-right: -6px; }
 #panel .p-meta { color: var(--muted); font-size: 0.92em; margin: 3px 0 10px; font-variant-numeric: tabular-nums; }
 a.wk { color: inherit; text-decoration: underline dotted var(--muted); text-underline-offset: 2.5px; }
 a.wk:hover { text-decoration-style: solid; }
@@ -1024,6 +1028,7 @@ td .dot { display: inline-block; width: 9px; height: 9px; border-radius: 3px; ma
     <!-- v176(Ray):随机跳一座城,探索它的前世今生——地图版的「今日文明」 -->
     <button class="gv-rand" id="gvRand">随便去个地方</button>
     <span class="gv-zoom"><button data-z="1" class="on">世界</button><button data-z="2.2">放大</button><button data-z="4">更大</button></span>
+    <button class="gv-x gv-back" id="gvBack" hidden aria-label="返回">←</button>
     <button class="gv-x" id="gvClose" aria-label="关闭">×</button>
   </div>
   <div class="gv-mapw"><div class="gv-map" id="gvMap"></div><button class="gv-tog" id="gvTog">展开地图 · 换个地方</button></div>
@@ -14055,6 +14060,35 @@ const bi = (zh, en, tag = 'p', cls = '') => {
   if (!en || en === zh) return `<${tag}${cls ? ` class="${cls}"` : ''}>${LANG === 'zh' ? zh : (en || zh)}</${tag}>`;
   return `<${tag} class="bi${cls ? ' ' + cls : ''}"><span class="l0">${zh}</span><span class="l1">${en}</span><i class="bi-t" role="button"></i></${tag}>`;
 };
+/* v385(Ray:「跳过去很方便,误操作想点回去就没那么方便了」):卡内导航的「返回」。
+   两条路本来就能回(人物/成就小卡盖在文明卡上、从城市面板开出的文明卡盖在面板上,关卡即回),
+   回不去的是「换掉了原来那张」的几种:卡开着时又开了另一张(同期文明圆点、时间轴误点、人物卡跳文明)、
+   文明卡点「中心」跳去地图、地图上误点到另一座城。做法:每次「换掉」之前记一笔快照
+   (哪张卡、卡里滚到哪、是否在地图上、看的哪座城),← 按钮只在栈非空时出现,点 × 或 Esc 关掉就清空。
+   只做按钮,不接浏览器历史(Ray 2026-09-06 定:先用按钮,手势以后再说)。 */
+const NAV = [];
+let NAV_SILENT = false;   // navBack / applyLang 自己重开卡片时不许再记快照
+const navSnap = () => ({
+  cur: (panel.classList.contains('open') && cur) ? { type: cur.type, obj: cur.obj } : null,
+  st: panel.scrollTop, geo: !gv.hidden, gvLast: GV.last ? { ...GV.last } : null,
+});
+const navBtns = () => { const b = document.getElementById('gvBack'); if (b) b.hidden = !NAV.length; };
+const navPush = () => { NAV.push(navSnap()); if (NAV.length > 30) NAV.shift(); navBtns(); };
+const navClear = () => { NAV.length = 0; navBtns(); };
+/* 开一张卡会换掉正开着的那张 → 记快照。同一张不记(点了两次同一条带)。 */
+const navGuard = (type, obj) => { if (!NAV_SILENT && panel.classList.contains('open') && cur && !(cur.type === type && cur.obj === obj)) navPush(); };
+const navBtnHTML = () => NAV.length ? `<button class="p-back" aria-label="${T('返回','Back')}">←</button>` : '';
+function navBack() {
+  const sn = NAV.pop(); if (!sn) return;
+  NAV_SILENT = true;
+  try {
+    if (sn.geo) { closeTableView(); if (sn.gvLast) GV.last = sn.gvLast; if (gv.hidden) openGeoView(); else if (sn.gvLast) gvQuery(sn.gvLast.lon, sn.gvLast.lat, sn.gvLast.ci); }
+    else if (!gv.hidden) closeGeoView();
+    if (sn.cur) { sn.cur.type === 'civ' ? openCiv(sn.cur.obj) : sn.cur.type === 'un' ? openUnion(sn.cur.obj) : openEvent(sn.cur.obj); panel.scrollTop = sn.st; }
+    else panel.classList.remove('open');
+  } finally { NAV_SILENT = false; }
+  navBtns();
+}
 const fmtY = y => y < 0 ? (LANG === 'zh' ? '前' + Math.round(-y) : Math.round(-y) + ' BCE') : '' + Math.round(y);
 /* v122 起英文块内联在 CIVS 条目的 e 字段里(c.e = {n,w?,b,d?,f}),EN.civ 字典退役 */
 const cN = c => LANG === 'zh' ? c.n : (c.e && c.e.n) || c.n;
@@ -15998,6 +16032,7 @@ function photoHTML(c) {
   return `<button class="gv-phb" id="pPhB" type="button">📷 ${T(`看照片(${cp.length} 张)`, `See photos (${cp.length})`)}</button><div class="gv-ph" id="pPh" hidden></div>`;
 }
 function openCiv(c) {
+  navGuard('civ', c);
   cur = { type: 'civ', obj: c };
   /* v165:把这个文明自己的圈色挂成 --civ,卡内的强调色全部取它。
      **不引入新颜色**——铁律是「颜色只承载文明圈语义」(v163 把鼎盛条四色去掉就是为这条),
@@ -16024,7 +16059,7 @@ function openCiv(c) {
   const chRaw = CHRONO[c.n] || [];   /* v384:大事记的说明段要两种语言都拿到 */
   panel.innerHTML = `
     <div class="p-head"><span class="t-dot" style="background:${fill(c)}"></span><h2>${wkA(cN(c), LANG === 'zh' ? WIKI_NAME[c.n] : (c.e && c.e.w))}${bkA(WIKI_NAME[c.n] || c.n)}</h2>
-      <button class="p-close" aria-label="${T('关闭','Close')}">×</button></div>
+      ${navBtnHTML()}<button class="p-close" aria-label="${T('关闭','Close')}">×</button></div>
     <div class="p-meta">${civSpan(c)} · ${lName(c.l)} · ${sName(c.s)}${T('文明圈',' sphere')}</div>
     ${bi(c.d || c.b, (c.e && (c.e.d || c.e.b)) || '', 'div', 'p-body')}
     ${chartHTML(c)}
@@ -16040,11 +16075,12 @@ function openCiv(c) {
   panel.classList.add('open');
 }
 function openEvent(ev) {
+  navGuard('ev', ev);
   cur = { type: 'ev', obj: ev };
   panel.style.removeProperty('--civ'); panel.style.removeProperty('--civ-t');
   panel.innerHTML = `
     <div class="p-head"><h2>${EV_GLYPH[ev.t]} ${wkA(evTitle(ev), bkTerm(evTitle(ev)))}</h2>
-      <button class="p-close" aria-label="${T('关闭','Close')}">×</button></div>
+      ${navBtnHTML()}<button class="p-close" aria-label="${T('关闭','Close')}">×</button></div>
     <div class="p-meta">${T('约 ','c. ')}${fmtY(ev.y)}${T(' 年','')} · ${evType(ev.t)} · ${T('波及:','Regions: ')}${ev.ls.map(lName).join(T('、',', '))}</div>
     ${bi(ev.d[0], ev.d[1] || '', 'div', 'p-body')}`;
   panel.classList.add('open');
@@ -16053,13 +16089,14 @@ function openEvent(ev) {
    「荷兰、意大利、西班牙这些今天没有色带的国家,到底还在不在」。
    已退出的单独列,不混进名单里:英国 2020 年离开是这条色带最容易被搞错的一处。 */
 function openUnion(u) {
+  navGuard('un', u);
   cur = { type: 'un', obj: u };
   panel.style.removeProperty('--civ'); panel.style.removeProperty('--civ-t');
   const li = LANG === 'zh' ? 0 : 1;
   const nm = a => a.map(p => p[li]).join(T('、', ', '));
   panel.innerHTML = `
     <div class="p-head"><h2>${u.g} ${wkA(u.n[li], u.w[li])}</h2>
-      <button class="p-close" aria-label="${T('关闭','Close')}">×</button></div>
+      ${navBtnHTML()}<button class="p-close" aria-label="${T('关闭','Close')}">×</button></div>
     <div class="p-meta">${fmtY(u.a)}—${T('今','present')} · ${lName(u.l)} · ${T('共同体','Community')}</div>
     ${bi(u.d[0], u.d[1], 'div', 'p-body')}
     <div class="p-facts">
@@ -16478,7 +16515,8 @@ panel.addEventListener('keydown', e => {
   if (pn && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); pn.dataset.achv ? openAchv(pn.dataset.achv) : openPerson(pn.dataset.person); }
 });
 panel.addEventListener('click', e => {
-  if (e.target.classList.contains('p-close')) panel.classList.remove('open');
+  if (e.target.closest && e.target.closest('.p-back')) { navBack(); return; }
+  if (e.target.classList.contains('p-close')) { panel.classList.remove('open'); navClear(); }
   /* v384 中英对照:点小标一定切;点整段只在段落不在 summary 里时切(summary 那一下要留给 details 开合)。
      链接与按钮照旧不抢。 */
   const biT = e.target.closest && e.target.closest('.bi-t');
@@ -16486,7 +16524,7 @@ panel.addEventListener('click', e => {
   if (biT || biB) { (biT ? biT.closest('.bi') : biB).classList.toggle('both'); if (biT) e.preventDefault(); return; }
   /* v207.2 卡上「中心」的城市 → 关卡、切地图视角、开那座城 */
   const cityA = e.target.closest && e.target.closest('a.tv-city');
-  if (cityA) { const i = +cityA.dataset.city; panel.classList.remove('open'); closeTableView(); openGeoView(); gvQuery(GEO_CITY[i][2], GEO_CITY[i][3], i); return; }
+  if (cityA) { navPush(); const i = +cityA.dataset.city; panel.classList.remove('open'); closeTableView(); openGeoView(); gvQuery(GEO_CITY[i][2], GEO_CITY[i][3], i); return; }
   /* v204 文明卡照片:按钮展开 / 点图放大 / 点空白收回(与城市面板同一套) */
   const phb = e.target.closest && e.target.closest('#pPhB');
   if (phb && cur && cur.type === 'civ') {
@@ -16530,7 +16568,7 @@ document.addEventListener('keydown', e => {
   /* Esc 逐层退:先关人物卡,文明卡留着——两层一起关会让人丢失位置 */
   if (e.key !== 'Escape') return;
   if (!pcard.hidden) { closePerson(); return; }
-  panel.classList.remove('open');
+  panel.classList.remove('open'); navClear();
 });
 
 /* ---------- 数据表 ---------- */
@@ -16953,6 +16991,7 @@ function gvHeadTexts() {
   const zb = gv.querySelectorAll('.gv-zoom button');
   zb[0].textContent = T('世界', 'World'); zb[1].textContent = T('放大', 'Zoom'); zb[2].textContent = T('更大', 'More');
   document.getElementById('gvTog').textContent = GV.mini ? T('展开地图 · 换个地方', 'Open map · go elsewhere') : T('收起地图', 'Shrink map');
+  document.getElementById('gvBack').setAttribute('aria-label', T('返回', 'Back'));
 }
 /* v176:随机城市——避开与上一次相同;沿用 gvQuery,城市点/列表/高亮全套现成 */
 document.getElementById('gvRand').addEventListener('click', () => {
@@ -16981,7 +17020,8 @@ document.querySelectorAll('.viewsw').forEach(sw => sw.addEventListener('click', 
   else if (b.dataset.v === 'table') { closeGeoView(); if (tv.hidden) openTableView(); }
   else { closeGeoView(); closeTableView(); }
 }));
-document.getElementById('gvClose').addEventListener('click', closeGeoView);
+document.getElementById('gvClose').addEventListener('click', () => { closeGeoView(); navClear(); });
+document.getElementById('gvBack').addEventListener('click', navBack);
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && !gvLb.hidden) { gvLb.hidden = true; return; }   // v202.1 先关照片放大层
   if (e.key === 'Escape' && !gv.hidden && !panel.classList.contains('open') && pcard.hidden) closeGeoView();
@@ -17060,9 +17100,12 @@ let gvMoved = false;
      看「没有文明」,不如也吸过去。想真查空地的把点落在 GV_SNAP2 之外即可,「查任意点」仍在。 */
   const GV_SNAP = 28, GV_SNAP2 = 64;
   function tapAt(cx, cy) {
+    /* v385:地图上换城之前记一笔,误点了能回。只在真的发起查询时记——点在地图外的那次抬手什么都没换,不记。
+       第一版把 navPush 放在 .gc-hit 分支之后,结果点城市圆点(最常见的一下)根本不记,测试抓到才发现。 */
+    const q = (lon, lat, ci) => { if (GV.last) navPush(); gvQuery(lon, lat, ci); };
     const el = document.elementFromPoint(cx, cy);
     const hit = el && el.closest && el.closest('.gc-hit');
-    if (hit) { const i = +hit.dataset.gc; gvQuery(GEO_CITY[i][2], GEO_CITY[i][3], i); return; }
+    if (hit) { const i = +hit.dataset.gc; q(GEO_CITY[i][2], GEO_CITY[i][3], i); return; }
     const svg = gvMap.querySelector('svg');
     if (!svg || !el || !svg.contains(el)) return;
     const r = svg.getBoundingClientRect();
@@ -17073,14 +17116,14 @@ let gvMoved = false;
       const d = dx * dx + dy * dy;
       if (d < bd) { bd = d; bi = i; }
     }
-    if (bi >= 0 && bd <= GV_SNAP * GV_SNAP) { gvQuery(GEO_CITY[bi][2], GEO_CITY[bi][3], bi); return; }
+    if (bi >= 0 && bd <= GV_SNAP * GV_SNAP) { q(GEO_CITY[bi][2], GEO_CITY[bi][3], bi); return; }
     const lon = +((cx - r.left) / r.width * 360 - 180).toFixed(2);
     const lat = +(GV_LAT1 - (cy - r.top) / r.height * (GV_LAT1 - GV_LAT0)).toFixed(2);
     if (bi >= 0 && bd <= GV_SNAP2 * GV_SNAP2 &&
         !CIVS.some(c => { const g = GEO[c.n]; return g && g.p && g.p.some(poly => gvPip(lon, lat, poly)); })) {
-      gvQuery(GEO_CITY[bi][2], GEO_CITY[bi][3], bi); return;
+      q(GEO_CITY[bi][2], GEO_CITY[bi][3], bi); return;
     }
-    gvQuery(lon, lat, -1);
+    q(lon, lat, -1);
   }
   const endPt = e => {
     if (GV.mini) {   // v199 窄带:这次按下是在窄带上开始的、且没滑动 → 展开;刚被 tapAt 收窄的那次抬手不会进来(它按下时还不是 mini)
@@ -17531,7 +17574,7 @@ function applyLang() {
      漏登记的表现是「切语言时开着的卡直接抛异常」,而卡片本身怎么点都正常,
      全量扫描里也只有在「开着卡的时候切语言」这一个顺序下才会现形。 */
   if (cur && panel.classList.contains('open'))
-    cur.type === 'civ' ? openCiv(cur.obj) : cur.type === 'un' ? openUnion(cur.obj) : openEvent(cur.obj);
+    { NAV_SILENT = true; try { cur.type === 'civ' ? openCiv(cur.obj) : cur.type === 'un' ? openUnion(cur.obj) : openEvent(cur.obj); } finally { NAV_SILENT = false; } }
   /* v384 实测:innerHTML 重建不会把 panel.scrollTop 打回顶部(反例注入证实加一行 restore 完全是死码),所以这里不需要保位置。 */
 }
 document.getElementById('langSw').addEventListener('click', e => {

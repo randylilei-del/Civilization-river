@@ -272,6 +272,98 @@ async function newPage(browser, { width, height, dark = false }) {
   bi.err.forEach(e => fail('中英对照', e));
   stats.bi = bi.n;
 
+  /* ── 4f. 卡内「返回」(v385,Ray:「跳过去很方便,误操作想点回去就没那么方便」) ──
+     换掉正开着的卡之前记快照;← 只在有地方可回时出现;× / Esc / 关地图清空。
+     反例验证(2026-09-06 实测):①navBack 改成空函数 → 「点←没回到原卡」等红;
+     ②去掉 openCiv 里的 navGuard → 「同期文明跳转后没有←」红;③去掉地图换城前的 navPush → 「地图换城后←没出现」红。 */
+  const nav = await page.evaluate(async () => {
+    const out = { err: [] }; const wait = ms => new Promise(r => setTimeout(r, ms));
+    const panel = document.getElementById('panel'); const back = () => panel.querySelector('.p-back');
+    const clk = el => el.dispatchEvent(new MouseEvent('click', { bubbles: true }));   // SVG 元素没有 .click()
+    document.querySelector('[data-l=zh]').click(); await wait(120);
+    navClear(); if (!gv.hidden) closeGeoView();
+    const X = CIVS.find(c => c.n === '唐');
+    // a) 同期文明圆点/列表 → 另一张卡 → ←
+    openCiv(X); await wait(120); panel.scrollTop = 300; const st0 = panel.scrollTop;
+    if (back()) out.err.push('刚从时间轴打开的卡不该有←');
+    const go = panel.querySelector('[data-goto]');
+    if (!go) out.err.push('唐卡里没有 [data-goto]');
+    else {
+      clk(go); await wait(150);
+      if (cur.obj === X) out.err.push('点同期文明后卡没换');
+      if (!back()) out.err.push('同期文明跳转后没有←');
+      else { clk(back()); await wait(150);
+        if (cur.obj !== X) out.err.push('点←没回到原卡');
+        if (panel.scrollTop < st0 - 40) out.err.push(`点←后滚动位置没回来(${st0}→${panel.scrollTop})`);
+        if (back()) out.err.push('退到底后←还在'); }
+    }
+    // e) 卡开着时又开另一张(时间轴误点走的就是 openCiv) → ←;同一张不记
+    const Y = CIVS.find(c => c.n === '北宋');
+    openCiv(X); await wait(80); openCiv(X); await wait(80);
+    if (back()) out.err.push('重开同一张卡不该记快照');
+    openCiv(Y); await wait(80);
+    if (!back()) out.err.push('卡开着时换卡后没有←');
+    // g) 切语言不吃掉栈
+    const n0 = NAV.length; document.querySelector('[data-l=en]').click(); await wait(200);
+    if (NAV.length !== n0) out.err.push(`切语言改变了栈长度 ${n0}→${NAV.length}`);
+    if (!back()) out.err.push('切语言后←丢了');
+    document.querySelector('[data-l=zh]').click(); await wait(150);
+    // f) × 清空
+    panel.querySelector('.p-close').click(); await wait(80);
+    if (NAV.length) out.err.push('点×后栈没清空');
+    openCiv(X); await wait(80); if (back()) out.err.push('清空后新开的卡不该有←');
+    // b) 文明卡点「中心」的城 → 地图 → ←
+    const cityA = panel.querySelector('a.tv-city');
+    if (!cityA) out.err.push('唐卡里没有 a.tv-city');
+    else {
+      clk(cityA); await wait(400);
+      if (gv.hidden) out.err.push('点中心城后地图没开');
+      if (panel.classList.contains('open')) out.err.push('点中心城后卡没关');
+      const gb = document.getElementById('gvBack');
+      if (!gb || gb.hidden) out.err.push('跳到地图后地图上的←没出现');
+      else { clk(gb); await wait(300);
+        if (!gv.hidden) out.err.push('地图←没关掉地图');
+        if (!panel.classList.contains('open') || cur.obj !== X) out.err.push('地图←没回到原来的文明卡');
+        if (!gb.hidden) out.err.push('回来后地图←没藏起来'); }
+    }
+    // c) 人物卡 → 他的文明 → ←(挑一个不属于唐的人)
+    openCiv(X); await wait(80);
+    const pk = Object.keys(PEOPLE).find(k => PEOPLE[k].c !== X.n && CIVS.some(c => c.n === PEOPLE[k].c));
+    openPerson(pk); await wait(120);
+    const pgo = pcard.querySelector('[data-pgo]');
+    if (!pgo) out.err.push('人物卡里没有 [data-pgo]');
+    else { clk(pgo); await wait(150);
+      if (cur.obj === X) out.err.push('人物卡跳文明后卡没换');
+      if (!back()) out.err.push('人物卡跳文明后没有←');
+      else { clk(back()); await wait(120); if (cur.obj !== X) out.err.push('人物卡路径←没回到原卡'); } }
+    // d) 地图上点到另一座城 → ← 回到前一座
+    panel.querySelector('.p-close') && clk(panel.querySelector('.p-close')); navClear();
+    if (gv.hidden) openGeoView(); await wait(200);
+    const A = 0; gvQuery(GEO_CITY[A][2], GEO_CITY[A][3], A); await wait(200);
+    setGvMini(false); await wait(300);   // gvQuery 每次都会把地图收窄(v199),展开与读矩形必须放在查询之后——第一版顺序反了,点不到
+    const svg = gvMap.querySelector('svg'); const r = svg.getBoundingClientRect();
+    const pt = i => [r.left + (GEO_CITY[i][2] + 180) / 360 * r.width, r.top + (GV_LAT1 - GEO_CITY[i][3]) / (GV_LAT1 - GV_LAT0) * r.height];
+    // 挑一座在视口里、离 A 足够远的城
+    let B = -1; for (let i = 1; i < GEO_CITY.length; i++) { const [x, y] = pt(i); const [ax, ay] = pt(A);
+      if (x > r.left + 20 && x < Math.min(r.right, innerWidth) - 20 && y > Math.max(r.top, 0) + 20 && y < Math.min(r.bottom, innerHeight) - 20 && Math.hypot(x - ax, y - ay) > 80) { B = i; break; } }
+    if (B < 0) out.err.push('地图上找不到可点的第二座城');
+    else {
+      const [bx, by] = pt(B);
+      const ev = (type) => gvMap.dispatchEvent(new PointerEvent(type, { bubbles: true, pointerId: 7, isPrimary: true, clientX: bx, clientY: by, pointerType: 'touch' }));
+      ev('pointerdown'); await wait(30); ev('pointerup'); await wait(350);
+      if (!GV.last || GV.last.ci !== B) out.err.push(`地图点城没生效(想点 ${GEO_CITY[B][0]},得到 ${GV.last && GV.last.ci >= 0 ? GEO_CITY[GV.last.ci][0] : GV.last && GV.last.ci})`);
+      const gb2 = document.getElementById('gvBack');
+      if (!gb2 || gb2.hidden) out.err.push('地图换城后←没出现');
+      else { clk(gb2); await wait(300);
+        if (!GV.last || GV.last.ci !== A) out.err.push('地图←没回到前一座城');
+        if (!gb2.hidden) out.err.push('地图退到底后←还在'); }
+    }
+    // 收尾
+    navClear(); closeGeoView(); setGvMini(true);
+    return out;
+  });
+  nav.err.forEach(e => fail('返回键', e));
+
   /* ── 5. 色带真实填充色:没有一条是纯黑/透明(v193 五条大洋洲带黑了好几版) ─────────────
      反例验证:临时删掉 CSS 里某圈 --c9-a 变量 → 报黑带(2026-08-16) */
   const bands = await page.evaluate(() => {
