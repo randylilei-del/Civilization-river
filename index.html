@@ -598,7 +598,7 @@ svg.no-ev .evg { display: none; }
 }
 #panel h2 { font-size: 1.31em; margin: 0; flex: 1; }
 #panel .p-close {
-  /* v161:26px 手指点不中,而这是孩子关卡片的主出口(点卡外也能关,但他不知道) */
+  /* v161:26px 手指点不中,而这是孩子关卡片的主出口。(旧注释写「点卡外也能关」——那从来不成立,v388 才真装上) */
   border: 1px solid var(--border); background: none; color: var(--ink-2);
   border-radius: 9px; width: 40px; height: 40px; cursor: pointer; font-size: 18px; line-height: 1;
 }
@@ -8696,6 +8696,9 @@ const SEARCH_ALIAS = [
     why:['站里把它叫「二里头·夏」:二里头遗址挖出了宫殿与青铜作坊,年代与古书里的夏对得上,但还没挖到能自证「我是夏」的文字——所以名字里带着遗址','Here it is called Erlitou-Xia: the Erlitou site has palaces and bronze workshops in the right period for the Xia of the old books, but no writing has yet been found that names itself Xia — so the site keeps the dig in the name'] },
   { t:['春秋战国'], c:'春秋',
     why:['站里分成两条带:前半是春秋(诸侯还讲名分),后半是战国(只剩七雄硬打)——孔子在春秋,百家争鸣的大部分在战国','Two bands here: Spring and Autumn first, when the lords still kept up appearances, then the Warring States, when seven powers simply fought. Confucius belongs to the first, most of the hundred schools to the second'] },
+  /* ── v388 Jasper 2026-09-13 实测第一个自己想搜的词:「印第安人」——六条美洲带没有一条含这个词,全文只命中殖民者、传教士和「印第安纳州」 ── */
+  { t:['印第安人','印地安人','native american','native americans','american indian','american indians'], c:'密西西比文化·卡霍基亚',
+    why:['「印第安人」是哥伦布认错了地方叫出来的名字(他以为自己到了印度那边),后来泛指美洲的原住民。北美修土丘的卡霍基亚人是其中一支;再往南还有玛雅、阿兹特克、印加——在地图上找到美洲,挨个点开就都在','"Indians" is the name Columbus gave by mistake, thinking he had reached the Indies; it came to mean all the native peoples of the Americas. The mound-builders of Cahokia in North America were one such people; further south lived the Maya, Aztecs and Inca — find the Americas on the map and tap them one by one'] },
 ];
 /*__DATA:search_alias:end__*/
 /*__DATA:place_lore:start__*/
@@ -16084,7 +16087,7 @@ function openCiv(c) {
       `<div class="tl-item" data-evy="${y}"><span class="tl-y">${fmtY(y)}</span><div><b>${wkA(t2, bkTerm(stripParen(t2)))}</b>${d2 ? bi(chRaw[ci][2][0], chRaw[ci][2][1] || '') : ''}</div></div>`).join('')}</div>` : ''}
     ${worldHTML(c, evs)}
     ${videoHTML(c)}`;
-  panel.classList.add('open');
+  panelShow();
 }
 function openEvent(ev) {
   navGuard('ev', ev);
@@ -16095,7 +16098,7 @@ function openEvent(ev) {
       ${navBtnHTML()}<button class="p-close" aria-label="${T('关闭','Close')}">×</button></div>
     <div class="p-meta">${T('约 ','c. ')}${fmtY(ev.y)}${T(' 年','')} · ${evType(ev.t)} · ${T('波及:','Regions: ')}${ev.ls.map(lName).join(T('、',', '))}</div>
     ${bi(ev.d[0], ev.d[1] || '', 'div', 'p-body')}`;
-  panel.classList.add('open');
+  panelShow();
 }
 /* 共同体卡(v143)。整张卡的重心是**成员名单**——因为它要回答的正是
    「荷兰、意大利、西班牙这些今天没有色带的国家,到底还在不在」。
@@ -16121,7 +16124,7 @@ function openUnion(u) {
     <div class="p-tl"><h3>${T('关键年份','Key years')}</h3><div class="tl">${
       u.k.map(([y, t2]) => `<div class="tl-item"><span class="tl-y">${fmtY(y)}</span><div><b>${t2[li]}</b></div></div>`).join('')}</div></div>
     <div class="cap">${u.nt[li]}</div>`;
-  panel.classList.add('open');
+  panelShow();
 }
 /* ---------- v150:细色带命中补偿 ----------
    问题:挤的泳道里细带只有几像素高,iPad 手指点不准(实测鼠标瞄「唐」都会点中旁边的
@@ -16580,6 +16583,26 @@ document.addEventListener('keydown', e => {
   /* Esc 逐层退:先关人物卡,文明卡留着——两层一起关会让人丢失位置 */
   if (e.key !== 'Escape') return;
   if (!pcard.hidden) { closePerson(); return; }
+  panel.classList.remove('open'); navClear();
+});
+/* v388(Ray/Jasper 2026-09-13 实测):**点卡片外面的空白 = 关卡**。孩子的直觉与几乎所有 iPad 应用一致,
+   本站此前反着来——`.p-close` 旁 v161 那句「点卡外也能关」从来不成立(git 全史里唯一的点外收起是 v157 给事件小气泡装的)。
+   「空白」按排除法定义:不在卡里、不是人物卡层、不是任何控件(按钮/链接/输入框/搜索框/时代跳转/色带选单/大事记小气泡/
+   照片放大层/引导层),且**这一下没有开或换卡**——三个开卡函数经 panelShow() 记时间戳,同一下点击 300ms 内不关,
+   否则点另一条带会先关再开、顺手把返回栈清掉(v385)。拖选放大那一下抬手也会冒出 click,沿用 justDragged。
+   挂在 document 的冒泡阶段、且写在所有开卡监听之后,保证开卡先跑、这里后判。 */
+let PANEL_SHOWN_AT = -1e9;
+function panelShow() { panel.classList.add('open'); PANEL_SHOWN_AT = performance.now(); }
+document.addEventListener('click', e => {
+  if (!panel.classList.contains('open') || justDragged) return;
+  if (performance.now() - PANEL_SHOWN_AT < 300) return;
+  const t = e.target; if (!(t instanceof Element)) return;
+  /* 用传播路径而不是 contains():卡内点击(同期文明、人物名、←)会让开卡函数重写 innerHTML,
+     冒泡到这里时被点的那个节点已经不在卡里了,contains() 会说「卡外」;路径在派发那一刻就定了,不受重绘影响。
+     反例实测(2026-09-13):只留 contains()+去掉 300ms 守卫,smoke 4f「点←没回到原卡」立刻红。 */
+  const path = e.composedPath();
+  if ([panel, pcard, bandPick, evPop, gvLb].some(el => path.includes(el))) return;
+  if (t.closest('button, a, input, select, textarea, label, summary, [role=button], [data-era], .sbox, #tour, #tourWelcome')) return;
   panel.classList.remove('open'); navClear();
 });
 

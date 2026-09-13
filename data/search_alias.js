@@ -80,4 +80,7 @@ const SEARCH_ALIAS = [
     why:['站里把它叫「二里头·夏」:二里头遗址挖出了宫殿与青铜作坊,年代与古书里的夏对得上,但还没挖到能自证「我是夏」的文字——所以名字里带着遗址','Here it is called Erlitou-Xia: the Erlitou site has palaces and bronze workshops in the right period for the Xia of the old books, but no writing has yet been found that names itself Xia — so the site keeps the dig in the name'] },
   { t:['春秋战国'], c:'春秋',
     why:['站里分成两条带:前半是春秋(诸侯还讲名分),后半是战国(只剩七雄硬打)——孔子在春秋,百家争鸣的大部分在战国','Two bands here: Spring and Autumn first, when the lords still kept up appearances, then the Warring States, when seven powers simply fought. Confucius belongs to the first, most of the hundred schools to the second'] },
+  /* ── v388 Jasper 2026-09-13 实测第一个自己想搜的词:「印第安人」——六条美洲带没有一条含这个词,全文只命中殖民者、传教士和「印第安纳州」 ── */
+  { t:['印第安人','印地安人','native american','native americans','american indian','american indians'], c:'密西西比文化·卡霍基亚',
+    why:['「印第安人」是哥伦布认错了地方叫出来的名字(他以为自己到了印度那边),后来泛指美洲的原住民。北美修土丘的卡霍基亚人是其中一支;再往南还有玛雅、阿兹特克、印加——在地图上找到美洲,挨个点开就都在','"Indians" is the name Columbus gave by mistake, thinking he had reached the Indies; it came to mean all the native peoples of the Americas. The mound-builders of Cahokia in North America were one such people; further south lived the Maya, Aztecs and Inca — find the Americas on the map and tap them one by one'] },
 ];

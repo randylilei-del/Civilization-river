@@ -364,6 +364,59 @@ async function newPage(browser, { width, height, dark = false }) {
   });
   nav.err.forEach(e => fail('返回键', e));
 
+  /* ── 4g. 点卡外空白 = 关卡(v388,Ray/Jasper 2026-09-13 实测:「点卡片以外的空白区域以为可以关掉,其实没有关掉」) ──
+     空白 = 不在卡里、不是控件、这一下没有开/换卡。前半段在页内派事件,后半段用真鼠标走完整点击链(色带 → scroller 监听 → openCiv → 冒泡到 document)。
+     反例验证(2026-09-13 实测):①删掉 document 上的关卡监听 → 「点 header 空白后卡没关」红;②去掉 300ms 守卫 → 「真鼠标点另一条带后卡被关了」与「换卡后←被清掉」红。 */
+  const oc = await page.evaluate(async () => {
+    const out = { err: [] }; const wait = ms => new Promise(r => setTimeout(r, ms));
+    const panel = document.getElementById('panel'); const isOpen = () => panel.classList.contains('open');
+    const clk = el => el.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    document.querySelector('[data-l=zh]').click(); await wait(120);
+    navClear(); if (!gv.hidden) closeGeoView();
+    const X = CIVS.find(c => c.n === '唐'), Y = CIVS.find(c => c.n === '北宋');
+    const hd = document.querySelector('header');
+    // a) 点 header 自身的空白 → 关
+    openCiv(X); await wait(350); clk(hd); await wait(80);
+    if (isOpen()) out.err.push('点 header 空白后卡没关');
+    if (NAV.length) out.err.push('点空白关卡后返回栈没清');
+    // b) 同一下点击里开了卡(开卡函数与冒泡到 document 在 300ms 内)→ 不关、返回栈保留
+    openCiv(X); await wait(350); openCiv(Y); clk(hd); await wait(80);
+    if (!isOpen() || cur.obj !== Y) out.err.push('同一下点击里开卡又被关了(300ms 守卫失效)');
+    if (!panel.querySelector('.p-back')) out.err.push('换卡后←被清掉');
+    // c) 点卡内 → 不关;d) 点卡外的控件(缩放钮)→ 不关(先重开,免得 b) 红了以后这里连锁红)
+    openCiv(Y); await wait(350); clk(panel.querySelector('h2') || panel); await wait(80);
+    if (!isOpen()) out.err.push('点卡内正文把卡关了');
+    clk(document.getElementById('zoomOut')); await wait(80);
+    if (!isOpen()) out.err.push('点卡外的按钮把卡关了');
+    // e) 人物卡开着点它的遮罩 → 只关人物卡,文明卡留着
+    const pk = Object.keys(PEOPLE).find(k => PEOPLE[k].c === X.n);
+    if (pk) { openCiv(X); await wait(350); openPerson(pk); await wait(350); clk(pcard.querySelector('.pc-back')); await wait(80);
+      if (!pcard.hidden) out.err.push('点人物卡遮罩没关人物卡');
+      if (!isOpen()) out.err.push('点人物卡遮罩把文明卡也关了'); }
+    // f) 挑一条在视口内、离面板足够远的色带,把中心坐标交给外面的真鼠标
+    const pr = panel.getBoundingClientRect(); let pick = null;
+    for (const b of document.querySelectorAll('.band')) { const r = b.getBoundingClientRect();
+      if (r.width < 40 || r.height < 10) continue; const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+      if (cx < 20 || cy < 20 || cx > pr.left - 40 || cy > innerHeight - 20) continue;
+      if (bandAt(cx, cy) !== b || +b.dataset.ci === CIVS.indexOf(Y)) continue; pick = { x: cx, y: cy, ci: +b.dataset.ci }; break; }
+    out.pick = pick; if (!pick) out.err.push('视口里找不到一条可真点的色带');
+    // g) header 里找一处 elementsFromPoint 顶层就是 header 自己的空白
+    const hr = hd.getBoundingClientRect(); let blank = null;
+    for (let x = hr.left + 4; x < hr.right - 4; x += 6) for (let y = hr.top + 2; y < hr.bottom - 2; y += 4) {
+      if (document.elementFromPoint(x, y) === hd) { blank = { x, y }; break; } if (blank) break; }
+    out.blank = blank; if (!blank) out.err.push('header 里找不到一处纯空白');
+    return out;
+  });
+  if (oc.pick && oc.blank) {
+    await page.mouse.click(oc.pick.x, oc.pick.y); await page.waitForTimeout(350);
+    const r1 = await page.evaluate(ci => ({ open: panel.classList.contains('open'), same: cur && cur.obj === CIVS[ci], back: !!panel.querySelector('.p-back') }), oc.pick.ci);
+    if (!r1.open || !r1.same) oc.err.push(`真鼠标点另一条带后卡被关了或没换(open=${r1.open} same=${r1.same})`);
+    if (!r1.back) oc.err.push('真鼠标换卡后←被清掉');
+    await page.mouse.click(oc.blank.x, oc.blank.y); await page.waitForTimeout(200);
+    if (await page.evaluate(() => panel.classList.contains('open'))) oc.err.push('真鼠标点 header 空白后卡没关');
+  }
+  oc.err.forEach(e => fail('点空白关卡', e));
+
   /* ── 5. 色带真实填充色:没有一条是纯黑/透明(v193 五条大洋洲带黑了好几版) ─────────────
      反例验证:临时删掉 CSS 里某圈 --c9-a 变量 → 报黑带(2026-08-16) */
   const bands = await page.evaluate(() => {
